@@ -1994,7 +1994,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.5</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.52</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2025,7 +2025,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v0.5</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v0.52</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3504,8 +3504,9 @@
                 }
             });
 
-            // Oficiálne zoradenie: 1. Body DESC -> 2. Menej zápasov ASC -> 3. Viac výhier DESC -> 4. Viac 2H bodov DESC -> 5. Abeceda
+            // Oficiálne zoradenie: 0. Aktívni pred neaktívnymi (1+ rok bez zápasu) -> 1. Body DESC -> 2. Menej zápasov ASC -> 3. Viac výhier DESC -> 4. Viac 2H bodov DESC -> 5. Abeceda
             const rawList = Object.values(pMap).sort((a, b) => {
+                if (a.isInactive !== b.isInactive) return a.isInactive ? 1 : -1;
                 if (b.points !== a.points) return b.points - a.points;
                 if (a.matches !== b.matches) return a.matches - b.matches;
                 if (b.wins !== a.wins) return b.wins - a.wins;
@@ -3513,11 +3514,11 @@
                 return a.name.localeCompare(b.name, "sk");
             });
 
-            // Priradenie delených miest pri absolútnej rovnosti (points, matches, wins, pts2H)
+            // Priradenie delených miest pri absolútnej rovnosti (isInactive, points, matches, wins, pts2H)
             let lastKey = null;
             let lastRank = 1;
             computedPlayers = rawList.map((p, idx) => {
-                const tieKey = `${p.points.toFixed(2)}|${p.matches}|${p.wins}|${p.pts2H.toFixed(2)}`;
+                const tieKey = `${p.isInactive ? 1 : 0}|${p.points.toFixed(2)}|${p.matches}|${p.wins}|${p.pts2H.toFixed(2)}`;
                 const rank = (tieKey === lastKey) ? lastRank : (idx + 1);
                 lastKey = tieKey;
                 lastRank = rank;
@@ -7151,19 +7152,44 @@
             });
 
             endLabels.sort((a, b) => a.rawY - b.rawY);
-            const minLabelGap = 36;
+            const minLabelY = plotBoxY + 28;
+            const maxLabelY = plotY + plotH + 8;
+            const availLabelH = Math.max(40, maxLabelY - minLabelY);
+            const minLabelGap = endLabels.length > 1
+                ? Math.min(36, Math.max(18, Math.floor(availLabelH / (endLabels.length - 1))))
+                : 36;
+            const labelFontSize = Math.min(22, Math.max(14, minLabelGap - 5));
+            const labelDotR = Math.min(7, Math.max(5, Math.round(labelFontSize * 0.30)));
+            const labelBaselineOff = Math.round(labelFontSize * 0.36);
+
+            // 1. Ohraničenie východiskových pozícií priamo do bezpečného pásma plotBoxu
+            endLabels.forEach(lb => {
+                lb.y = Math.max(minLabelY, Math.min(maxLabelY, lb.rawY));
+            });
+
+            // 2. Rozostup zhora nadol
             for (let i = 1; i < endLabels.length; i++) {
-                if (endLabels[i].y - endLabels[i - 1].y < minLabelGap) {
+                if (endLabels[i].y < endLabels[i - 1].y + minLabelGap) {
                     endLabels[i].y = endLabels[i - 1].y + minLabelGap;
                 }
             }
-            const maxLabelY = plotY + plotH - 8;
+
+            // 3. Orezanie zdola + lokálny posun nahor (posunie len kolidujúce spodné štítky, horné ostanú pri svojich čiarach)
             if (endLabels.length > 0 && endLabels[endLabels.length - 1].y > maxLabelY) {
-                const shiftUp = endLabels[endLabels.length - 1].y - maxLabelY;
-                endLabels.forEach(lb => { lb.y -= shiftUp; });
+                endLabels[endLabels.length - 1].y = maxLabelY;
                 for (let i = endLabels.length - 2; i >= 0; i--) {
-                    if (endLabels[i + 1].y - endLabels[i].y < minLabelGap) {
+                    if (endLabels[i].y > endLabels[i + 1].y - minLabelGap) {
                         endLabels[i].y = endLabels[i + 1].y - minLabelGap;
+                    }
+                }
+            }
+
+            // 4. Finálna poistka zhora nadol, aby ani horný štítok nikdy nevybehol nad minLabelY
+            if (endLabels.length > 0 && endLabels[0].y < minLabelY) {
+                endLabels[0].y = minLabelY;
+                for (let i = 1; i < endLabels.length; i++) {
+                    if (endLabels[i].y < endLabels[i - 1].y + minLabelGap) {
+                        endLabels[i].y = endLabels[i - 1].y + minLabelGap;
                     }
                 }
             }
@@ -7181,19 +7207,19 @@
                 ctx.restore();
 
                 ctx.beginPath();
-                ctx.arc(labelStartX + 7, lb.y, 7, 0, Math.PI * 2);
+                ctx.arc(labelStartX + labelDotR, lb.y, labelDotR, 0, Math.PI * 2);
                 ctx.fillStyle = lb.player.color;
                 ctx.fill();
 
                 ctx.fillStyle = "#ffffff";
-                ctx.font = "800 22px sans-serif";
+                ctx.font = `800 ${labelFontSize}px sans-serif`;
                 ctx.textAlign = "left";
-                ctx.fillText(lb.player.name.toUpperCase(), labelStartX + 22, lb.y + 8, 128);
+                ctx.fillText(lb.player.name.toUpperCase(), labelStartX + labelDotR * 2 + 8, lb.y + labelBaselineOff, 128);
 
                 ctx.fillStyle = "#a5f3fc";
-                ctx.font = "800 22px sans-serif";
+                ctx.font = `800 ${labelFontSize}px sans-serif`;
                 ctx.textAlign = "right";
-                ctx.fillText(formatPts(lb.val), plotBoxX + plotBoxW - 22, lb.y + 8);
+                ctx.fillText(formatPts(lb.val), plotBoxX + plotBoxW - 22, lb.y + labelBaselineOff);
             });
         }
 
