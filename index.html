@@ -1406,6 +1406,328 @@
             }
         }
 
+
+        /* GRAF VÝVOJA BODOV (v0.4) */
+        .chart-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .player-chip {
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid rgba(255, 160, 160, 0.30);
+            background: rgba(136, 0, 0, 0.34);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: rgba(255, 255, 255, 0.72);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.15s;
+        }
+
+        .player-chip.active {
+            color: #ffffff;
+            border-color: rgba(255, 190, 190, 0.65);
+            background: rgba(136, 0, 0, 0.72);
+            box-shadow: 0 2px 10px rgba(136, 0, 0, 0.38);
+        }
+
+        .chip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .canvas-wrap {
+            position: relative;
+            width: 100%;
+            height: 340px;
+            background: rgba(10, 22, 36, 0.80);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        canvas#pointsCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: grab;
+            touch-action: pan-y;
+        }
+
+        canvas#pointsCanvas.is-dragging {
+            cursor: grabbing;
+        }
+
+        .chart-nav-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 7px 10px;
+            background: rgba(10, 22, 36, 0.80);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .chart-nav-btn {
+            width: 30px;
+            height: 28px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            border: 1px solid var(--btn-glass-border);
+            background: var(--btn-glass-bg);
+            color: #ffffff;
+            font-size: 0.92rem;
+            font-weight: 800;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, opacity 0.15s, transform 0.1s;
+        }
+
+        .chart-nav-btn:hover:not(:disabled) {
+            background: var(--btn-glass-hover);
+        }
+
+        .chart-nav-btn:active:not(:disabled) {
+            transform: scale(0.94);
+        }
+
+        .chart-nav-btn:disabled {
+            opacity: 0.34;
+            cursor: not-allowed;
+        }
+
+        .chart-range-pill {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--tennis-lime);
+            background: rgba(0, 18, 16, 0.55);
+            border: 1px solid rgba(190, 242, 100, 0.35);
+            border-radius: 999px;
+            padding: 3px 9px;
+            white-space: nowrap;
+        }
+
+        .tv-range {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            padding: 0;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.22);
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .tv-range:focus {
+            box-shadow: none;
+        }
+
+        .tv-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: var(--tennis-lime);
+            border: 2px solid #052e16;
+            box-shadow: 0 0 8px rgba(190, 242, 100, 0.55);
+            cursor: pointer;
+        }
+
+        .tv-range::-moz-range-thumb {
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: var(--tennis-lime);
+            border: 2px solid #052e16;
+            box-shadow: 0 0 8px rgba(190, 242, 100, 0.55);
+            cursor: pointer;
+        }
+
+        .chart-mode-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .chart-quick-btns {
+            display: inline-flex;
+            gap: 5px;
+        }
+
+        .chart-quick-btn {
+            padding: 4px 8px;
+            border-radius: 7px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            font-size: 0.69rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .chart-quick-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+        }
+
+
+        .tv-btn {
+            background: var(--btn-glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ffffff;
+            border: 1px solid var(--btn-glass-border);
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: var(--btn-glass-shadow);
+            transition: all 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .tv-btn:hover {
+            background: var(--btn-glass-hover);
+        }
+
+        .modal-box.tv-modal-box {
+            max-width: 740px;
+        }
+
+        canvas#tvCanvas,
+        canvas#tvChartCanvas {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        canvas#tvChartCanvas {
+            cursor: grab;
+            touch-action: pan-y;
+        }
+
+        canvas#tvChartCanvas.is-dragging {
+            cursor: grabbing;
+        }
+
+        .tv-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tv-ctrl-card {
+            background: rgba(8, 20, 32, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 12px;
+            padding: 9px 11px;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.14);
+        }
+
+        .tv-ctrl-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 7px;
+        }
+
+        .tv-ctrl-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tv-ctrl-steppers {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tv-step-btn {
+            width: 26px;
+            height: 24px;
+            border-radius: 7px;
+            border: 1px solid var(--btn-glass-border);
+            background: var(--btn-glass-bg);
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 800;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, transform 0.1s;
+        }
+
+        .tv-step-btn:hover { background: var(--btn-glass-hover); }
+        .tv-step-btn:active { transform: scale(0.94); }
+
+        .tv-pct-badge {
+            min-width: 42px;
+            text-align: center;
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--tennis-lime);
+            background: rgba(0, 18, 16, 0.55);
+            border: 1px solid rgba(190, 242, 100, 0.35);
+            border-radius: 7px;
+            padding: 2px 6px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tv-chart-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+            max-height: 76px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 540px) {
+            .tv-controls-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
         /* BOTTOM DOCK (NAV) */
         .bottom-dock {
             position: fixed;
@@ -1428,20 +1750,20 @@
             -webkit-backdrop-filter: var(--glass-blur);
             border-top: 1px solid var(--border);
             display: flex;
-            justify-content: center;
-            gap: 6px;
-            padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+            justify-content: space-around;
+            gap: 4px;
+            padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
         }
 
         .nav-item {
             flex: 1;
-            max-width: 180px;
+            max-width: 135px;
             background: rgba(136, 0, 0, 0.22);
             border: 1px solid rgba(255, 160, 160, 0.18);
             color: rgba(255, 255, 255, 0.82);
-            padding: 6px 4px;
+            padding: 6px 2px;
             border-radius: 11px;
-            font-size: 0.69rem;
+            font-size: 0.64rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -1672,12 +1994,20 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.3</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.5</span>
                 </div>
             </div>
             <div class="header-badges">
                 <span class="param-pill lime" id="header-window-pill">Lehota: 12 mes.</span>
                 <span class="param-pill" id="header-matches-pill">0 / 0 záp.</span>
+                <button type="button" class="tv-btn" onclick="openTvModal()" title="Vygenerovať televíznu grafiku tabuľky (FullHD)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+                    TV
+                </button>
+                <button type="button" class="tv-btn" onclick="openTvChartModal()" title="Vygenerovať televízny graf bodov (FullHD)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    TV Graf
+                </button>
             </div>
         </div>
     </header>
@@ -1695,7 +2025,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v0.3</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v0.5</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -1894,7 +2224,52 @@
         </section>
 
 
-        <!-- ==================== SEKCIA 3: H2H & DETAILNÝ PROFIL HRÁČA ==================== -->
+
+        <!-- ==================== SEKCIA 3: GRAF VÝVOJA BODOV ==================== -->
+        <section id="sec-chart" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        Vývoj bodov v čase: <span id="chart-steps-count">0</span> krokov
+                    </div>
+                    <span class="chart-range-pill" id="chart-range-label">—</span>
+                </div>
+
+                <!-- PREPÍNAČ REŽIMU GRAFU: 6 MES. / 1 ROK / ALL-TIME -->
+                <div class="chart-mode-row">
+                    <div class="h2h-pill-group">
+                        <button type="button" id="chart-mode-6" class="preset-btn" onclick="setChartMode(6)">6 mesiacov</button>
+                        <button type="button" id="chart-mode-12" class="preset-btn active" onclick="setChartMode(12)">1 rok (12 mes.)</button>
+                        <button type="button" id="chart-mode-0" class="preset-btn" onclick="setChartMode(0)">All-time</button>
+                    </div>
+                    <div class="chart-quick-btns">
+                        <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('top5')" title="Zobraziť Top 5 hráčov">Top 5</button>
+                        <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('all')" title="Zobraziť všetkých hráčov">Všetci</button>
+                    </div>
+                </div>
+
+                <div class="chart-controls" id="chart-player-chips"></div>
+
+                <div class="canvas-wrap">
+                    <canvas id="pointsCanvas"></canvas>
+                </div>
+
+                <div class="chart-nav-bar">
+                    <button type="button" class="chart-nav-btn" id="chart-first-btn" onclick="jumpChartWindow('start')" title="Na začiatok histórie">«</button>
+                    <button type="button" class="chart-nav-btn" id="chart-prev-btn" onclick="panChartWindow(-1)" title="Starší zápas (doľava)">‹</button>
+                    <input type="range" id="chart-scroll-slider" class="tv-range" min="0" max="0" step="1" value="0" oninput="setChartWindowStart(this.value)">
+                    <button type="button" class="chart-nav-btn" id="chart-next-btn" onclick="panChartWindow(1)" title="Novší zápas (doprava)">›</button>
+                    <button type="button" class="chart-nav-btn" id="chart-last-btn" onclick="jumpChartWindow('end')" title="Najnovších 10 krokov">»</button>
+                </div>
+
+                <div id="chart-point-info" style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                    Potiahnutím prsta/myši do strany posúvaj graf (okno 10 krokov), klepnutím zobrazíš detail bodu.
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SEKCIA 4: H2H & DETAILNÝ PROFIL HRÁČA ==================== -->
         <section id="sec-h2h" class="section">
 
             <!-- KARTA 1: VZÁJOMNÉ SÚBOJE (H2H) -->
@@ -2377,26 +2752,143 @@
         </div>
     </div>
 
-    <!-- SPODNÁ NAVIGÁCIA (v0.3: 5 KARIET) -->
+
+    <!-- MODAL PRE TV GRAFIKU (TABUĽKA / POSLEDNÝ ZÁPAS) -->
+    <div class="modal-backdrop" id="tv-modal" onclick="if(event.target===this) closeTvModal()">
+        <div class="modal-box tv-modal-box">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-title-dot"></span>
+                    Televízna infografika FullHD
+                </div>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" id="tv-mode-table" class="preset-btn active" style="padding:4px 9px; font-size:0.72rem;" onclick="setTvMode('table')">Tabuľka</button>
+                    <button type="button" id="tv-mode-last" class="preset-btn" style="padding:4px 9px; font-size:0.72rem;" onclick="setTvMode('last')">Posledný zápas</button>
+                    <button type="button" class="icon-btn" onclick="closeTvModal()">✕</button>
+                </div>
+            </div>
+            <canvas id="tvCanvas" width="1920" height="1080"></canvas>
+            <div class="tv-controls-grid">
+                <div class="tv-ctrl-card">
+                    <div class="tv-ctrl-top">
+                        <span class="tv-ctrl-label">Blur pod tabuľkou</span>
+                        <div class="tv-ctrl-steppers">
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)" title="Znížiť blur o 10 %">−</button>
+                            <span class="tv-pct-badge" id="tv-blur-val" onclick="setTvBlur(50)" title="Kliknutím obnovíš predvolených 50 %">50%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)" title="Zvýšiť blur o 10 %">+</button>
+                        </div>
+                    </div>
+                    <input type="range" id="tv-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
+                </div>
+                <div class="tv-ctrl-card">
+                    <div class="tv-ctrl-top">
+                        <span class="tv-ctrl-label">Priehľadnosť pod tabuľkou</span>
+                        <div class="tv-ctrl-steppers">
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)" title="Znížiť priehľadnosť o 10 %">−</button>
+                            <span class="tv-pct-badge" id="tv-transp-val" onclick="setTvTransparency(40)" title="Kliknutím obnovíš predvolených 40 %">40%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)" title="Zvýšiť priehľadnosť o 10 %">+</button>
+                        </div>
+                    </div>
+                    <input type="range" id="tv-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                </div>
+            </div>
+            <div class="grid-3">
+                <button type="button" class="btn btn-primary" onclick="downloadTvGraphic('png')">Stiahnuť PNG</button>
+                <button type="button" class="btn btn-primary" onclick="downloadTvGraphic('jpg')">Stiahnuť JPG</button>
+                <button type="button" class="btn btn-secondary" onclick="closeTvModal()">Zavrieť</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRE TV GRAF (FULLHD) -->
+    <div class="modal-backdrop" id="tv-chart-modal" onclick="if(event.target===this) closeTvChartModal()">
+        <div class="modal-box tv-modal-box">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                    Televízny graf bodov FullHD
+                </div>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                    <span class="chart-range-pill" id="tv-chart-range-label">—</span>
+                    <button type="button" class="icon-btn" onclick="closeTvChartModal()">✕</button>
+                </div>
+            </div>
+            <div class="chart-mode-row" style="margin-bottom:8px;">
+                <div class="h2h-pill-group">
+                    <button type="button" id="tv-chart-mode-6" class="preset-btn" onclick="setTvChartMode(6)">6 mes.</button>
+                    <button type="button" id="tv-chart-mode-12" class="preset-btn active" onclick="setTvChartMode(12)">1 rok</button>
+                    <button type="button" id="tv-chart-mode-0" class="preset-btn" onclick="setTvChartMode(0)">All-time</button>
+                </div>
+                <div class="chart-quick-btns">
+                    <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('top5'); renderTvChartPlayerChips(); renderTvChartCanvas();">Top 5</button>
+                    <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('all'); renderTvChartPlayerChips(); renderTvChartCanvas();">Všetci</button>
+                </div>
+            </div>
+            <div class="tv-chart-chips" id="tv-chart-player-chips"></div>
+            <canvas id="tvChartCanvas" width="1920" height="1080"></canvas>
+            <div class="chart-nav-bar" style="margin-top:0; margin-bottom:10px;">
+                <button type="button" class="chart-nav-btn" id="tv-chart-first-btn" onclick="jumpTvChartWindow('start')" title="Na začiatok histórie">«</button>
+                <button type="button" class="chart-nav-btn" id="tv-chart-prev-btn" onclick="panTvChartWindow(-1)" title="Starší krok (doľava)">‹</button>
+                <input type="range" id="tv-chart-slider" class="tv-range" min="0" max="0" step="1" value="0" oninput="setTvChartWindowStart(this.value)">
+                <button type="button" class="chart-nav-btn" id="tv-chart-next-btn" onclick="panTvChartWindow(1)" title="Novší krok (doprava)">›</button>
+                <button type="button" class="chart-nav-btn" id="tv-chart-last-btn" onclick="jumpTvChartWindow('end')" title="Najnovších 10 krokov">»</button>
+            </div>
+            <div class="tv-controls-grid">
+                <div class="tv-ctrl-card">
+                    <div class="tv-ctrl-top">
+                        <span class="tv-ctrl-label">Blur pod grafom</span>
+                        <div class="tv-ctrl-steppers">
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)" title="Znížiť blur o 10 %">−</button>
+                            <span class="tv-pct-badge" id="tv-chart-blur-val" onclick="setTvBlur(50)" title="Kliknutím obnovíš predvolených 50 %">50%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)" title="Zvýšiť blur o 10 %">+</button>
+                        </div>
+                    </div>
+                    <input type="range" id="tv-chart-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
+                </div>
+                <div class="tv-ctrl-card">
+                    <div class="tv-ctrl-top">
+                        <span class="tv-ctrl-label">Priehľadnosť pod grafom</span>
+                        <div class="tv-ctrl-steppers">
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)" title="Znížiť priehľadnosť o 10 %">−</button>
+                            <span class="tv-pct-badge" id="tv-chart-transp-val" onclick="setTvTransparency(40)" title="Kliknutím obnovíš predvolených 40 %">40%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)" title="Zvýšiť priehľadnosť o 10 %">+</button>
+                        </div>
+                    </div>
+                    <input type="range" id="tv-chart-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                </div>
+            </div>
+            <div class="grid-3">
+                <button type="button" class="btn btn-primary" onclick="downloadTvChartGraphic('png')">Stiahnuť PNG</button>
+                <button type="button" class="btn btn-primary" onclick="downloadTvChartGraphic('jpg')">Stiahnuť JPG</button>
+                <button type="button" class="btn btn-secondary" onclick="closeTvChartModal()">Zavrieť</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPODNÁ NAVIGÁCIA (v0.5: 6 KARIET) -->
     <div class="bottom-dock">
         <nav class="bottom-nav">
-            <button class="nav-item active" onclick="switchTab('sec-table', this)">
+            <button class="nav-item active" data-tab="sec-table" onclick="switchTab('sec-table', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
                 Tabuľka
             </button>
-            <button class="nav-item" onclick="switchTab('sec-match', this)">
+            <button class="nav-item" data-tab="sec-match" onclick="switchTab('sec-match', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                 Nový zápas
             </button>
-            <button class="nav-item" onclick="switchTab('sec-h2h', this)">
+            <button class="nav-item" data-tab="sec-chart" onclick="switchTab('sec-chart', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Graf
+            </button>
+            <button class="nav-item" data-tab="sec-h2h" onclick="switchTab('sec-h2h', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 H2H &amp; Hráči
             </button>
-            <button class="nav-item" onclick="switchTab('sec-badges', this)">
+            <button class="nav-item" data-tab="sec-badges" onclick="switchTab('sec-badges', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.31C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.31C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
                 Odznaky
             </button>
-            <button class="nav-item" onclick="switchTab('sec-history', this)">
+            <button class="nav-item" data-tab="sec-history" onclick="switchTab('sec-history', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 História
             </button>
@@ -2438,6 +2930,7 @@
             },
             players: [],
             matches: [],
+            chartVisiblePlayers: {},
             updatedAt: 0
         };
 
@@ -2462,6 +2955,14 @@
         let profileScope = "window";  // "window" | "alltime"
         let badgesScope = "alltime";  // "alltime" | "window"
         let computedAchievements = [];
+
+        const CHART_WINDOW_SIZE = 10;
+        let chartModeMonths = 12;     // 6 | 12 | 0 (All-time)
+        let chartTimelinePoints = [];
+        let chartInteractiveHits = [];
+        let chartWindowStart = null;
+        let lastTimelineSig = "";
+        let lastChartHighlightStep = null;
 
         /* ==================== TÉMY ==================== */
         function getSeasonKeyByDate(date = new Date()) {
@@ -2504,6 +3005,10 @@
             if (metaTheme) metaTheme.setAttribute("content", theme.themeColor);
 
             if (persist) saveThemePreference(theme.key, getSeasonKeyByDate());
+            const tvMod = document.getElementById("tv-modal");
+            if (tvMod && tvMod.classList.contains("open")) renderTvCanvas();
+            const tvChartMod = document.getElementById("tv-chart-modal");
+            if (tvChartMod && tvChartMod.classList.contains("open")) renderTvChartCanvas();
             if (showNotification) showToast(`Motív: ${theme.label}`);
         }
 
@@ -2649,8 +3154,14 @@
             if (!Array.isArray(state.players)) state.players = [];
             if (!Array.isArray(state.matches)) state.matches = [];
 
+            if (!state.chartVisiblePlayers || typeof state.chartVisiblePlayers !== "object") {
+                state.chartVisiblePlayers = {};
+            }
             state.players.forEach((p, idx) => {
                 if (!p.color) p.color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+                if (typeof state.chartVisiblePlayers[p.id] === "undefined") {
+                    state.chartVisiblePlayers[p.id] = true;
+                }
             });
 
             // Normalizácia formátu zápasov
@@ -3039,6 +3550,7 @@
             });
 
             buildAchievements();
+            buildChartTimeline();
         }
 
         function setWindowMonths(months) {
@@ -3565,6 +4077,516 @@
             showToast(`Zápas zaradený na pozíciu #${inserted ? inserted.index : computedMatches.length} (${formatDateSk(payload.date)})!`);
         }
 
+        /* ==================== GRAF VÝVOJA BODOV (v0.4) ==================== */
+        function setChartMode(months) {
+            const mVal = Number(months);
+            chartModeMonths = (mVal === 6 || mVal === 12 || mVal === 0) ? mVal : 12;
+            document.getElementById("chart-mode-6").classList.toggle("active", chartModeMonths === 6);
+            document.getElementById("chart-mode-12").classList.toggle("active", chartModeMonths === 12);
+            document.getElementById("chart-mode-0").classList.toggle("active", chartModeMonths === 0);
+            lastChartHighlightStep = null;
+            buildChartTimeline();
+            renderChartChips();
+            drawPointsChart();
+        }
+
+        function setChartPlayersPreset(preset) {
+            if (preset === "all") {
+                computedPlayers.forEach(p => { state.chartVisiblePlayers[p.id] = true; });
+            } else if (preset === "top5") {
+                const lastPt = chartTimelinePoints.length > 0 ? chartTimelinePoints[chartTimelinePoints.length - 1] : null;
+                const ranked = [...computedPlayers].sort((a, b) => {
+                    const va = lastPt ? (lastPt.pts[a.id] || 0) : a.points;
+                    const vb = lastPt ? (lastPt.pts[b.id] || 0) : b.points;
+                    if (vb !== va) return vb - va;
+                    return a.rank - b.rank;
+                });
+                const topIds = new Set(ranked.slice(0, 5).map(p => p.id));
+                computedPlayers.forEach(p => { state.chartVisiblePlayers[p.id] = topIds.has(p.id); });
+            }
+            saveState(false);
+            renderChartChips();
+            drawPointsChart();
+        }
+
+        function buildChartTimeline() {
+            const mode = chartModeMonths; // 6 | 12 | 0
+            const zeroMap = {};
+            state.players.forEach(p => { zeroMap[p.id] = 0; });
+
+            const ptsTimeline = [{
+                step: 0,
+                label: "Štart",
+                date: "",
+                title: mode === 0
+                    ? "Štart histórie (0.00 bodov · All-time)"
+                    : `Štart histórie (0.00 bodov · kĺzavé okno ${mode} mes.)`,
+                match: null,
+                pts: { ...zeroMap }
+            }];
+
+            // Predpočítame expiry timestamp pre každý zápas pri zvolenom režime
+            const precalc = computedMatches.map(m => {
+                const dt = parseIsoLocal(m.date);
+                const expDt = mode > 0 ? addCalendarMonths(m.date, mode) : null;
+                return {
+                    m,
+                    dtTime: dt ? dt.getTime() : 0,
+                    expTime: expDt ? expDt.getTime() : Infinity
+                };
+            });
+
+            for (let i = 0; i < precalc.length; i++) {
+                const cur = precalc[i];
+                const curM = cur.m;
+                const curTime = cur.dtTime;
+                const snapPts = { ...zeroMap };
+
+                for (let j = 0; j <= i; j++) {
+                    const prev = precalc[j];
+                    if (mode === 0 || prev.expTime >= curTime) {
+                        const pm = prev.m;
+                        if (pm.ptsA > 0) {
+                            pm.team1.forEach(id => {
+                                if (typeof snapPts[id] === "number") {
+                                    snapPts[id] = Math.round((snapPts[id] + pm.ptsA) * 100) / 100;
+                                }
+                            });
+                        }
+                        if (pm.ptsB > 0) {
+                            pm.team2.forEach(id => {
+                                if (typeof snapPts[id] === "number") {
+                                    snapPts[id] = Math.round((snapPts[id] + pm.ptsB) * 100) / 100;
+                                }
+                            });
+                        }
+                    }
+                }
+
+                const gemsPart = curM.gems ? ` (${curM.gems})` : "";
+                ptsTimeline.push({
+                    step: ptsTimeline.length,
+                    label: `#${curM.index}`,
+                    date: curM.date,
+                    title: `#${curM.index} (${formatDateSk(curM.date)} · ${curM.type}): ${curM.teamNameA} vs ${curM.teamNameB} ${curM.sets1}:${curM.sets2}${gemsPart}`,
+                    match: curM,
+                    pts: snapPts
+                });
+            }
+
+            // Ak je režim 6M alebo 12M a od posledného zápasu uplynul čas, pridáme finálny bod "Dnes"
+            if (mode > 0 && precalc.length > 0) {
+                const today = getTodayMidnight();
+                const todayTime = today.getTime();
+                const lastTime = precalc[precalc.length - 1].dtTime;
+                if (todayTime > lastTime) {
+                    const todayPts = { ...zeroMap };
+                    for (let j = 0; j < precalc.length; j++) {
+                        const prev = precalc[j];
+                        if (prev.expTime >= todayTime) {
+                            const pm = prev.m;
+                            if (pm.ptsA > 0) {
+                                pm.team1.forEach(id => {
+                                    if (typeof todayPts[id] === "number") {
+                                        todayPts[id] = Math.round((todayPts[id] + pm.ptsA) * 100) / 100;
+                                    }
+                                });
+                            }
+                            if (pm.ptsB > 0) {
+                                pm.team2.forEach(id => {
+                                    if (typeof todayPts[id] === "number") {
+                                        todayPts[id] = Math.round((todayPts[id] + pm.ptsB) * 100) / 100;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    ptsTimeline.push({
+                        step: ptsTimeline.length,
+                        label: "Dnes",
+                        date: getTodayIso(),
+                        title: `Aktuálny stav k ${formatDateSk(today)} (kĺzavé okno ${mode} mes.)`,
+                        match: null,
+                        isToday: true,
+                        pts: todayPts
+                    });
+                }
+            }
+
+            chartTimelinePoints = ptsTimeline;
+            const newSig = `${mode}_${ptsTimeline.length}`;
+            if (newSig !== lastTimelineSig) {
+                lastTimelineSig = newSig;
+                chartWindowStart = null; // skočí na najnovšie okno
+            }
+        }
+
+        function getChartWindowBounds(startVal) {
+            const total = chartTimelinePoints.length;
+            if (total === 0) return { start: 0, end: -1, maxStart: 0, count: 0 };
+            const winSize = Math.min(CHART_WINDOW_SIZE, total);
+            const maxStart = Math.max(0, total - winSize);
+            let start = (startVal === null || typeof startVal !== "number" || isNaN(startVal))
+                ? maxStart
+                : Math.round(startVal);
+            start = Math.max(0, Math.min(maxStart, start));
+            return { start, end: start + winSize - 1, maxStart, count: winSize };
+        }
+
+        function formatChartRangeText(bounds) {
+            if (bounds.count === 0) return "—";
+            const pStart = chartTimelinePoints[bounds.start];
+            const pEnd = chartTimelinePoints[bounds.end];
+            const totalSteps = Math.max(0, chartTimelinePoints.length - 1);
+            if (!pStart || !pEnd) return "—";
+            if (bounds.start === bounds.end) return `${pStart.label} (z ${totalSteps})`;
+            return `${pStart.label} – ${pEnd.label} (z ${totalSteps})`;
+        }
+
+        function syncChartNavUI() {
+            const bounds = getChartWindowBounds(chartWindowStart);
+            chartWindowStart = bounds.start;
+            const slider = document.getElementById("chart-scroll-slider");
+            const label = document.getElementById("chart-range-label");
+            const btnFirst = document.getElementById("chart-first-btn");
+            const btnPrev = document.getElementById("chart-prev-btn");
+            const btnNext = document.getElementById("chart-next-btn");
+            const btnLast = document.getElementById("chart-last-btn");
+            if (slider) {
+                slider.min = 0;
+                slider.max = bounds.maxStart;
+                slider.value = bounds.start;
+                slider.disabled = bounds.maxStart === 0;
+            }
+            if (label) label.textContent = formatChartRangeText(bounds);
+            if (btnFirst) btnFirst.disabled = bounds.start <= 0;
+            if (btnPrev) btnPrev.disabled = bounds.start <= 0;
+            if (btnNext) btnNext.disabled = bounds.start >= bounds.maxStart;
+            if (btnLast) btnLast.disabled = bounds.start >= bounds.maxStart;
+        }
+
+        function setChartWindowStart(val) {
+            const bounds = getChartWindowBounds(Number(val));
+            if (chartWindowStart === bounds.start) return;
+            chartWindowStart = bounds.start;
+            drawPointsChart();
+        }
+
+        function panChartWindow(delta) {
+            const bounds = getChartWindowBounds(chartWindowStart);
+            const next = Math.max(0, Math.min(bounds.maxStart, bounds.start + delta));
+            if (next === bounds.start) return;
+            chartWindowStart = next;
+            drawPointsChart();
+        }
+
+        function jumpChartWindow(where) {
+            const bounds = getChartWindowBounds(chartWindowStart);
+            chartWindowStart = where === "start" ? 0 : bounds.maxStart;
+            drawPointsChart();
+        }
+
+        function renderChartChips() {
+            const wrap = document.getElementById("chart-player-chips");
+            if (!wrap) return;
+            wrap.innerHTML = "";
+            const countEl = document.getElementById("chart-steps-count");
+            if (countEl) countEl.textContent = Math.max(0, chartTimelinePoints.length - 1);
+
+            const lastPt = chartTimelinePoints.length > 0 ? chartTimelinePoints[chartTimelinePoints.length - 1] : null;
+            const sortedForChips = [...computedPlayers].sort((a, b) => {
+                const va = lastPt ? (lastPt.pts[a.id] || 0) : a.points;
+                const vb = lastPt ? (lastPt.pts[b.id] || 0) : b.points;
+                if (vb !== va) return vb - va;
+                return a.name.localeCompare(b.name, "sk");
+            });
+
+            sortedForChips.forEach(p => {
+                const isVis = state.chartVisiblePlayers[p.id] !== false;
+                const val = lastPt ? (lastPt.pts[p.id] || 0) : p.points;
+                const chip = document.createElement("button");
+                chip.type = "button";
+                chip.className = "player-chip" + (isVis ? " active" : "");
+                chip.innerHTML = `<span class="chip-dot" style="background:${p.color}; opacity:${isVis ? 1 : 0.3}"></span>${escapeHtml(p.name)} (${formatPts(val)} b)`;
+                chip.onclick = () => {
+                    state.chartVisiblePlayers[p.id] = !isVis;
+                    saveState(false);
+                    renderChartChips();
+                    drawPointsChart();
+                };
+                wrap.appendChild(chip);
+            });
+        }
+
+        function drawPointsChart(highlightStep = null) {
+            const bounds = getChartWindowBounds(chartWindowStart);
+            chartWindowStart = bounds.start;
+            syncChartNavUI();
+
+            const canvas = document.getElementById("pointsCanvas");
+            if (!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            const width = Math.max(rect.width, 300);
+            const height = Math.max(rect.height, 280);
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            const ctx = canvas.getContext("2d");
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, width, height);
+
+            const visiblePlayers = computedPlayers.filter(p => state.chartVisiblePlayers[p.id] !== false);
+            if (visiblePlayers.length === 0 || bounds.count === 0) {
+                ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
+                ctx.font = "13px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("Vyber aspoň jedného hráča pre zobrazenie grafu.", width / 2, height / 2);
+                return;
+            }
+
+            const visiblePoints = chartTimelinePoints.slice(bounds.start, bounds.end + 1);
+
+            let maxVal = 0;
+            visiblePoints.forEach(pt => {
+                visiblePlayers.forEach(p => {
+                    const v = pt.pts[p.id] || 0;
+                    if (v > maxVal) maxVal = v;
+                });
+            });
+
+            // Pekné zaokrúhlenie osi Y (od 0 po čistý násobok)
+            const yMin = 0;
+            let yMax = Math.max(2, maxVal * 1.12);
+            if (yMax <= 5) yMax = Math.ceil(yMax);
+            else if (yMax <= 20) yMax = Math.ceil(yMax / 2) * 2;
+            else yMax = Math.ceil(yMax / 5) * 5;
+
+            const padL = 44, padR = 20, padT = 20, padB = 34;
+            const plotW = width - padL - padR;
+            const plotH = height - padT - padB;
+
+            const getX = (localIdx) => {
+                if (visiblePoints.length <= 1) return padL + plotW / 2;
+                return padL + (localIdx / (visiblePoints.length - 1)) * plotW;
+            };
+            const getY = (val) => {
+                return padT + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
+            };
+
+            // Vodorovná mriežka + Y osi
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+            ctx.lineWidth = 1;
+            ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
+            ctx.font = "11px sans-serif";
+            ctx.textAlign = "right";
+
+            const ySteps = 5;
+            for (let i = 0; i <= ySteps; i++) {
+                const val = yMin + ((yMax - yMin) / ySteps) * i;
+                const y = getY(val);
+                ctx.beginPath();
+                ctx.moveTo(padL, y);
+                ctx.lineTo(width - padR, y);
+                ctx.stroke();
+                const lbl = Number.isInteger(val) ? String(val) : val.toFixed(1);
+                ctx.fillText(lbl, padL - 6, y + 4);
+            }
+
+            // Zvislá mriežka + X osi
+            ctx.textAlign = "center";
+            visiblePoints.forEach((pt, localIdx) => {
+                const x = getX(localIdx);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x, padT);
+                ctx.lineTo(x, padT + plotH);
+                ctx.stroke();
+                ctx.fillStyle = pt.isToday ? "#bef264" : "rgba(255, 255, 255, 0.85)";
+                ctx.fillText(pt.label, x, height - 10);
+            });
+
+            // Zvýraznená zvislá čiara pri aktívnom bode
+            if (highlightStep !== null && highlightStep >= bounds.start && highlightStep <= bounds.end) {
+                const hx = getX(highlightStep - bounds.start);
+                ctx.strokeStyle = "rgba(249, 115, 22, 0.65)";
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(hx, padT);
+                ctx.lineTo(hx, padT + plotH);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            chartInteractiveHits = [];
+            const dotRadiusPlayed = 4.6;
+            const dotRadiusIdle = 2.8;
+
+            visiblePlayers.forEach(p => {
+                ctx.strokeStyle = p.color;
+                ctx.lineWidth = 2.6;
+                ctx.lineJoin = "round";
+                ctx.beginPath();
+                visiblePoints.forEach((pt, localIdx) => {
+                    const val = pt.pts[p.id] || 0;
+                    const x = getX(localIdx);
+                    const y = getY(val);
+                    if (localIdx === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+
+                visiblePoints.forEach((pt, localIdx) => {
+                    const globalIdx = bounds.start + localIdx;
+                    const val = pt.pts[p.id] || 0;
+                    const x = getX(localIdx);
+                    const y = getY(val);
+                    const isPlayed = pt.match && (pt.match.team1.includes(p.id) || pt.match.team2.includes(p.id));
+
+                    ctx.fillStyle = (isPlayed || pt.isToday) ? p.color : "#081422";
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 1.9;
+                    ctx.beginPath();
+                    ctx.arc(x, y, (isPlayed || globalIdx === 0 || pt.isToday) ? dotRadiusPlayed : dotRadiusIdle, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    chartInteractiveHits.push({ x, y, step: globalIdx, player: p, pts: val, point: pt });
+                });
+            });
+        }
+
+        function setupChartCanvasEvents() {
+            const canvas = document.getElementById("pointsCanvas");
+            if (!canvas) return;
+
+            let isMouseDown = false;
+            let isDragging = false;
+            let dragStartX = 0;
+            let dragStartWindow = 0;
+
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchStartWindow = 0;
+            let touchIsHorizontal = null;
+
+            const inspectAt = (clientX, clientY) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+
+                let best = null;
+                let minDist = 45;
+                chartInteractiveHits.forEach(hp => {
+                    const d = Math.hypot(hp.x - x, hp.y - y);
+                    if (d < minDist) {
+                        minDist = d;
+                        best = hp;
+                    }
+                });
+
+                if (best) {
+                    if (best.step !== lastChartHighlightStep) {
+                        lastChartHighlightStep = best.step;
+                        drawPointsChart(best.step);
+                    }
+                    const infoEl = document.getElementById("chart-point-info");
+                    if (infoEl) {
+                        const modeTxt = chartModeMonths === 0 ? "All-time" : `${chartModeMonths}M`;
+                        infoEl.innerHTML = `<strong style="color:${best.player.color}">${escapeHtml(best.player.name)}: ${formatPts(best.pts)} b (${modeTxt})</strong> — ${escapeHtml(best.point.title)}`;
+                    }
+                }
+            };
+
+            canvas.addEventListener("mousedown", e => {
+                if (e.button !== 0) return;
+                isMouseDown = true;
+                isDragging = false;
+                dragStartX = e.clientX;
+                dragStartWindow = getChartWindowBounds(chartWindowStart).start;
+            });
+
+            window.addEventListener("mousemove", e => {
+                if (!isMouseDown) return;
+                const dx = e.clientX - dragStartX;
+                if (!isDragging && Math.abs(dx) > 6) {
+                    isDragging = true;
+                    canvas.classList.add("is-dragging");
+                }
+                if (isDragging) {
+                    const rect = canvas.getBoundingClientRect();
+                    const pxPerStep = Math.max(22, (rect.width - 64) / Math.max(1, CHART_WINDOW_SIZE - 1));
+                    const deltaSteps = Math.round(-dx / pxPerStep);
+                    setChartWindowStart(dragStartWindow + deltaSteps);
+                }
+            });
+
+            window.addEventListener("mouseup", () => {
+                if (!isMouseDown) return;
+                isMouseDown = false;
+                canvas.classList.remove("is-dragging");
+                setTimeout(() => { isDragging = false; }, 0);
+            });
+
+            canvas.addEventListener("mousemove", e => {
+                if (isMouseDown || isDragging) return;
+                inspectAt(e.clientX, e.clientY);
+            });
+
+            canvas.addEventListener("click", e => {
+                if (isDragging) return;
+                inspectAt(e.clientX, e.clientY);
+            });
+
+            canvas.addEventListener("wheel", e => {
+                const bounds = getChartWindowBounds(chartWindowStart);
+                if (bounds.maxStart <= 0) return;
+                const rawDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+                if (rawDelta === 0) return;
+                e.preventDefault();
+                panChartWindow(rawDelta > 0 ? 1 : -1);
+            }, { passive: false });
+
+            canvas.addEventListener("touchstart", e => {
+                if (!e.touches[0]) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchStartWindow = getChartWindowBounds(chartWindowStart).start;
+                touchIsHorizontal = null;
+            }, { passive: true });
+
+            canvas.addEventListener("touchmove", e => {
+                if (!e.touches[0]) return;
+                const dx = e.touches[0].clientX - touchStartX;
+                const dy = e.touches[0].clientY - touchStartY;
+                if (touchIsHorizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+                    touchIsHorizontal = Math.abs(dx) > Math.abs(dy);
+                }
+                if (touchIsHorizontal) {
+                    e.preventDefault();
+                    const rect = canvas.getBoundingClientRect();
+                    const pxPerStep = Math.max(20, (rect.width - 64) / Math.max(1, CHART_WINDOW_SIZE - 1));
+                    const deltaSteps = Math.round(-dx / pxPerStep);
+                    setChartWindowStart(touchStartWindow + deltaSteps);
+                }
+            }, { passive: false });
+
+            canvas.addEventListener("touchend", e => {
+                if (!touchIsHorizontal && e.changedTouches[0]) {
+                    inspectAt(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+                }
+                touchIsHorizontal = null;
+            }, { passive: true });
+
+            window.addEventListener("resize", () => {
+                if (document.getElementById("sec-chart").classList.contains("active")) {
+                    drawPointsChart(lastChartHighlightStep);
+                }
+            });
+        }
+
         /* ==================== H2H & DETAILNÝ PROFIL HRÁČA (v0.2) ==================== */
         function formatGemsForOrder(gemsStr, isFirst) {
             if (!gemsStr || !gemsStr.trim()) return "";
@@ -3620,7 +4642,7 @@
             if (profSel && computedPlayers.some(p => p.id === playerId)) {
                 profSel.value = playerId;
             }
-            const navBtn = document.querySelectorAll(".bottom-nav .nav-item")[2];
+            const navBtn = document.querySelector('.bottom-nav .nav-item[data-tab="sec-h2h"]');
             switchTab("sec-h2h", navBtn);
             renderPlayerProfile();
             setTimeout(() => {
@@ -4986,11 +6008,1208 @@
             showToast("Lokálna databáza bola vymazaná (čistý štart).");
         }
 
+        /* ==================== TV GRAFIKA & TV GRAF FULLHD (v0.5) ==================== */
+        const TV_SETTINGS_KEY = "TENISTAB_TV_CFG_V1";
+        let tvMode = "table"; // "table" | "last"
+        let tvBlurPct = 50;
+        let tvTransparencyPct = 40;
+        let tvRenderRaf = null;
+        let tvBgImage = null;
+        let tvBgLoaded = false;
+        let tvBgPromise = null;
+        let tvChartWindowStart = null;
+
+        function loadTvSettings() {
+            try {
+                const raw = localStorage.getItem(TV_SETTINGS_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (typeof parsed.blurPct === "number" && !isNaN(parsed.blurPct)) {
+                        tvBlurPct = Math.max(0, Math.min(100, Math.round(parsed.blurPct)));
+                    }
+                    if (typeof parsed.transparencyPct === "number" && !isNaN(parsed.transparencyPct)) {
+                        tvTransparencyPct = Math.max(0, Math.min(100, Math.round(parsed.transparencyPct)));
+                    }
+                }
+            } catch (e) {}
+            syncTvControlsUI();
+        }
+
+        function saveTvSettings() {
+            try {
+                localStorage.setItem(TV_SETTINGS_KEY, JSON.stringify({
+                    blurPct: tvBlurPct,
+                    transparencyPct: tvTransparencyPct
+                }));
+            } catch (e) {}
+        }
+
+        function syncTvControlsUI() {
+            const pairs = [
+                ["tv-blur-slider", "tv-blur-val", tvBlurPct],
+                ["tv-transp-slider", "tv-transp-val", tvTransparencyPct],
+                ["tv-chart-blur-slider", "tv-chart-blur-val", tvBlurPct],
+                ["tv-chart-transp-slider", "tv-chart-transp-val", tvTransparencyPct]
+            ];
+            pairs.forEach(([sId, vId, val]) => {
+                const sEl = document.getElementById(sId);
+                const vEl = document.getElementById(vId);
+                if (sEl) sEl.value = val;
+                if (vEl) vEl.textContent = `${val}%`;
+            });
+        }
+
+        function scheduleTvRender() {
+            if (tvRenderRaf) return;
+            tvRenderRaf = requestAnimationFrame(() => {
+                tvRenderRaf = null;
+                const m1 = document.getElementById("tv-modal");
+                if (m1 && m1.classList.contains("open")) renderTvCanvas();
+                const m2 = document.getElementById("tv-chart-modal");
+                if (m2 && m2.classList.contains("open")) renderTvChartCanvas();
+            });
+        }
+
+        function setTvBlur(val) {
+            tvBlurPct = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+            syncTvControlsUI();
+            saveTvSettings();
+            scheduleTvRender();
+        }
+
+        function stepTvBlur(delta) { setTvBlur(tvBlurPct + delta); }
+
+        function setTvTransparency(val) {
+            tvTransparencyPct = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+            syncTvControlsUI();
+            saveTvSettings();
+            scheduleTvRender();
+        }
+
+        function stepTvTransparency(delta) { setTvTransparency(tvTransparencyPct + delta); }
+
+        async function ensureTvBackgroundLoaded(callback) {
+            if (tvBgLoaded) {
+                if (callback) callback();
+                return;
+            }
+            if (!tvBgPromise) {
+                tvBgPromise = (async () => {
+                    const candidates = ["./TV.jpeg", "./tv.jpeg", "./TV.jpg", "./tv.jpg"];
+                    for (const url of candidates) {
+                        try {
+                            const resp = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
+                            if (resp.ok) {
+                                const blob = await resp.blob();
+                                const dataUrl = await new Promise((resolve, reject) => {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => resolve(reader.result);
+                                    reader.onerror = reject;
+                                    reader.readAsDataURL(blob);
+                                });
+                                const img = new Image();
+                                await new Promise((resolve, reject) => {
+                                    img.onload = resolve;
+                                    img.onerror = reject;
+                                    img.src = dataUrl;
+                                });
+                                tvBgImage = img;
+                                tvBgLoaded = true;
+                                return;
+                            }
+                        } catch (e) {}
+                    }
+                    // Fallback pre file:// režim
+                    await new Promise(resolve => {
+                        const fallbackImg = new Image();
+                        fallbackImg.onload = () => {
+                            tvBgImage = fallbackImg;
+                            tvBgLoaded = true;
+                            resolve();
+                        };
+                        fallbackImg.onerror = () => {
+                            tvBgImage = null;
+                            tvBgLoaded = false;
+                            tvBgPromise = null;
+                            resolve();
+                        };
+                        fallbackImg.src = "./TV.jpeg";
+                    });
+                })();
+            }
+            await tvBgPromise;
+            if (callback) callback();
+        }
+
+        function drawRoundedRectPath(ctx, x, y, w, h, r) {
+            const radius = Math.min(r, w / 2, h / 2);
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + w - radius, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+            ctx.lineTo(x + w, y + h - radius);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+            ctx.lineTo(x + radius, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        function drawThemeFallbackBackground(targetCtx, W, H) {
+            const theme = SEASON_THEMES[currentSeasonThemeIndex] || SEASON_THEMES[0];
+            const matches = [...String(theme.gradient || "").matchAll(/(#[0-9a-fA-F]{3,8})\s*(\d+(?:\.\d+)?)?%/g)];
+            const rad = (135 - 90) * Math.PI / 180;
+            const dx = Math.cos(rad), dy = Math.sin(rad);
+            const halfLen = (Math.abs(W * dx) + Math.abs(H * dy)) / 2;
+            const cx = W / 2, cy = H / 2;
+
+            const bgGrad = targetCtx.createLinearGradient(cx - dx * halfLen, cy - dy * halfLen, cx + dx * halfLen, cy + dy * halfLen);
+            if (matches.length >= 2) {
+                matches.forEach((m, idx) => {
+                    const pos = m[2] !== undefined ? Math.max(0, Math.min(1, parseFloat(m[2]) / 100)) : (idx / (matches.length - 1));
+                    bgGrad.addColorStop(pos, m[1]);
+                });
+            } else {
+                bgGrad.addColorStop(0, theme.themeColor || "#007263");
+                bgGrad.addColorStop(1, "#0b1e2d");
+            }
+            targetCtx.fillStyle = bgGrad;
+            targetCtx.fillRect(0, 0, W, H);
+
+            targetCtx.save();
+            targetCtx.strokeStyle = "rgba(255, 255, 255, 0.14)";
+            targetCtx.lineWidth = 3;
+            targetCtx.beginPath();
+            targetCtx.moveTo(144, H * 0.68); targetCtx.lineTo(W - 144, H * 0.68);
+            targetCtx.moveTo(288, H * 0.28); targetCtx.lineTo(84, H * 0.93);
+            targetCtx.moveTo(W - 288, H * 0.28); targetCtx.lineTo(W - 84, H * 0.93);
+            targetCtx.moveTo(W / 2, H * 0.28); targetCtx.lineTo(W / 2, H * 0.68);
+            targetCtx.stroke();
+            targetCtx.restore();
+
+            const radGrad = targetCtx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, W * 0.72);
+            radGrad.addColorStop(0, "rgba(0, 0, 0, 0.0)");
+            radGrad.addColorStop(1, "rgba(4, 10, 18, 0.34)");
+            targetCtx.fillStyle = radGrad;
+            targetCtx.fillRect(0, 0, W, H);
+        }
+
+        function drawTvBackgroundLayer(targetCtx, W, H, forceFallbackBg = false) {
+            if (!forceFallbackBg && tvBgLoaded && tvBgImage && tvBgImage.naturalWidth > 0) {
+                const imgW = tvBgImage.naturalWidth;
+                const imgH = tvBgImage.naturalHeight;
+                const scale = Math.max(W / imgW, H / imgH);
+                const drawW = imgW * scale;
+                const drawH = imgH * scale;
+                targetCtx.drawImage(tvBgImage, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
+
+                const vig = targetCtx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, W * 0.72);
+                vig.addColorStop(0, "rgba(0, 18, 15, 0.08)");
+                vig.addColorStop(1, "rgba(0, 12, 10, 0.45)");
+                targetCtx.fillStyle = vig;
+                targetCtx.fillRect(0, 0, W, H);
+            } else {
+                drawThemeFallbackBackground(targetCtx, W, H);
+            }
+        }
+
+        function drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg) {
+            const blurPx = Math.round((tvBlurPct / 100) * 28 * 10) / 10;
+            const opacityFactor = Math.max(0, Math.min(1, 1 - tvTransparencyPct / 100));
+
+            ctx.save();
+            drawRoundedRectPath(ctx, panelX, panelY, panelW, panelH, panelRadius);
+            ctx.clip();
+            if (blurPx > 0) {
+                ctx.filter = `blur(${blurPx}px)`;
+                drawTvBackgroundLayer(ctx, W, H, forceFallbackBg);
+                ctx.filter = "none";
+            }
+            if (opacityFactor > 0.001) {
+                const a0 = Math.min(1, +(opacityFactor * 1.033).toFixed(3));
+                const a1 = Math.min(1, +(opacityFactor * 0.90).toFixed(3));
+                const a2 = Math.min(1, +(opacityFactor * 1.10).toFixed(3));
+                const glassGrad = ctx.createLinearGradient(panelX, panelY, panelX + panelW, panelY + panelH);
+                glassGrad.addColorStop(0, `rgba(6, 38, 34, ${a0})`);
+                glassGrad.addColorStop(0.5, `rgba(4, 28, 25, ${a1})`);
+                glassGrad.addColorStop(1, `rgba(2, 20, 18, ${a2})`);
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(panelX, panelY, panelW, panelH);
+
+                const shineGrad = ctx.createLinearGradient(panelX, panelY, panelX, panelY + 180);
+                shineGrad.addColorStop(0, `rgba(255, 255, 255, ${+(0.14 * opacityFactor).toFixed(3)})`);
+                shineGrad.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+                ctx.fillStyle = shineGrad;
+                ctx.fillRect(panelX, panelY, panelW, 180);
+            }
+            ctx.restore();
+
+            ctx.save();
+            drawRoundedRectPath(ctx, panelX, panelY, panelW, panelH, panelRadius);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${+(Math.max(0.16, 0.34 * Math.max(0.45, opacityFactor))).toFixed(3)})`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function setTvMode(mode) {
+            tvMode = mode === "last" ? "last" : "table";
+            document.getElementById("tv-mode-table").classList.toggle("active", tvMode === "table");
+            document.getElementById("tv-mode-last").classList.toggle("active", tvMode === "last");
+            renderTvCanvas();
+        }
+
+        function openTvModal() {
+            syncTvControlsUI();
+            document.getElementById("tv-modal").classList.add("open");
+            renderTvCanvas();
+            ensureTvBackgroundLoaded(() => {
+                if (document.getElementById("tv-modal").classList.contains("open")) {
+                    renderTvCanvas();
+                }
+            });
+        }
+
+        function closeTvModal() {
+            document.getElementById("tv-modal").classList.remove("open");
+        }
+
+        function renderTvLastMatchBroadcast(ctx, W, H, forceFallbackBg) {
+            const hasMatch = computedMatches.length > 0;
+            const m = hasMatch ? computedMatches[computedMatches.length - 1] : null;
+            const noteTxt = (m && m.note) ? String(m.note).trim() : "";
+            const hasNote = Boolean(noteTxt);
+
+            const panelW = 1680;
+            const panelH = hasMatch ? (hasNote ? 696 : 624) : 440;
+            const panelX = Math.round((W - panelW) / 2);
+            const panelY = Math.round((H - panelH) / 2);
+            const panelRadius = 28;
+
+            drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg);
+
+            const innerX = panelX + 44;
+            const innerW = panelW - 88;
+            const topY = panelY + 32;
+            const headerH = 68;
+
+            if (!hasMatch) {
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "800 34px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("TENISTAB | POSLEDNÝ ZÁPAS", W / 2, panelY + 180);
+                ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
+                ctx.font = "600 28px sans-serif";
+                ctx.fillText("Zatiaľ nie je zapísaný žiaden odohratý zápas.", W / 2, panelY + 250);
+                return;
+            }
+
+            const s1 = Number(m.sets1) || 0;
+            const s2 = Number(m.sets2) || 0;
+            const isDraw = s1 === s2;
+            const swapOrder = s2 > s1;
+            const isDoubles = m.type === "4H";
+            const accentHex = isDraw ? "#7dd3fc" : "#d9f928";
+
+            // Horná lišta
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, topY, innerW, headerH, 14);
+            ctx.fillStyle = "rgba(3, 14, 24, 0.68)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, topY, 10, headerH, 5);
+            ctx.fillStyle = accentHex;
+            ctx.fill();
+            ctx.restore();
+
+            const pillText = isDraw ? "REMÍZA" : "VÝSLEDOK";
+            const pillX = innerX + 26, pillY = topY + 15, pillW = isDraw ? 128 : 158, pillH = 38;
+            ctx.save();
+            drawRoundedRectPath(ctx, pillX, pillY, pillW, pillH, 9);
+            ctx.fillStyle = accentHex;
+            ctx.fill();
+            ctx.fillStyle = "#051018";
+            ctx.font = "900 20px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(pillText, pillX + pillW / 2, pillY + 26);
+            ctx.restore();
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "800 28px sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(`TENISTAB  ·  ${isDoubles ? "ŠTVORHRA 4H" : "DVOJHRA 2H"} #${m.index}`, pillX + pillW + 22, topY + 44);
+
+            ctx.fillStyle = "rgba(226, 238, 248, 0.90)";
+            ctx.font = "700 23px sans-serif";
+            ctx.textAlign = "right";
+            ctx.fillText(`DÁTUM ZÁPASU: ${formatDateSk(m.date)}`, innerX + innerW - 24, topY + 43);
+
+            const parsedSets = parseSetsFromGemsString(m.gems);
+            const setsCount = parsedSets.length;
+            const topName = swapOrder ? m.teamNameB : m.teamNameA;
+            const botName = swapOrder ? m.teamNameA : m.teamNameB;
+            const topSets = swapOrder ? s2 : s1;
+            const botSets = swapOrder ? s1 : s2;
+            const topPts = swapOrder ? m.ptsB : m.ptsA;
+            const botPts = swapOrder ? m.ptsA : m.ptsB;
+            const topIds = swapOrder ? m.team2 : m.team1;
+            const botIds = swapOrder ? m.team1 : m.team2;
+
+            const getColor = (pid) => {
+                const pl = computedPlayers.find(x => x.id === pid);
+                return pl && pl.color ? pl.color : "#ffffff";
+            };
+            const topColors = topIds.map(getColor);
+            const botColors = botIds.map(getColor);
+
+            const sbX = innerX, sbW = innerW, sbY = panelY + 154, rowH = 126, sbH = rowH * 2, sbRadius = 20;
+            const setsColW = 164;
+            const gemColW = setsCount <= 3 ? 136 : (setsCount === 4 ? 116 : 102);
+            const teamColW = sbW - setsColW - setsCount * gemColW;
+
+            ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
+            ctx.font = "800 18px sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(isDoubles ? "DVOJICA (TÍM)" : "HRÁČ", sbX + 34, sbY - 14);
+            ctx.textAlign = "center";
+            ctx.fillStyle = accentHex;
+            ctx.fillText("SETY", sbX + teamColW + setsColW / 2, sbY - 14);
+            ctx.fillStyle = "rgba(226, 238, 248, 0.74)";
+            for (let j = 0; j < setsCount; j++) {
+                ctx.fillText(setsCount >= 4 ? `S${j + 1}` : `SET ${j + 1}`, sbX + teamColW + setsColW + j * gemColW + gemColW / 2, sbY - 14);
+            }
+
+            ctx.save();
+            drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
+            ctx.clip();
+
+            const drawRow = (rowIdx, labelName, colorsArr, setsVal, isWinnerRow) => {
+                const ry = sbY + rowIdx * rowH;
+                const teamGrad = ctx.createLinearGradient(sbX, ry, sbX + teamColW, ry + rowH);
+                if (isDraw) {
+                    teamGrad.addColorStop(0, "rgba(0, 86, 188, 0.90)"); teamGrad.addColorStop(1, "rgba(0, 48, 126, 0.86)");
+                } else if (isWinnerRow) {
+                    teamGrad.addColorStop(0, "rgba(0, 96, 208, 0.94)"); teamGrad.addColorStop(1, "rgba(0, 52, 138, 0.88)");
+                } else {
+                    teamGrad.addColorStop(0, "rgba(0, 68, 152, 0.84)"); teamGrad.addColorStop(1, "rgba(0, 38, 102, 0.82)");
+                }
+                ctx.fillStyle = teamGrad;
+                ctx.fillRect(sbX, ry, teamColW, rowH);
+
+                if (!isDraw && isWinnerRow) {
+                    ctx.fillStyle = "#e2ff26";
+                    ctx.fillRect(sbX, ry, 10, rowH);
+                }
+
+                const dotR = 10;
+                let textStartX = sbX + 36;
+                colorsArr.forEach((col, ci) => {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(textStartX + dotR + ci * (dotR * 2 + 8), ry + rowH / 2, dotR, 0, Math.PI * 2);
+                    ctx.fillStyle = col;
+                    ctx.globalAlpha = (!isDraw && !isWinnerRow) ? 0.72 : 1;
+                    ctx.fill();
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.55)";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.restore();
+                });
+                textStartX += colorsArr.length * (dotR * 2 + 8) + 14;
+
+                const nameFontSize = isWinnerRow || isDraw ? 50 : 46;
+                ctx.font = `italic 900 ${nameFontSize}px sans-serif`;
+                ctx.textAlign = "left";
+                ctx.fillStyle = (!isDraw && !isWinnerRow) ? "rgba(255, 255, 255, 0.70)" : "#ffffff";
+                const maxNameW = teamColW - (textStartX - sbX) - (!isDraw && isWinnerRow ? 74 : 28);
+                ctx.fillText(labelName.toUpperCase(), textStartX, ry + rowH / 2 + Math.round(nameFontSize * 0.35), maxNameW);
+
+                if (!isDraw && isWinnerRow) {
+                    const tx = sbX + teamColW - 44, ty = ry + rowH / 2;
+                    ctx.save();
+                    ctx.fillStyle = "#e8ff2a";
+                    ctx.beginPath();
+                    ctx.moveTo(tx, ty); ctx.lineTo(tx + 20, ty - 13); ctx.lineTo(tx + 20, ty + 13);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                const setsX = sbX + teamColW;
+                const setsGrad = ctx.createLinearGradient(setsX, ry, setsX + setsColW, ry + rowH);
+                if (isDraw) {
+                    setsGrad.addColorStop(0, "rgba(240, 249, 255, 0.94)"); setsGrad.addColorStop(1, "rgba(204, 230, 248, 0.88)");
+                } else if (isWinnerRow) {
+                    setsGrad.addColorStop(0, "#fff21a"); setsGrad.addColorStop(1, "#d2f724");
+                } else {
+                    setsGrad.addColorStop(0, "#ffffff"); setsGrad.addColorStop(1, "#dce8f2");
+                }
+                ctx.fillStyle = setsGrad;
+                ctx.fillRect(setsX, ry, setsColW, rowH);
+
+                ctx.fillStyle = "#051018";
+                ctx.font = "italic 900 72px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(`${setsVal}`, setsX + setsColW / 2 - 2, ry + rowH / 2 + 25);
+
+                parsedSets.forEach((st, j) => {
+                    const gx = setsX + setsColW + j * gemColW;
+                    const gTop = swapOrder ? st.g2 : st.g1;
+                    const gBot = swapOrder ? st.g1 : st.g2;
+                    const gCur = rowIdx === 0 ? gTop : gBot;
+                    const gOpp = rowIdx === 0 ? gBot : gTop;
+
+                    const gemGrad = ctx.createLinearGradient(gx, ry, gx, ry + rowH);
+                    gemGrad.addColorStop(0, "rgba(54, 61, 69, 0.92)");
+                    gemGrad.addColorStop(1, "rgba(24, 29, 35, 0.95)");
+                    ctx.fillStyle = gemGrad;
+                    ctx.fillRect(gx, ry, gemColW, rowH);
+
+                    const wonSet = gCur > gOpp;
+                    ctx.fillStyle = wonSet ? "#ffffff" : (gCur < gOpp ? "rgba(255, 255, 255, 0.56)" : "#ffffff");
+                    ctx.font = `italic ${wonSet ? "900 62px" : "800 58px"} sans-serif`;
+                    ctx.textAlign = "center";
+                    ctx.fillText(`${gCur}`, gx + gemColW / 2 - 2, ry + rowH / 2 + 21);
+                });
+            };
+
+            drawRow(0, topName, topColors, topSets, !isDraw);
+            drawRow(1, botName, botColors, botSets, false);
+
+            ctx.strokeStyle = "rgba(2, 10, 18, 0.90)";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(sbX, sbY + rowH); ctx.lineTo(sbX + sbW, sbY + rowH);
+            ctx.moveTo(sbX + teamColW, sbY); ctx.lineTo(sbX + teamColW, sbY + sbH);
+            for (let j = 0; j < setsCount; j++) {
+                const vx = sbX + teamColW + setsColW + j * gemColW;
+                ctx.moveTo(vx, sbY); ctx.lineTo(vx, sbY + sbH);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
+            ctx.strokeStyle = isDraw ? "rgba(125, 211, 252, 0.72)" : "rgba(217, 249, 40, 0.72)";
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+            ctx.restore();
+
+            // Dve karty s pridelenými bodmi
+            const eloY = sbY + sbH + 26, eloH = 114, cardGap = 24, cardW = (innerW - cardGap) / 2;
+            const drawPtsCard = (cx, title, colorsArr, ptsVal, idsArr) => {
+                const isPos = ptsVal > 0;
+                const badgeStr = `+${formatPts(ptsVal)} B${isDoubles ? "/HRÁČ" : ""}`;
+                ctx.save();
+                drawRoundedRectPath(ctx, cx, eloY, cardW, eloH, 16);
+                ctx.fillStyle = "rgba(4, 18, 30, 0.62)";
+                ctx.fill();
+                ctx.strokeStyle = isPos ? "rgba(110, 231, 183, 0.42)" : "rgba(255, 255, 255, 0.22)";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.restore();
+
+                let nx = cx + 22;
+                colorsArr.forEach((col, ci) => {
+                    ctx.beginPath();
+                    ctx.arc(nx + 7 + ci * 20, eloY + 37, 7, 0, Math.PI * 2);
+                    ctx.fillStyle = col;
+                    ctx.fill();
+                });
+                nx += colorsArr.length * 20 + 8;
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "800 26px sans-serif";
+                ctx.textAlign = "left";
+                ctx.fillText(title.toUpperCase(), nx, eloY + 46, cardW - 250);
+
+                const badgeW = isDoubles ? 205 : 155, badgeH = 38, bx = cx + cardW - badgeW - 20, by = eloY + 18;
+                ctx.save();
+                drawRoundedRectPath(ctx, bx, by, badgeW, badgeH, 10);
+                ctx.fillStyle = isPos ? (isDraw ? "#facc15" : "#34d399") : "rgba(255,255,255,0.20)";
+                ctx.fill();
+                ctx.fillStyle = isPos ? "#051018" : "#ffffff";
+                ctx.font = "900 20px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(badgeStr, bx + badgeW / 2, by + 26);
+                ctx.restore();
+
+                const subTxt = idsArr.map(pid => {
+                    const pl = computedPlayers.find(x => x.id === pid);
+                    return pl ? `${pl.name}: ${formatPts(pl.points)} b` : "";
+                }).filter(Boolean).join(" · ");
+
+                ctx.fillStyle = "#a5f3fc";
+                ctx.font = "700 21px sans-serif";
+                ctx.textAlign = "left";
+                ctx.fillText(subTxt, cx + 22, eloY + 89, cardW - 44);
+            };
+
+            drawPtsCard(innerX, topName, topColors, topPts, topIds);
+            drawPtsCard(innerX + cardW + cardGap, botName, botColors, botPts, botIds);
+
+            if (hasNote) {
+                const noteY = eloY + eloH + 20, noteH = 54;
+                ctx.save();
+                drawRoundedRectPath(ctx, innerX, noteY, innerW, noteH, 12);
+                ctx.fillStyle = "rgba(190, 242, 100, 0.12)";
+                ctx.fill();
+                ctx.strokeStyle = "rgba(190, 242, 100, 0.36)";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.restore();
+                ctx.fillStyle = "#bef264";
+                ctx.font = "800 19px sans-serif";
+                ctx.textAlign = "left";
+                ctx.fillText("Z KURTU:", innerX + 22, noteY + 34);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "600 21px sans-serif";
+                ctx.fillText(noteTxt, innerX + 128, noteY + 34, innerW - 150);
+            }
+
+            const gSum = parseGemsString(m.gems);
+            const topG = swapOrder ? gSum.g2 : gSum.g1;
+            const botG = swapOrder ? gSum.g1 : gSum.g2;
+            const footY = panelY + panelH - 22;
+            ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
+            ctx.font = "700 18px sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText((topG + botG > 0) ? `SÚČET GEMOV: ${topG} : ${botG}` : `VÝSLEDOK NA SETY: ${topSets} : ${botSets}`, innerX + 4, footY);
+            ctx.textAlign = "right";
+            const expTxt = m.expiryDateStr ? `PLATNOSŤ BODOV DO: ${m.expiryDateStr}` : "REŽIM: ALL-TIME";
+            ctx.fillText(`${expTxt}  ·  ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 4, footY);
+        }
+
+        function renderTvCanvas(targetCanvas = null, forceFallbackBg = false) {
+            const canvas = targetCanvas || document.getElementById("tvCanvas");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            const W = canvas.width, H = canvas.height;
+
+            ctx.clearRect(0, 0, W, H);
+            drawTvBackgroundLayer(ctx, W, H, forceFallbackBg);
+
+            if (tvMode === "last") {
+                renderTvLastMatchBroadcast(ctx, W, H, forceFallbackBg);
+                return;
+            }
+
+            const panelX = 88, panelW = W - 176, panelY = 44, panelH = H - 88, panelRadius = 26;
+            drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg);
+
+            const innerX = panelX + 36, innerW = panelW - 72, topY = panelY + 26, headerBarH = 66;
+            const wm = Number(state.config.windowMonths) || 0;
+            const wmLabel = wm === 0 ? "ALL-TIME" : `${wm} MESIACOV`;
+
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, topY, innerW, headerBarH, 16);
+            ctx.fillStyle = "rgba(0, 26, 22, 0.62)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, topY, 12, headerBarH, 6);
+            ctx.fillStyle = "#ff6b6b";
+            ctx.fill();
+            ctx.restore();
+
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "800 29px sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(`TENISTAB | REBRÍČEK 2H + 4H (${wmLabel})`, innerX + 30, topY + 43);
+
+            ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
+            ctx.font = "700 21px sans-serif";
+            ctx.textAlign = "right";
+            ctx.fillText(`PLATNÝCH ZÁPASOV: ${validMatchesCount} · AKTUALIZÁCIA: ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 24, topY + 42);
+
+            const headY = topY + headerBarH + 12, headH = 48;
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, headY, innerW, headH, 12);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.20)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.restore();
+
+            const cols = [
+                { label: "POR.",       x: innerX + 55,   align: "center" },
+                { label: "MENO HRÁČA", x: innerX + 125,  align: "left"   },
+                { label: "BODY",       x: innerX + 530,  align: "center" },
+                { label: "2H",         x: innerX + 695,  align: "center" },
+                { label: "4H",         x: innerX + 835,  align: "center" },
+                { label: "ZÁP.",       x: innerX + 970,  align: "center" },
+                { label: "V-R-P",      x: innerX + 1140, align: "center" },
+                { label: "ÚSP. (%)",   x: innerX + 1345, align: "center" },
+                { label: "FORMA",      x: innerX + 1560, align: "center" }
+            ];
+
+            ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+            ctx.font = "800 19px sans-serif";
+            cols.forEach(c => {
+                ctx.textAlign = c.align;
+                ctx.fillText(c.label, c.x, headY + 31);
+            });
+
+            const rowsSource = computedPlayers.slice(0, 20);
+            const totalRows = Math.max(rowsSource.length, 1);
+            const rowsStartY = headY + headH + 10;
+            const availableRowsH = (panelY + panelH - 22) - rowsStartY;
+            const rowGap = totalRows > 14 ? 4 : (totalRows > 10 ? 6 : 10);
+            const rowH = Math.min(76, Math.max(32, Math.floor((availableRowsH - (totalRows - 1) * rowGap) / totalRows)));
+            const fontSize = Math.min(28, Math.max(17, Math.floor(rowH * 0.45)));
+
+            if (rowsSource.length === 0) {
+                ctx.fillStyle = "rgba(255, 255, 255, 0.80)";
+                ctx.font = "700 26px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("Zatiaľ žiadni hráči v databáze.", W / 2, rowsStartY + 120);
+                return;
+            }
+
+            const rankCounts = {};
+            computedPlayers.forEach(p => { rankCounts[p.rank] = (rankCounts[p.rank] || 0) + 1; });
+
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, rowsStartY, innerW, availableRowsH, 12);
+            ctx.clip();
+
+            rowsSource.forEach((p, i) => {
+                const ry = rowsStartY + i * (rowH + rowGap);
+
+                ctx.save();
+                drawRoundedRectPath(ctx, innerX, ry, innerW, rowH, 11);
+                ctx.fillStyle = i % 2 === 0 ? "rgba(255, 255, 255, 0.13)" : "rgba(255, 255, 255, 0.07)";
+                ctx.fill();
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+
+                // Zvýraznený stĺpec BODY
+                ctx.save();
+                drawRoundedRectPath(ctx, innerX + 452, ry + 3, 156, rowH - 6, 8);
+                ctx.fillStyle = "rgba(0, 42, 37, 0.48)";
+                ctx.fill();
+                ctx.strokeStyle = "rgba(165, 243, 252, 0.30)";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+
+                const textY = ry + rowH / 2 + Math.round(fontSize * 0.36);
+                const rank = p.rank;
+                const rankLbl = rankCounts[rank] > 1 ? `${rank}=` : `${rank}`;
+                const badgeSize = Math.min(40, Math.max(24, rowH - 8));
+                const badgeX = cols[0].x - badgeSize / 2;
+                const badgeY = ry + (rowH - badgeSize) / 2;
+
+                ctx.save();
+                drawRoundedRectPath(ctx, badgeX, badgeY, badgeSize, badgeSize, 8);
+                ctx.fillStyle = rank === 1 ? "#facc15" : (rank === 2 ? "#e2e8f0" : (rank === 3 ? "#fb923c" : "rgba(255, 255, 255, 0.16)"));
+                ctx.fill();
+                ctx.restore();
+
+                ctx.font = `800 ${Math.round(fontSize * 0.80)}px sans-serif`;
+                ctx.textAlign = "center";
+                ctx.fillStyle = (rank === 1 || rank === 2) ? "#090e1a" : "#ffffff";
+                ctx.fillText(rankLbl, cols[0].x, textY - 1);
+
+                const dotR = Math.max(5, Math.round(fontSize * 0.22));
+                ctx.beginPath();
+                ctx.arc(cols[1].x + dotR, ry + rowH / 2, dotR, 0, Math.PI * 2);
+                ctx.fillStyle = p.color || "#ffffff";
+                ctx.fill();
+
+                ctx.font = `800 ${fontSize}px sans-serif`;
+                ctx.textAlign = "left";
+                ctx.fillStyle = p.isInactive ? "rgba(205, 215, 213, 0.62)" : "#ffffff";
+                ctx.fillText(p.name.toUpperCase(), cols[1].x + dotR * 2 + 12, textY, 290);
+
+                ctx.textAlign = "center";
+                ctx.fillStyle = "#a5f3fc";
+                ctx.font = `800 ${fontSize}px sans-serif`;
+                ctx.fillText(formatPts(p.points), cols[2].x, textY);
+
+                ctx.fillStyle = "rgba(255, 255, 255, 0.90)";
+                ctx.font = `700 ${Math.round(fontSize * 0.90)}px sans-serif`;
+                ctx.fillText(formatPts(p.pts2H), cols[3].x, textY);
+                ctx.fillText(formatPts(p.pts4H), cols[4].x, textY);
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = `700 ${fontSize}px sans-serif`;
+                ctx.fillText(`${p.matches}`, cols[5].x, textY);
+
+                ctx.fillStyle = "#6ee7b7";
+                ctx.font = `800 ${Math.round(fontSize * 0.90)}px sans-serif`;
+                ctx.fillText(`${p.wins}-${p.draws}-${p.losses}`, cols[6].x, textY);
+
+                const winPct = p.matches > 0 ? (((p.wins + 0.5 * p.draws) / p.matches) * 100).toFixed(1) + "%" : "—";
+                ctx.fillStyle = "#ffffff";
+                ctx.font = `800 ${fontSize}px sans-serif`;
+                ctx.fillText(winPct, cols[7].x, textY);
+
+                const last3 = (p.form || []).slice(-3).reverse();
+                if (last3.length === 0) {
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
+                    ctx.font = `700 ${fontSize}px sans-serif`;
+                    ctx.fillText("—", cols[8].x, textY);
+                } else {
+                    const fSize = Math.min(34, Math.max(18, Math.round(rowH * 0.56)));
+                    const fGap = Math.max(5, Math.round(fSize * 0.22));
+                    const totalW = last3.length * fSize + (last3.length - 1) * fGap;
+                    let fx = cols[8].x - totalW / 2;
+                    const fy = ry + (rowH - fSize) / 2;
+                    const fFont = Math.max(11, Math.round(fSize * 0.58));
+                    last3.forEach(code => {
+                        ctx.save();
+                        drawRoundedRectPath(ctx, fx, fy, fSize, fSize, Math.max(4, Math.round(fSize * 0.22)));
+                        ctx.fillStyle = code === "W" ? "#34d399" : (code === "D" ? "#facc15" : "#f87171");
+                        ctx.fill();
+                        ctx.fillStyle = code === "W" ? "#022c22" : (code === "D" ? "#422006" : "#450a0a");
+                        ctx.font = `900 ${fFont}px sans-serif`;
+                        ctx.textAlign = "center";
+                        ctx.fillText(code === "W" ? "V" : (code === "D" ? "R" : "P"), fx + fSize / 2, fy + fSize / 2 + Math.round(fFont * 0.36));
+                        ctx.restore();
+                        fx += fSize + fGap;
+                    });
+                }
+            });
+            ctx.restore();
+        }
+
+        function exportCanvasImage(canvas, filenameBase, format, fallbackRenderFn) {
+            const isJpg = format === "jpg";
+            const mime = isJpg ? "image/jpeg" : "image/png";
+            const ext = isJpg ? "jpg" : "png";
+            const filename = `${filenameBase}.${ext}`;
+            const quality = isJpg ? 0.93 : undefined;
+
+            const fallbackExport = () => {
+                try {
+                    const off = document.createElement("canvas");
+                    off.width = 1920; off.height = 1080;
+                    fallbackRenderFn(off, true);
+                    off.toBlob(blob => {
+                        if (blob) {
+                            triggerBlobDownload(blob, filename);
+                            showToast(`Obrázok ${ext.toUpperCase()} stiahnutý (lokálny fallback bez externého TV.jpeg).`);
+                        }
+                    }, mime, quality);
+                } catch (e) {
+                    showToast(`Nepodarilo sa vygenerovať ${ext.toUpperCase()} súbor.`, true);
+                }
+            };
+
+            try {
+                canvas.toBlob(blob => {
+                    if (blob) {
+                        triggerBlobDownload(blob, filename);
+                        showToast(`FullHD ${ext.toUpperCase()} grafika bola stiahnutá!`);
+                    } else {
+                        fallbackExport();
+                    }
+                }, mime, quality);
+            } catch (err) {
+                fallbackExport();
+            }
+        }
+
+        function downloadTvGraphic(format = "png") {
+            const canvas = document.getElementById("tvCanvas");
+            const suffix = tvMode === "last" ? "PoslednyZapas" : "Tabulka";
+            exportCanvasImage(canvas, `TenisTAB_TV_${suffix}_${getTodayIso()}`, format, renderTvCanvas);
+        }
+
+        /* ==================== TV GRAF MODAL ==================== */
+        function syncTvChartModeButtons() {
+            const b6 = document.getElementById("tv-chart-mode-6");
+            const b12 = document.getElementById("tv-chart-mode-12");
+            const b0 = document.getElementById("tv-chart-mode-0");
+            if (b6) b6.classList.toggle("active", chartModeMonths === 6);
+            if (b12) b12.classList.toggle("active", chartModeMonths === 12);
+            if (b0) b0.classList.toggle("active", chartModeMonths === 0);
+        }
+
+        function setTvChartMode(months) {
+            setChartMode(months);
+            syncTvChartModeButtons();
+            tvChartWindowStart = getChartWindowBounds(null).start;
+            renderTvChartPlayerChips();
+            renderTvChartCanvas();
+        }
+
+        function syncTvChartNavUI() {
+            const bounds = getChartWindowBounds(tvChartWindowStart);
+            tvChartWindowStart = bounds.start;
+            const slider = document.getElementById("tv-chart-slider");
+            const label = document.getElementById("tv-chart-range-label");
+            const btnFirst = document.getElementById("tv-chart-first-btn");
+            const btnPrev = document.getElementById("tv-chart-prev-btn");
+            const btnNext = document.getElementById("tv-chart-next-btn");
+            const btnLast = document.getElementById("tv-chart-last-btn");
+            if (slider) {
+                slider.min = 0;
+                slider.max = bounds.maxStart;
+                slider.value = bounds.start;
+                slider.disabled = bounds.maxStart === 0;
+            }
+            if (label) label.textContent = formatChartRangeText(bounds);
+            if (btnFirst) btnFirst.disabled = bounds.start <= 0;
+            if (btnPrev) btnPrev.disabled = bounds.start <= 0;
+            if (btnNext) btnNext.disabled = bounds.start >= bounds.maxStart;
+            if (btnLast) btnLast.disabled = bounds.start >= bounds.maxStart;
+        }
+
+        function renderTvChartPlayerChips() {
+            const wrap = document.getElementById("tv-chart-player-chips");
+            if (!wrap) return;
+            wrap.innerHTML = "";
+            computedPlayers.forEach(p => {
+                const isVis = state.chartVisiblePlayers[p.id] !== false;
+                const chip = document.createElement("button");
+                chip.type = "button";
+                chip.className = "player-chip" + (isVis ? " active" : "");
+                chip.innerHTML = `<span class="chip-dot" style="background:${p.color}; opacity:${isVis ? 1 : 0.3}"></span>${escapeHtml(p.name)}`;
+                chip.onclick = () => {
+                    state.chartVisiblePlayers[p.id] = !isVis;
+                    saveState(false);
+                    renderChartChips();
+                    renderTvChartPlayerChips();
+                    drawPointsChart();
+                    renderTvChartCanvas();
+                };
+                wrap.appendChild(chip);
+            });
+        }
+
+        function setTvChartWindowStart(val) {
+            const bounds = getChartWindowBounds(Number(val));
+            if (tvChartWindowStart === bounds.start) return;
+            tvChartWindowStart = bounds.start;
+            renderTvChartCanvas();
+        }
+
+        function panTvChartWindow(delta) {
+            const bounds = getChartWindowBounds(tvChartWindowStart);
+            const next = Math.max(0, Math.min(bounds.maxStart, bounds.start + delta));
+            if (next === bounds.start) return;
+            tvChartWindowStart = next;
+            renderTvChartCanvas();
+        }
+
+        function jumpTvChartWindow(where) {
+            const bounds = getChartWindowBounds(tvChartWindowStart);
+            tvChartWindowStart = where === "start" ? 0 : bounds.maxStart;
+            renderTvChartCanvas();
+        }
+
+        function openTvChartModal() {
+            syncTvControlsUI();
+            syncTvChartModeButtons();
+            if (tvChartWindowStart === null) {
+                tvChartWindowStart = getChartWindowBounds(chartWindowStart).start;
+            }
+            renderTvChartPlayerChips();
+            document.getElementById("tv-chart-modal").classList.add("open");
+            renderTvChartCanvas();
+            ensureTvBackgroundLoaded(() => {
+                if (document.getElementById("tv-chart-modal").classList.contains("open")) {
+                    renderTvChartCanvas();
+                }
+            });
+        }
+
+        function closeTvChartModal() {
+            document.getElementById("tv-chart-modal").classList.remove("open");
+        }
+
+        function setupTvChartCanvasEvents() {
+            const canvas = document.getElementById("tvChartCanvas");
+            if (!canvas) return;
+            let isMouseDown = false, dragStartX = 0, dragStartWindow = 0;
+            let touchStartX = 0, touchStartY = 0, touchStartWindow = 0, touchIsHorizontal = null;
+
+            canvas.addEventListener("mousedown", e => {
+                if (e.button !== 0) return;
+                isMouseDown = true;
+                dragStartX = e.clientX;
+                dragStartWindow = getChartWindowBounds(tvChartWindowStart).start;
+                canvas.classList.add("is-dragging");
+            });
+
+            window.addEventListener("mousemove", e => {
+                if (!isMouseDown) return;
+                const dx = e.clientX - dragStartX;
+                const rect = canvas.getBoundingClientRect();
+                const pxPerStep = Math.max(24, (rect.width * 0.68) / Math.max(1, CHART_WINDOW_SIZE - 1));
+                setTvChartWindowStart(dragStartWindow + Math.round(-dx / pxPerStep));
+            });
+
+            window.addEventListener("mouseup", () => {
+                if (!isMouseDown) return;
+                isMouseDown = false;
+                canvas.classList.remove("is-dragging");
+            });
+
+            canvas.addEventListener("wheel", e => {
+                const bounds = getChartWindowBounds(tvChartWindowStart);
+                if (bounds.maxStart <= 0) return;
+                const rawDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+                if (rawDelta === 0) return;
+                e.preventDefault();
+                panTvChartWindow(rawDelta > 0 ? 1 : -1);
+            }, { passive: false });
+
+            canvas.addEventListener("touchstart", e => {
+                if (!e.touches[0]) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchStartWindow = getChartWindowBounds(tvChartWindowStart).start;
+                touchIsHorizontal = null;
+            }, { passive: true });
+
+            canvas.addEventListener("touchmove", e => {
+                if (!e.touches[0]) return;
+                const dx = e.touches[0].clientX - touchStartX;
+                const dy = e.touches[0].clientY - touchStartY;
+                if (touchIsHorizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+                    touchIsHorizontal = Math.abs(dx) > Math.abs(dy);
+                }
+                if (touchIsHorizontal) {
+                    e.preventDefault();
+                    const rect = canvas.getBoundingClientRect();
+                    const pxPerStep = Math.max(22, (rect.width * 0.68) / Math.max(1, CHART_WINDOW_SIZE - 1));
+                    setTvChartWindowStart(touchStartWindow + Math.round(-dx / pxPerStep));
+                }
+            }, { passive: false });
+
+            canvas.addEventListener("touchend", () => { touchIsHorizontal = null; }, { passive: true });
+        }
+
+        function renderTvChartCanvas(targetCanvas = null, forceFallbackBg = false) {
+            const canvas = targetCanvas || document.getElementById("tvChartCanvas");
+            if (!canvas) return;
+            const ctx = canvas.getContext("2d");
+            const W = canvas.width, H = canvas.height;
+
+            const bounds = getChartWindowBounds(tvChartWindowStart);
+            tvChartWindowStart = bounds.start;
+            if (!targetCanvas) syncTvChartNavUI();
+
+            ctx.clearRect(0, 0, W, H);
+            drawTvBackgroundLayer(ctx, W, H, forceFallbackBg);
+
+            const panelX = 88, panelW = W - 176, panelY = 44, panelH = H - 88, panelRadius = 26;
+            drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg);
+
+            const innerX = panelX + 36, innerW = panelW - 72, topY = panelY + 28, headerBarH = 72;
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, topY, innerW, headerBarH, 16);
+            ctx.fillStyle = "rgba(0, 26, 22, 0.62)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            drawRoundedRectPath(ctx, innerX, topY, 12, headerBarH, 6);
+            ctx.fillStyle = "#bef264";
+            ctx.fill();
+            ctx.restore();
+
+            const modeTitle = chartModeMonths === 0 ? "ALL-TIME" : (chartModeMonths === 12 ? "1 ROK (12 MES.)" : "6 MESIACOV");
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "800 31px sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(`TENISTAB | VÝVOJ BODOV (${modeTitle})`, innerX + 32, topY + 47);
+
+            ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+            ctx.font = "700 22px sans-serif";
+            ctx.textAlign = "right";
+            ctx.fillText(`KROKY: ${formatChartRangeText(bounds).toUpperCase()} · ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 24, topY + 46);
+
+            const plotBoxX = innerX, plotBoxY = topY + headerBarH + 20, plotBoxW = innerW, plotBoxH = (panelY + panelH - 28) - plotBoxY;
+            ctx.save();
+            drawRoundedRectPath(ctx, plotBoxX, plotBoxY, plotBoxW, plotBoxH, 18);
+            ctx.fillStyle = "rgba(0, 22, 19, 0.44)";
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.restore();
+
+            const visiblePlayers = computedPlayers.filter(p => state.chartVisiblePlayers[p.id] !== false);
+            if (visiblePlayers.length === 0 || bounds.count === 0) {
+                ctx.fillStyle = "rgba(255, 255, 255, 0.84)";
+                ctx.font = "700 30px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("Vyber aspoň jedného hráča pre zobrazenie TV grafu.", W / 2, plotBoxY + plotBoxH / 2);
+                return;
+            }
+
+            const visiblePoints = chartTimelinePoints.slice(bounds.start, bounds.end + 1);
+            let maxVal = 0;
+            visiblePoints.forEach(pt => {
+                visiblePlayers.forEach(p => {
+                    const v = pt.pts[p.id] || 0;
+                    if (v > maxVal) maxVal = v;
+                });
+            });
+
+            const yMin = 0;
+            let yMax = Math.max(2, maxVal * 1.12);
+            if (yMax <= 5) yMax = Math.ceil(yMax);
+            else if (yMax <= 20) yMax = Math.ceil(yMax / 2) * 2;
+            else yMax = Math.ceil(yMax / 5) * 5;
+
+            const padL = 104, padR = 290, padT = 46, padB = 92;
+            const plotX = plotBoxX + padL, plotY = plotBoxY + padT, plotW = plotBoxW - padL - padR, plotH = plotBoxH - padT - padB;
+
+            const getX = (localIdx) => visiblePoints.length <= 1 ? plotX + plotW / 2 : plotX + (localIdx / (visiblePoints.length - 1)) * plotW;
+            const getY = (val) => plotY + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
+
+            const ySteps = 5;
+            for (let i = 0; i <= ySteps; i++) {
+                const val = yMin + ((yMax - yMin) / ySteps) * i;
+                const y = getY(val);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+                ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(plotX, y); ctx.lineTo(plotX + plotW, y); ctx.stroke();
+
+                ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+                ctx.font = "800 22px sans-serif";
+                ctx.textAlign = "right";
+                ctx.fillText(Number.isInteger(val) ? String(val) : val.toFixed(1), plotX - 18, y + 8);
+            }
+
+            visiblePoints.forEach((pt, localIdx) => {
+                const x = getX(localIdx);
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.09)";
+                ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(x, plotY); ctx.lineTo(x, plotY + plotH); ctx.stroke();
+
+                ctx.fillStyle = pt.isToday ? "#bef264" : "#ffffff";
+                ctx.font = "800 24px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(pt.label, x, plotY + plotH + 38);
+
+                if (pt.date) {
+                    const dp = String(pt.date).split("-");
+                    const shortDt = dp.length === 3 ? `${parseInt(dp[2], 10)}.${parseInt(dp[1], 10)}.${dp[0].slice(2)}` : pt.date;
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.65)";
+                    ctx.font = "600 17px sans-serif";
+                    ctx.fillText(shortDt, x, plotY + plotH + 66);
+                }
+            });
+
+            const endLabels = [];
+            visiblePlayers.forEach(p => {
+                ctx.save();
+                ctx.strokeStyle = p.color;
+                ctx.lineWidth = 6;
+                ctx.lineJoin = "round";
+                ctx.lineCap = "round";
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                visiblePoints.forEach((pt, localIdx) => {
+                    const x = getX(localIdx), y = getY(pt.pts[p.id] || 0);
+                    if (localIdx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.stroke();
+                ctx.restore();
+
+                visiblePoints.forEach((pt, localIdx) => {
+                    const globalIdx = bounds.start + localIdx;
+                    const val = pt.pts[p.id] || 0;
+                    const x = getX(localIdx), y = getY(val);
+                    const isPlayed = pt.match && (pt.match.team1.includes(p.id) || pt.match.team2.includes(p.id));
+                    const r = (isPlayed || globalIdx === 0 || pt.isToday) ? 10 : 6;
+
+                    ctx.save();
+                    ctx.fillStyle = (isPlayed || pt.isToday) ? p.color : "#002621";
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 3.5;
+                    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                    ctx.restore();
+
+                    if (localIdx === visiblePoints.length - 1) {
+                        endLabels.push({ player: p, val, rawY: y, y });
+                    }
+                });
+            });
+
+            endLabels.sort((a, b) => a.rawY - b.rawY);
+            const minLabelGap = 36;
+            for (let i = 1; i < endLabels.length; i++) {
+                if (endLabels[i].y - endLabels[i - 1].y < minLabelGap) {
+                    endLabels[i].y = endLabels[i - 1].y + minLabelGap;
+                }
+            }
+            const maxLabelY = plotY + plotH - 8;
+            if (endLabels.length > 0 && endLabels[endLabels.length - 1].y > maxLabelY) {
+                const shiftUp = endLabels[endLabels.length - 1].y - maxLabelY;
+                endLabels.forEach(lb => { lb.y -= shiftUp; });
+                for (let i = endLabels.length - 2; i >= 0; i--) {
+                    if (endLabels[i + 1].y - endLabels[i].y < minLabelGap) {
+                        endLabels[i].y = endLabels[i + 1].y - minLabelGap;
+                    }
+                }
+            }
+
+            const labelStartX = plotX + plotW + 24;
+            endLabels.forEach(lb => {
+                ctx.save();
+                ctx.strokeStyle = lb.player.color;
+                ctx.globalAlpha = 0.55;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(plotX + plotW + 10, lb.rawY);
+                ctx.lineTo(labelStartX - 4, lb.y);
+                ctx.stroke();
+                ctx.restore();
+
+                ctx.beginPath();
+                ctx.arc(labelStartX + 7, lb.y, 7, 0, Math.PI * 2);
+                ctx.fillStyle = lb.player.color;
+                ctx.fill();
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "800 22px sans-serif";
+                ctx.textAlign = "left";
+                ctx.fillText(lb.player.name.toUpperCase(), labelStartX + 22, lb.y + 8, 128);
+
+                ctx.fillStyle = "#a5f3fc";
+                ctx.font = "800 22px sans-serif";
+                ctx.textAlign = "right";
+                ctx.fillText(formatPts(lb.val), plotBoxX + plotBoxW - 22, lb.y + 8);
+            });
+        }
+
+        function downloadTvChartGraphic(format = "png") {
+            const canvas = document.getElementById("tvChartCanvas");
+            const modeTag = chartModeMonths === 0 ? "AllTime" : `${chartModeMonths}M`;
+            exportCanvasImage(canvas, `TenisTAB_TV_Graf_${modeTag}_${getTodayIso()}`, format, renderTvChartCanvas);
+        }
+
         /* ==================== NAVIGÁCIA & INIT ==================== */
         function refreshAllViews() {
             updateEmptyWelcomeCard();
             renderLeaderboard();
             updateMatchPreview();
+            renderChartChips();
+            drawPointsChart();
             renderH2H();
             renderPlayerProfile();
             renderAchievements();
@@ -5003,6 +7222,9 @@
             document.querySelectorAll(".bottom-nav .nav-item").forEach(b => b.classList.remove("active"));
             if (btnEl) btnEl.classList.add("active");
             window.scrollTo({ top: 0, behavior: "instant" });
+            if (secId === "sec-chart") {
+                setTimeout(() => drawPointsChart(lastChartHighlightStep), 30);
+            }
         }
 
         function showToast(msg, isError = false) {
@@ -5025,6 +7247,7 @@
                     state.config = parsed.config || { windowMonths: 12, location: { name: "", lat: null, lon: null } };
                     state.players = Array.isArray(parsed.players) ? parsed.players : [];
                     state.matches = Array.isArray(parsed.matches) ? parsed.matches : [];
+                    state.chartVisiblePlayers = parsed.chartVisiblePlayers || {};
                     state.updatedAt = Number(parsed.updatedAt) || 0;
                 } catch (e) {}
             }
@@ -5040,9 +7263,17 @@
             setMatchFormType("new", "2H");
             setMatchFormType("hist", "2H");
             refreshAllViews();
+            setupChartCanvasEvents();
+            setupTvChartCanvasEvents();
+            loadTvSettings();
+            ensureTvBackgroundLoaded();
 
             document.addEventListener("keydown", e => {
-                if (e.key === "Escape") closeEditMatchModal();
+                if (e.key === "Escape") {
+                    closeEditMatchModal();
+                    closeTvModal();
+                    closeTvChartModal();
+                }
             });
 
             await syncFromRemoteJSON(false);
