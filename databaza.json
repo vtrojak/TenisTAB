@@ -2,9 +2,9 @@
   "config": {
     "windowMonths": 12,
     "location": {
-      "name": "",
-      "lat": null,
-      "lon": null
+      "name": "Čadca",
+      "lat": 49.4386,
+      "lon": 18.7897
     }
   },
   "players": [
@@ -1351,6 +1351,6 @@
       "note": "Tretí set sa za stavu 4:1 pre Vlada s Tiborom nedohral. Definitívne tak platí remízový výsledok."
     }
   ],
-  "updatedAt": 1795355629748,
-  "exportedAtIso": "2026-11-22T13:53:49.000Z"
+  "updatedAt": 1795358679497,
+  "exportedAtIso": "2026-11-22T14:44:42.092Z"
 }
