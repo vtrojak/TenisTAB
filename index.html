@@ -6194,6 +6194,7 @@
                     curUnbeatenStreak: 0, maxUnbeatenStreak: 0,
                     bagelsGiven: 0, bagelsTaken: 0,
                     tbPlayed: 0, cleanSweeps: 0,
+                    maxEloGain: 0,
                     partnersSet: new Set()
                 };
             });
@@ -6282,6 +6283,13 @@
                 applySide(t1, res1, s2, s1, m.ptsA, g.g1, g.g2);
                 applySide(t2, res2, s1, s2, m.ptsB, g.g2, g.g1);
 
+                if (typeof m.eloDeltaA === "number" && m.eloDeltaA > 0) {
+                    t1.forEach(p => { if (m.eloDeltaA > p.maxEloGain) p.maxEloGain = m.eloDeltaA; });
+                }
+                if (typeof m.eloDeltaB === "number" && m.eloDeltaB > 0) {
+                    t2.forEach(p => { if (m.eloDeltaB > p.maxEloGain) p.maxEloGain = m.eloDeltaB; });
+                }
+
                 // Pevné dvojice a spoluhráči (4H)
                 if (m.type === "4H") {
                     if (t1.length === 2) {
@@ -6327,7 +6335,7 @@
             const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, -99);
 
             const rPointsKing  = findTopHolders(activePlayers, p => p.points, 0.25);
-            const rSinglesKing = findTopHolders(activePlayers, p => p.pts2H, 0.5);
+            const rGiantKiller = findTopHolders(activePlayers, p => p.maxEloGain, 0.1);
             const rIronMan     = findTopHolders(activePlayers, p => p.matches, 1);
             const rDiplomat    = findTopHolders(activePlayers, p => p.draws, 1);
             const rChameleon   = findTopHolders(activePlayers, p => p.uniquePartnersCount, 1);
@@ -6440,12 +6448,12 @@
                     holders: rPointsKing.holders
                 },
                 {
-                    id: "singles_king", cat: 3, title: "Kráľ dvojhry",
-                    desc: "Najviac získaných bodov v singlových zápasoch (2H)",
-                    iconFile: "obor.png", faClass: "fa-solid fa-crown",
+                    id: "giant_killer", cat: 3, title: "Lovec obrov",
+                    desc: "Najväčší jednorazový zisk ELO v jednom zápase (2H alebo 4H)",
+                    iconFile: "obor.png", faClass: "fa-solid fa-bolt",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
-                    valueText: `${formatPts(rSinglesKing.value)} b (2H)`,
-                    holders: rSinglesKing.holders
+                    valueText: `+${Number(rGiantKiller.value).toFixed(1)} ELO`,
+                    holders: rGiantKiller.holders
                 },
                 {
                     id: "iron_man", cat: 3, title: "Železný muž kurtu",
@@ -9999,11 +10007,11 @@
                         ? `Najviac kombinovaných bodov (${a.valueText.replace(".", ",")}) nazbierali ${n}.`
                         : `Najviac kombinovaných bodov (${a.valueText.replace(".", ",")}) nazbieral ${n}.`];
                 },
-                singles_king: (holders, a) => {
+                giant_killer: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
-                    return ["KRÁĽ DVOJHRY", holders.length > 1
-                        ? `V singlových zápasoch 2H kraľujú ${n} (${a.valueText.replace(".", ",")}).`
-                        : `V singlových zápasoch 2H kraľuje ${n} (${a.valueText.replace(".", ",")}).`];
+                    return ["LOVEC OBROV", holders.length > 1
+                        ? `Najväčší jednorazový zisk ELO v jednom zápase (${a.valueText.replace(".", ",")}) si delia ${n}.`
+                        : `Lovcom obrov je ${n} – v jednom zápase ulovil rekordných ${a.valueText.replace(".", ",")}!`];
                 },
                 iron_man: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
