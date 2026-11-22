@@ -2309,7 +2309,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.9</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.0</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2340,7 +2340,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v0.9</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.0</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3100,9 +3100,11 @@
                     <span class="card-title-dot"></span>
                     Televízna infografika FullHD
                 </div>
-                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                    <button type="button" id="tv-mode-table" class="preset-btn active" style="padding:4px 9px; font-size:0.72rem;" onclick="setTvMode('table')">Tabuľka</button>
-                    <button type="button" id="tv-mode-last" class="preset-btn" style="padding:4px 9px; font-size:0.72rem;" onclick="setTvMode('last')">Posledný zápas</button>
+                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" id="tv-mode-points" class="preset-btn active" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('points')">Body</button>
+                    <button type="button" id="tv-mode-elo2h" class="preset-btn" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('elo2h')">ELO 2H</button>
+                    <button type="button" id="tv-mode-elo4h" class="preset-btn" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('elo4h')">ELO 4H</button>
+                    <button type="button" id="tv-mode-last" class="preset-btn" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('last')">Posledný</button>
                     <button type="button" class="icon-btn" onclick="closeTvModal()">✕</button>
                 </div>
             </div>
@@ -3204,7 +3206,7 @@
         </div>
     </div>
 
-    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v0.9) -->
+    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v1.0) -->
     <div class="bottom-dock">
         <div class="news-bar" id="news-bar" aria-label="Tenisové správy, počasie a štatistiky">
             <button type="button" class="news-badge" id="news-badge-btn" onclick="reshuffleNewsTicker()" title="Kliknutím premiešaš poradie správ">
@@ -3307,6 +3309,8 @@
         let computedElo4H = [];
         let elo2HMatchesCount = 0;
         let elo4HMatchesCount = 0;
+        let elo2HLeaderSnaps = [];
+        let elo4HLeaderSnaps = [];
 
         let h2hMode = "players";      // "players" | "teams"
         let h2hTypeFilter = "all";    // "all" | "2H" | "4H"
@@ -3949,10 +3953,29 @@
                 return map;
             };
 
+            const getCurrentEloLeaderId = (mapObj) => {
+                let bestId = null;
+                let bestElo = -Infinity;
+                let bestMatches = -1;
+                Object.values(mapObj).forEach(p => {
+                    if (p.matches <= 0) return;
+                    if (p.elo > bestElo || (p.elo === bestElo && p.matches > bestMatches)) {
+                        bestElo = p.elo;
+                        bestMatches = p.matches;
+                        bestId = p.id;
+                    }
+                });
+                return bestId;
+            };
+
+            const cmById = {};
+            computedMatches.forEach(cm => { cmById[cm.id] = cm; });
+
             // --- 1. ELO DVOJHRA (2H) – matematika 1:1 z ELO2MASTER ---
             const map2H = initEloMap();
             let last2HMatchDelta = null;
             elo2HMatchesCount = 0;
+            elo2HLeaderSnaps = [];
 
             state.matches.forEach(m => {
                 if (m.type !== "2H") return;
@@ -3964,6 +3987,7 @@
                 const rA = pA.elo;
                 const rB = pB.elo;
                 const eA = 1 / (1 + Math.pow(10, (rB - rA) / D));
+                const eB = 1 - eA;
 
                 if (m.date) {
                     if (!pA.lastMatchDate || m.date > pA.lastMatchDate) pA.lastMatchDate = m.date;
@@ -4014,12 +4038,24 @@
                 if (pB.elo < pB.minElo) pB.minElo = pB.elo;
 
                 last2HMatchDelta = { idA: pA.id, dA: appliedDeltaA, idB: pB.id, dB: appliedDeltaB };
+
+                const cm = cmById[m.id];
+                if (cm) {
+                    cm.eloDeltaA = appliedDeltaA;
+                    cm.eloDeltaB = appliedDeltaB;
+                    cm.eloProbA = eA;
+                    cm.eloProbB = eB;
+                    cm.eloTeam1 = [{ id: pA.id, name: pA.name, before: rA, after: newEloA }];
+                    cm.eloTeam2 = [{ id: pB.id, name: pB.name, before: rB, after: newEloB }];
+                    elo2HLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map2H) });
+                }
             });
 
             // --- 2. ELO ŠTVORHRA (4H) – matematika 1:1 z ELO4MASTER ---
             const map4H = initEloMap();
             let last4HMatchDelta = null;
             elo4HMatchesCount = 0;
+            elo4HLeaderSnaps = [];
 
             state.matches.forEach(m => {
                 if (m.type !== "4H") return;
@@ -4033,6 +4069,7 @@
                 const avgA = (rA1 + rA2) / 2;
                 const avgB = (rB1 + rB2) / 2;
                 const eA = 1 / (1 + Math.pow(10, (avgB - avgA) / D));
+                const eB = 1 - eA;
 
                 if (m.date) {
                     [pA1, pA2, pB1, pB2].forEach(pl => {
@@ -4074,6 +4111,23 @@
                 });
 
                 last4HMatchDelta = { t1: [pA1.id, pA2.id], dA: deltaA, t2: [pB1.id, pB2.id], dB: deltaB };
+
+                const cm = cmById[m.id];
+                if (cm) {
+                    cm.eloDeltaA = deltaA;
+                    cm.eloDeltaB = deltaB;
+                    cm.eloProbA = eA;
+                    cm.eloProbB = eB;
+                    cm.eloTeam1 = [
+                        { id: pA1.id, name: pA1.name, before: rA1, after: pA1.elo },
+                        { id: pA2.id, name: pA2.name, before: rA2, after: pA2.elo }
+                    ];
+                    cm.eloTeam2 = [
+                        { id: pB1.id, name: pB1.name, before: rB1, after: pB1.elo },
+                        { id: pB2.id, name: pB2.name, before: rB2, after: pB2.elo }
+                    ];
+                    elo4HLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map4H) });
+                }
             });
 
             const finalizeInactivity = (obj) => {
@@ -4306,13 +4360,26 @@
                 </div>
             `;
 
-            const perPlayerSuffix = lastM.type === "4H" ? " b/hráč" : " b";
-            const topCol = topPts > 0 ? "var(--win)" : "var(--text-muted)";
-            const botCol = botPts > 0 ? "var(--draw)" : "var(--text-muted)";
-            const expInfo = lastM.expiryDateStr
-                ? (lastM.isValid ? ` · Platí do ${lastM.expiryDateStr}` : ` · Mimo aktuálnej lehoty`)
-                : "";
-            lmMeta.innerHTML = `Body: <strong style="color:#ffffff;">${escapeHtml(topTeam)}</strong> (<span style="color:${topCol}; font-weight:800;">+${formatPts(topPts)}${perPlayerSuffix}</span>) · <strong style="color:#ffffff;">${escapeHtml(botTeam)}</strong> (<span style="color:${botCol}; font-weight:800;">+${formatPts(botPts)}${perPlayerSuffix}</span>)${escapeHtml(expInfo)}`;
+            const showEloInBanner =
+                ((tableViewMode === "elo2h" && lastM.type === "2H") || (tableViewMode === "elo4h" && lastM.type === "4H")) &&
+                typeof lastM.eloDeltaA === "number" && typeof lastM.eloDeltaB === "number";
+
+            if (showEloInBanner) {
+                const topDelta = swapOrder ? lastM.eloDeltaB : lastM.eloDeltaA;
+                const botDelta = swapOrder ? lastM.eloDeltaA : lastM.eloDeltaB;
+                const fmtD = (d) => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+                const colD = (d) => d > 0 ? "var(--win)" : (d < 0 ? "var(--loss)" : "var(--text-muted)");
+                const eloTag = lastM.type === "4H" ? "Posun ELO 4H" : "Posun ELO 2H";
+                lmMeta.innerHTML = `${eloTag}: <strong style="color:#ffffff;">${escapeHtml(topTeam)}</strong> (<span style="color:${colD(topDelta)}; font-weight:800;">${fmtD(topDelta)}</span>) · <strong style="color:#ffffff;">${escapeHtml(botTeam)}</strong> (<span style="color:${colD(botDelta)}; font-weight:800;">${fmtD(botDelta)}</span>)`;
+            } else {
+                const perPlayerSuffix = lastM.type === "4H" ? " b/hráč" : " b";
+                const topCol = topPts > 0 ? "var(--win)" : "var(--text-muted)";
+                const botCol = botPts > 0 ? "var(--draw)" : "var(--text-muted)";
+                const expInfo = lastM.expiryDateStr
+                    ? (lastM.isValid ? ` · Platí do ${lastM.expiryDateStr}` : ` · Mimo aktuálnej lehoty`)
+                    : "";
+                lmMeta.innerHTML = `Body: <strong style="color:#ffffff;">${escapeHtml(topTeam)}</strong> (<span style="color:${topCol}; font-weight:800;">+${formatPts(topPts)}${perPlayerSuffix}</span>) · <strong style="color:#ffffff;">${escapeHtml(botTeam)}</strong> (<span style="color:${botCol}; font-weight:800;">+${formatPts(botPts)}${perPlayerSuffix}</span>)${escapeHtml(expInfo)}`;
+            }
         }
 
         function renderLeaderboard() {
@@ -6793,7 +6860,7 @@
 
         /* ==================== TV GRAFIKA & TV GRAF FULLHD (v0.5) ==================== */
         const TV_SETTINGS_KEY = "TENISTAB_TV_CFG_V1";
-        let tvMode = "table"; // "table" | "last"
+        let tvMode = "points"; // "points" | "elo2h" | "elo4h" | "last"
         let tvBlurPct = 50;
         let tvTransparencyPct = 40;
         let tvRenderRaf = null;
@@ -7036,15 +7103,24 @@
             ctx.restore();
         }
 
+        function syncTvModeButtons() {
+            const modes = ["points", "elo2h", "elo4h", "last"];
+            modes.forEach(m => {
+                const btn = document.getElementById(`tv-mode-${m}`);
+                if (btn) btn.classList.toggle("active", tvMode === m);
+            });
+        }
+
         function setTvMode(mode) {
-            tvMode = mode === "last" ? "last" : "table";
-            document.getElementById("tv-mode-table").classList.toggle("active", tvMode === "table");
-            document.getElementById("tv-mode-last").classList.toggle("active", tvMode === "last");
+            tvMode = (mode === "elo2h" || mode === "elo4h" || mode === "last") ? mode : "points";
+            syncTvModeButtons();
             renderTvCanvas();
         }
 
         function openTvModal() {
             syncTvControlsUI();
+            tvMode = (tableViewMode === "elo2h" || tableViewMode === "elo4h") ? tableViewMode : "points";
+            syncTvModeButtons();
             document.getElementById("tv-modal").classList.add("open");
             renderTvCanvas();
             ensureTvBackgroundLoaded(() => {
@@ -7065,7 +7141,7 @@
             const hasNote = Boolean(noteTxt);
 
             const panelW = 1680;
-            const panelH = hasMatch ? (hasNote ? 696 : 624) : 440;
+            const panelH = hasMatch ? (hasNote ? 732 : 660) : 440;
             const panelX = Math.round((W - panelW) / 2);
             const panelY = Math.round((H - panelH) / 2);
             const panelRadius = 28;
@@ -7284,14 +7360,24 @@
             ctx.stroke();
             ctx.restore();
 
-            // Dve karty s pridelenými bodmi
-            const eloY = sbY + sbH + 26, eloH = 114, cardGap = 24, cardW = (innerW - cardGap) / 2;
-            const drawPtsCard = (cx, title, colorsArr, ptsVal, idsArr) => {
+            // Dve telemetrické karty: Body + ELO zmena naraz
+            const topEloDelta = swapOrder ? m.eloDeltaB : m.eloDeltaA;
+            const botEloDelta = swapOrder ? m.eloDeltaA : m.eloDeltaB;
+            const topEloProb = swapOrder ? m.eloProbB : m.eloProbA;
+            const botEloProb = swapOrder ? m.eloProbA : m.eloProbB;
+            const topEloTeam = swapOrder ? m.eloTeam2 : m.eloTeam1;
+            const botEloTeam = swapOrder ? m.eloTeam1 : m.eloTeam2;
+
+            const eloY = sbY + sbH + 24, eloH = 148, cardGap = 24, cardW = (innerW - cardGap) / 2;
+            const drawPtsAndEloCard = (cx, title, colorsArr, ptsVal, idsArr, eloDelta, eloProb, eloTeamArr) => {
                 const isPos = ptsVal > 0;
-                const badgeStr = `+${formatPts(ptsVal)} B${isDoubles ? "/HRÁČ" : ""}`;
+                const hasElo = typeof eloDelta === "number" && !isNaN(eloDelta);
+                const eloPos = hasElo && eloDelta > 0;
+                const eloNeg = hasElo && eloDelta < 0;
+
                 ctx.save();
                 drawRoundedRectPath(ctx, cx, eloY, cardW, eloH, 16);
-                ctx.fillStyle = "rgba(4, 18, 30, 0.62)";
+                ctx.fillStyle = "rgba(4, 18, 30, 0.66)";
                 ctx.fill();
                 ctx.strokeStyle = isPos ? "rgba(110, 231, 183, 0.42)" : "rgba(255, 255, 255, 0.22)";
                 ctx.lineWidth = 1.5;
@@ -7307,35 +7393,81 @@
                 });
                 nx += colorsArr.length * 20 + 8;
 
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "800 26px sans-serif";
-                ctx.textAlign = "left";
-                ctx.fillText(title.toUpperCase(), nx, eloY + 46, cardW - 250);
+                // Dva štítky vpravo hore: Body + ELO delta
+                const ptsBadgeStr = `+${formatPts(ptsVal)} B${isDoubles ? "/H" : ""}`;
+                const ptsBadgeW = isDoubles ? 148 : 126;
+                const eloBadgeW = hasElo ? 146 : 0;
+                const badgeGap = hasElo ? 8 : 0;
+                const badgeH = 36;
+                const by = eloY + 18;
+                const rightEdge = cx + cardW - 18;
+                const totalBadgesW = ptsBadgeW + badgeGap + eloBadgeW;
 
-                const badgeW = isDoubles ? 205 : 155, badgeH = 38, bx = cx + cardW - badgeW - 20, by = eloY + 18;
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "800 25px sans-serif";
+                ctx.textAlign = "left";
+                ctx.fillText(title.toUpperCase(), nx, eloY + 45, cardW - (nx - cx) - totalBadgesW - 28);
+
+                // Štítok ELO (úplne vpravo)
+                if (hasElo) {
+                    const ex = rightEdge - eloBadgeW;
+                    const eloBadgeStr = `${eloPos ? "+" : ""}${eloDelta.toFixed(1)} ELO`;
+                    ctx.save();
+                    drawRoundedRectPath(ctx, ex, by, eloBadgeW, badgeH, 9);
+                    ctx.fillStyle = eloPos ? "#34d399" : (eloNeg ? "#f87171" : "rgba(255,255,255,0.22)");
+                    ctx.fill();
+                    ctx.fillStyle = eloPos ? "#022c22" : (eloNeg ? "#450a0a" : "#ffffff");
+                    ctx.font = "900 19px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(eloBadgeStr, ex + eloBadgeW / 2, by + 25);
+                    ctx.restore();
+                }
+
+                // Štítok BODY (vľavo od ELO štítku)
+                const px = rightEdge - eloBadgeW - badgeGap - ptsBadgeW;
                 ctx.save();
-                drawRoundedRectPath(ctx, bx, by, badgeW, badgeH, 10);
-                ctx.fillStyle = isPos ? (isDraw ? "#facc15" : "#34d399") : "rgba(255,255,255,0.20)";
+                drawRoundedRectPath(ctx, px, by, ptsBadgeW, badgeH, 9);
+                ctx.fillStyle = isPos ? (isDraw ? "#facc15" : "#bef264") : "rgba(255,255,255,0.20)";
                 ctx.fill();
                 ctx.fillStyle = isPos ? "#051018" : "#ffffff";
-                ctx.font = "900 20px sans-serif";
+                ctx.font = "900 19px sans-serif";
                 ctx.textAlign = "center";
-                ctx.fillText(badgeStr, bx + badgeW / 2, by + 26);
+                ctx.fillText(ptsBadgeStr, px + ptsBadgeW / 2, by + 25);
                 ctx.restore();
 
-                const subTxt = idsArr.map(pid => {
+                // Riadok 1: aktuálne body hráčov v tabuľke
+                const ptsSubTxt = "Body: " + idsArr.map(pid => {
                     const pl = computedPlayers.find(x => x.id === pid);
-                    return pl ? `${pl.name}: ${formatPts(pl.points)} b` : "";
+                    return pl ? `${pl.name} ${formatPts(pl.points)} b` : "";
                 }).filter(Boolean).join(" · ");
 
                 ctx.fillStyle = "#a5f3fc";
-                ctx.font = "700 21px sans-serif";
+                ctx.font = "700 20px sans-serif";
                 ctx.textAlign = "left";
-                ctx.fillText(subTxt, cx + 22, eloY + 89, cardW - 44);
+                ctx.fillText(ptsSubTxt, cx + 22, eloY + 90, cardW - 44);
+
+                // Riadok 2: ELO po zápase + predzápasová šanca
+                if (hasElo && Array.isArray(eloTeamArr) && eloTeamArr.length > 0) {
+                    const eloLbl = isDoubles ? "ELO 4H" : "ELO 2H";
+                    const eloSubTxt = isDoubles
+                        ? `${eloLbl}: ` + eloTeamArr.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" · ")
+                        : `${eloLbl}: ${eloTeamArr[0].before.toFixed(1)} → ${eloTeamArr[0].after.toFixed(1)}`;
+                    ctx.fillStyle = "#e2eef8";
+                    ctx.font = "700 19px sans-serif";
+                    ctx.textAlign = "left";
+                    ctx.fillText(eloSubTxt, cx + 22, eloY + 125, cardW - 210);
+
+                    if (typeof eloProb === "number") {
+                        ctx.fillStyle = "rgba(226, 238, 248, 0.76)";
+                        ctx.font = "600 19px sans-serif";
+                        ctx.textAlign = "right";
+                        ctx.fillText(`Šanca: ${Math.round(eloProb * 100)} %`, cx + cardW - 20, eloY + 125);
+                    }
+                }
             };
 
-            drawPtsCard(innerX, topName, topColors, topPts, topIds);
-            drawPtsCard(innerX + cardW + cardGap, botName, botColors, botPts, botIds);
+            drawPtsAndEloCard(innerX, topName, topColors, topPts, topIds, topEloDelta, topEloProb, topEloTeam);
+            drawPtsAndEloCard(innerX + cardW + cardGap, botName, botColors, botPts, botIds, botEloDelta, botEloProb, botEloTeam);
 
             if (hasNote) {
                 const noteY = eloY + eloH + 20, noteH = 54;
@@ -7365,8 +7497,10 @@
             ctx.textAlign = "left";
             ctx.fillText((topG + botG > 0) ? `SÚČET GEMOV: ${topG} : ${botG}` : `VÝSLEDOK NA SETY: ${topSets} : ${botSets}`, innerX + 4, footY);
             ctx.textAlign = "right";
-            const expTxt = m.expiryDateStr ? `PLATNOSŤ BODOV DO: ${m.expiryDateStr}` : "REŽIM: ALL-TIME";
-            ctx.fillText(`${expTxt}  ·  ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 4, footY);
+            const expTxt = m.expiryDateStr
+                ? (m.isValid ? `BODY PLATIA DO: ${m.expiryDateStr}` : `BODY MIMO LEHOTY`)
+                : "BODY: ALL-TIME";
+            ctx.fillText(`${expTxt}  ·  ELO K=${ELO_K}, D=${ELO_D}  ·  ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 4, footY);
         }
 
         function renderTvCanvas(targetCanvas = null, forceFallbackBg = false) {
@@ -7387,8 +7521,8 @@
             drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg);
 
             const innerX = panelX + 36, innerW = panelW - 72, topY = panelY + 26, headerBarH = 66;
-            const isEloTv = (tableViewMode === "elo2h" || tableViewMode === "elo4h");
-            const isElo4H = tableViewMode === "elo4h";
+            const isEloTv = (tvMode === "elo2h" || tvMode === "elo4h");
+            const isElo4H = tvMode === "elo4h";
             const wm = Number(state.config.windowMonths) || 0;
             const wmLabel = wm === 0 ? "ALL-TIME" : `${wm} MESIACOV`;
 
@@ -7762,7 +7896,7 @@
 
         function downloadTvGraphic(format = "png") {
             const canvas = document.getElementById("tvCanvas");
-            const suffix = tvMode === "last" ? "PoslednyZapas" : (tableViewMode === "elo2h" ? "ELO_2H" : (tableViewMode === "elo4h" ? "ELO_4H" : "Tabulka"));
+            const suffix = tvMode === "last" ? "PoslednyZapas" : (tvMode === "elo2h" ? "ELO_2H" : (tvMode === "elo4h" ? "ELO_4H" : "Tabulka_Body"));
             exportCanvasImage(canvas, `TenisTAB_TV_${suffix}_${getTodayIso()}`, format, renderTvCanvas);
         }
 
@@ -9342,7 +9476,105 @@
 
             return {
                 tag: "VLÁDCA REBRÍČKA",
-                text: `Aktuálny líder ${currentTop.name} nepretržite kraľuje tabuľke TenisTAB už ${durationText}.`
+                text: `Aktuálny líder ${currentTop.name} nepretržite kraľuje bodovej tabuľke TenisTAB už ${durationText}.`
+            };
+        }
+
+        function buildEloLeaderChangeNewsItem(snaps, isDoubles) {
+            if (!snaps || snaps.length < 2) return null;
+            const last = snaps[snaps.length - 1];
+            const prev = snaps[snaps.length - 2];
+            if (!last.match || !last.match.date) return null;
+            const matchAge = getMatchAgeDays(last.match.date);
+            if (matchAge < 0 || matchAge >= 30) return null;
+            if (!last.leaderId || !prev.leaderId || last.leaderId === prev.leaderId) return null;
+
+            const newPlayer = state.players.find(p => p.id === last.leaderId);
+            const prevPlayer = state.players.find(p => p.id === prev.leaderId);
+            if (!newPlayer || !prevPlayer) return null;
+
+            let reignStartIdx = snaps.length - 2;
+            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === prev.leaderId) {
+                reignStartIdx--;
+            }
+            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date
+                ? snaps[reignStartIdx].match.date
+                : last.match.date;
+            const startDays = parseIsoToUtcDays(startDate);
+            const endDays = parseIsoToUtcDays(last.match.date);
+            const reignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
+
+            const newName = newPlayer.name;
+            const prevName = prevPlayer.name;
+            const seed = (Number(last.match.index) || 0) + weatherQuipSeed + (isDoubles ? 7 : 3);
+            const discLabel = isDoubles ? "deblového ELO rebríčka (4H)" : "ELO rebríčka dvojhry (2H)";
+            const discShort = isDoubles ? "ELO 4H" : "ELO 2H";
+
+            if (reignDays === 0) {
+                const blitzPool = [
+                    { tag: `BLESKOVÝ PREVRAT ${discShort}`, text: `${newName} zosadil ${skName(prevName, "acc")} z čela ${discLabel} ešte v ten istý deň – na tróne sa nestihol ani ohriať!` },
+                    { tag: `KRÁĽ NA JEDNO POOBEDIE (${discShort})`, text: `Vláda ${skName(prevName, "gen")} na čele ${discLabel} trvala len pár hodín! Korunu mu okamžite vyfúkol ${newName}.` },
+                    { tag: `EXPRESNÁ VÝMENA (${discShort})`, text: `Ani celý deň na vrchole ${discShort}! ${newName} bleskovo strieda ${skName(prevName, "acc")} na poste jednotky ${discLabel}.` }
+                ];
+                return blitzPool[seed % blitzPool.length];
+            }
+
+            if (reignDays < 7) {
+                const daysText = skCount(reignDays, "deň", "dni", "dní");
+                const shortPool = [
+                    { tag: `KRÁTKA VLÁDA (${discShort})`, text: `${newName} zosadil z trónu ${discLabel} ${skName(prevName, "acc")} už po necelom týždni (${daysText})!` },
+                    { tag: `ANI TÝŽDEŇ NA TRÓNE (${discShort})`, text: `Vláda ${skName(prevName, "gen")} na čele ${discLabel} netrvala ani celý týždeň (${daysText}) – novou jednotkou je ${newName}!` },
+                    { tag: `RÝCHLA VÝMENA (${discShort})`, text: `${prevName} vydržal na absolútnom vrchole ${discShort} len ${daysText}, od zápasu #${last.match.index} velí rebríčku ${newName}!` }
+                ];
+                return shortPool[seed % shortPool.length];
+            }
+
+            const reignWeeks = Math.floor(reignDays / 7);
+            const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
+            const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
+            const coupPool = [
+                { tag: `PALÁCOVÝ PREVRAT (${discShort})`, text: `${newName} zosadil z trónu ${discLabel} ${skName(prevName, "acc")}! Jeho nepretržitá vláda trvala ${weeksText}.` },
+                { tag: `NOVÝ KRÁĽ ${discShort}`, text: `${newName} ukončil ${reignWeeks}-týždňovú nadvládu ${skName(prevName, "gen")} a preberá post jednotky ${discLabel}!` },
+                { tag: `ZEMETRASENIE V ${discShort}`, text: `Po ${weeksLocText} na absolútnom vrchole ${discLabel} padá ${prevName} – novým vládcom sa stáva ${newName}!` },
+                { tag: `MIMORIADNA SPRÁVA (${discShort})`, text: `Éra ${skName(prevName, "gen")} na čele ${discLabel} sa po ${weeksLocText} skončila! Korunu preberá ${newName}.` },
+                { tag: `TRÓN ${discShort} MÁ NOVÉHO MAJITEĽA`, text: `Koniec jednej epochy! ${prevName} kraľoval ${discLabel} ${weeksText}, no od zápasu #${last.match.index} velí ${newName}.` },
+                { tag: `ŠOK NA VRCHOLE ${discShort}`, text: `${prevName} prišiel o post jednotky ${discLabel} po ${weeksLocText} vládnutia – na trón zasadol ${newName}!` }
+            ];
+            return coupPool[seed % coupPool.length];
+        }
+
+        function buildEloCurrentLeaderReignNewsItem(snaps, isDoubles) {
+            if (!snaps || snaps.length < 1) return null;
+            const last = snaps[snaps.length - 1];
+            if (!last || !last.leaderId) return null;
+
+            const leaderObj = state.players.find(p => p.id === last.leaderId);
+            if (!leaderObj) return null;
+
+            let reignStartIdx = snaps.length - 1;
+            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === last.leaderId) {
+                reignStartIdx--;
+            }
+            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date;
+            if (!startDate) return null;
+            const startDays = parseIsoToUtcDays(startDate);
+            if (startDays === null) return null;
+            const reignDays = getTodayUtcDays() - startDays;
+            if (reignDays < 2) return null;
+
+            const durationText = reignDays >= 7
+                ? skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov")
+                : skCount(reignDays, "deň", "dni", "dní");
+
+            if (isDoubles) {
+                return {
+                    tag: "VLÁDCA ELO 4H",
+                    text: `Aktuálny deblový líder ${leaderObj.name} nepretržite kraľuje ELO rebríčku štvorhry (4H) už ${durationText}.`
+                };
+            }
+            return {
+                tag: "VLÁDCA ELO 2H",
+                text: `Aktuálny singlový líder ${leaderObj.name} nepretržite kraľuje ELO rebríčku dvojhry (2H) už ${durationText}.`
             };
         }
 
@@ -9359,7 +9591,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v0.9! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.0! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -9833,7 +10065,7 @@
             add("TIP", "Kliknutím na meno ľubovoľného hráča v priebežnej tabuľke otvoríš jeho detailnú kartu vrátane kalendára expirácie bodov, spoluhráčskej chémie 4H a bilancie proti súperom.");
             add("VEDELI STE?", "Tabuľku si môžeš zoradiť podľa akéhokoľvek stĺpca – stačí kliknúť na hlavičku (Body, 2H, 4H, Zápasy, Gemy %, Úsp. % alebo Exp. 30d).");
             add("TIP", "V sekcii Graf si môžeš prepínať vývoj bodov v kĺzavom okne 6 mesiacov, 1 rok alebo All-time a plynulo posúvať históriu prstom, myšou či posuvníkom.");
-            add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlá TV a TV Graf v hlavičke vygenerujú FullHD grafiku (PNG aj JPG) priamo s podkladom TV.jpeg.");
+            add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlo TV vygeneruje FullHD grafiku (PNG aj JPG) pre Body, ELO 2H, ELO 4H aj Posledný zápas s bodmi a ELO zmenou.");
             add("VEDELI STE?", "Zelené tlačidlo v hornej časti tabuľky ti jedným klikom stiahne najnovšiu oficiálnu databázu z GitHubu – keď stmavne, máš istotu, že vidíš aktuálne dáta.");
             add("TIP", "Ak si zabudol zapísať starší zápas, v sekcii História ho vložíš s pôvodným dátumom a aplikácia ho sama zaradí chronologicky a prepočíta celú tabuľku.");
             add("VEDELI STE?", "Ikony pri menách v tabuľke prezrádzajú formu – 🔥 znamená 3 a viac výhier v rade, ❄️ sériu 3 a viac prehier a ⚫ označuje hráča, ktorý nehral viac ako rok (radí sa pod aktívnych).");
@@ -9891,15 +10123,26 @@
             newsLastSignature = fullSig;
             const leaderSnaps = buildWindowPointsTimelineForLeader();
             const leaderChangeItem = buildLeaderChangeNewsItem(leaderSnaps);
+            const elo2HLeaderChangeItem = buildEloLeaderChangeNewsItem(elo2HLeaderSnaps, false);
+            const elo4HLeaderChangeItem = buildEloLeaderChangeNewsItem(elo4HLeaderSnaps, true);
             const currentLeaderReignItem = buildCurrentLeaderReignNewsItem(leaderSnaps);
+            const elo2HReignItem = buildEloCurrentLeaderReignNewsItem(elo2HLeaderSnaps, false);
+            const elo4HReignItem = buildEloCurrentLeaderReignNewsItem(elo4HLeaderSnaps, true);
             const weatherItem = getWeatherNewsItem();
             const extraWeather = buildExtraWeatherNewsItems();
-            const mergedOther = extraWeather.length > 0
-                ? shuffleNewsArray([...cachedOtherNewsItems, ...extraWeather])
+            const extraDynamicOther = [
+                ...extraWeather,
+                ...(elo2HReignItem ? [elo2HReignItem] : []),
+                ...(elo4HReignItem ? [elo4HReignItem] : [])
+            ];
+            const mergedOther = extraDynamicOther.length > 0
+                ? shuffleNewsArray([...cachedOtherNewsItems, ...extraDynamicOther])
                 : cachedOtherNewsItems;
 
             cachedNewsItems = [
                 ...(leaderChangeItem ? [leaderChangeItem] : []),
+                ...(elo2HLeaderChangeItem ? [elo2HLeaderChangeItem] : []),
+                ...(elo4HLeaderChangeItem ? [elo4HLeaderChangeItem] : []),
                 ...cachedRecentNewsItems,
                 ...(weatherItem ? [weatherItem] : []),
                 ...(currentLeaderReignItem ? [currentLeaderReignItem] : []),
