@@ -50,6 +50,13 @@
             --btn-3d-shadow-sm: 0 2px 0 var(--btn-edge), 0 4px 10px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.32);
             --btn-3d-shadow-muted: 0 2px 0 var(--btn-muted-edge), 0 4px 9px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.18);
             --btn-3d-active-shadow: 0 1px 0 var(--btn-edge), 0 2px 5px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+            --tmode-flash-top: #008f7c;
+            --tmode-flash-bot: #005e51;
+            --tmode-flash-text: #ffffff;
+            --tmode-active-top: #5eead4;
+            --tmode-active-bot: #2dd4bf;
+            --tmode-active-edge: #0f766e;
+            --tmode-active-text: #042f2e;
         }
 
         * {
@@ -512,45 +519,46 @@
         }
 
         .table-mode-btn.active {
-            background: linear-gradient(180deg, #ffffff 0%, #eef2f6 100%);
-            color: #000000;
-            border-color: #ffffff;
-            box-shadow: 0 3px 0 #94a3b8, 0 6px 18px rgba(255, 255, 255, 0.24), inset 0 1px 0 #ffffff;
+            background: linear-gradient(180deg, var(--tmode-active-top) 0%, var(--tmode-active-bot) 100%);
+            color: var(--tmode-active-text);
+            border-color: var(--tmode-active-top);
+            box-shadow: 0 3px 0 var(--tmode-active-edge), 0 6px 18px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.65);
         }
 
         .table-mode-btn.active:hover {
-            background: linear-gradient(180deg, #ffffff 0%, #e5ebf1 100%);
-            color: #000000;
+            background: linear-gradient(180deg, var(--tmode-active-top) 0%, var(--tmode-active-bot) 100%);
+            color: var(--tmode-active-text);
+            filter: brightness(1.05);
         }
 
         .table-mode-btn.active:active {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 #94a3b8, 0 2px 8px rgba(255, 255, 255, 0.20), inset 0 1px 0 #ffffff;
+            box-shadow: 0 1px 0 var(--tmode-active-edge), 0 2px 8px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.50);
         }
 
-        @keyframes tableModeGreenFlash {
+        @keyframes tableModeThemeFlash {
             0% {
-                background: linear-gradient(180deg, #bbf7d0 0%, #86efac 100%);
-                color: #064e3b;
-                border-color: #dcfce7;
-                box-shadow: 0 3px 0 #6ee7b7, 0 0 14px rgba(134, 239, 172, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.85);
-            }
-            55% {
-                background: linear-gradient(180deg, #ecfdf5 0%, #dcfce7 100%);
-                color: #052e16;
+                background: linear-gradient(180deg, #1c1c1e 0%, #050505 100%);
+                color: #ffffff;
                 border-color: #ffffff;
-                box-shadow: 0 3px 0 #a7f3d0, 0 0 10px rgba(187, 247, 208, 0.28), inset 0 1px 0 #ffffff;
+                box-shadow: 0 3px 0 #000000, 0 0 10px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            }
+            42% {
+                background: linear-gradient(180deg, var(--tmode-flash-top) 0%, var(--tmode-flash-bot) 100%);
+                color: var(--tmode-flash-text);
+                border-color: var(--btn-border);
+                box-shadow: 0 3px 0 var(--btn-edge), 0 0 18px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.55);
             }
             100% {
-                background: linear-gradient(180deg, #ffffff 0%, #eef2f6 100%);
-                color: #000000;
-                border-color: #ffffff;
-                box-shadow: 0 3px 0 #94a3b8, 0 6px 18px rgba(255, 255, 255, 0.24), inset 0 1px 0 #ffffff;
+                background: linear-gradient(180deg, var(--tmode-active-top) 0%, var(--tmode-active-bot) 100%);
+                color: var(--tmode-active-text);
+                border-color: var(--tmode-active-top);
+                box-shadow: 0 3px 0 var(--tmode-active-edge), 0 6px 18px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.65);
             }
         }
 
         .table-mode-btn.flash-green {
-            animation: tableModeGreenFlash 0.50s ease-out;
+            animation: tableModeThemeFlash 0.52s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .delta-tag {
@@ -2895,7 +2903,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.21</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.22</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2907,7 +2915,7 @@
                 </button>
                 <button type="button" class="tv-btn" onclick="openTvChartModal()" title="Vygenerovať televízny graf bodov (FullHD)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    TV Graf
+                    Graf
                 </button>
             </div>
         </div>
@@ -2926,7 +2934,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.21</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.22</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3755,7 +3763,6 @@
                     <button type="button" id="tv-mode-elo2h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo2h')">ELO 2H</button>
                     <button type="button" id="tv-mode-elo4h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo4h')">ELO 4H</button>
                     <button type="button" id="tv-mode-last" class="preset-btn tv-mode-btn" onclick="setTvMode('last')">Posledný</button>
-                    <button type="button" id="btn-close-tv-x" class="icon-btn" onclick="closeTvModal()">✕</button>
                 </div>
             </div>
             <canvas id="tvCanvas" width="1920" height="1080"></canvas>
@@ -3804,7 +3811,6 @@
                     <button type="button" id="tv-chart-metric-elo2h" class="preset-btn tv-mode-btn" onclick="setTvChartMetric('elo2h')">ELO 2H</button>
                     <button type="button" id="tv-chart-metric-elo4h" class="preset-btn tv-mode-btn" onclick="setTvChartMetric('elo4h')">ELO 4H</button>
                     <span class="chart-range-pill" id="tv-chart-range-label">—</span>
-                    <button type="button" id="btn-close-tv-chart-x" class="icon-btn" onclick="closeTvChartModal()">✕</button>
                 </div>
             </div>
             <div class="chart-mode-row" style="margin-bottom:8px;">
@@ -3912,42 +3918,50 @@
             {
                 key: "spring", label: "Jar 🌱",
                 gradient: "linear-gradient(135deg, #ffd9e0 0%, #f0ff2b 50%, #4af100 100%)", themeColor: "#119100",
-                btn: { top: "#1da80c", bot: "#106e06", hoverTop: "#24bf11", hoverBot: "#148508", edge: "#083d03", mutedTop: "#134a0e", mutedBot: "#0c3109", mutedEdge: "#051904", border: "#4ade80", accent: "#e5ff4d", glow: "rgba(229, 255, 77, 0.42)" }
+                btn: { top: "#1da80c", bot: "#106e06", hoverTop: "#24bf11", hoverBot: "#148508", edge: "#083d03", mutedTop: "#134a0e", mutedBot: "#0c3109", mutedEdge: "#051904", border: "#4ade80", accent: "#e5ff4d", glow: "rgba(229, 255, 77, 0.42)" },
+                tmode: { flashTop: "#4af100", flashBot: "#1da80c", flashText: "#052e16", activeTop: "#f0ff2b", activeBot: "#d4e815", activeEdge: "#7c8a00", activeText: "#052e16" }
             },
             {
                 key: "summer", label: "Leto ☀️",
                 gradient: "linear-gradient(135deg, #9a2c71 0%, #ee815d 50%, #eecd2b 100%)", themeColor: "#b02047",
-                btn: { top: "#c82854", bot: "#8a1637", hoverTop: "#de3261", hoverBot: "#a31b42", edge: "#4d0a1d", mutedTop: "#5e1a32", mutedBot: "#3f1021", mutedEdge: "#220711", border: "#f47299", accent: "#fde047", glow: "rgba(253, 224, 71, 0.42)" }
+                btn: { top: "#c82854", bot: "#8a1637", hoverTop: "#de3261", hoverBot: "#a31b42", edge: "#4d0a1d", mutedTop: "#5e1a32", mutedBot: "#3f1021", mutedEdge: "#220711", border: "#f47299", accent: "#fde047", glow: "rgba(253, 224, 71, 0.42)" },
+                tmode: { flashTop: "#ee815d", flashBot: "#c82854", flashText: "#ffffff", activeTop: "#f5d742", activeBot: "#e3bc1b", activeEdge: "#8f6f00", activeText: "#3b0717" }
             },
             {
                 key: "autumn", label: "Jeseň 🍂",
                 gradient: "linear-gradient(135deg, #a71a0a 0%, #ffdb2d 50%, #ff6a2d 100%)", themeColor: "#812700",
-                btn: { top: "#b83b0a", bot: "#7a2304", hoverTop: "#d1460f", hoverBot: "#942b05", edge: "#471201", mutedTop: "#59220e", mutedBot: "#3c1508", mutedEdge: "#210a03", border: "#fb923c", accent: "#ffdb2d", glow: "rgba(255, 219, 45, 0.42)" }
+                btn: { top: "#b83b0a", bot: "#7a2304", hoverTop: "#d1460f", hoverBot: "#942b05", edge: "#471201", mutedTop: "#59220e", mutedBot: "#3c1508", mutedEdge: "#210a03", border: "#fb923c", accent: "#ffdb2d", glow: "rgba(255, 219, 45, 0.42)" },
+                tmode: { flashTop: "#ff6a2d", flashBot: "#a71a0a", flashText: "#ffffff", activeTop: "#ffdb2d", activeBot: "#eab308", activeEdge: "#854d0e", activeText: "#3b1102" }
             },
             {
                 key: "winter", label: "Zima ❄️",
                 gradient: "linear-gradient(135deg, #14b8a6 0%, #f8fafc 50%, #94a3b8 100%)", themeColor: "#0f766e",
-                btn: { top: "#159288", bot: "#0d5f59", hoverTop: "#19a89d", hoverBot: "#10756e", edge: "#063632", mutedTop: "#15464a", mutedBot: "#0e2f33", mutedEdge: "#06191c", border: "#5eead4", accent: "#e0f2fe", glow: "rgba(186, 230, 253, 0.44)" }
+                btn: { top: "#159288", bot: "#0d5f59", hoverTop: "#19a89d", hoverBot: "#10756e", edge: "#063632", mutedTop: "#15464a", mutedBot: "#0e2f33", mutedEdge: "#06191c", border: "#5eead4", accent: "#e0f2fe", glow: "rgba(186, 230, 253, 0.44)" },
+                tmode: { flashTop: "#14b8a6", flashBot: "#0f766e", flashText: "#ffffff", activeTop: "#bae6fd", activeBot: "#7dd3fc", activeEdge: "#0369a1", activeText: "#042f2e" }
             },
             {
                 key: "turquoise", label: "Tyrkys 💎",
                 gradient: "linear-gradient(135deg, #007256 0%, #40d0be 100%)", themeColor: "#007263",
-                btn: { top: "#008f7c", bot: "#005e51", hoverTop: "#00a690", hoverBot: "#007363", edge: "#00362e", mutedTop: "#0b4742", mutedBot: "#07302d", mutedEdge: "#031a18", border: "#40d0be", accent: "#99f6e4", glow: "rgba(64, 208, 190, 0.44)" }
+                btn: { top: "#008f7c", bot: "#005e51", hoverTop: "#00a690", hoverBot: "#007363", edge: "#00362e", mutedTop: "#0b4742", mutedBot: "#07302d", mutedEdge: "#031a18", border: "#40d0be", accent: "#99f6e4", glow: "rgba(64, 208, 190, 0.44)" },
+                tmode: { flashTop: "#008f7c", flashBot: "#007256", flashText: "#ffffff", activeTop: "#5eead4", activeBot: "#2dd4bf", activeEdge: "#0f766e", activeText: "#042f2e" }
             },
             {
                 key: "smoke", label: "Smoke 🌫️",
                 gradient: "linear-gradient(135deg, #362c2b 0%, #989898 50%, #28343c 100%)", themeColor: "#23272c",
-                btn: { top: "#525b66", bot: "#343b44", hoverTop: "#636e7b", hoverBot: "#414a56", edge: "#1b1f25", mutedTop: "#2f353e", mutedBot: "#20252c", mutedEdge: "#101318", border: "#94a3b8", accent: "#e2e8f0", glow: "rgba(226, 232, 240, 0.36)" }
+                btn: { top: "#525b66", bot: "#343b44", hoverTop: "#636e7b", hoverBot: "#414a56", edge: "#1b1f25", mutedTop: "#2f353e", mutedBot: "#20252c", mutedEdge: "#101318", border: "#94a3b8", accent: "#e2e8f0", glow: "rgba(226, 232, 240, 0.36)" },
+                tmode: { flashTop: "#636e7b", flashBot: "#362c2b", flashText: "#ffffff", activeTop: "#cbd5e1", activeBot: "#94a3b8", activeEdge: "#475569", activeText: "#0f172a" }
             },
             {
                 key: "clay", label: "Antuka 🧱",
                 gradient: "linear-gradient(135deg, #873319 0%, #5c2010 50%, #3a1308 100%)", themeColor: "#5c2010",
-                btn: { top: "#a33f1f", bot: "#6e2510", hoverTop: "#ba4a27", hoverBot: "#852e15", edge: "#3d1206", mutedTop: "#542214", mutedBot: "#39160c", mutedEdge: "#1f0a05", border: "#f59e6c", accent: "#fed7aa", glow: "rgba(253, 186, 116, 0.42)" }
+                btn: { top: "#a33f1f", bot: "#6e2510", hoverTop: "#ba4a27", hoverBot: "#852e15", edge: "#3d1206", mutedTop: "#542214", mutedBot: "#39160c", mutedEdge: "#1f0a05", border: "#f59e6c", accent: "#fed7aa", glow: "rgba(253, 186, 116, 0.42)" },
+                tmode: { flashTop: "#ba4a27", flashBot: "#873319", flashText: "#ffffff", activeTop: "#fdba74", activeBot: "#f59e6c", activeEdge: "#9a3412", activeText: "#3a1308" }
             },
             {
                 key: "indoor", label: "Hala 🏟️",
                 gradient: "linear-gradient(135deg, #004068 0%, #7ceaed 50%, #1334e6 100%)", themeColor: "#0b1e4a",
-                btn: { top: "#1e4fd6", bot: "#123299", hoverTop: "#295feb", hoverBot: "#173eb8", edge: "#091b5c", mutedTop: "#162c66", mutedBot: "#0e1d47", mutedEdge: "#060e26", border: "#60a5fa", accent: "#7ceaed", glow: "rgba(124, 234, 237, 0.44)" }
+                btn: { top: "#1e4fd6", bot: "#123299", hoverTop: "#295feb", hoverBot: "#173eb8", edge: "#091b5c", mutedTop: "#162c66", mutedBot: "#0e1d47", mutedEdge: "#060e26", border: "#60a5fa", accent: "#7ceaed", glow: "rgba(124, 234, 237, 0.44)" },
+                tmode: { flashTop: "#295feb", flashBot: "#1334e6", flashText: "#ffffff", activeTop: "#7ceaed", activeBot: "#38bdf8", activeEdge: "#0369a1", activeText: "#061a3a" }
             }
         ];
 
@@ -4086,6 +4100,15 @@
                 rootStyle.setProperty("--btn-border", theme.btn.border);
                 rootStyle.setProperty("--btn-accent", theme.btn.accent);
                 rootStyle.setProperty("--btn-glow", theme.btn.glow);
+            }
+            if (theme.tmode) {
+                rootStyle.setProperty("--tmode-flash-top", theme.tmode.flashTop);
+                rootStyle.setProperty("--tmode-flash-bot", theme.tmode.flashBot);
+                rootStyle.setProperty("--tmode-flash-text", theme.tmode.flashText);
+                rootStyle.setProperty("--tmode-active-top", theme.tmode.activeTop);
+                rootStyle.setProperty("--tmode-active-bot", theme.tmode.activeBot);
+                rootStyle.setProperty("--tmode-active-edge", theme.tmode.activeEdge);
+                rootStyle.setProperty("--tmode-active-text", theme.tmode.activeText);
             }
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute("content", theme.themeColor);
@@ -11181,7 +11204,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.21! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.22! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -11655,7 +11678,7 @@
             add("TIP", "Kliknutím na meno ľubovoľného hráča v priebežnej tabuľke otvoríš jeho detailnú kartu vrátane kalendára expirácie bodov, spoluhráčskej chémie 4H a bilancie proti súperom.");
             add("VEDELI STE?", "Tabuľku si môžeš zoradiť podľa akéhokoľvek stĺpca – stačí kliknúť na hlavičku (Body, 2H, 4H, Zápasy, Gemy %, Úsp. % alebo Exp. 30d).");
             add("TIP", "V sekcii Graf si môžeš prepínať vývoj bodov v kĺzavom okne 6 mesiacov, 1 rok alebo All-time a plynulo posúvať históriu prstom, myšou či posuvníkom.");
-            add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlá TV a TV Graf vygenerujú FullHD PNG grafiku pre Body, ELO 2H, ELO 4H aj Posledný zápas – a cez Vložiť pozadie si môžeš nahrať vlastnú fotku.");
+            add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlá TV a Graf vygenerujú FullHD PNG grafiku pre Body, ELO 2H, ELO 4H aj Posledný zápas – a cez Vložiť pozadie si môžeš nahrať vlastnú fotku.");
             add("VEDELI STE?", "Zelené tlačidlo v hornej časti tabuľky ti jedným klikom stiahne najnovšiu oficiálnu databázu z GitHubu – keď stmavne, máš istotu, že vidíš aktuálne dáta.");
             add("TIP", "Ak si zabudol zapísať starší zápas, v sekcii História ho vložíš s pôvodným dátumom a aplikácia ho sama zaradí chronologicky a prepočíta celú tabuľku.");
             add("VEDELI STE?", "Ikony pri menách v tabuľke prezrádzajú formu – 🔥 znamená 3 a viac výhier v rade, ❄️ sériu 3 a viac prehier a ⚫ označuje hráča, ktorý nehral viac ako rok (radí sa pod aktívnych).");
