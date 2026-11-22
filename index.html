@@ -458,6 +458,80 @@
             color: var(--text-muted);
         }
 
+
+        /* PREPÍNAČ REŽIMU TABUĽKY (BODY / ELO 2H / ELO 4H) */
+        .table-mode-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .table-mode-btn {
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 12px;
+            padding: 11px 8px;
+            font-size: 0.80rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+            letter-spacing: 0.2px;
+            box-shadow: 0 5px 16px rgba(0, 0, 0, 0.42);
+            transition: all 0.18s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .table-mode-btn:hover {
+            background: #171717;
+            border-color: rgba(255, 255, 255, 0.55);
+        }
+
+        .table-mode-btn:active {
+            transform: scale(0.98);
+        }
+
+        .table-mode-btn.active {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.30);
+        }
+
+        .table-mode-btn.active:hover {
+            background: #f3f4f6;
+            color: #000000;
+        }
+
+        .delta-tag {
+            font-size: 0.69rem;
+            font-weight: 700;
+            margin-right: 5px;
+        }
+
+        .delta-up { color: var(--win); }
+        .delta-down { color: var(--loss); }
+        .delta-zero { color: var(--text-muted); }
+
+        table.elo-table tbody tr.row-inactive .delta-tag {
+            color: rgba(185, 198, 195, 0.56) !important;
+        }
+
+        @media (max-width: 480px) {
+            .table-mode-bar {
+                gap: 6px;
+            }
+            .table-mode-btn {
+                font-size: 0.72rem;
+                padding: 9px 4px;
+                gap: 4px;
+            }
+        }
+
         /* WINDOW INTERVAL SELECTOR BAR */
         .window-bar {
             display: flex;
@@ -2235,7 +2309,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.6</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.8</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2266,7 +2340,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v0.6</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v0.8</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -2292,7 +2366,14 @@
                 <div class="stat-tile-sub" id="last-match-meta" style="margin-top: 8px;">—</div>
             </div>
 
-            <!-- HLAVNÁ KARTA: PRIEBEŽNÁ TABUĽKA BODOV -->
+            <!-- PREPÍNAČ REŽIMU TABUĽKY (BODY / ELO 2H / ELO 4H) -->
+            <div class="table-mode-bar" id="table-mode-bar">
+                <button type="button" id="tmode-btn-points" class="table-mode-btn active" onclick="setTableViewMode('points')">Body (2H + 4H)</button>
+                <button type="button" id="tmode-btn-elo2h" class="table-mode-btn" onclick="setTableViewMode('elo2h')">ELO Dvojhra (2H)</button>
+                <button type="button" id="tmode-btn-elo4h" class="table-mode-btn" onclick="setTableViewMode('elo4h')">ELO Štvorhra (4H)</button>
+            </div>
+
+            <!-- HLAVNÁ KARTA: PRIEBEŽNÁ TABUĽKA BODOV / ELO -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
@@ -2337,7 +2418,7 @@
                     </table>
                 </div>
 
-                <div class="table-status-legend">
+                <div class="table-status-legend" id="table-status-legend">
                     <span>🎾 <strong>2H:</strong> V=1 b · R=0.5 b</span>
                     <span>👥 <strong>4H:</strong> V=0.5 b · R=0.25 b</span>
                     <span>🔥 3+ výhier v rade</span>
@@ -3123,7 +3204,7 @@
         </div>
     </div>
 
-    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v0.6) -->
+    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v0.7) -->
     <div class="bottom-dock">
         <div class="news-bar" id="news-bar" aria-label="Tenisové správy, počasie a štatistiky">
             <button type="button" class="news-badge" id="news-badge-btn" onclick="reshuffleNewsTicker()" title="Kliknutím premiešaš poradie správ">
@@ -3215,9 +3296,17 @@
             dir: "asc"
         };
 
+        const ELO_K = 32;
+        const ELO_D = 200;
+        let tableViewMode = "points"; // "points" | "elo2h" | "elo4h"
+
         let computedPlayers = [];
         let computedMatches = [];
         let validMatchesCount = 0;
+        let computedElo2H = [];
+        let computedElo4H = [];
+        let elo2HMatchesCount = 0;
+        let elo4HMatchesCount = 0;
 
         let h2hMode = "players";      // "players" | "teams"
         let h2hTypeFilter = "all";    // "all" | "2H" | "4H"
@@ -3819,8 +3908,214 @@
                 btn.classList.toggle("active", btnMonths === wm);
             });
 
+            computeEloRatings();
             buildAchievements();
             buildChartTimeline();
+        }
+
+        /* ==================== VÝPOČET ELO 2H (ELO2MASTER) & ELO 4H (ELO4MASTER) ==================== */
+        function computeEloRatings() {
+            const K = ELO_K;
+            const D = ELO_D;
+            const today = getTodayMidnight();
+
+            const initEloMap = () => {
+                const map = {};
+                state.players.forEach((p, idx) => {
+                    map[p.id] = {
+                        ...p,
+                        color: p.color || PLAYER_COLORS[idx % PLAYER_COLORS.length],
+                        elo: 1500.0,
+                        effectiveStartElo: 1500.0,
+                        minElo: 1500.0,
+                        maxElo: 1500.0,
+                        lastDelta: 0,
+                        matches: 0,
+                        wins: 0,
+                        losses: 0,
+                        draws: 0,
+                        setsWon: 0,
+                        setsLost: 0,
+                        gemsWon: 0,
+                        gemsLost: 0,
+                        form: [],
+                        curWinStreak: 0,
+                        curLossStreak: 0,
+                        lastMatchDate: null,
+                        daysSinceLastMatch: null,
+                        isInactive: false
+                    };
+                });
+                return map;
+            };
+
+            // --- 1. ELO DVOJHRA (2H) – matematika 1:1 z ELO2MASTER ---
+            const map2H = initEloMap();
+            let last2HMatchDelta = null;
+            elo2HMatchesCount = 0;
+
+            state.matches.forEach(m => {
+                if (m.type !== "2H") return;
+                const pA = map2H[m.team1[0]];
+                const pB = map2H[m.team2[0]];
+                if (!pA || !pB) return;
+
+                elo2HMatchesCount++;
+                const rA = pA.elo;
+                const rB = pB.elo;
+                const eA = 1 / (1 + Math.pow(10, (rB - rA) / D));
+
+                if (m.date) {
+                    if (!pA.lastMatchDate || m.date > pA.lastMatchDate) pA.lastMatchDate = m.date;
+                    if (!pB.lastMatchDate || m.date > pB.lastMatchDate) pB.lastMatchDate = m.date;
+                }
+
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                let sA = 0.5;
+                if (s1 > s2) {
+                    sA = 1;
+                    pA.wins++; pB.losses++;
+                    pA.form.push("W"); pB.form.push("L");
+                    pA.curWinStreak++; pA.curLossStreak = 0;
+                    pB.curLossStreak++; pB.curWinStreak = 0;
+                } else if (s2 > s1) {
+                    sA = 0;
+                    pA.losses++; pB.wins++;
+                    pA.form.push("L"); pB.form.push("W");
+                    pB.curWinStreak++; pB.curLossStreak = 0;
+                    pA.curLossStreak++; pA.curWinStreak = 0;
+                } else {
+                    pA.draws++; pB.draws++;
+                    pA.form.push("D"); pB.form.push("D");
+                    pA.curWinStreak = 0; pA.curLossStreak = 0;
+                    pB.curWinStreak = 0; pB.curLossStreak = 0;
+                }
+
+                pA.matches++; pB.matches++;
+                pA.setsWon += s1; pA.setsLost += s2;
+                pB.setsWon += s2; pB.setsLost += s1;
+
+                const g = parseGemsString(m.gems);
+                pA.gemsWon += g.g1; pA.gemsLost += g.g2;
+                pB.gemsWon += g.g2; pB.gemsLost += g.g1;
+
+                const rawDeltaA = K * (sA - eA);
+                const newEloA = Math.round((rA + rawDeltaA) * 10) / 10;
+                const newEloB = Math.round((rB - rawDeltaA) * 10) / 10;
+                const appliedDeltaA = Math.round((newEloA - rA) * 10) / 10;
+                const appliedDeltaB = Math.round((newEloB - rB) * 10) / 10;
+
+                pA.elo = newEloA;
+                pB.elo = newEloB;
+                if (pA.elo > pA.maxElo) pA.maxElo = pA.elo;
+                if (pA.elo < pA.minElo) pA.minElo = pA.elo;
+                if (pB.elo > pB.maxElo) pB.maxElo = pB.elo;
+                if (pB.elo < pB.minElo) pB.minElo = pB.elo;
+
+                last2HMatchDelta = { idA: pA.id, dA: appliedDeltaA, idB: pB.id, dB: appliedDeltaB };
+            });
+
+            // --- 2. ELO ŠTVORHRA (4H) – matematika 1:1 z ELO4MASTER ---
+            const map4H = initEloMap();
+            let last4HMatchDelta = null;
+            elo4HMatchesCount = 0;
+
+            state.matches.forEach(m => {
+                if (m.type !== "4H") return;
+                const pA1 = map4H[m.team1[0]], pA2 = map4H[m.team1[1]];
+                const pB1 = map4H[m.team2[0]], pB2 = map4H[m.team2[1]];
+                if (!pA1 || !pA2 || !pB1 || !pB2) return;
+
+                elo4HMatchesCount++;
+                const rA1 = pA1.elo, rA2 = pA2.elo;
+                const rB1 = pB1.elo, rB2 = pB2.elo;
+                const avgA = (rA1 + rA2) / 2;
+                const avgB = (rB1 + rB2) / 2;
+                const eA = 1 / (1 + Math.pow(10, (avgB - avgA) / D));
+
+                if (m.date) {
+                    [pA1, pA2, pB1, pB2].forEach(pl => {
+                        if (!pl.lastMatchDate || m.date > pl.lastMatchDate) pl.lastMatchDate = m.date;
+                    });
+                }
+
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                let sA = 0.5;
+                if (s1 > s2) {
+                    sA = 1;
+                    [pA1, pA2].forEach(p => { p.wins++; p.form.push("W"); p.curWinStreak++; p.curLossStreak = 0; });
+                    [pB1, pB2].forEach(p => { p.losses++; p.form.push("L"); p.curLossStreak++; p.curWinStreak = 0; });
+                } else if (s2 > s1) {
+                    sA = 0;
+                    [pA1, pA2].forEach(p => { p.losses++; p.form.push("L"); p.curLossStreak++; p.curWinStreak = 0; });
+                    [pB1, pB2].forEach(p => { p.wins++; p.form.push("W"); p.curWinStreak++; p.curLossStreak = 0; });
+                } else {
+                    [pA1, pA2, pB1, pB2].forEach(p => { p.draws++; p.form.push("D"); p.curWinStreak = 0; p.curLossStreak = 0; });
+                }
+
+                const g = parseGemsString(m.gems);
+                [pA1, pA2].forEach(p => { p.matches++; p.setsWon += s1; p.setsLost += s2; p.gemsWon += g.g1; p.gemsLost += g.g2; });
+                [pB1, pB2].forEach(p => { p.matches++; p.setsWon += s2; p.setsLost += s1; p.gemsWon += g.g2; p.gemsLost += g.g1; });
+
+                const rawDeltaA = K * (sA - eA);
+                const deltaA = Math.round(rawDeltaA * 10) / 10;
+                const deltaB = -deltaA;
+
+                pA1.elo = Math.round((rA1 + deltaA) * 10) / 10;
+                pA2.elo = Math.round((rA2 + deltaA) * 10) / 10;
+                pB1.elo = Math.round((rB1 + deltaB) * 10) / 10;
+                pB2.elo = Math.round((rB2 + deltaB) * 10) / 10;
+
+                [pA1, pA2, pB1, pB2].forEach(p => {
+                    if (p.elo > p.maxElo) p.maxElo = p.elo;
+                    if (p.elo < p.minElo) p.minElo = p.elo;
+                });
+
+                last4HMatchDelta = { t1: [pA1.id, pA2.id], dA: deltaA, t2: [pB1.id, pB2.id], dB: deltaB };
+            });
+
+            const finalizeInactivity = (obj) => {
+                if (obj.lastMatchDate) {
+                    const lastDt = parseIsoLocal(obj.lastMatchDate);
+                    if (lastDt) {
+                        obj.daysSinceLastMatch = diffDays(today, lastDt);
+                        obj.isInactive = obj.daysSinceLastMatch >= 365;
+                    }
+                }
+            };
+
+            Object.values(map2H).forEach(finalizeInactivity);
+            Object.values(map4H).forEach(finalizeInactivity);
+
+            // Zobraziť len hráčov, ktorí v danej disciplíne odohrali aspoň 1 zápas
+            computedElo2H = Object.values(map2H)
+                .filter(p => p.matches > 0)
+                .sort((a, b) => (b.elo !== a.elo ? b.elo - a.elo : b.matches - a.matches))
+                .map((p, idx) => ({ ...p, rank: idx + 1 }));
+
+            computedElo4H = Object.values(map4H)
+                .filter(p => p.matches > 0)
+                .sort((a, b) => (b.elo !== a.elo ? b.elo - a.elo : b.matches - a.matches))
+                .map((p, idx) => ({ ...p, rank: idx + 1 }));
+
+            if (last2HMatchDelta) {
+                const a = computedElo2H.find(p => p.id === last2HMatchDelta.idA);
+                const b = computedElo2H.find(p => p.id === last2HMatchDelta.idB);
+                if (a) a.lastDelta = last2HMatchDelta.dA;
+                if (b) b.lastDelta = last2HMatchDelta.dB;
+            }
+            if (last4HMatchDelta) {
+                last4HMatchDelta.t1.forEach(id => {
+                    const pl = computedElo4H.find(p => p.id === id);
+                    if (pl) pl.lastDelta = last4HMatchDelta.dA;
+                });
+                last4HMatchDelta.t2.forEach(id => {
+                    const pl = computedElo4H.find(p => p.id === id);
+                    if (pl) pl.lastDelta = last4HMatchDelta.dB;
+                });
+            }
         }
 
         function setWindowMonths(months) {
@@ -3835,6 +4130,25 @@
         }
 
         /* ==================== RENDER TABUĽKY & POSLEDNÉHO ZÁPASU ==================== */
+        function setTableViewMode(mode) {
+            const validMode = (mode === "elo2h" || mode === "elo4h") ? mode : "points";
+            tableViewMode = validMode;
+
+            document.getElementById("tmode-btn-points").classList.toggle("active", tableViewMode === "points");
+            document.getElementById("tmode-btn-elo2h").classList.toggle("active", tableViewMode === "elo2h");
+            document.getElementById("tmode-btn-elo4h").classList.toggle("active", tableViewMode === "elo4h");
+
+            if (tableViewMode === "points") {
+                tableSort = { key: "rank", dir: "asc" };
+            } else {
+                tableSort = { key: "elo", dir: "desc" };
+            }
+
+            renderLeaderboard();
+            const tvMod = document.getElementById("tv-modal");
+            if (tvMod && tvMod.classList.contains("open")) renderTvCanvas();
+        }
+
         function setTableSort(key) {
             if (tableSort.key === key) {
                 tableSort.dir = tableSort.dir === "desc" ? "asc" : "desc";
@@ -3894,6 +4208,35 @@
                 if (diff !== 0) return diff * mult;
                 if (a.rank !== b.rank) return a.rank - b.rank;
                 return a.name.localeCompare(b.name, "sk");
+            });
+        }
+
+        function getSortedEloPlayers(sourceList) {
+            const { key, dir } = tableSort;
+            const mult = dir === "desc" ? -1 : 1;
+
+            return [...sourceList].sort((a, b) => {
+                if (key === "name") return a.name.localeCompare(b.name, "sk") * mult;
+                const getVal = (p) => {
+                    switch (key) {
+                        case "rank": return p.rank;
+                        case "elo": return p.elo;
+                        case "matches": return p.matches;
+                        case "wins": return p.wins;
+                        case "losses": return p.losses;
+                        case "draws": return p.draws;
+                        case "gemPct": {
+                            const tg = p.gemsWon + p.gemsLost;
+                            return tg > 0 ? (p.gemsWon / tg) * 100 : -1;
+                        }
+                        case "winPct": return p.matches > 0 ? ((p.wins + 0.5 * p.draws) / p.matches) * 100 : -1;
+                        case "form": return getFormScore(p.form);
+                        default: return p.elo;
+                    }
+                };
+                const diff = getVal(a) - getVal(b);
+                if (diff !== 0) return diff * mult;
+                return b.elo - a.elo;
             });
         }
 
@@ -3974,15 +4317,167 @@
 
         function renderLeaderboard() {
             renderLastMatchBanner();
-            updateSortIndicators();
 
             const wm = Number(state.config.windowMonths) || 0;
+            const today = getTodayMidnight();
             const titleEl = document.getElementById("leaderboard-card-title");
+            const rangePill = document.getElementById("window-range-pill");
+            const windowBar = document.getElementById("window-selector-bar");
+            const legendEl = document.getElementById("table-status-legend");
+            const thead = document.querySelector("#leaderboard-table thead");
+            const tbody = document.querySelector("#leaderboard-table tbody");
+
+            // Režim ELO Dvojhra (2H) alebo ELO Štvorhra (4H)
+            if (tableViewMode === "elo2h" || tableViewMode === "elo4h") {
+                const isDoubles = tableViewMode === "elo4h";
+                const srcList = isDoubles ? computedElo4H : computedElo2H;
+                const mCount = isDoubles ? elo4HMatchesCount : elo2HMatchesCount;
+
+                if (windowBar) windowBar.style.display = "none";
+                if (titleEl) {
+                    titleEl.textContent = isDoubles
+                        ? `ELO tabuľka – Štvorhra 4H (${srcList.length} hráčov)`
+                        : `ELO tabuľka – Dvojhra 2H (${srcList.length} hráčov)`;
+                }
+                if (rangePill) {
+                    rangePill.textContent = `K=${ELO_K} · D=${ELO_D} · ${mCount} záp.`;
+                }
+                if (legendEl) {
+                    legendEl.innerHTML = isDoubles
+                        ? `<span>👥 <strong>ELO 4H:</strong> K=${ELO_K} · D=${ELO_D} · priemer dvojice · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 4H (1+ rok)</span>`
+                        : `<span>🎾 <strong>ELO 2H:</strong> K=${ELO_K} · D=${ELO_D} · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 2H (1+ rok)</span>`;
+                }
+
+                thead.innerHTML = `
+                    <tr>
+                        <th class="sortable" data-sort-key="rank" onclick="setTableSort('rank')">Por.<span class="sort-arrow"></span></th>
+                        <th class="sortable" data-sort-key="name" onclick="setTableSort('name')">Meno<span class="sort-arrow"></span></th>
+                        <th class="text-right sortable" data-sort-key="elo" onclick="setTableSort('elo')">ELO<span class="sort-arrow"></span></th>
+                        <th class="text-right sortable" data-sort-key="matches" onclick="setTableSort('matches')">Záp.<span class="sort-arrow"></span></th>
+                        <th class="text-right sortable" data-sort-key="wins" onclick="setTableSort('wins')">V<span class="sort-arrow"></span></th>
+                        <th class="text-right sortable" data-sort-key="losses" onclick="setTableSort('losses')">P<span class="sort-arrow"></span></th>
+                        <th class="text-right sortable" data-sort-key="draws" onclick="setTableSort('draws')">R<span class="sort-arrow"></span></th>
+                        <th class="text-right sortable" data-sort-key="gemPct" onclick="setTableSort('gemPct')">Gemy (%)<span class="sort-arrow"></span></th>
+                        <th class="text-right sortable" data-sort-key="winPct" onclick="setTableSort('winPct')">Úsp. (%)<span class="sort-arrow"></span></th>
+                        <th class="text-center sortable" data-sort-key="form" onclick="setTableSort('form')">Forma<span class="sort-arrow"></span></th>
+                    </tr>
+                `;
+                updateSortIndicators();
+                tbody.innerHTML = "";
+
+                const sortedElo = getSortedEloPlayers(srcList);
+                if (sortedElo.length === 0) {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `<td colspan="10" style="text-align:center; padding:18px 10px; color:var(--text-muted); font-size:0.84rem; white-space:normal;">Zatiaľ nie sú zapísané žiadne ${isDoubles ? "štvorhry (4H)" : "dvojhry (2H)"}.</td>`;
+                    tbody.appendChild(tr);
+                    return;
+                }
+
+                sortedElo.forEach(p => {
+                    const rank = p.rank;
+                    const winPct = p.matches > 0
+                        ? (((p.wins + 0.5 * p.draws) / p.matches) * 100).toFixed(1) + "%"
+                        : "—";
+                    const totalG = p.gemsWon + p.gemsLost;
+                    const gemPct = totalG > 0 ? ((p.gemsWon / totalG) * 100).toFixed(1) + "%" : "—";
+
+                    let rankClass = "";
+                    if (rank === 1) rankClass = "rank-1";
+                    else if (rank === 2) rankClass = "rank-2";
+                    else if (rank === 3) rankClass = "rank-3";
+
+                    let deltaHtml = "";
+                    if (p.lastDelta > 0) {
+                        deltaHtml = `<span class="delta-tag delta-up">▲+${p.lastDelta.toFixed(1)}</span>`;
+                    } else if (p.lastDelta < 0) {
+                        deltaHtml = `<span class="delta-tag delta-down">▼${p.lastDelta.toFixed(1)}</span>`;
+                    }
+
+                    const last5 = p.form.slice(-5).reverse();
+                    const formHtml = last5.length > 0
+                        ? `<div class="form-dots">` + last5.map(f => `<span class="form-dot form-${f}">${f === 'W' ? 'V' : (f === 'D' ? 'R' : 'P')}</span>`).join("") + `</div>`
+                        : `<span style="color:var(--text-muted); font-size:0.72rem;">—</span>`;
+
+                    let statusIconsHtml = "";
+                    if (p.isInactive) {
+                        statusIconsHtml += `<span class="status-ico status-ico-inactive" title="Neaktívny v ${isDoubles ? '4H' : '2H'} – posledný zápas ${formatDateSk(p.lastMatchDate)} (pred ${p.daysSinceLastMatch} dňami)">⚫</span>`;
+                    } else {
+                        if (p.curWinStreak >= 3) {
+                            statusIconsHtml += `<span class="status-ico status-ico-fire" title="Horúca séria v ${isDoubles ? '4H' : '2H'}: ${p.curWinStreak} výhier v rade">🔥</span>`;
+                        } else if (p.curLossStreak >= 3) {
+                            statusIconsHtml += `<span class="status-ico status-ico-cold" title="Séria prehier v ${isDoubles ? '4H' : '2H'}: ${p.curLossStreak} prehier v rade">❄️</span>`;
+                        }
+                    }
+
+                    const tr = document.createElement("tr");
+                    if (p.isInactive) tr.className = "row-inactive";
+                    tr.title = `Kliknutím otvoríš detailný profil hráča ${p.name}`;
+                    tr.onclick = () => openPlayerDetail(p.id);
+
+                    tr.innerHTML = `
+                        <td><span class="rank-badge ${rankClass}">${rank}.</span></td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span class="player-color-dot" style="width:8px; height:8px; border-radius:50%; background:${p.color}; display:inline-block; flex-shrink:0;"></span>
+                                <strong>${escapeHtml(p.name)}</strong>${statusIconsHtml}
+                            </div>
+                        </td>
+                        <td class="text-right">${deltaHtml}<span class="elo-pill">${p.elo.toFixed(1)}</span></td>
+                        <td class="text-right">${p.matches}</td>
+                        <td class="text-right" style="color:var(--win); font-weight:700;">${p.wins}</td>
+                        <td class="text-right" style="color:var(--loss);">${p.losses}</td>
+                        <td class="text-right" style="color:var(--draw);">${p.draws}</td>
+                        <td class="text-right" style="color:var(--text-muted);">${gemPct}</td>
+                        <td class="text-right" style="font-weight:700;">${winPct}</td>
+                        <td class="text-center">${formHtml}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                return;
+            }
+
+            // Režim BODY (predvolený kombinovaný rebríček 2H + 4H)
+            if (windowBar) windowBar.style.display = "flex";
             if (titleEl) {
                 titleEl.textContent = `Priebežná tabuľka (${computedPlayers.length} hráčov)`;
             }
+            if (rangePill) {
+                if (wm === 0) {
+                    rangePill.textContent = `Všetky zápasy (${computedMatches.length})`;
+                } else {
+                    const startDt = subtractCalendarMonths(today, wm);
+                    rangePill.textContent = `${formatDateSk(startDt)} – ${formatDateSk(today)}`;
+                }
+            }
+            if (legendEl) {
+                legendEl.innerHTML = `
+                    <span>🎾 <strong>2H:</strong> V=1 b · R=0.5 b</span>
+                    <span>👥 <strong>4H:</strong> V=0.5 b · R=0.25 b</span>
+                    <span>🔥 3+ výhier v rade</span>
+                    <span>❄️ 3+ prehier v rade</span>
+                    <span>⚫ Neaktívny (1+ rok)</span>
+                    <span>⏳ Exp. 30d = obhajované body do 30 dní</span>
+                `;
+            }
 
-            const tbody = document.querySelector("#leaderboard-table tbody");
+            thead.innerHTML = `
+                <tr>
+                    <th class="sortable" data-sort-key="rank" onclick="setTableSort('rank')">Por.<span class="sort-arrow"></span></th>
+                    <th class="sortable" data-sort-key="name" onclick="setTableSort('name')">Meno<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="points" onclick="setTableSort('points')">Body<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="pts2H" onclick="setTableSort('pts2H')">2H<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="pts4H" onclick="setTableSort('pts4H')">4H<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="matches" onclick="setTableSort('matches')">Záp.<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="wins" onclick="setTableSort('wins')">V<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="draws" onclick="setTableSort('draws')">R<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="losses" onclick="setTableSort('losses')">P<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="gemPct" onclick="setTableSort('gemPct')">Gemy (%)<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="winPct" onclick="setTableSort('winPct')">Úsp. (%)<span class="sort-arrow"></span></th>
+                    <th class="text-right sortable" data-sort-key="expiring30" onclick="setTableSort('expiring30')" title="Body, ktoré vypršia v najbližších 30 dňoch">Exp. 30d<span class="sort-arrow"></span></th>
+                    <th class="text-center sortable" data-sort-key="form" onclick="setTableSort('form')">Forma<span class="sort-arrow"></span></th>
+                </tr>
+            `;
+            updateSortIndicators();
             tbody.innerHTML = "";
 
             const list = getSortedPlayers();
@@ -5489,18 +5984,27 @@
                     <span>Forma: ${formHtml}</span>
                 </div>
 
+                ${(() => {
+                    const e2 = computedElo2H.find(x => x.id === id);
+                    const e4 = computedElo4H.find(x => x.id === id);
+                    const e2Str = e2 ? `ELO 2H: <strong style="color:#a5f3fc;">${e2.elo.toFixed(1)}</strong> (#${e2.rank})` : "ELO 2H: —";
+                    const e4Str = e4 ? `ELO 4H: <strong style="color:#e9d5ff;">${e4.elo.toFixed(1)}</strong> (#${e4.rank})` : "ELO 4H: —";
+                    return `
                 <div class="grid-2">
                     <div class="profile-split-card" style="border-color:rgba(125,211,252,0.34);">
                         <div style="font-size:0.71rem; font-weight:800; color:var(--blue-accent); text-transform:uppercase; margin-bottom:4px;">🎾 Dvojhra (2H)</div>
                         <div style="font-size:0.92rem; font-weight:800;">${formatPts(stats.pts2H)} bodov <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${stats.m2H} záp.)</span></div>
                         <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Bilancia: <strong>${stats.w2H}V-${stats.d2H}R-${stats.l2H}P</strong> · Úsp.: <strong>${winPct2H}</strong></div>
+                        <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${e2Str}</div>
                     </div>
                     <div class="profile-split-card" style="border-color:rgba(216,180,254,0.34);">
                         <div style="font-size:0.71rem; font-weight:800; color:#e9d5ff; text-transform:uppercase; margin-bottom:4px;">👥 Štvorhra (4H)</div>
                         <div style="font-size:0.92rem; font-weight:800;">${formatPts(stats.pts4H)} bodov <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${stats.m4H} záp.)</span></div>
                         <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Bilancia: <strong>${stats.w4H}V-${stats.d4H}R-${stats.l4H}P</strong> · Úsp.: <strong>${winPct4H}</strong></div>
+                        <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${e4Str}</div>
                     </div>
-                </div>
+                </div>`;
+                })()}
 
                 ${nemesisHtml}
                 ${(() => {
@@ -6237,7 +6741,7 @@
         function exportTableCSV() {
             const wm = Number(state.config.windowMonths) || 0;
             const label = wm === 0 ? "All-time" : `${wm}M`;
-            let csv = "Poradie;Meno;Body;Body_2H;Body_4H;Zapasy;Vyhry;Remizy;Prehry;Gemy (%);Uspesnost (%);Expiruje_30d\n";
+            let csv = "Poradie;Meno;Body;Body_2H;Body_4H;Zapasy;Vyhry;Remizy;Prehry;Gemy (%);Uspesnost (%);Expiruje_30d;ELO_2H;ELO_4H\n";
             computedPlayers.forEach(p => {
                 const winPct = p.matches > 0 ? (((p.wins + 0.5 * p.draws) / p.matches) * 100).toFixed(1) : "0.0";
                 const tg = p.gemsWon + p.gemsLost;
@@ -6254,7 +6758,9 @@
                     p.losses,
                     gemPct.replace(".", ","),
                     winPct.replace(".", ","),
-                    formatPts(p.expiring30).replace(".", ",")
+                    formatPts(p.expiring30).replace(".", ","),
+                    (() => { const e2 = computedElo2H.find(x => x.id === p.id); return e2 ? e2.elo.toFixed(1).replace(".", ",") : ""; })(),
+                    (() => { const e4 = computedElo4H.find(x => x.id === p.id); return e4 ? e4.elo.toFixed(1).replace(".", ",") : ""; })()
                 ].join(";") + "\n";
             });
             const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
@@ -6881,6 +7387,8 @@
             drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg);
 
             const innerX = panelX + 36, innerW = panelW - 72, topY = panelY + 26, headerBarH = 66;
+            const isEloTv = (tableViewMode === "elo2h" || tableViewMode === "elo4h");
+            const isElo4H = tableViewMode === "elo4h";
             const wm = Number(state.config.windowMonths) || 0;
             const wmLabel = wm === 0 ? "ALL-TIME" : `${wm} MESIACOV`;
 
@@ -6902,12 +7410,163 @@
             ctx.fillStyle = "#ffffff";
             ctx.font = "800 29px sans-serif";
             ctx.textAlign = "left";
-            ctx.fillText(`TENISTAB | REBRÍČEK 2H + 4H (${wmLabel})`, innerX + 30, topY + 43);
+            const tvHeadTitle = isEloTv
+                ? (isElo4H ? `TENISTAB | ELO ŠTVORHRA 4H (K=${ELO_K} · D=${ELO_D})` : `TENISTAB | ELO DVOJHRA 2H (K=${ELO_K} · D=${ELO_D})`)
+                : `TENISTAB | REBRÍČEK 2H + 4H (${wmLabel})`;
+            ctx.fillText(tvHeadTitle, innerX + 30, topY + 43);
 
             ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
             ctx.font = "700 21px sans-serif";
             ctx.textAlign = "right";
-            ctx.fillText(`PLATNÝCH ZÁPASOV: ${validMatchesCount} · AKTUALIZÁCIA: ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 24, topY + 42);
+            const tvRightStats = isEloTv
+                ? `ZÁPASOV: ${isElo4H ? elo4HMatchesCount : elo2HMatchesCount} · AKTUALIZÁCIA: ${formatDateSk(getTodayMidnight())}`
+                : `PLATNÝCH ZÁPASOV: ${validMatchesCount} · AKTUALIZÁCIA: ${formatDateSk(getTodayMidnight())}`;
+            ctx.fillText(tvRightStats, innerX + innerW - 24, topY + 42);
+
+            if (isEloTv) {
+                const headY = topY + headerBarH + 12, headH = 48;
+                ctx.save();
+                drawRoundedRectPath(ctx, innerX, headY, innerW, headH, 12);
+                ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+                ctx.fill();
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.20)";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+
+                const eCols = [
+                    { label: "POR.",       x: innerX + 55,   align: "center" },
+                    { label: "MENO HRÁČA", x: innerX + 125,  align: "left"   },
+                    { label: "ELO",        x: innerX + 545,  align: "center" },
+                    { label: "ZÁP.",       x: innerX + 735,  align: "center" },
+                    { label: "VÝHRY",      x: innerX + 880,  align: "center" },
+                    { label: "PREHRY",     x: innerX + 1025, align: "center" },
+                    { label: "REMÍZY",     x: innerX + 1170, align: "center" },
+                    { label: "ÚSP. (%)",   x: innerX + 1345, align: "center" },
+                    { label: "FORMA",      x: innerX + 1555, align: "center" }
+                ];
+                ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+                ctx.font = "800 19px sans-serif";
+                eCols.forEach(c => { ctx.textAlign = c.align; ctx.fillText(c.label, c.x, headY + 31); });
+
+                const eRows = (isElo4H ? computedElo4H : computedElo2H).slice(0, 20);
+                const rowsStartY = headY + headH + 10;
+                const availableRowsH = (panelY + panelH - 22) - rowsStartY;
+                const totalRows = Math.max(eRows.length, 1);
+                const rowGap = totalRows > 14 ? 4 : (totalRows > 10 ? 6 : 10);
+                const rowH = Math.min(76, Math.max(32, Math.floor((availableRowsH - (totalRows - 1) * rowGap) / totalRows)));
+                const fontSize = Math.min(28, Math.max(17, Math.floor(rowH * 0.45)));
+
+                if (eRows.length === 0) {
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.80)";
+                    ctx.font = "700 26px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText("Zatiaľ žiadne zápasy pre tento ELO rebríček.", W / 2, rowsStartY + 120);
+                    return;
+                }
+
+                ctx.save();
+                drawRoundedRectPath(ctx, innerX, rowsStartY, innerW, availableRowsH, 12);
+                ctx.clip();
+                eRows.forEach((p, i) => {
+                    const ry = rowsStartY + i * (rowH + rowGap);
+                    ctx.save();
+                    drawRoundedRectPath(ctx, innerX, ry, innerW, rowH, 11);
+                    ctx.fillStyle = i % 2 === 0 ? "rgba(255, 255, 255, 0.13)" : "rgba(255, 255, 255, 0.07)";
+                    ctx.fill();
+                    ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    ctx.restore();
+
+                    ctx.save();
+                    drawRoundedRectPath(ctx, innerX + 462, ry + 3, 166, rowH - 6, 8);
+                    ctx.fillStyle = "rgba(0, 42, 37, 0.48)";
+                    ctx.fill();
+                    ctx.strokeStyle = "rgba(165, 243, 252, 0.30)";
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    ctx.restore();
+
+                    const textY = ry + rowH / 2 + Math.round(fontSize * 0.36);
+                    const badgeSize = Math.min(40, Math.max(24, rowH - 8));
+                    ctx.save();
+                    drawRoundedRectPath(ctx, eCols[0].x - badgeSize / 2, ry + (rowH - badgeSize) / 2, badgeSize, badgeSize, 8);
+                    ctx.fillStyle = p.rank === 1 ? "#facc15" : (p.rank === 2 ? "#e2e8f0" : (p.rank === 3 ? "#fb923c" : "rgba(255, 255, 255, 0.16)"));
+                    ctx.fill();
+                    ctx.restore();
+
+                    ctx.font = `800 ${Math.round(fontSize * 0.80)}px sans-serif`;
+                    ctx.textAlign = "center";
+                    ctx.fillStyle = (p.rank === 1 || p.rank === 2) ? "#090e1a" : "#ffffff";
+                    ctx.fillText(`${p.rank}`, eCols[0].x, textY - 1);
+
+                    const dotR = Math.max(5, Math.round(fontSize * 0.22));
+                    ctx.beginPath();
+                    ctx.arc(eCols[1].x + dotR, ry + rowH / 2, dotR, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color || "#ffffff";
+                    ctx.fill();
+
+                    ctx.font = `800 ${fontSize}px sans-serif`;
+                    ctx.textAlign = "left";
+                    ctx.fillStyle = p.isInactive ? "rgba(205, 215, 213, 0.62)" : "#ffffff";
+                    ctx.fillText(p.name.toUpperCase(), eCols[1].x + dotR * 2 + 12, textY, 290);
+
+                    ctx.textAlign = "center";
+                    ctx.fillStyle = "#a5f3fc";
+                    ctx.font = `800 ${fontSize}px sans-serif`;
+                    ctx.fillText(p.elo.toFixed(1), eCols[2].x, textY);
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = `700 ${fontSize}px sans-serif`;
+                    ctx.fillText(`${p.matches}`, eCols[3].x, textY);
+
+                    ctx.fillStyle = "#6ee7b7";
+                    ctx.font = `800 ${fontSize}px sans-serif`;
+                    ctx.fillText(`${p.wins}`, eCols[4].x, textY);
+
+                    ctx.fillStyle = "#fca5a5";
+                    ctx.font = `700 ${fontSize}px sans-serif`;
+                    ctx.fillText(`${p.losses}`, eCols[5].x, textY);
+
+                    ctx.fillStyle = "#fde047";
+                    ctx.font = `700 ${fontSize}px sans-serif`;
+                    ctx.fillText(`${p.draws}`, eCols[6].x, textY);
+
+                    const winPct = p.matches > 0 ? (((p.wins + 0.5 * p.draws) / p.matches) * 100).toFixed(1) + "%" : "—";
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = `800 ${fontSize}px sans-serif`;
+                    ctx.fillText(winPct, eCols[7].x, textY);
+
+                    const last3 = (p.form || []).slice(-3).reverse();
+                    if (last3.length === 0) {
+                        ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
+                        ctx.font = `700 ${fontSize}px sans-serif`;
+                        ctx.fillText("—", eCols[8].x, textY);
+                    } else {
+                        const fSize = Math.min(34, Math.max(18, Math.round(rowH * 0.56)));
+                        const fGap = Math.max(5, Math.round(fSize * 0.22));
+                        const totalW = last3.length * fSize + (last3.length - 1) * fGap;
+                        let fx = eCols[8].x - totalW / 2;
+                        const fy = ry + (rowH - fSize) / 2;
+                        const fFont = Math.max(11, Math.round(fSize * 0.58));
+                        last3.forEach(code => {
+                            ctx.save();
+                            drawRoundedRectPath(ctx, fx, fy, fSize, fSize, Math.max(4, Math.round(fSize * 0.22)));
+                            ctx.fillStyle = code === "W" ? "#34d399" : (code === "D" ? "#facc15" : "#f87171");
+                            ctx.fill();
+                            ctx.fillStyle = code === "W" ? "#022c22" : (code === "D" ? "#422006" : "#450a0a");
+                            ctx.font = `900 ${fFont}px sans-serif`;
+                            ctx.textAlign = "center";
+                            ctx.fillText(code === "W" ? "V" : (code === "D" ? "R" : "P"), fx + fSize / 2, fy + fSize / 2 + Math.round(fFont * 0.36));
+                            ctx.restore();
+                            fx += fSize + fGap;
+                        });
+                    }
+                });
+                ctx.restore();
+                return;
+            }
 
             const headY = topY + headerBarH + 12, headH = 48;
             ctx.save();
@@ -7103,7 +7762,7 @@
 
         function downloadTvGraphic(format = "png") {
             const canvas = document.getElementById("tvCanvas");
-            const suffix = tvMode === "last" ? "PoslednyZapas" : "Tabulka";
+            const suffix = tvMode === "last" ? "PoslednyZapas" : (tableViewMode === "elo2h" ? "ELO_2H" : (tableViewMode === "elo4h" ? "ELO_4H" : "Tabulka"));
             exportCanvasImage(canvas, `TenisTAB_TV_${suffix}_${getTodayIso()}`, format, renderTvCanvas);
         }
 
@@ -7578,8 +8237,79 @@
             "cicero": { gen: "Cicera",  dat: "Cicerovi",  acc: "Cicera",  ins: "Cicerom" },
             "marcel": { gen: "Marcela", dat: "Marcelovi", acc: "Marcela", ins: "Marcelom" },
             "sulo":   { gen: "Šula",    dat: "Šulovi",    acc: "Šula",    ins: "Šulom" },
-            "pato":   { gen: "Paťa",    dat: "Paťovi",    acc: "Paťa",    ins: "Paťom" }
+            "pato":   { gen: "Paťa",    dat: "Paťovi",    acc: "Paťa",    ins: "Paťom" },
+            "peter":  { gen: "Petra",   dat: "Petrovi",   acc: "Petra",   ins: "Petrom" },
+            "marek":  { gen: "Mareka",  dat: "Marekovi",  acc: "Mareka",  ins: "Marekom" },
+            "pavel":  { gen: "Pavla",   dat: "Pavlovi",   acc: "Pavla",   ins: "Pavlom" },
+            "karel":  { gen: "Karla",   dat: "Karlovi",   acc: "Karla",   ins: "Karlom" },
+            "jozef":  { gen: "Jozefa",  dat: "Jozefovi",  acc: "Jozefa",  ins: "Jozefom" },
+            "lukas":  { gen: "Lukáša",  dat: "Lukášovi",  acc: "Lukáša",  ins: "Lukášom" },
+            "tomas":  { gen: "Tomáša",  dat: "Tomášovi",  acc: "Tomáša",  ins: "Tomášom" },
+            "michal": { gen: "Michala", dat: "Michalovi", acc: "Michala", ins: "Michalom" },
+            "jakub":  { gen: "Jakuba",  dat: "Jakubovi",  acc: "Jakuba",  ins: "Jakubom" },
+            "roman":  { gen: "Romana",  dat: "Romanovi",  acc: "Romana",  ins: "Romanom" },
+            "milan":  { gen: "Milana",  dat: "Milanovi",  acc: "Milana",  ins: "Milanom" },
+            "dusan":  { gen: "Dušana",  dat: "Dušanovi",  acc: "Dušana",  ins: "Dušanom" },
+            "marian": { gen: "Mariána", dat: "Mariánovi", acc: "Mariána", ins: "Mariánom" },
+            "jano":   { gen: "Jana",    dat: "Janovi",    acc: "Jana",    ins: "Janom" },
+            "miso":   { gen: "Miša",    dat: "Mišovi",    acc: "Miša",    ins: "Mišom" },
+            "fero":   { gen: "Fera",    dat: "Ferovi",    acc: "Fera",    ins: "Ferom" },
+            "rado":   { gen: "Rada",    dat: "Radovi",    acc: "Rada",    ins: "Radom" },
+            "brano":  { gen: "Braňa",   dat: "Braňovi",   acc: "Braňa",   ins: "Braňom" },
+            "stano":  { gen: "Stana",   dat: "Stanovi",   acc: "Stana",   ins: "Stanom" },
+            "lubo":   { gen: "Ľuba",    dat: "Ľubovi",    acc: "Ľuba",    ins: "Ľubom" },
+            "robo":   { gen: "Roba",    dat: "Robovi",    acc: "Roba",    ins: "Robom" },
+            "juro":   { gen: "Jura",    dat: "Jurovi",    acc: "Jura",    ins: "Jurom" },
+            "juraj":  { gen: "Juraja",  dat: "Jurajovi",  acc: "Juraja",  ins: "Jurajom" },
+            "palo":   { gen: "Pala",    dat: "Palovi",    acc: "Pala",    ins: "Palom" },
+            "dano":   { gen: "Dana",    dat: "Danovi",    acc: "Dana",    ins: "Danom" },
+            "ondro":  { gen: "Ondra",   dat: "Ondrovi",   acc: "Ondra",   ins: "Ondrom" },
+            "mato":   { gen: "Maťa",    dat: "Maťovi",    acc: "Maťa",    ins: "Maťom" },
+            "riso":   { gen: "Riša",    dat: "Rišovi",    acc: "Riša",    ins: "Rišom" }
         };
+
+        // Správne skloňovanie bodov vrátane desatinných čísel (v slovenčine 0,25/0,50/1,50 -> vždy "bodu")
+        function skPts(val, gramCase = "nom") {
+            const num = Math.round((Number(val) || 0) * 100) / 100;
+            const absN = Math.abs(num);
+            const numStr = skNum(num, 2);
+            const isWhole = Math.abs(absN - Math.round(absN)) < 0.001;
+            if (!isWhole) {
+                return `${numStr} bodu`;
+            }
+            const n = Math.round(absN);
+            if (gramCase === "gen") {
+                return `${numStr} ${n === 1 ? "bodu" : "bodov"}`;
+            }
+            if (gramCase === "loc") {
+                return `${numStr} ${n === 1 ? "bode" : "bodoch"}`;
+            }
+            if (n === 1) return `${numStr} bod`;
+            if (n >= 2 && n <= 4) return `${numStr} body`;
+            return `${numStr} bodov`;
+        }
+
+        function getMaxHolders(list, valueFn) {
+            if (!list || list.length === 0) return { maxVal: -Infinity, holders: [] };
+            let maxVal = -Infinity;
+            list.forEach(item => {
+                const v = valueFn(item);
+                if (v > maxVal) maxVal = v;
+            });
+            const holders = list.filter(item => Math.abs(valueFn(item) - maxVal) < 0.001);
+            return { maxVal, holders };
+        }
+
+        function getMinHolders(list, valueFn) {
+            if (!list || list.length === 0) return { minVal: Infinity, holders: [] };
+            let minVal = Infinity;
+            list.forEach(item => {
+                const v = valueFn(item);
+                if (v < minVal) minVal = v;
+            });
+            const holders = list.filter(item => Math.abs(valueFn(item) - minVal) < 0.001);
+            return { minVal, holders };
+        }
 
         function skName(name, gramCase = "nom") {
             const clean = String(name || "").trim();
@@ -8304,6 +9034,17 @@
                     }
                     if (winRun >= 3) {
                         specialItems.push({ tag: "SÉRIA PROTI SÚPEROVI", text: `${winName} zdolal ${skName(loseName, "acc")} v dvojhre už ${winRun}-krát po sebe – v šatni sa začína hovoriť o komplexe.` });
+                    } else if (mutual.length >= 4) {
+                        let prevLossRun = 0;
+                        for (let i = mutual.length - 2; i >= 0; i--) {
+                            const xm = mutual[i];
+                            const xs1 = Number(xm.sets1), xs2 = Number(xm.sets2);
+                            const xWinId = xs1 > xs2 ? xm.team1[0] : (xs2 > xs1 ? xm.team2[0] : null);
+                            if (xWinId && xWinId !== winId) prevLossRun++; else break;
+                        }
+                        if (prevLossRun >= 3) {
+                            specialItems.push({ tag: "KLIATBA PRELOMENÁ", text: `${winName} konečne prelomil kliatbu a po ${prevLossRun} prehrách v rade zdolal ${skName(loseName, "acc")}!` });
+                        }
                     }
                 }
             }
@@ -8368,6 +9109,37 @@
                 } else {
                     specialItems.push({ tag: "VZÁJOMNÁ BILANCIA 4H", text: `Štvorhra #${m.index} bola už ${mutual.length}. vzájomným súbojom dvojíc ${m.teamNameA} a ${m.teamNameB} – bilancia je vyrovnaná ${wA}:${wB}${drTxt}!` });
                 }
+
+                if (isAWin || isBWin) {
+                    const winKey = isAWin ? keyA : keyB;
+                    const winTeam = isAWin ? m.teamNameA : m.teamNameB;
+                    const loseTeam = isAWin ? m.teamNameB : m.teamNameA;
+                    let winRun = 0;
+                    for (let i = mutual.length - 1; i >= 0; i--) {
+                        const xm = mutual[i];
+                        const xs1 = Number(xm.sets1), xs2 = Number(xm.sets2);
+                        const xA = [...xm.team1].sort().join("__");
+                        const xB = [...xm.team2].sort().join("__");
+                        const xWinKey = xs1 > xs2 ? xA : (xs2 > xs1 ? xB : null);
+                        if (xWinKey === winKey) winRun++; else break;
+                    }
+                    if (winRun >= 3) {
+                        specialItems.push({ tag: "SÉRIA PROTI DVOJICI", text: `Pár ${winTeam} zdolal dvojicu ${loseTeam} už ${winRun}-krát po sebe – v šatni sa začína hovoriť o deblovom komplexe.` });
+                    } else if (mutual.length >= 4) {
+                        let prevLossRun = 0;
+                        for (let i = mutual.length - 2; i >= 0; i--) {
+                            const xm = mutual[i];
+                            const xs1 = Number(xm.sets1), xs2 = Number(xm.sets2);
+                            const xA = [...xm.team1].sort().join("__");
+                            const xB = [...xm.team2].sort().join("__");
+                            const xWinKey = xs1 > xs2 ? xA : (xs2 > xs1 ? xB : null);
+                            if (xWinKey && xWinKey !== winKey) prevLossRun++; else break;
+                        }
+                        if (prevLossRun >= 3) {
+                            specialItems.push({ tag: "KLIATBA PRELOMENÁ", text: `Dvojica ${winTeam} konečne prelomila kliatbu a po ${prevLossRun} prehrách v rade zdolala pár ${loseTeam}!` });
+                        }
+                    }
+                }
             }
 
             getMatchDramaItems(m).forEach(it => specialItems.push(it));
@@ -8425,73 +9197,632 @@
             return result;
         }
 
+        function buildWindowPointsTimelineForLeader() {
+            const wm = Number(state.config.windowMonths) || 0;
+            const matches = computedMatches || [];
+            if (matches.length === 0) return [];
+            const precalc = matches.map(m => {
+                const dt = parseIsoLocal(m.date);
+                const expDt = wm > 0 ? addCalendarMonths(m.date, wm) : null;
+                return { m, dtTime: dt ? dt.getTime() : 0, expTime: expDt ? expDt.getTime() : Infinity };
+            });
+
+            const snaps = [];
+            for (let i = 0; i < precalc.length; i++) {
+                const cur = precalc[i];
+                const curTime = cur.dtTime;
+                const pts = {};
+                const cnt = {};
+                state.players.forEach(p => { pts[p.id] = 0; cnt[p.id] = 0; });
+                for (let j = 0; j <= i; j++) {
+                    const prev = precalc[j];
+                    if (wm === 0 || prev.expTime >= curTime) {
+                        const pm = prev.m;
+                        pm.team1.forEach(id => {
+                            if (typeof pts[id] === "number") {
+                                pts[id] = Math.round((pts[id] + pm.ptsA) * 100) / 100;
+                                cnt[id]++;
+                            }
+                        });
+                        pm.team2.forEach(id => {
+                            if (typeof pts[id] === "number") {
+                                pts[id] = Math.round((pts[id] + pm.ptsB) * 100) / 100;
+                                cnt[id]++;
+                            }
+                        });
+                    }
+                }
+                let bestId = null, bestPts = -1, bestMatches = Infinity;
+                state.players.forEach(p => {
+                    const v = pts[p.id] || 0;
+                    const mc = cnt[p.id] || 0;
+                    if (mc === 0) return;
+                    if (v > bestPts || (v === bestPts && mc < bestMatches)) {
+                        bestPts = v; bestMatches = mc; bestId = p.id;
+                    }
+                });
+                snaps.push({ match: cur.m, leaderId: bestId });
+            }
+            return snaps;
+        }
+
+        function buildLeaderChangeNewsItem(snaps) {
+            if (!snaps || snaps.length < 2) return null;
+            const last = snaps[snaps.length - 1];
+            const prev = snaps[snaps.length - 2];
+            if (!last.match || !last.match.date) return null;
+            const matchAge = getMatchAgeDays(last.match.date);
+            if (matchAge < 0 || matchAge >= 30) return null;
+            if (!last.leaderId || !prev.leaderId || last.leaderId === prev.leaderId) return null;
+
+            const newPlayer = state.players.find(p => p.id === last.leaderId);
+            const prevPlayer = state.players.find(p => p.id === prev.leaderId);
+            if (!newPlayer || !prevPlayer) return null;
+
+            let reignStartIdx = snaps.length - 2;
+            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === prev.leaderId) {
+                reignStartIdx--;
+            }
+            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date
+                ? snaps[reignStartIdx].match.date
+                : last.match.date;
+            const startDays = parseIsoToUtcDays(startDate);
+            const endDays = parseIsoToUtcDays(last.match.date);
+            const reignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
+
+            const newName = newPlayer.name;
+            const prevName = prevPlayer.name;
+            const seed = (Number(last.match.index) || 0) + weatherQuipSeed;
+
+            if (reignDays === 0) {
+                const blitzPool = [
+                    { tag: "BLESKOVÝ PREVRAT", text: `${newName} zosadil ${skName(prevName, "acc")} z prvého miesta ešte v ten istý deň – na tróne sa nestihol ani ohriať!` },
+                    { tag: "KRÁĽ NA JEDNO POOBEDIE", text: `Vláda ${skName(prevName, "gen")} na čele tabuľky trvala len pár hodín! Korunu mu okamžite vyfúkol ${newName}.` },
+                    { tag: "EXPRESNÁ VÝMENA NA TRÓNE", text: `Ani celý deň na vrchole! ${newName} bleskovo strieda ${skName(prevName, "acc")} na poste tabuľkovej jednotky.` }
+                ];
+                return blitzPool[seed % blitzPool.length];
+            }
+
+            if (reignDays < 7) {
+                const daysText = skCount(reignDays, "deň", "dni", "dní");
+                const shortPool = [
+                    { tag: "KRÁTKA VLÁDA", text: `${newName} zosadil z trónu ${skName(prevName, "acc")} už po necelom týždni (${daysText}) – korunu si dlho neužil!` },
+                    { tag: "ANI TÝŽDEŇ NA TRÓNE", text: `Vláda ${skName(prevName, "gen")} na čele tabuľky netrvala ani celý týždeň (${daysText}) – novou jednotkou je ${newName}!` },
+                    { tag: "RÝCHLA VÝMENA NA ČELE", text: `${prevName} vydržal na absolútnom vrchole len ${daysText}, od zápasu #${last.match.index} velí lige ${newName}!` }
+                ];
+                return shortPool[seed % shortPool.length];
+            }
+
+            const reignWeeks = Math.floor(reignDays / 7);
+            const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
+            const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
+            const coupPool = [
+                { tag: "PALÁCOVÝ PREVRAT", text: `${newName} zosadil z trónu ${skName(prevName, "acc")}! Jeho nepretržitá vláda na čele tabuľky trvala ${weeksText}.` },
+                { tag: "KRÁĽ JE MŔTVY, NECH ŽIJE KRÁĽ", text: `${newName} ukončil ${reignWeeks}-týždňovú nadvládu ${skName(prevName, "gen")} a preberá post jednotky TenisTAB!` },
+                { tag: "ZEMETRASENIE NA ČELE", text: `Po ${weeksLocText} na absolútnom vrchole padá ${prevName} – novým vládcom rebríčka sa stáva ${newName}!` },
+                { tag: "TRÓN MÁ NOVÉHO MAJITEĽA", text: `Koniec jednej epochy! ${prevName} kraľoval tabuľke ${weeksText}, no od zápasu #${last.match.index} velí lige ${newName}.` }
+            ];
+            return coupPool[seed % coupPool.length];
+        }
+
+        function buildCurrentLeaderReignNewsItem(snaps) {
+            if (!snaps || snaps.length < 1) return null;
+            const currentTop = computedPlayers.find(p => !p.isInactive && p.matches > 0);
+            if (!currentTop) return null;
+            const last = snaps[snaps.length - 1];
+            if (!last || last.leaderId !== currentTop.id) return null;
+
+            let reignStartIdx = snaps.length - 1;
+            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === currentTop.id) {
+                reignStartIdx--;
+            }
+            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date;
+            if (!startDate) return null;
+            const startDays = parseIsoToUtcDays(startDate);
+            if (startDays === null) return null;
+            const reignDays = getTodayUtcDays() - startDays;
+            if (reignDays < 2) return null;
+
+            const durationText = reignDays >= 7
+                ? skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov")
+                : skCount(reignDays, "deň", "dni", "dní");
+
+            return {
+                tag: "VLÁDCA REBRÍČKA",
+                text: `Aktuálny líder ${currentTop.name} nepretržite kraľuje tabuľke TenisTAB už ${durationText}.`
+            };
+        }
+
         function buildNewsTickerItems() {
             const items = [];
             const add = (tag, text) => { if (text) items.push({ tag, text }); };
 
             const players = computedPlayers || [];
             const activeRanked = players.filter(p => !p.isInactive && p.matches > 0);
+            const allPlayedEver = players.filter(p => p.lastMatchDate);
             const matches = computedMatches || [];
+            const achievements = computedAchievements || [];
             const wm = Number(state.config.windowMonths) || 0;
-            const wmTxt = wm === 0 ? "All-time" : `${wm}-mesačnom okne`;
+            const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v0.6! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v0.8! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
-            // 1. Líder a boj na čele tabuľky
+            // 1. Neaktivita (bulvár 180–364 dní a 365+ dní – max 3 + 3, aby nezaplavili lištu)
+            const halfYearTpls = [
+                (p) => `${skName(p.name, "acc")} videli, ako potajomky trénuje o stenu. Po ${p.daysSinceLastMatch} dňoch pauzy sa očakáva jeho návrat na kurty!`,
+                (p) => `${p.name} naposledy držal raketu pred ${p.daysSinceLastMatch} dňami (${formatDateSk(p.lastMatchDate)}). Sponzori aj parťáci začínajú byť nervózni.`,
+                (p) => `Pátracia akcia: ${p.name} chýba na kurte už ${skCount(p.daysSinceLastMatch, "deň", "dni", "dní")}. Vraj si šetrí formu na tajný turnaj.`
+            ];
+            const yearTpls = [
+                (p) => `${p.name} nehral už ${skCount(p.daysSinceLastMatch, "deň", "dni", "dní")}. Zákulisné zdroje tvrdia, že vymenil raketu za šípky alebo petang.`,
+                (p) => `Posledný zápas ${skName(p.name, "gen")} (${formatDateSk(p.lastMatchDate)}) si už pamätajú len kronikári. Raketa zrejme zapadá prachom.`,
+                (p) => `${p.name} je mimo kurtov už viac ako rok (${skCount(p.daysSinceLastMatch, "deň", "dni", "dní")}). Podľa neoverených správ prestúpil k šachistom.`
+            ];
+
+            const halfYearList = allPlayedEver.filter(p => typeof p.daysSinceLastMatch === "number" && p.daysSinceLastMatch >= 180 && p.daysSinceLastMatch < 365);
+            const yearList = allPlayedEver.filter(p => typeof p.daysSinceLastMatch === "number" && p.daysSinceLastMatch >= 365);
+
+            shuffleNewsArray(halfYearList).slice(0, 3).forEach((p, idx) => {
+                add("ŠOKUJÚCE ZÁBERY", halfYearTpls[idx % halfYearTpls.length](p));
+            });
+            shuffleNewsArray(yearList).slice(0, 3).forEach((p, idx) => {
+                add("BULVÁR", yearTpls[idx % yearTpls.length](p));
+            });
+
+            // 2. Čerstvý navrátilec (v posledných 30 dňoch nastúpil po pauze >= 90 dní)
+            if (matches.length >= 2) {
+                const comebackSeen = new Set();
+                matches.slice(-5).forEach(rm => {
+                    const rmAge = getMatchAgeDays(rm.date);
+                    if (rmAge < 0 || rmAge > 30) return;
+                    const rmUtc = parseIsoToUtcDays(rm.date);
+                    if (rmUtc === null) return;
+                    [...rm.team1, ...rm.team2].forEach(pid => {
+                        if (comebackSeen.has(pid)) return;
+                        const prevMatches = matches.filter(m => m.index < rm.index && (m.team1.includes(pid) || m.team2.includes(pid)) && m.date);
+                        if (prevMatches.length > 0) {
+                            const prevUtc = parseIsoToUtcDays(prevMatches[prevMatches.length - 1].date);
+                            if (prevUtc !== null && (rmUtc - prevUtc) >= 90) {
+                                const pl = players.find(x => x.id === pid);
+                                if (pl) {
+                                    comebackSeen.add(pid);
+                                    add("JE SPÄŤ", `${pl.name} sa po ${rmUtc - prevUtc}-dňovej pauze vrátil na kurt a hneď zamiešal kartami v tabuľke TenisTAB!`);
+                                }
+                            }
+                        }
+                    });
+                });
+            }
+
+            // 3. Líder, boj na čele, najtesnejší susedia a monopol
             if (activeRanked.length >= 1) {
                 const top = activeRanked[0];
-                add("NA TRÓNE", `Lídrom TenisTAB v ${wmTxt} je ${top.name} so ziskom ${skNum(top.points, 2)} bodov (2H: ${skNum(top.pts2H, 2)} b · 4H: ${skNum(top.pts4H, 2)} b).`);
+                add("NA TRÓNE", `Lídrom TenisTAB v ${wmTxt} je ${top.name} so ziskom ${skPts(top.points, "gen")} (2H: ${skNum(top.pts2H, 2)} b · 4H: ${skNum(top.pts4H, 2)} b).`);
             }
             if (activeRanked.length >= 2) {
                 const gap = Math.round((activeRanked[0].points - activeRanked[1].points) * 100) / 100;
                 if (gap === 0) {
-                    add("DRÁMA NA ČELE", `${activeRanked[0].name} a ${activeRanked[1].name} majú na čele tabuľky zhodne po ${skNum(activeRanked[0].points, 2)} bodov!`);
+                    add("DRÁMA NA ČELE", `${activeRanked[0].name} a ${activeRanked[1].name} majú na čele tabuľky zhodne po ${skPts(activeRanked[0].points, "loc")} – boj o trón je úplne otvorený!`);
                 } else if (gap <= 1.5) {
-                    add("DRÁMA NA ČELE", `${activeRanked[1].name} dýcha na chrbát lídrovi ${skName(activeRanked[0].name, "dat")} – delí ich už len ${skNum(gap, 2)} bodu!`);
+                    add("DRÁMA NA ČELE", `${activeRanked[1].name} dýcha na chrbát lídrovi ${skName(activeRanked[0].name, "dat")} – delí ich už len ${skPts(gap, "nom")}!`);
                 } else {
-                    add("BOJ O ČELO", `${activeRanked[1].name} stráca na prvého ${skName(activeRanked[0].name, "acc")} v ${wmTxt} presne ${skNum(gap, 2)} bodov.`);
+                    add("BOJ O ČELO", `${activeRanked[1].name} stráca na prvého ${skName(activeRanked[0].name, "acc")} v ${wmTxt} presne ${skPts(gap, "nom")}.`);
+                }
+
+                if (gap >= 4) {
+                    add("MONOPOL", `${activeRanked[0].name} kraľuje tabuľke s náskokom ${skPts(gap, "gen")}. Zvyšok ligy vraj tajne rokuje, či mu do ďalších zápasov nepridelia drevenú raketu.`);
+                }
+
+                // Najtesnejší susedia v tabuľke (s aspoň 0.25 b)
+                const scoringActive = activeRanked.filter(p => p.points > 0);
+                if (scoringActive.length >= 2) {
+                    let minGap = Infinity, closePair = null;
+                    for (let i = 0; i < scoringActive.length - 1; i++) {
+                        const g = Math.round((scoringActive[i].points - scoringActive[i + 1].points) * 100) / 100;
+                        if (g < minGap) { minGap = g; closePair = [scoringActive[i], scoringActive[i + 1]]; }
+                    }
+                    if (closePair) {
+                        if (minGap === 0) {
+                            add("NA CHLP ROVNAKO", `${closePair[0].name} a ${closePair[1].name} majú v tabuľke zhodne ${skPts(closePair[0].points, "nom")} – rozhodujú až pomocné kritériá!`);
+                        } else {
+                            add("NA CHLP ROVNAKO", `${closePair[0].name} a ${closePair[1].name} sú v tabuľke natlačení na rozdiel iba ${skPts(minGap, "gen")}.`);
+                        }
+                    }
                 }
             }
 
-            // 2. Obhajoba bodov (expirujúce body do 30 dní)
+            // 4. Obhajoba bodov (expirujúce body do 30 dní)
             if (wm > 0) {
                 const defending = players.filter(p => p.expiring30 > 0).sort((a, b) => b.expiring30 - a.expiring30);
                 defending.slice(0, 3).forEach(p => {
                     const nextD = p.expiringDetails && p.expiringDetails[0];
                     const whenTxt = nextD ? ` (najbližšie po ${nextD.expiryStr})` : "";
-                    add("OBHAJOBA BODOV", `${p.name} obhajuje v najbližších 30 dňoch ${skNum(p.expiring30, 2)} bodu${whenTxt}.`);
+                    add("OBHAJOBA BODOV", `${p.name} obhajuje v najbližších 30 dňoch ${skPts(p.expiring30, "nom")}${whenTxt}.`);
                 });
             }
 
-            // 3. Horúce série / kríza v aktuálnom okne
+            // 5. Horúce série / kríza v aktuálnom okne
             activeRanked.forEach(p => {
                 if (p.curWinStreak >= 3) {
-                    add("HORÚCA FORMA", `${p.name} je na neudržanie – v aktuálnej lehote ťahá sériu ${p.curWinStreak} výhier v rade!`);
+                    add("HORÚCA FORMA", `${p.name} je na neudržanie – v aktuálnej lehote ťahá sériu ${p.curWinStreak} výhier v rade! Kto ho konečne zastaví?`);
                 } else if (p.curLossStreak >= 3) {
-                    add("KRÍZOVÝ ŠTÁB", `${p.name} prehral už ${skCount(p.curLossStreak, "zápas", "zápasy", "zápasov")} po sebe. Odborníci odporúčajú nový výplet alebo zmenu rakety.`);
+                    add("KRÍZOVÝ ŠTÁB", `${p.name} prehral už ${skCount(p.curLossStreak, "zápas", "zápasy", "zápasov")} po sebe. Odborníci odporúčajú vymeniť výplet alebo aspoň ponožky.`);
                 }
             });
 
-            // 4. Klubová kronika (2H + 4H kombinovane)
+            // 6. Hráčske štatistiky (zápasy, úspešnosť, gemy, 2H vs 4H špecialisti)
+            if (activeRanked.length > 0) {
+                const mpRes = getMaxHolders(activeRanked, p => p.matches);
+                if (mpRes.holders.length > 0 && mpRes.maxVal >= 3) {
+                    const nMp = skJoinNames(mpRes.holders, "nom");
+                    add("NEÚNAVNÝ MOTOR", mpRes.holders.length > 1
+                        ? `${nMp} majú v ${wmTxt} na konte zhodne po ${skCount(mpRes.maxVal, "odohratom zápase", "odohratých zápasoch", "odohratých zápasoch")} – na kurte majú zrejme trvalý pobyt.`
+                        : `${nMp} má v ${wmTxt} na konte už ${skCount(mpRes.maxVal, "odohratý zápas", "odohraté zápasy", "odohratých zápasov")} – na kurte má zrejme trvalý pobyt.`);
+                }
+
+                const qualified = activeRanked.filter(p => p.matches >= 3);
+                if (qualified.length > 0) {
+                    const wpRes = getMaxHolders(qualified, p => (p.wins + 0.5 * p.draws) / p.matches);
+                    if (wpRes.holders.length > 0) {
+                        const pctW = skNum(wpRes.maxVal * 100, 1);
+                        const nWp = skJoinNames(wpRes.holders, "nom");
+                        add("STROJ NA VÝHRY", wpRes.holders.length > 1
+                            ? `Najvyššiu úspešnosť v ${wmTxt} zhodne držia ${nWp} – bodujú na úrovni ${pctW} %.`
+                            : `Najvyššiu úspešnosť v ${wmTxt} drží ${nWp} – boduje na úrovni ${pctW} % (${wpRes.holders[0].wins}V-${wpRes.holders[0].draws}R-${wpRes.holders[0].losses}P).`);
+                    }
+
+                    const withGems = qualified.filter(p => (p.gemsWon + p.gemsLost) > 0);
+                    if (withGems.length > 0) {
+                        const gpRes = getMaxHolders(withGems, p => p.gemsWon / (p.gemsWon + p.gemsLost));
+                        if (gpRes.holders.length > 0) {
+                            const gPct = skNum(gpRes.maxVal * 100, 1);
+                            const nGp = skJoinNames(gpRes.holders, "nom");
+                            add("ŠTATISTIKA DŇA", gpRes.holders.length > 1
+                                ? `${nGp} zhodne vyhrávajú až ${gPct} % všetkých svojich odohratých gemov.`
+                                : `${nGp} vyhráva až ${gPct} % všetkých svojich odohratých gemov (${gpRes.holders[0].gemsWon}:${gpRes.holders[0].gemsLost}).`);
+                        }
+
+                        const lgRes = getMinHolders(withGems, p => (p.gemsWon / (p.gemsWon + p.gemsLost)) * 100);
+                        if (lgRes.holders.length > 0 && lgRes.minVal < 45) {
+                            const nLg = skJoinNames(lgRes.holders, "nom");
+                            add("ŠETRÍ SILY", lgRes.holders.length > 1
+                                ? `${nLg} vyhrávajú len ${skNum(lgRes.minVal, 1)} % svojich gemov. Podľa trénera ide o sofistikovanú stratégiu, ako sa na kurte zbytočne nenabehať.`
+                                : `${nLg} vyhráva len ${skNum(lgRes.minVal, 1)} % svojich gemov. Podľa trénera ide o sofistikovanú stratégiu, ako sa na kurte zbytočne nenabehať.`);
+                        }
+                    }
+                }
+
+                // Špecialista na 4H & Univerzál kurtu
+                const top4HRes = getMaxHolders(activeRanked, p => p.pts4H);
+                if (top4HRes.holders.length > 0 && top4HRes.maxVal >= 1) {
+                    const n4 = skJoinNames(top4HRes.holders, "nom");
+                    add("DEBLOVÝ MÁG", top4HRes.holders.length > 1
+                        ? `Najviac bodov zo štvorhier 4H (${skPts(top4HRes.maxVal, "nom")}) majú v ${wmTxt} zhodne ${n4}.`
+                        : `Deblovým lídrom v ${wmTxt} je ${n4} so ziskom ${skPts(top4HRes.maxVal, "gen")} zo štvorhier 4H.`);
+                }
+
+                const universals = activeRanked.filter(p => p.pts2H >= 1 && p.pts4H >= 1);
+                if (universals.length > 0) {
+                    const bestUni = universals.reduce((a, b) => (Math.min(b.pts2H, b.pts4H) > Math.min(a.pts2H, a.pts4H) ? b : a));
+                    add("UNIVERZÁL KURTU", `${bestUni.name} zbiera body na všetkých frontoch – v ${wmTxt} má ${skNum(bestUni.pts2H, 2)} b z dvojhier aj ${skNum(bestUni.pts4H, 2)} b zo štvorhier!`);
+                }
+
+                // Sponzor bodov, Pivnica rebríčka, Triedny rozdiel, Všetko alebo nič
+                const mlRes = getMaxHolders(activeRanked, p => p.losses);
+                if (mlRes.holders.length > 0 && mlRes.maxVal >= 3) {
+                    const nMl = skJoinNames(mlRes.holders, "nom");
+                    add("SPONZOR BODOV", mlRes.holders.length > 1
+                        ? `${nMl} majú na konte zhodne po ${skCount(mlRes.maxVal, "prehre", "prehrách", "prehrách")} – v klube im zvažujú udeliť čestný titul „Hlavní sponzori bodov“.`
+                        : `${nMl} má na konte už ${skCount(mlRes.maxVal, "prehru", "prehry", "prehier")} – špekuluje sa, že občas hráva s raketou na bedminton.`);
+                }
+
+                if (activeRanked.length >= 3) {
+                    const topActive = activeRanked[0];
+                    const lastActive = activeRanked[activeRanked.length - 1];
+                    add("PIVNICA REBRÍČKA", `Aktívnu časť tabuľky zospodu statočne istí ${lastActive.name}. Výhoda? Hlbšie sa už padnúť nedá, cesta vedie len hore (alebo rovno na pivo).`);
+                    const classGap = Math.round((topActive.points - lastActive.points) * 100) / 100;
+                    if (classGap >= 6) {
+                        add("TRIEDNY ROZDIEL", `Medzi prvým (${topActive.name}) a posledným aktívnym (${lastActive.name}) v tabuľke je priepasť ${skPts(classGap, "gen")}. Na ich zápas by stávkovky vypísali kurz 1,01.`);
+                    }
+                }
+
+                const noDraws = activeRanked.filter(p => p.matches >= 4 && p.draws === 0);
+                if (noDraws.length > 0) {
+                    const ndRes = getMaxHolders(noDraws, p => p.matches);
+                    if (ndRes.holders.length > 0) {
+                        const nNd = skJoinNames(ndRes.holders, "nom");
+                        add("VŠETKO ALEBO NIČ", ndRes.holders.length > 1
+                            ? `${nNd} odohrali už po ${skCount(ndRes.maxVal, "zápase", "zápasoch", "zápasoch")} bez jedinej remízy – polovičné riešenia a kompromisy zjavne neuznávajú.`
+                            : `${nNd} odohral už ${skCount(ndRes.maxVal, "zápas", "zápasy", "zápasov")} bez jedinej remízy – polovičné riešenia a kompromisy zjavne neuznáva.`);
+                    }
+                }
+            }
+
+            // 7. Rivalita (2H El Clásico, Súkromný sparing, Večné derby), 4H páry a Klubová kronika
+            const threeSetDramaMap = {};
+            const useBezMilostiOverChirurg = Math.random() < 0.5;
             if (matches.length > 0) {
                 const cnt2H = matches.filter(m => m.type === "2H").length;
                 const cnt4H = matches.filter(m => m.type === "4H").length;
-                let totalSets = 0, totalGems = 0;
+                let totalSets = 0, totalGems = 0, totalDraws = 0;
+                const h2h2H = {};
+                const pairs4H = {};
+
                 matches.forEach(m => {
-                    totalSets += (Number(m.sets1) || 0) + (Number(m.sets2) || 0);
+                    const s1 = Number(m.sets1) || 0;
+                    const s2 = Number(m.sets2) || 0;
+                    totalSets += s1 + s2;
                     totalGems += (m.gems1 || 0) + (m.gems2 || 0);
+                    if (s1 === s2) totalDraws++;
+
+                    if ((s1 === 2 && s2 === 1) || (s1 === 1 && s2 === 2)) {
+                        [...m.team1, ...m.team2].forEach(pid => {
+                            threeSetDramaMap[pid] = (threeSetDramaMap[pid] || 0) + 1;
+                        });
+                    }
+
+                    if (m.type === "2H" && m.team1[0] && m.team2[0]) {
+                        const ids = [m.team1[0], m.team2[0]].sort();
+                        const k = ids.join("__");
+                        if (!h2h2H[k]) h2h2H[k] = { id1: ids[0], id2: ids[1], w1: 0, w2: 0, d: 0, total: 0 };
+                        const r = h2h2H[k];
+                        r.total++;
+                        if (s1 > s2) { if (m.team1[0] === ids[0]) r.w1++; else r.w2++; }
+                        else if (s2 > s1) { if (m.team2[0] === ids[0]) r.w1++; else r.w2++; }
+                        else r.d++;
+                    } else if (m.type === "4H") {
+                        [m.team1, m.team2].forEach(tm => {
+                            if (tm.length === 2) {
+                                const ids = [...tm].sort();
+                                const k = ids.join("__");
+                                if (!pairs4H[k]) {
+                                    const p1 = players.find(x => x.id === ids[0]);
+                                    const p2 = players.find(x => x.id === ids[1]);
+                                    pairs4H[k] = { name: `${p1 ? p1.name : ids[0]} / ${p2 ? p2.name : ids[1]}`, matches: 0 };
+                                }
+                                pairs4H[k].matches++;
+                            }
+                        });
+                    }
                 });
-                add("KLUBOVÁ KRONIKA", `V databáze TenisTAB je celkovo ${skCount(matches.length, "zápas", "zápasy", "zápasov")} (${cnt2H}× dvojhra 2H, ${cnt4H}× štvorhra 4H), ${skCount(totalSets, "set", "sety", "setov")} a ${skCount(totalGems, "gem", "gemy", "gemov")}.`);
+
+                add("KLUBOVÁ KRONIKA", `V databáze TenisTAB ${skPlural(matches.length, "je zapísaný", "sú zapísané", "je zapísaných")} ${skCount(matches.length, "zápas", "zápasy", "zápasov")} (${cnt2H}× 2H, ${cnt4H}× 4H), ${skCount(totalSets, "set", "sety", "setov")} a celkovo ${skCount(totalGems, "odohratý gem", "odohraté gemy", "odohratých gemov")}.`);
+
+                if (totalSets >= 10) {
+                    add("AMORTIZÁCIA KURTU", `V celej lige sa už odohralo ${skCount(totalSets, "set", "sety", "setov")}. Správca kurtu hlási, že na základnej čiare už presvitá spodná vrstva štrku.`);
+                }
+                if (totalDraws >= 2) {
+                    add("SLOVENSKÁ ŠPECIALITA", `V databáze ${skPlural(totalDraws, "svieti už", "svietia už", "svieti už")} ${skCount(totalDraws, "remíza", "remízy", "remíz")}. Na ATP Tour nemožné, ${getLocationContext().inPlace} bežná realita, keď zapípa časovač v hale.`);
+                }
+                if (totalGems >= 50) {
+                    add("EKONOMIKA ŠPORTU", `Pri ${totalGems} odohratých gemoch už v tejto lige padlo za vlasť niekoľko tuctov tenisových loptičiek. Česť ich pamiatke.`);
+                }
+
+                // El Clásico (2H)
+                const h2hList = Object.values(h2h2H);
+                if (h2hList.length > 0) {
+                    const topRival = h2hList.reduce((a, b) => (b.total > a.total ? b : a));
+                    if (topRival.total >= 3) {
+                        const p1 = players.find(x => x.id === topRival.id1);
+                        const p2 = players.find(x => x.id === topRival.id2);
+                        if (p1 && p2) {
+                            add("EL CLÁSICO", `Najčastejším singlovým súbojom histórie je rivalita ${p1.name} vs ${p2.name} – v dvojhre sa stretli už ${topRival.total}-krát!`);
+                        }
+                    }
+
+                    // Súkromný sparing (2H)
+                    let bestSparring = null;
+                    h2hList.forEach(r => {
+                        if (r.total < 4) return;
+                        const hi = Math.max(r.w1, r.w2), lo = Math.min(r.w1, r.w2);
+                        if (hi >= 3 && hi >= lo * 2) {
+                            const diff = hi - lo;
+                            if (!bestSparring || diff > bestSparring.diff) {
+                                bestSparring = { winId: r.w1 >= r.w2 ? r.id1 : r.id2, loseId: r.w1 >= r.w2 ? r.id2 : r.id1, hi, lo, diff };
+                            }
+                        }
+                    });
+                    if (bestSparring) {
+                        const wp = players.find(x => x.id === bestSparring.winId);
+                        const lp = players.find(x => x.id === bestSparring.loseId);
+                        if (wp && lp) {
+                            add("SÚKROMNÝ SPARING", `${wp.name} má v dvojhre proti ${skName(lp.name, "dat")} bilanciu ${bestSparring.hi}:${bestSparring.lo}. To už nie je rivalita, to začína pripomínať platené kondičné lekcie.`);
+                        }
+                    }
+
+                    // Večné derby (2H)
+                    let bestDerby = null;
+                    h2hList.forEach(r => {
+                        if (r.total >= 4 && Math.abs(r.w1 - r.w2) <= 2 && (!bestDerby || r.total > bestDerby.total)) {
+                            bestDerby = r;
+                        }
+                    });
+                    if (bestDerby) {
+                        const p1 = players.find(x => x.id === bestDerby.id1);
+                        const p2 = players.find(x => x.id === bestDerby.id2);
+                        if (p1 && p2) {
+                            add("VEČNÉ DERBY", `${p1.name} a ${p2.name} si v singli nič nedarujú (${bestDerby.w1}:${bestDerby.w2}). Keby sa ich zápasy vysielali, Eurosport by zrušil reprízy snookeru.`);
+                        }
+                    }
+                }
+
+                // Dráma na objednávku (vyrovnané trojsetové zápasy 2:1 / 1:2)
+                const maxDramaVal = Math.max(0, ...Object.values(threeSetDramaMap));
+                if (maxDramaVal >= 3) {
+                    const holders3 = players.filter(p => threeSetDramaMap[p.id] === maxDramaVal);
+                    if (holders3.length > 0) {
+                        const n3 = skJoinNames(holders3, "nom");
+                        add("DRÁMA NA OBJEDNÁVKU", holders3.length > 1
+                            ? `${n3} majú v nohách už ${skCount(maxDramaVal, "vyrovnaný trojsetový zápas", "vyrovnané trojsetové zápasy", "vyrovnaných trojsetových zápasov")} – evidentne si platia kurt od hodiny a chcú využiť každú minútu.`
+                            : `${n3} má v nohách už ${skCount(maxDramaVal, "vyrovnaný trojsetový zápas", "vyrovnané trojsetové zápasy", "vyrovnaných trojsetových zápasov")} – evidentne si platí kurt od hodiny a chce využiť každú minútu.`);
+                    }
+                }
+
+                // 60+ dní bez zápasu v lige
+                const pastMatches = matches.filter(m => getMatchAgeDays(m.date) >= 0);
+                if (pastMatches.length > 0) {
+                    const lastLeagueAge = getMatchAgeDays(pastMatches[pastMatches.length - 1].date);
+                    if (lastLeagueAge >= 60) {
+                        const hibPool = [
+                            { tag: "TENISOVÁ HIBERNÁCIA", text: `V lige sa neodohral žiaden zápas už ${skCount(lastLeagueAge, "deň", "dni", "dní")}! Rakety ${getLocationContext().inPlace} začínajú hrdzavieť a na loptičkách sa vraj objavila prvá vrstva machu.` },
+                            { tag: "KONIEC SEZÓNY?", text: `Už ${skCount(lastLeagueAge, "deň", "dni", "dní")} bez jediného zápisu v tabuľke. Podľa neoverených správ sa celá partia preorientovala na gaučing a komentovanie tenisu z obývačky.` },
+                            { tag: "POPLACH V TABUĽKE", text: `Posledný zápas sa hral pred ${lastLeagueAge} dňami – body pomaly expirujú a systém zvažuje, že začne udeľovať mínusové body za lenivosť!` }
+                        ];
+                        const chosenHib = hibPool[Math.floor(Math.random() * hibPool.length)];
+                        add(chosenHib.tag, chosenHib.text);
+                    }
+                }
+
+                // Nadčasové klubové hlášky
+                add("ALCHÝMIA ŠTVORHRY", "V debli nie je dôležité, kto má najtvrdší forhend, ale kto dokáže trafiť loptičku presne „medzi kozy“ na druhú stranu kurtu.");
+                add("ŤAŽKÝ BATOH", "Kilogramy nabraté po Vianociach môžu dobre slúžiť ako tréningová záťaž po celý rok!");
             }
 
-            // 5. Tipy pre používanie
-            add("TIP", "Kliknutím na logo TT v ľavom hornom rohu okamžite prepínaš medzi 8 farebnými motívmi aplikácie.");
-            add("TIP", "Kliknutím na biely pás NEWS text pozastavíš (na PC stačí prejsť myšou) a kliknutím na červené tlačidlo NEWS správy premiešaš.");
+            // 8. Správy priamo z Achievementov (všetky 4 kategórie – správne skloňovanie a jednotné/množné číslo)
+            const achTemplates = {
+                unstoppable: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["NEZASTAVITEĽNÝ", holders.length > 1
+                        ? `O historický rekord víťaznej série (${a.valueText}) sa delia ${n}.`
+                        : `Historický rekord víťaznej série (${a.valueText}) stále drží ${n}.`];
+                },
+                hot_hand: (holders, a) => {
+                    const fresh = holders.filter(h => {
+                        const cp = players.find(x => x.id === h.id);
+                        return cp && typeof cp.daysSinceLastMatch === "number" && cp.daysSinceLastMatch < 180;
+                    });
+                    if (fresh.length === 0) return ["HORÚCA RUKA", ""];
+                    const n = skJoinNames(fresh, "nom");
+                    return ["HORÚCA RUKA", fresh.length > 1
+                        ? `Najdlhšiu práve prebiehajúcu víťaznú šnúru (${a.valueText}) majú ${n}.`
+                        : `Najdlhšiu práve prebiehajúcu víťaznú šnúru (${a.valueText}) má ${n}.`];
+                },
+                free_fall: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["ČIERNA KRONIKA", holders.length > 1
+                        ? `Odznak Voľný pád (${a.valueText}) majú v zbierke ${n}.`
+                        : `Odznak Voľný pád (${a.valueText}) má v zbierke ${n}.`];
+                },
+                bulletproof: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["NEPRIESTRELNÝ", holders.length > 1
+                        ? `Najdlhšiu šnúru bez jedinej prehry (${a.valueText}) zaznamenali ${n}.`
+                        : `Najdlhšiu šnúru bez jedinej prehry (${a.valueText}) zaznamenal ${n}.`];
+                },
+                master_baker: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["POZOR NA KANÁRE", holders.length > 1
+                        ? `${n} rozdali súperom už ${a.valueText}. V šatni im hovoria Čističi!`
+                        : `${n} rozdal súperom už ${a.valueText}. V šatni mu hovoria Čistič!`];
+                },
+                bagel_receiver: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["OCHRANA PRÍRODY", holders.length > 1
+                        ? `${n} nazbierali už ${a.valueText} – titul Ornitológ im patrí právom.`
+                        : `${n} nazbieral už ${a.valueText} – titul Ornitológ mu patrí právom.`];
+                },
+                surgeon: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const cntStr = a.valueText.replace("× bez straty setu", "-krát");
+                    if (useBezMilostiOverChirurg) {
+                        return ["BEZ MILOSTI", holders.length > 1
+                            ? `${n} vybavili súperov bez straty setu už ${cntStr}. Žiadne zdržiavanie, rýchla sprcha a ide sa na jedno čapované.`
+                            : `${n} vybavil súpera bez straty setu už ${cntStr}. Žiadne zdržiavanie, rýchla sprcha a ide sa na jedno čapované.`];
+                    }
+                    return ["CHIRURG KURTU", holders.length > 1
+                        ? `${n} vybavili súperov bez straty jediného setu už ${cntStr}.`
+                        : `${n} vybavil súpera bez straty jediného setu už ${cntStr}.`];
+                },
+                nerves_of_steel: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["MUŽ ZO ŽELEZA", holders.length > 1
+                        ? `${n} odohrali už ${a.valueText} (7:6 / 6:7). Kardiológ tento šport neodporúča.`
+                        : `${n} odohral už ${a.valueText} (7:6 / 6:7). Kardiológ tento šport neodporúča.`];
+                },
+                sniper: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["SNIPER KURTU", holders.length > 1
+                        ? `Najlepšiu priemernú gemovú bilanciu (${a.valueText.replace(".", ",")}) si držia ${n}.`
+                        : `Najlepšiu priemernú gemovú bilanciu (${a.valueText.replace(".", ",")}) si drží ${n}.`];
+                },
+                points_king: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["KRÁĽ BODOV", holders.length > 1
+                        ? `Najviac kombinovaných bodov (${a.valueText.replace(".", ",")}) nazbierali ${n}.`
+                        : `Najviac kombinovaných bodov (${a.valueText.replace(".", ",")}) nazbieral ${n}.`];
+                },
+                singles_king: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["KRÁĽ DVOJHRY", holders.length > 1
+                        ? `V singlových zápasoch 2H kraľujú ${n} (${a.valueText.replace(".", ",")}).`
+                        : `V singlových zápasoch 2H kraľuje ${n} (${a.valueText.replace(".", ",")}).`];
+                },
+                iron_man: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["ŽELEZNÝ MUŽ", holders.length > 1
+                        ? `${n} majú na konte najviac štartov v klube (${a.valueText}) – na kurte majú trvalý pobyt.`
+                        : `${n} má na konte najviac štartov v klube (${a.valueText}) – na kurte má trvalý pobyt.`];
+                },
+                diplomat: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["DIPLOMAT LIGY", holders.length > 1
+                        ? `${n} vedú tabuľku mierotvorcov (${a.valueText}). Nikoho nechcú nahnevať.`
+                        : `${n} vedie tabuľku mierotvorcov (${a.valueText}). Nikoho nechce nahnevať.`];
+                },
+                chameleon: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const num = parseInt(a.valueText, 10) || 0;
+                    if (num >= 4 && Math.random() < 0.5) {
+                        return ["TENISOVÝ TINDER", holders.length > 1
+                            ? `${n} už v štvorhre vystriedali ${skCount(num, "rôzneho spoluhráča", "rôznych spoluhráčov", "rôznych spoluhráčov")}. Buď sú takí obľúbení, alebo s nimi nikto nevydrží dvakrát po sebe.`
+                            : `${n} už v štvorhre vystriedal ${skCount(num, "rôzneho spoluhráča", "rôznych spoluhráčov", "rôznych spoluhráčov")}. Buď je taký obľúbený, alebo s ním nikto nevydrží dvakrát po sebe.`];
+                    }
+                    const withTxt = num === 1 ? "s 1 spoluhráčom" : `s ${num} rôznymi spoluhráčmi`;
+                    return ["CHAMELEÓN", holders.length > 1
+                        ? `Spoločenskí hráči: ${n} si v debli zahrali už ${withTxt}.`
+                        : `Spoločenský typ: ${n} si v debli zahral už ${withTxt}.`];
+                },
+                dynamic_duo: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["DYNAMICKÉ DUO", `Najúspešnejšia pevná dvojica 4H (${n}) nazbierala už ${a.valueText.replace(".", ",")}.`];
+                },
+                steamroller: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["PARNÝ VALEC", `Rekordný debakel histórie (${a.valueText}) ${holders.length > 1 ? "majú" : "má"} na svedomí ${n}.`];
+                },
+                blood_sweat: (holders, a) => {
+                    return ["KRV, POT A SLZY", `Najdlhšia bitka histórie priniesla až ${a.valueText}!`];
+                },
+                inseparable_pair: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["NEROZLUČNÁ DVOJKA", `Parťáci na kurte: ${n} spolu nastúpili už do ${a.valueText}!`];
+                }
+            };
+
+            achievements.forEach(a => {
+                if (a.holders && a.holders.length > 0 && achTemplates[a.id]) {
+                    const [tag, txt] = achTemplates[a.id](a.holders, a);
+                    if (txt) add(tag, txt);
+                }
+            });
+
+            // 9. O aplikácii & Tipy pre ovládanie (Tip / Vedeli ste?)
+            add("O APLIKÁCII", "Aplikáciu TenisTAB vymyslel a dizajnoval Vlado Troják s pomocou AI Gemini v roku 2026.");
+            add("TIP", "Chceš zmeniť vzhľad aplikácie? Stačí kliknúť na logo TT v ľavom hornom rohu a okamžite prepínaš medzi 8 farebnými motívmi!");
+            add("VEDELI STE?", "Aplikácia si automaticky mení predvolený farebný motív podľa ročného obdobia v kalendári (Jar, Leto, Jeseň, Zima) – ak si kliknutím na logo vyberieš vlastný, zapamätá si ho.");
+            add("TIP", "Nestíhaš čítať správy v NEWS lište? Kliknutím na biely pás text pozastavíš (na PC stačí prejsť myšou) a kliknutím na červené tlačidlo NEWS poradie správ premiešaš.");
             add("VEDELI STE?", "Body v TenisTAB platia predvolene presne 1 rok – v tabuľke si však jedným klikom prepneš okno na 3, 6, 12, 18, 24, 36 mesiacov alebo All-time.");
-            add("TIP", "Tlačidlá TV a TV Graf v hornej lište vygenerujú FullHD grafiku (PNG alebo JPG) priamo s podkladom TV.jpeg.");
+            add("TIP", "Pri zapisovaní nového zápasu nemusíš ručne počítať sety – stačí vpísať presný stav na gemy (napr. 6:4 7:5) a aplikácia sety doplní automaticky za teba.");
+            add("TIP", "Kliknutím na meno ľubovoľného hráča v priebežnej tabuľke otvoríš jeho detailnú kartu vrátane kalendára expirácie bodov, spoluhráčskej chémie 4H a bilancie proti súperom.");
+            add("VEDELI STE?", "Tabuľku si môžeš zoradiť podľa akéhokoľvek stĺpca – stačí kliknúť na hlavičku (Body, 2H, 4H, Zápasy, Gemy %, Úsp. % alebo Exp. 30d).");
+            add("TIP", "V sekcii Graf si môžeš prepínať vývoj bodov v kĺzavom okne 6 mesiacov, 1 rok alebo All-time a plynulo posúvať históriu prstom, myšou či posuvníkom.");
+            add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlá TV a TV Graf v hlavičke vygenerujú FullHD grafiku (PNG aj JPG) priamo s podkladom TV.jpeg.");
+            add("VEDELI STE?", "Zelené tlačidlo v hornej časti tabuľky ti jedným klikom stiahne najnovšiu oficiálnu databázu z GitHubu – keď stmavne, máš istotu, že vidíš aktuálne dáta.");
+            add("TIP", "Ak si zabudol zapísať starší zápas, v sekcii História ho vložíš s pôvodným dátumom a aplikácia ho sama zaradí chronologicky a prepočíta celú tabuľku.");
+            add("VEDELI STE?", "Ikony pri menách v tabuľke prezrádzajú formu – 🔥 znamená 3 a viac výhier v rade, ❄️ sériu 3 a viac prehier a ⚫ označuje hráča, ktorý nehral viac ako rok (radí sa pod aktívnych).");
 
             return items;
         }
@@ -8544,6 +9875,9 @@
             if (!contentChanged) return;
 
             newsLastSignature = fullSig;
+            const leaderSnaps = buildWindowPointsTimelineForLeader();
+            const leaderChangeItem = buildLeaderChangeNewsItem(leaderSnaps);
+            const currentLeaderReignItem = buildCurrentLeaderReignNewsItem(leaderSnaps);
             const weatherItem = getWeatherNewsItem();
             const extraWeather = buildExtraWeatherNewsItems();
             const mergedOther = extraWeather.length > 0
@@ -8551,8 +9885,10 @@
                 : cachedOtherNewsItems;
 
             cachedNewsItems = [
+                ...(leaderChangeItem ? [leaderChangeItem] : []),
                 ...cachedRecentNewsItems,
                 ...(weatherItem ? [weatherItem] : []),
+                ...(currentLeaderReignItem ? [currentLeaderReignItem] : []),
                 ...mergedOther
             ];
 
