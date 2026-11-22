@@ -2309,7 +2309,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.8</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.9</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2340,7 +2340,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v0.8</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v0.9</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3204,7 +3204,7 @@
         </div>
     </div>
 
-    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v0.7) -->
+    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v0.9) -->
     <div class="bottom-dock">
         <div class="news-bar" id="news-bar" aria-label="Tenisové správy, počasie a štatistiky">
             <button type="button" class="news-badge" id="news-badge-btn" onclick="reshuffleNewsTicker()" title="Kliknutím premiešaš poradie správ">
@@ -8519,118 +8519,121 @@
         }
 
         const WEATHER_QUIPS_BY_MONTH = {
+            // ZIMNÉ / CHLADNÉ OBDOBIE (NOVEMBER – MAREC): vždy vtipná poznámka (otužilci / hala)
             1: [
-                "Vonku je to v januári len pre otužilcov – novoročné predsavzatia radšej plňte v teple haly!",
-                "Januárový tenis vonku? Jedine v lyžiarkach a s čajom v termoske. Smer hala!",
-                "V januári na Kysuciach loptičky vonku skôr mrznú než skáču – ideálny čas na halu.",
-                "Vonku trénujú len ľadové medvede a najtvrdší otužilci. Zvyšok ligy sa hlási v hale!"
+                "Novoročné predsavzatia si v januári radšej plň vo vykúrenej hale!",
+                "Tenis vonku? Až také silné globálne oteplenie nie je. Zatiaľ!",
+                "Ak je vonku sneh, choď dnes lyžovať.",
+                "Dnes sú ideálne podmienky na dvojhodinovú bitku v hale!"
             ],
             2: [
-                "Február na Kysuciach nepozná zľutovanie – vonku je to len pre otužilcov, výplety patria do haly.",
-                "Ak nemáš rukavice s protišmykovým gripom, februárový kurt vonku vynechaj a rezervuj halu!",
-                "Vonku by si si vo februári skôr privolal omrzliny než eso – istí to vykúrená hala.",
-                "Februárové podmienky vonku sú len pre otužilcov s dobrou poistkou. Hala je jasná voľba!"
+                "Je na dnes už rezervovaná hala?",
+                "Vonku štebocú vtáky, v teple haly bude väčší pokoj.",
+                "Podľa predpovede počasia je každý februárový víkend ako stvorený pre halové športy.",
+                "Pohľad von cez okno napovedá, že dnes by mohol byť v hale dobrý tenis!"
             ],
             3: [
-                "Marec sa tvári jarne, ale na Kysuciach je vonku stále len pre otužilcov – radšej ešte hala!",
-                "V marci antuka ešte len rozmŕza, vonku hrajú iba najodvážnejší otužilci. Zatiaľ istí hala.",
-                "Prvé marcové slnko vie oklamať – na kraťasy je priskoro, vonku len pre otužilcov, šup do haly!",
-                "V marci vonku skôr chytíš nádchu ako forhend do rohu – halová sezóna ešte nekončí!"
+                "Marec sa síce tvári ako jarný mesiac, ale antuka vonku ešte nie je pripravená.",
+                "V marci antuka ešte len rozmŕza, hala to istí.",
+                "Marcové slnko vie oklamať – na kraťasy vonku je priskoro, šup do haly!",
+                "V marci vonku skôr chytíš nádchu ako podanie od súpera – halová sezóna ešte nekončí!"
             ],
             11: [
-                "V novembri je to vonku už len pre otužilcov – antuka šla na zimný spánok, sťahujeme sa do haly!",
-                "Novembrový tenis vonku? Len ak chceš hrať v hmle s reflexnou loptičkou. Radšej pekne do haly!",
-                "V novembri vonku vydržia len kysuckí otužilci – zvyšok partie nech si nachystá halovky.",
-                "Sychravý november praje halovému tenisu – vonku by dnes zmrzol aj ten najrýchlejší servis!"
+                "Lístie už opadalo a prikrylo antuku – sťahujeme sa do haly!",
+                "Tenis vonku? V novembrovej hmle jedine v reflexnej veste.",
+                "Dnes som stretol vonku chlapa v kraťasoch. Zabudol sa prezliesť, keď išiel domov z haly.",
+                "Sychravý november praje halovému tenisu."
             ],
             12: [
-                "V decembri je tenis vonku len pre otužilcov a Santa Clausa – my ostatní ideme do haly!",
-                "Decembrový mráz a vonkajší kurt nejdú dokopy – radšej poriadny zápas v hale a potom punč.",
-                "Vonku by sa v decembri hralo lepšie hokejkou než raketou. Hala je jediná rozumná voľba!",
-                "Pre otužilcov ideál, pre normálnych tenistov jasný signál: v decembri hráme pod strechou v hale!"
+                "V decembri sa tenis vonku nikdy nehral. NIKDY!",
+                "Ideálne počasie na poriadny zápas v hale a potom punč na trhoch.",
+                "Vonku sa v decembri hrá lepšie s hokejkou než s raketou.",
+                "Marcel, už si zajednal halu na víkend?"
             ],
+
+            // VONKAJŠIA SEZÓNA (APRÍL – OKTÓBER): hala (<14 °C / dážď / búrka) vs. antuka von (>=14 °C a sucho)
             4: {
                 indoor: [
-                    "Apríl je bláznivý a dnes vonku nepraje – radšej zvoľte zápas v hale, nech nepremoknete!",
-                    "Pod 14 °C alebo mokro v apríli? Antuka nech si ešte oddýchne, dnes to istí zápas v hale.",
-                    "Aprílové počasie dnes vyhralo prvý set – presuňte súboj do haly pod strechu!"
+                    "Bláznivý apríl! V tomto nečase poďme radšej do haly.",
+                    "Na antuke sú stále veľké kaluže, takže dnes jedine do haly.",
+                    "Toto aprílové počasie..."
                 ],
                 outdoor: [
-                    "Apríl hlási super podmienky – zoberte rakety a poďte pokrstiť vonkajšiu antuku!",
-                    "Teplota nad 14 °C a sucho: ideálny aprílový deň na prvé sklzy na vonkajšej antuke!",
-                    "Hala môže dnes oddychovať – v Čadci to volá von na antuku!"
+                    "Apríl hlási super podmienky – ak už sa dá, zoberte rakety a poďte von na antuku!",
+                    "Príjemná teplota vonku – ideálny deň na prvé sklzy na antuke!",
+                    "Hala môže dnes oddychovať, teda ak je antuka už pripravená na prvé zápasy."
                 ]
             },
             5: {
                 indoor: [
-                    "Máj síce lásky čas, ale dnes skôr čas na strechu nad hlavou – odporúčame zápas v hale!",
-                    "Zamrznutí alebo zmoknutí na antuke? V máji radšej nie – dnes presuňte zápas do haly.",
-                    "Dnešné májové počasie antuke nepraje, v hale vás aspoň nevyženie dážď ani chlad!"
+                    "Aj v máji môže byť tak hnusne, že treba zapnúť kúrenie v hale.",
+                    "Dnes to istí hala.",
+                    "Z haly nás dnes nevyženie dážď ani chlad!"
                 ],
                 outdoor: [
-                    "Májová klasika v Čadci – podmienky ako na Roland Garros, šup von na antuku!",
-                    "V máji sedieť v hale by bol hriech – podmienky sú ideálne, poďte na antuku von!",
-                    "Sucho a príjemne teplo: májová antuka čaká, kto dnes získa body do tabuľky?"
+                    "Podmienky ako na Roland Garros, šup von na antuku!",
+                    "V máji hrať v hale by bol hriech – podmienky sú ideálne, poďte hrať von!",
+                    "Sucho a príjemne teplo: májová antuka čaká, kto dnes pripíše najviac bodov?"
                 ]
             },
             6: {
                 indoor: [
-                    "Aj v júni vie počasie v Čadci prekvapiť – dnes to na antuku nie je, odporúčame zápas v hale!",
-                    "Dážď, búrka alebo chladný jún? Neriskujte blato na teniskách a dajte si zápas v hale.",
-                    "Dnešný jún má zlú náladu – pod strechou v hale bude loptička odskakovať spoľahlivejšie!"
+                    "Toto má byť letné počasie? Marcel, volaj do haly, či dnes kúria.",
+                    "Dážď, búrka, alebo studený deň? Neriskuj blato na teniskách a daj si zápas v hale.",
+                    "Pod strechou v hale bude dnes loptička odskakovať spoľahlivejšie!"
                 ],
                 outdoor: [
-                    "Jún v plnej paráde – dlhé dni a super počasie, všetci von na antuku!",
-                    "Perfektné júnové podmienky v Čadci – namažte sa, zoberte vodu a hor sa na antuku von!",
-                    "Ideálny júnový deň na antukové výmeny – hala dnes zíva prázdnotou!"
+                    "Dlhé dni a super počasie, všetci von na antuku!",
+                    "Perfektné júnové podmienky – namažte sa, zoberte vodu a hurá von na antuku!",
+                    "Ideálny júnový deň na antukové výmeny – hala dnes bude zívať prázdnotou!"
                 ]
             },
             7: {
                 indoor: [
-                    "Júlová búrka či nečakané ochladenie? Dnes antuku vynechajte a zachráňte tenis zápasom v hale!",
-                    "V júli sa v hale hráva málokedy, ale dnešné počasie hovorí jasne – šup pod strechu do haly!",
-                    "Keď v júli hrozí dážď alebo chlad pod 14 °C, múdry tenista volí zápas v hale."
+                    "Júlová búrka či nečakané ochladenie? Dnes antuku vynechaj a zachráň tenis zápasom v hale!",
+                    "V júli sa v hale hráva málokedy, ale dnešné počasie hovorí jasne – šup pod strechu!",
+                    "Keď v júli hrozí dážď alebo chlad, múdry tenista volí zápas v hale."
                 ],
                 outdoor: [
-                    "Letný júl ako z katalógu – ideálny čas zabojovať o body do tabuľky vonku na antuke!",
-                    "Plná letná sezóna v Čadci: antuka je suchá a pripravená, šup von na kurt!",
+                    "Letný júl ako z katalógu – ideálny čas vypotiť pár bodov vonku na antuke!",
+                    "Letná sezóna v plnom prúde: antuka je suchá a pripravená!",
                     "V júli patrí tenis pod holé nebo – poďte si to rozdať von na antuku!"
                 ]
             },
             8: {
                 indoor: [
-                    "Augustová búrka alebo chladnejší deň – antuka je dnes mimo hry, odporúčame zápas v hale!",
-                    "Aj v auguste vie Kysuce schladiť či spláchnuť dážď – dnes to vyrieši zápas v hale.",
-                    "Dnes radšej neriskujte mokrú antuku a presuňte augustový duel pod strechu do haly!"
+                    "Antuka je v tomto nečase mimo hry!",
+                    "V auguste vie antuku spláchnuť dážď.",
+                    "Antuku by som v tomto počasí neriskoval."
                 ],
                 outdoor: [
-                    "Augustové slnko a teplý vzduch – perfektné podmienky na poriadnu bitku na antuke vonku!",
-                    "V auguste niet nad prach z antuky na ponožkách – vyrazte na kurt von!",
-                    "Skvelé augustové počasie v Čadci – vonkajšia antuka dnes volá po zápase!"
+                    "Letné dni ako tento – perfektné podmienky na poriadnu bitku na antuke!",
+                    "V auguste niet nad prach z antuky na ponožkách!",
+                    "Skvelé augustové počasie – antuka dnes doslova kričí po zápase!"
                 ]
             },
             9: {
                 indoor: [
-                    "September už ukazuje zuby – pod 14 °C alebo dážď znamená jasné odporúčanie: zápas v hale!",
-                    "Dnešný september nepraje vonkajšej antuke, presuňte zápas do sucha a tepla haly.",
-                    "Jesenný chlad či prehánky v septembri? Neriskujte prechladnutie, dnes je na rade hala!"
+                    "September už ukazuje zuby. Dážď a chlad znamenajú jasné odporúčanie: zápas v hale!",
+                    "Počasie dnes nepraje antuke, presuňte zápas do sucha a tepla haly.",
+                    "Jesenný chlad či prehánky? Neriskuj prechladnutie, dnes je na rade hala!"
                 ],
                 outdoor: [
-                    "Babie leto v septembri! Príjemná teplota bez zrážok – ideálny čas ísť na antuku von!",
-                    "September ako stvorený na tenis bez úpalu – využite to a poďte na antuku von!",
-                    "Perfektné septembrové podmienky na Kysuciach – antuka vonku ešte rozhodne nekončí!"
+                    "Babie leto v septembri! Príjemná teplota bez zrážok – ideálny čas ísť na antuku!",
+                    "September ako stvorený na tenis bez úpalu – využite to a poďte na antuku!",
+                    "Perfektné podmienky – antuka vonku ešte nepovedala posledné slovo!"
                 ]
             },
             10: {
                 indoor: [
-                    "Október pripomína, že zima je za rohom – pri tomto počasí odporúčame zápas v hale!",
-                    "V októbri pod 14 °C alebo v daždi už antuka nechutí – zahrajte si v pohodlí haly.",
-                    "Dnešný október patrí hale – vonku by ste skôr zbierali lístie než víťazné údery!"
+                    "Október pripomína, že zima je za rohom – pri tomto počasí odporúčam zápas v hale!",
+                    "V tomto počasí už antuka nechutí – zahrajte si v pohodlí haly.",
+                    "Dnešný deň patrí hale – vonku by ste skôr zbierali lístie než víťazné údery!"
                 ],
                 outdoor: [
-                    "Októbrový zázrak nad 14 °C a bez dažďa – chyťte šancu za pačesy a poďte na antuku von!",
-                    "Zlatý október v Čadci praje tenisu: kým sa dá, užite si ešte vonkajšiu antuku!",
-                    "Bonusové teplo v októbri – hala počká, dnes to ešte vyzerá na skvelú antuku vonku!"
+                    "Októbrový teplotný zázrak – chyť šancu za pačesy a poď von na antuku!",
+                    "Zlatý október praje tenisu: kým sa dá, užite si ešte vonkajšiu antuku!",
+                    "Bonusové teplo v októbri – hala počká, dnes to vyzerá na skvelú bitku vonku!"
                 ]
             }
         };
@@ -8896,11 +8899,13 @@
         function getMatchJokePool(matchIndex, isDraw = false) {
             const pool = [
                 { tag: "BEZ TV PRENOSU", text: `Zápas #${matchIndex} z technických príčin nevysielala žiadna TV – kameraman vraj zabudol nabiť batériu a sťažoval sa na slabý honorár.` },
-                { tag: "BEZ ROZHODCU", text: `Duel #${matchIndex} sa odohral aj napriek tomu, že hlavný rozhodca sa nedostavil. Podľa očitých svedkov ho videli v blízkej krčme s partiou štamgastov.` },
+                { tag: "BEZ ROZHODCU", text: `Duel #${matchIndex} sa odohral aj napriek tomu, že hlavný rozhodca sa nedostavil. Podľa očitých svedkov ho videli v blízkej krčme s partiou miestnych štamgastov.` },
+                { tag: "ZÁKULISIE", text: `Zápas #${matchIndex} sa musel zaobísť bez rozhodcu – zákulisné správy tvrdia, že dal prednosť blízkej krčme v spoločnosti veselých slečien.` },
                 { tag: "HAWK-EYE", text: `V zápase #${matchIndex} opäť nefungoval systém Hawk-Eye – všetky sporné auty sa riešili ${getLocationContext().methodAdj}: kto zakričal hlasnejšie, mal pravdu.` },
                 { tag: "ANTIDOPING", text: `Antidopingový komisár po zápase #${matchIndex} odobral vzorky – v krvi hráčov sa našli len stopy horčíka, kofeínu a stopové množstvo etanolu.` },
                 { tag: "TRIBÚNA", text: `Zápas #${matchIndex} sledovala z tribúny napätá návšteva: jeden znudený holub a náhodný okoloidúci, ktorý hľadal skratku do obchodu.` },
-                { tag: "ZBERAČI", text: `Pre štrajk zberačov loptičiek si hráči v zápase #${matchIndex} museli po každý aut chodiť sami – najviac kilometrov tak nabehali mimo výmen.` }
+                { tag: "ZBERAČI", text: `Pre štrajk zberačov loptičiek si hráči v zápase #${matchIndex} museli po každý aut chodiť sami – najviac kilometrov tak nabehali mimo výmen.` },
+                { tag: "STÁVKOVKY", text: `Po výsledku zápasu #${matchIndex} musela jedna nemenovaná stávková kancelária dočasne pozastaviť kurzy na ďalšie kolo.` }
             ];
             if (isDraw) {
                 pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po remízovom dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde všetci označili za hlavného vinníka vypršaný čas na kurte a krivé čiary.` });
@@ -8936,7 +8941,10 @@
                     { tag: "NULA NA TANIERI", text: `V dueli #${m.index} sa podávala nula na tanieri (6:0) – podľa svedkov bol v tomto sete čas aj na krátku kávu medzi gemami.` }
                 ];
                 if (!isDraw) {
-                    bagelPool.push({ tag: "RÝCHLY PROCES", text: `Set 6:0 v dueli #${m.index} trval kratšie než rozcvička – ${isDoubles ? "porazená dvojica si ani nestihla" : "porazený si ani nestihol"} poriadne zašpiniť tenisky.` });
+                    bagelPool.push(
+                        { tag: "RÝCHLY PROCES", text: `Set 6:0 v dueli #${m.index} trval kratšie než rozcvička – ${isDoubles ? "porazená dvojica si ani nestihla" : "porazený si ani nestihol"} poriadne zašpiniť tenisky.` },
+                        { tag: "ZĽAVA NA KURT", text: `Po výsledku 6:0 v zápase #${m.index} zvažuje správca kurtu, že ${isDoubles ? "porazenému páru vráti polovicu vstupného, lebo na ihrisku boli len do počtu" : "porazenému vráti polovicu vstupného, lebo na ihrisku bol len do počtu"}.` }
+                    );
                 }
                 out.push(bagelPool[Math.floor(Math.random() * bagelPool.length)]);
             }
@@ -8958,7 +8966,10 @@
                     { tag: "INFARKTOVÝ ZÁVER", text: `Zápas #${m.index} bol čistý triler o každý jeden gem – pri záverečných loptičkách by sa napätie dalo krájať výpletom.` }
                 ];
                 if (isDraw) {
-                    closePool.push({ tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že ani sety, ani gemy nechceli nikoho pustiť dopredu – spravodlivá remíza sadla ako uliata.` });
+                    closePool.push(
+                        { tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} sa bojovalo o každú loptičku až do spravodlivej remízy.` },
+                        { tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že ani sety, ani gemy nechceli nikoho pustiť dopredu – spravodlivá remíza sadla ako uliata.` }
+                    );
                 } else {
                     closePool.push({ tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} rozhodli až posledné nervy a pár centimetrov od čiary – presne pre takéto zápasy sa hrá tenis.` });
                 }
@@ -9300,7 +9311,9 @@
                 { tag: "PALÁCOVÝ PREVRAT", text: `${newName} zosadil z trónu ${skName(prevName, "acc")}! Jeho nepretržitá vláda na čele tabuľky trvala ${weeksText}.` },
                 { tag: "KRÁĽ JE MŔTVY, NECH ŽIJE KRÁĽ", text: `${newName} ukončil ${reignWeeks}-týždňovú nadvládu ${skName(prevName, "gen")} a preberá post jednotky TenisTAB!` },
                 { tag: "ZEMETRASENIE NA ČELE", text: `Po ${weeksLocText} na absolútnom vrchole padá ${prevName} – novým vládcom rebríčka sa stáva ${newName}!` },
-                { tag: "TRÓN MÁ NOVÉHO MAJITEĽA", text: `Koniec jednej epochy! ${prevName} kraľoval tabuľke ${weeksText}, no od zápasu #${last.match.index} velí lige ${newName}.` }
+                { tag: "MIMORIADNA SPRÁVA", text: `Éra ${skName(prevName, "gen")} sa po ${weeksLocText} skončila! Korunu na kurte preberá ${newName}.` },
+                { tag: "TRÓN MÁ NOVÉHO MAJITEĽA", text: `Koniec jednej epochy! ${prevName} kraľoval tabuľke ${weeksText}, no od zápasu #${last.match.index} velí lige ${newName}.` },
+                { tag: "ŠOK NA VRCHOLE", text: `${prevName} prišiel o post jednotky po ${weeksLocText} vládnutia – na trón zasadol ${newName}!` }
             ];
             return coupPool[seed % coupPool.length];
         }
@@ -9346,7 +9359,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v0.8! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v0.9! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -9810,7 +9823,8 @@
             });
 
             // 9. O aplikácii & Tipy pre ovládanie (Tip / Vedeli ste?)
-            add("O APLIKÁCII", "Aplikáciu TenisTAB vymyslel a dizajnoval Vlado Troják s pomocou AI Gemini v roku 2026.");
+            add("O APLIKÁCII", "Aplikáciu TenisTAB vymyslel a dizajnoval Vlado Troják s pomocou AI Gemini v novembri 2026.");
+            add("VEDELI STE?", "Nad tabuľkou si jedným klikom prepneš hlavný bodový rebríček (2H + 4H) na samostatné ELO rebríčky pre dvojhru (2H) alebo štvorhru (4H).");
             add("TIP", "Chceš zmeniť vzhľad aplikácie? Stačí kliknúť na logo TT v ľavom hornom rohu a okamžite prepínaš medzi 8 farebnými motívmi!");
             add("VEDELI STE?", "Aplikácia si automaticky mení predvolený farebný motív podľa ročného obdobia v kalendári (Jar, Leto, Jeseň, Zima) – ak si kliknutím na logo vyberieš vlastný, zapamätá si ho.");
             add("TIP", "Nestíhaš čítať správy v NEWS lište? Kliknutím na biely pás text pozastavíš (na PC stačí prejsť myšou) a kliknutím na červené tlačidlo NEWS poradie správ premiešaš.");
