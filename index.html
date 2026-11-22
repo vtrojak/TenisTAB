@@ -2149,17 +2149,110 @@
         }
 
         .modal-box.tv-modal-box {
-            max-width: 740px;
+            max-width: 760px;
+            max-height: calc(100vh - 20px);
+            max-height: calc(100dvh - 20px);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .tv-modal-head {
+            flex-shrink: 0;
+            padding: 12px 14px 10px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(6, 16, 28, 0.78);
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .tv-modal-head-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tv-modal-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .tv-modal-tabs.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .tv-modal-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tv-modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tv-modal-body::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 999px;
+        }
+
+        .tv-modal-body::-webkit-scrollbar-thumb {
+            background: rgba(186, 230, 253, 0.28);
+            border-radius: 999px;
+        }
+
+        .tv-modal-foot {
+            flex-shrink: 0;
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+            background: rgba(6, 16, 28, 0.88);
+        }
+
+        .tv-modal-foot .btn {
+            padding: 10px 10px;
+            font-size: 0.84rem;
+        }
+
+        .tv-canvas-frame {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: rgba(4, 12, 22, 0.65);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.34);
+            flex-shrink: 0;
+        }
+
+        .tv-ctrl-section {
+            background: rgba(8, 20, 32, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 12px;
+            padding: 10px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            flex-shrink: 0;
         }
 
         canvas#tvCanvas,
         canvas#tvChartCanvas {
             width: 100%;
             height: auto;
-            border-radius: 10px;
-            border: 1px solid var(--border);
+            border-radius: 0;
+            border: none;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 0;
         }
 
         canvas#tvChartCanvas {
@@ -2175,7 +2268,8 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 0;
+            flex-shrink: 0;
         }
 
         .tv-ctrl-card {
@@ -2247,22 +2341,54 @@
         .tv-chart-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 10px;
-            max-height: 76px;
-            overflow-y: auto;
+            gap: 6px;
+            margin-bottom: 0;
+            max-height: none;
+            overflow: visible;
+        }
+
+        .tv-chart-chips .player-chip {
+            font-size: 0.72rem;
+            padding: 5px 9px;
         }
 
         .tv-mode-btn {
-            flex: 0 0 auto !important;
-            width: auto !important;
-            min-width: max-content !important;
+            width: 100% !important;
+            min-width: 0 !important;
             white-space: nowrap;
-            padding: 5px 11px !important;
-            font-size: 0.73rem !important;
+            padding: 7px 6px !important;
+            font-size: 0.74rem !important;
         }
 
         @media (max-width: 540px) {
+            .modal-backdrop {
+                padding: 8px;
+            }
+            .modal-box.tv-modal-box {
+                max-height: calc(100vh - 16px);
+                max-height: calc(100dvh - 16px);
+                border-radius: 16px;
+            }
+            .tv-modal-head {
+                padding: 10px 11px 9px;
+                gap: 7px;
+            }
+            .tv-modal-body {
+                padding: 10px 11px;
+                gap: 9px;
+            }
+            .tv-modal-foot {
+                padding: 9px 11px;
+            }
+            .tv-modal-foot .btn {
+                padding: 9px 6px;
+                font-size: 0.76rem;
+                line-height: 1.2;
+            }
+            .tv-mode-btn {
+                padding: 6px 4px !important;
+                font-size: 0.71rem !important;
+            }
             .tv-controls-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 7px;
@@ -2903,7 +3029,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.22</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.23</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2934,7 +3060,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.22</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.23</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3753,47 +3879,56 @@
     <!-- MODAL PRE TV GRAFIKU (BODY / ELO 2H / ELO 4H / POSLEDNÝ ZÁPAS) -->
     <div class="modal-backdrop" id="tv-modal" onclick="if(event.target===this) closeTvModal()">
         <div class="modal-box tv-modal-box">
-            <div class="card-header">
-                <div class="card-title">
-                    <span class="card-title-dot"></span>
-                    Televízna infografika FullHD
+            <div class="tv-modal-head">
+                <div class="tv-modal-head-top">
+                    <div class="card-title">
+                        <span class="card-title-dot"></span>
+                        Televízna infografika FullHD
+                    </div>
+                    <span class="chart-range-pill">1920 × 1080</span>
                 </div>
-                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                <div class="tv-modal-tabs">
                     <button type="button" id="tv-mode-points" class="preset-btn tv-mode-btn active" onclick="setTvMode('points')">Body</button>
                     <button type="button" id="tv-mode-elo2h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo2h')">ELO 2H</button>
                     <button type="button" id="tv-mode-elo4h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo4h')">ELO 4H</button>
                     <button type="button" id="tv-mode-last" class="preset-btn tv-mode-btn" onclick="setTvMode('last')">Posledný</button>
                 </div>
             </div>
-            <canvas id="tvCanvas" width="1920" height="1080"></canvas>
-            <div class="tv-controls-grid">
-                <div class="tv-ctrl-card">
-                    <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Blur pozadia</span>
-                        <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
-                            <span class="tv-pct-badge" id="tv-blur-val" onclick="setTvBlur(50)">50%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
-                        </div>
-                    </div>
-                    <input type="range" id="tv-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
+            <div class="tv-modal-body">
+                <div class="tv-canvas-frame">
+                    <canvas id="tvCanvas" width="1920" height="1080"></canvas>
                 </div>
-                <div class="tv-ctrl-card">
-                    <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Priehľadnosť</span>
-                        <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
-                            <span class="tv-pct-badge" id="tv-transp-val" onclick="setTvTransparency(40)">40%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                <div class="tv-controls-grid">
+                    <div class="tv-ctrl-card">
+                        <div class="tv-ctrl-top">
+                            <span class="tv-ctrl-label">Blur pozadia</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
+                                <span class="tv-pct-badge" id="tv-blur-val" onclick="setTvBlur(50)">50%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
+                            </div>
                         </div>
+                        <input type="range" id="tv-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
                     </div>
-                    <input type="range" id="tv-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                    <div class="tv-ctrl-card">
+                        <div class="tv-ctrl-top">
+                            <span class="tv-ctrl-label">Priehľadnosť</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
+                                <span class="tv-pct-badge" id="tv-transp-val" onclick="setTvTransparency(40)">40%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                            </div>
+                        </div>
+                        <input type="range" id="tv-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                    </div>
                 </div>
             </div>
-            <div class="grid-3">
-                <button type="button" id="btn-tv-dl-png" class="btn btn-primary" onclick="downloadTvGraphic('png')">Stiahnuť PNG</button>
-                <button type="button" id="btn-tv-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
-                <button type="button" id="btn-tv-close" class="btn btn-secondary" onclick="closeTvModal()">Zavrieť</button>
+            <div class="tv-modal-foot">
+                <div class="grid-3">
+                    <button type="button" id="btn-tv-dl-png" class="btn btn-primary" onclick="downloadTvGraphic('png')">Stiahnuť PNG</button>
+                    <button type="button" id="btn-tv-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
+                    <button type="button" id="btn-tv-close" class="btn btn-secondary" onclick="closeTvModal()">Zavrieť</button>
+                </div>
             </div>
         </div>
     </div>
@@ -3801,66 +3936,76 @@
     <!-- MODAL PRE TV GRAF (FULLHD) -->
     <div class="modal-backdrop" id="tv-chart-modal" onclick="if(event.target===this) closeTvChartModal()">
         <div class="modal-box tv-modal-box">
-            <div class="card-header">
-                <div class="card-title">
-                    <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
-                    <span id="tv-chart-modal-title">Televízny graf FullHD</span>
+            <div class="tv-modal-head">
+                <div class="tv-modal-head-top">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        <span id="tv-chart-modal-title">Televízny graf FullHD</span>
+                    </div>
+                    <span class="chart-range-pill" id="tv-chart-range-label">—</span>
                 </div>
-                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                <div class="tv-modal-tabs cols-3">
                     <button type="button" id="tv-chart-metric-points" class="preset-btn tv-mode-btn active" onclick="setTvChartMetric('points')">Body</button>
                     <button type="button" id="tv-chart-metric-elo2h" class="preset-btn tv-mode-btn" onclick="setTvChartMetric('elo2h')">ELO 2H</button>
                     <button type="button" id="tv-chart-metric-elo4h" class="preset-btn tv-mode-btn" onclick="setTvChartMetric('elo4h')">ELO 4H</button>
-                    <span class="chart-range-pill" id="tv-chart-range-label">—</span>
                 </div>
             </div>
-            <div class="chart-mode-row" style="margin-bottom:8px;">
-                <div class="h2h-pill-group" id="tv-chart-period-group">
-                    <button type="button" id="tv-chart-mode-6" class="preset-btn" onclick="setTvChartMode(6)">6 mes.</button>
-                    <button type="button" id="tv-chart-mode-12" class="preset-btn active" onclick="setTvChartMode(12)">1 rok</button>
-                    <button type="button" id="tv-chart-mode-0" class="preset-btn" onclick="setTvChartMode(0)">All-time</button>
+            <div class="tv-modal-body">
+                <div class="tv-canvas-frame">
+                    <canvas id="tvChartCanvas" width="1920" height="1080"></canvas>
                 </div>
-                <div class="chart-quick-btns">
-                    <button type="button" id="btn-tv-chart-top5" class="chart-quick-btn" onclick="setChartPlayersPreset('top5'); renderTvChartPlayerChips(); renderTvChartCanvas();">Top 5</button>
-                    <button type="button" id="btn-tv-chart-all" class="chart-quick-btn" onclick="setChartPlayersPreset('all'); renderTvChartPlayerChips(); renderTvChartCanvas();">Všetci</button>
+                <div class="chart-nav-bar" style="margin:0; flex-shrink:0;">
+                    <button type="button" class="chart-nav-btn" id="tv-chart-first-btn" onclick="jumpTvChartWindow('start')">«</button>
+                    <button type="button" class="chart-nav-btn" id="tv-chart-prev-btn" onclick="panTvChartWindow(-1)">‹</button>
+                    <input type="range" id="tv-chart-slider" class="tv-range" min="0" max="0" step="1" value="0" oninput="setTvChartWindowStart(this.value)">
+                    <button type="button" class="chart-nav-btn" id="tv-chart-next-btn" onclick="panTvChartWindow(1)">›</button>
+                    <button type="button" class="chart-nav-btn" id="tv-chart-last-btn" onclick="jumpTvChartWindow('end')">»</button>
                 </div>
-            </div>
-            <div class="tv-chart-chips" id="tv-chart-player-chips"></div>
-            <canvas id="tvChartCanvas" width="1920" height="1080"></canvas>
-            <div class="chart-nav-bar" style="margin-top:0; margin-bottom:10px;">
-                <button type="button" class="chart-nav-btn" id="tv-chart-first-btn" onclick="jumpTvChartWindow('start')">«</button>
-                <button type="button" class="chart-nav-btn" id="tv-chart-prev-btn" onclick="panTvChartWindow(-1)">‹</button>
-                <input type="range" id="tv-chart-slider" class="tv-range" min="0" max="0" step="1" value="0" oninput="setTvChartWindowStart(this.value)">
-                <button type="button" class="chart-nav-btn" id="tv-chart-next-btn" onclick="panTvChartWindow(1)">›</button>
-                <button type="button" class="chart-nav-btn" id="tv-chart-last-btn" onclick="jumpTvChartWindow('end')">»</button>
-            </div>
-            <div class="tv-controls-grid">
-                <div class="tv-ctrl-card">
-                    <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Blur pozadia</span>
-                        <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
-                            <span class="tv-pct-badge" id="tv-chart-blur-val" onclick="setTvBlur(50)">50%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
+                <div class="tv-ctrl-section">
+                    <div class="chart-mode-row" style="margin-bottom:0;">
+                        <div class="h2h-pill-group" id="tv-chart-period-group">
+                            <button type="button" id="tv-chart-mode-6" class="preset-btn" onclick="setTvChartMode(6)">6 mes.</button>
+                            <button type="button" id="tv-chart-mode-12" class="preset-btn active" onclick="setTvChartMode(12)">1 rok</button>
+                            <button type="button" id="tv-chart-mode-0" class="preset-btn" onclick="setTvChartMode(0)">All-time</button>
+                        </div>
+                        <div class="chart-quick-btns">
+                            <button type="button" id="btn-tv-chart-top5" class="chart-quick-btn" onclick="setChartPlayersPreset('top5'); renderTvChartPlayerChips(); renderTvChartCanvas();">Top 5</button>
+                            <button type="button" id="btn-tv-chart-all" class="chart-quick-btn" onclick="setChartPlayersPreset('all'); renderTvChartPlayerChips(); renderTvChartCanvas();">Všetci</button>
                         </div>
                     </div>
-                    <input type="range" id="tv-chart-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
+                    <div class="tv-chart-chips" id="tv-chart-player-chips"></div>
                 </div>
-                <div class="tv-ctrl-card">
-                    <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Priehľadnosť</span>
-                        <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
-                            <span class="tv-pct-badge" id="tv-chart-transp-val" onclick="setTvTransparency(40)">40%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                <div class="tv-controls-grid">
+                    <div class="tv-ctrl-card">
+                        <div class="tv-ctrl-top">
+                            <span class="tv-ctrl-label">Blur pozadia</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
+                                <span class="tv-pct-badge" id="tv-chart-blur-val" onclick="setTvBlur(50)">50%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
+                            </div>
                         </div>
+                        <input type="range" id="tv-chart-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
                     </div>
-                    <input type="range" id="tv-chart-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                    <div class="tv-ctrl-card">
+                        <div class="tv-ctrl-top">
+                            <span class="tv-ctrl-label">Priehľadnosť</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
+                                <span class="tv-pct-badge" id="tv-chart-transp-val" onclick="setTvTransparency(40)">40%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                            </div>
+                        </div>
+                        <input type="range" id="tv-chart-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                    </div>
                 </div>
             </div>
-            <div class="grid-3">
-                <button type="button" id="btn-tv-chart-dl-png" class="btn btn-primary" onclick="downloadTvChartGraphic('png')">Stiahnuť PNG</button>
-                <button type="button" id="btn-tv-chart-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
-                <button type="button" id="btn-tv-chart-close" class="btn btn-secondary" onclick="closeTvChartModal()">Zavrieť</button>
+            <div class="tv-modal-foot">
+                <div class="grid-3">
+                    <button type="button" id="btn-tv-chart-dl-png" class="btn btn-primary" onclick="downloadTvChartGraphic('png')">Stiahnuť PNG</button>
+                    <button type="button" id="btn-tv-chart-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
+                    <button type="button" id="btn-tv-chart-close" class="btn btn-secondary" onclick="closeTvChartModal()">Zavrieť</button>
+                </div>
             </div>
         </div>
     </div>
@@ -8721,14 +8866,23 @@
             renderTvCanvas();
         }
 
+        function syncModalBodyScrollLock() {
+            const anyOpen = document.querySelector(".modal-backdrop.open") !== null;
+            document.body.style.overflow = anyOpen ? "hidden" : "";
+        }
+
         function openTvModal() {
             syncTvControlsUI();
             tvMode = (tableViewMode === "elo2h" || tableViewMode === "elo4h") ? tableViewMode : "points";
             syncTvModeButtons();
-            document.getElementById("tv-modal").classList.add("open");
+            const mod = document.getElementById("tv-modal");
+            mod.classList.add("open");
+            const bodyEl = mod.querySelector(".tv-modal-body");
+            if (bodyEl) bodyEl.scrollTop = 0;
+            syncModalBodyScrollLock();
             renderTvCanvas();
             ensureTvBackgroundLoaded(() => {
-                if (document.getElementById("tv-modal").classList.contains("open")) {
+                if (mod.classList.contains("open")) {
                     renderTvCanvas();
                 }
             });
@@ -8736,6 +8890,7 @@
 
         function closeTvModal() {
             document.getElementById("tv-modal").classList.remove("open");
+            syncModalBodyScrollLock();
         }
 
         function renderTvLastMatchBroadcast(ctx, W, H, forceFallbackBg) {
@@ -9596,10 +9751,14 @@
                 tvChartWindowStart = getChartWindowBounds(chartWindowStart).start;
             }
             renderTvChartPlayerChips();
-            document.getElementById("tv-chart-modal").classList.add("open");
+            const mod = document.getElementById("tv-chart-modal");
+            mod.classList.add("open");
+            const bodyEl = mod.querySelector(".tv-modal-body");
+            if (bodyEl) bodyEl.scrollTop = 0;
+            syncModalBodyScrollLock();
             renderTvChartCanvas();
             ensureTvBackgroundLoaded(() => {
-                if (document.getElementById("tv-chart-modal").classList.contains("open")) {
+                if (mod.classList.contains("open")) {
                     renderTvChartCanvas();
                 }
             });
@@ -9607,6 +9766,7 @@
 
         function closeTvChartModal() {
             document.getElementById("tv-chart-modal").classList.remove("open");
+            syncModalBodyScrollLock();
         }
 
         function setupTvChartCanvasEvents() {
@@ -11204,7 +11364,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.22! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.23! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
