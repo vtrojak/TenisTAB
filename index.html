@@ -507,6 +507,31 @@
             color: #000000;
         }
 
+        @keyframes tableModeGreenFlash {
+            0% {
+                background: linear-gradient(135deg, #065f46 0%, #22c55e 50%, #bef264 100%);
+                color: #052e16;
+                border-color: #bef264;
+                box-shadow: 0 0 18px rgba(190, 242, 100, 0.55);
+            }
+            60% {
+                background: linear-gradient(135deg, #10b981 0%, #a3e635 55%, #dcfce7 100%);
+                color: #052e16;
+                border-color: #dcfce7;
+                box-shadow: 0 0 14px rgba(110, 231, 183, 0.45);
+            }
+            100% {
+                background: #ffffff;
+                color: #000000;
+                border-color: #ffffff;
+                box-shadow: 0 6px 20px rgba(255, 255, 255, 0.30);
+            }
+        }
+
+        .table-mode-btn.flash-green {
+            animation: tableModeGreenFlash 0.36s ease-out;
+        }
+
         .delta-tag {
             font-size: 0.69rem;
             font-weight: 700;
@@ -1795,10 +1820,133 @@
             overflow-y: auto;
         }
 
+        .tv-mode-btn {
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: max-content !important;
+            white-space: nowrap;
+            padding: 5px 11px !important;
+            font-size: 0.73rem !important;
+        }
+
         @media (max-width: 540px) {
             .tv-controls-grid {
-                grid-template-columns: 1fr;
-                gap: 8px;
+                grid-template-columns: 1fr 1fr;
+                gap: 7px;
+            }
+            .tv-ctrl-card {
+                padding: 7px 8px;
+            }
+            .tv-ctrl-top {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+                margin-bottom: 6px;
+            }
+            .tv-ctrl-label {
+                font-size: 0.68rem;
+                justify-content: center;
+                text-align: center;
+            }
+            .tv-ctrl-steppers {
+                justify-content: space-between;
+            }
+            .tv-step-btn {
+                width: 24px;
+                height: 22px;
+                font-size: 0.80rem;
+            }
+            .tv-pct-badge {
+                min-width: 38px;
+                font-size: 0.72rem;
+            }
+        }
+
+        /* MATCHMAKER 4H */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        @media (max-width: 560px) {
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .mm-option-card {
+            background: rgba(10, 22, 36, 0.80);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 11px 12px;
+            margin-top: 9px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mm-option-card.best-balance {
+            border-color: rgba(190, 242, 100, 0.65);
+            background: linear-gradient(135deg, rgba(16, 85, 65, 0.48), rgba(10, 22, 36, 0.82));
+        }
+
+        .mm-option-card .mm-option-info {
+            flex: 1 1 220px;
+            min-width: 0;
+        }
+
+        .mm-option-card .mm-apply-btn {
+            flex: 0 0 auto;
+            width: auto;
+            min-width: max-content;
+            white-space: nowrap;
+            padding: 8px 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* GLOBÁLNE PC KONTEXTOVÉ OKNO (HOVER / FOCUS) */
+        #pc-ctx-tooltip {
+            display: none;
+        }
+
+        @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+            #pc-ctx-tooltip {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: max-content;
+                max-width: 310px;
+                background: rgba(8, 22, 34, 0.97);
+                backdrop-filter: blur(18px) saturate(180%);
+                -webkit-backdrop-filter: blur(18px) saturate(180%);
+                border: 1px solid rgba(190, 242, 100, 0.48);
+                border-radius: 13px;
+                padding: 10px 13px;
+                color: #ffffff;
+                font-size: 0.75rem;
+                font-weight: 500;
+                line-height: 1.44;
+                text-align: left;
+                box-shadow: 0 14px 34px rgba(0, 0, 0, 0.58), inset 0 1px 1px rgba(255, 255, 255, 0.22);
+                z-index: 3000;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transform: translateY(4px) scale(0.98);
+                transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+            }
+            #pc-ctx-tooltip.visible {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -2309,7 +2457,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.0</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.1</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2340,7 +2488,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.0</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.1</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -2435,13 +2583,19 @@
                         <span class="card-title-dot"></span>
                         Pridať nového hráča do tabuľky
                     </div>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">Začína s 0.00 bodmi</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Body: 0.00 · ELO: 1500</span>
                 </div>
-                <div class="form-group">
-                    <label for="new-player-name">Meno tenistu</label>
-                    <input type="text" id="new-player-name" placeholder="napr. Juraj / Jano" onkeydown="if(event.key==='Enter') addNewPlayer()">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="new-player-name">Meno tenistu</label>
+                        <input type="text" id="new-player-name" placeholder="napr. Juraj / Jano" onkeydown="if(event.key==='Enter') addNewPlayer()">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-player-elo">Počiatočné ELO</label>
+                        <input type="number" id="new-player-elo" value="1500" step="0.1" onkeydown="if(event.key==='Enter') addNewPlayer()">
+                    </div>
                 </div>
-                <button class="btn btn-primary" onclick="addNewPlayer()">+ Pridať hráča do tabuľky</button>
+                <button class="btn btn-primary" id="btn-add-new-player" onclick="addNewPlayer()">+ Pridať hráča do tabuľky</button>
             </div>
         </section>
 
@@ -2549,7 +2703,37 @@
                     <div id="preview-expiry-hint" style="margin-top:8px; font-size:0.73rem; color:var(--text-muted); text-align:center;"></div>
                 </div>
 
-                <button class="btn btn-primary" onclick="saveMatch()">Zapísať zápas a aktualizovať tabuľku</button>
+                <button class="btn btn-primary" id="btn-save-match" onclick="saveMatch()">Zapísať zápas a aktualizovať tabuľku</button>
+            </div>
+
+            <!-- MATCHMAKER PRE ŠTVORHRU (4H) PODĽA ELO 4H -->
+            <div class="card" id="matchmaker-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        Matchmaker (4H) – Rozdelí hráčov do dvojíc podľa ELO
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Vyber 4 hráčov na kurte</span>
+                </div>
+                <div class="grid-4" style="margin-bottom: 10px;">
+                    <div>
+                        <label for="mm-p1">Hráč 1</label>
+                        <select id="mm-p1" onchange="renderMatchmaker()"></select>
+                    </div>
+                    <div>
+                        <label for="mm-p2">Hráč 2</label>
+                        <select id="mm-p2" onchange="renderMatchmaker()"></select>
+                    </div>
+                    <div>
+                        <label for="mm-p3">Hráč 3</label>
+                        <select id="mm-p3" onchange="renderMatchmaker()"></select>
+                    </div>
+                    <div>
+                        <label for="mm-p4">Hráč 4</label>
+                        <select id="mm-p4" onchange="renderMatchmaker()"></select>
+                    </div>
+                </div>
+                <div id="matchmaker-results"></div>
             </div>
         </section>
 
@@ -2561,21 +2745,28 @@
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
-                        Vývoj bodov v čase: <span id="chart-steps-count">0</span> krokov
+                        <span id="chart-title-prefix">Vývoj bodov v čase</span>: <span id="chart-steps-count">0</span> krokov
                     </div>
                     <span class="chart-range-pill" id="chart-range-label">—</span>
                 </div>
 
+                <!-- PREPÍNAČ ZDROJA GRAFU: BODY / ELO 2H / ELO 4H -->
+                <div class="table-mode-bar" style="margin-bottom:10px;">
+                    <button type="button" id="chart-metric-points" class="table-mode-btn active" onclick="setChartMetric('points')">Body (2H + 4H)</button>
+                    <button type="button" id="chart-metric-elo2h" class="table-mode-btn" onclick="setChartMetric('elo2h')">ELO Dvojhra (2H)</button>
+                    <button type="button" id="chart-metric-elo4h" class="table-mode-btn" onclick="setChartMetric('elo4h')">ELO Štvorhra (4H)</button>
+                </div>
+
                 <!-- PREPÍNAČ REŽIMU GRAFU: 6 MES. / 1 ROK / ALL-TIME -->
                 <div class="chart-mode-row">
-                    <div class="h2h-pill-group">
+                    <div class="h2h-pill-group" id="chart-period-group">
                         <button type="button" id="chart-mode-6" class="preset-btn" onclick="setChartMode(6)">6 mesiacov</button>
                         <button type="button" id="chart-mode-12" class="preset-btn active" onclick="setChartMode(12)">1 rok (12 mes.)</button>
                         <button type="button" id="chart-mode-0" class="preset-btn" onclick="setChartMode(0)">All-time</button>
                     </div>
                     <div class="chart-quick-btns">
-                        <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('top5')" title="Zobraziť Top 5 hráčov">Top 5</button>
-                        <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('all')" title="Zobraziť všetkých hráčov">Všetci</button>
+                        <button type="button" id="btn-chart-top5" class="chart-quick-btn" onclick="setChartPlayersPreset('top5')">Top 5</button>
+                        <button type="button" id="btn-chart-all" class="chart-quick-btn" onclick="setChartPlayersPreset('all')">Všetci</button>
                     </div>
                 </div>
 
@@ -2924,9 +3115,27 @@
                     <label for="cfg-home-city" style="color: var(--tennis-lime); font-weight: 700;">Domovské mesto / okres pre počasie a NEWS (mesto alebo okres)</label>
                     <div class="loc-input-row">
                         <input type="text" id="cfg-home-city" placeholder="napr. Čadca, Žilina, Trenčín, Praha...">
-                        <button type="button" class="btn btn-secondary" onclick="saveHomeLocationFromInput('cfg-home-city')">Uložiť mesto</button>
+                        <button type="button" id="btn-save-home-city" class="btn btn-secondary" onclick="saveHomeLocationFromInput('cfg-home-city')">Uložiť mesto</button>
                     </div>
                     <div id="cfg-location-status" class="loc-status-hint">Bez zadaného domovského mesta – pre počasie sa použije geolokácia prehliadača.</div>
+                </div>
+
+                <!-- PARAMETRE ELO VÝPOČTU (K / D) -->
+                <div class="form-group" style="margin-bottom: 14px; padding: 12px; border-radius: 12px; background: rgba(6, 18, 28, 0.56); border: 1px solid rgba(125, 211, 252, 0.28);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                        <span style="color: var(--blue-accent); font-size:0.78rem; font-weight:800;">Parametre výpočtu ELO (2H aj 4H)</span>
+                        <button type="button" id="btn-reset-elo-params" class="chart-quick-btn" onclick="resetEloParamsDefault()">Obnoviť K=32 · D=200</button>
+                    </div>
+                    <div class="grid-2">
+                        <div>
+                            <label for="cfg-k">Koeficient K (základ 32)</label>
+                            <input type="number" id="cfg-k" value="32" min="1" max="200" step="1" onchange="updateEloParams()">
+                        </div>
+                        <div>
+                            <label for="cfg-d">Faktor D (základ 200)</label>
+                            <input type="number" id="cfg-d" value="200" min="50" max="1000" step="10" onchange="updateEloParams()">
+                        </div>
+                    </div>
                 </div>
 
                 <div style="margin-bottom: 10px;">
@@ -3092,7 +3301,10 @@
     </div>
 
 
-    <!-- MODAL PRE TV GRAFIKU (TABUĽKA / POSLEDNÝ ZÁPAS) -->
+    <input type="file" id="tv-custom-bg-input" accept="image/*" style="display:none" onchange="handleCustomTvBgUpload(event)">
+    <div id="pc-ctx-tooltip" role="tooltip" aria-hidden="true"></div>
+
+    <!-- MODAL PRE TV GRAFIKU (BODY / ELO 2H / ELO 4H / POSLEDNÝ ZÁPAS) -->
     <div class="modal-backdrop" id="tv-modal" onclick="if(event.target===this) closeTvModal()">
         <div class="modal-box tv-modal-box">
             <div class="card-header">
@@ -3101,42 +3313,42 @@
                     Televízna infografika FullHD
                 </div>
                 <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
-                    <button type="button" id="tv-mode-points" class="preset-btn active" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('points')">Body</button>
-                    <button type="button" id="tv-mode-elo2h" class="preset-btn" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('elo2h')">ELO 2H</button>
-                    <button type="button" id="tv-mode-elo4h" class="preset-btn" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('elo4h')">ELO 4H</button>
-                    <button type="button" id="tv-mode-last" class="preset-btn" style="padding:4px 8px; font-size:0.71rem;" onclick="setTvMode('last')">Posledný</button>
-                    <button type="button" class="icon-btn" onclick="closeTvModal()">✕</button>
+                    <button type="button" id="tv-mode-points" class="preset-btn tv-mode-btn active" onclick="setTvMode('points')">Body</button>
+                    <button type="button" id="tv-mode-elo2h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo2h')">ELO 2H</button>
+                    <button type="button" id="tv-mode-elo4h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo4h')">ELO 4H</button>
+                    <button type="button" id="tv-mode-last" class="preset-btn tv-mode-btn" onclick="setTvMode('last')">Posledný</button>
+                    <button type="button" id="btn-close-tv-x" class="icon-btn" onclick="closeTvModal()">✕</button>
                 </div>
             </div>
             <canvas id="tvCanvas" width="1920" height="1080"></canvas>
             <div class="tv-controls-grid">
                 <div class="tv-ctrl-card">
                     <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Blur pod tabuľkou</span>
+                        <span class="tv-ctrl-label">Blur pozadia</span>
                         <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)" title="Znížiť blur o 10 %">−</button>
-                            <span class="tv-pct-badge" id="tv-blur-val" onclick="setTvBlur(50)" title="Kliknutím obnovíš predvolených 50 %">50%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)" title="Zvýšiť blur o 10 %">+</button>
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
+                            <span class="tv-pct-badge" id="tv-blur-val" onclick="setTvBlur(50)">50%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
                         </div>
                     </div>
                     <input type="range" id="tv-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
                 </div>
                 <div class="tv-ctrl-card">
                     <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Priehľadnosť pod tabuľkou</span>
+                        <span class="tv-ctrl-label">Priehľadnosť</span>
                         <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)" title="Znížiť priehľadnosť o 10 %">−</button>
-                            <span class="tv-pct-badge" id="tv-transp-val" onclick="setTvTransparency(40)" title="Kliknutím obnovíš predvolených 40 %">40%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)" title="Zvýšiť priehľadnosť o 10 %">+</button>
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
+                            <span class="tv-pct-badge" id="tv-transp-val" onclick="setTvTransparency(40)">40%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
                         </div>
                     </div>
                     <input type="range" id="tv-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
                 </div>
             </div>
             <div class="grid-3">
-                <button type="button" class="btn btn-primary" onclick="downloadTvGraphic('png')">Stiahnuť PNG</button>
-                <button type="button" class="btn btn-primary" onclick="downloadTvGraphic('jpg')">Stiahnuť JPG</button>
-                <button type="button" class="btn btn-secondary" onclick="closeTvModal()">Zavrieť</button>
+                <button type="button" id="btn-tv-dl-png" class="btn btn-primary" onclick="downloadTvGraphic('png')">Stiahnuť PNG</button>
+                <button type="button" id="btn-tv-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
+                <button type="button" id="btn-tv-close" class="btn btn-secondary" onclick="closeTvModal()">Zavrieť</button>
             </div>
         </div>
     </div>
@@ -3147,66 +3359,69 @@
             <div class="card-header">
                 <div class="card-title">
                     <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
-                    Televízny graf bodov FullHD
+                    <span id="tv-chart-modal-title">Televízny graf FullHD</span>
                 </div>
-                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" id="tv-chart-metric-points" class="preset-btn tv-mode-btn active" onclick="setTvChartMetric('points')">Body</button>
+                    <button type="button" id="tv-chart-metric-elo2h" class="preset-btn tv-mode-btn" onclick="setTvChartMetric('elo2h')">ELO 2H</button>
+                    <button type="button" id="tv-chart-metric-elo4h" class="preset-btn tv-mode-btn" onclick="setTvChartMetric('elo4h')">ELO 4H</button>
                     <span class="chart-range-pill" id="tv-chart-range-label">—</span>
-                    <button type="button" class="icon-btn" onclick="closeTvChartModal()">✕</button>
+                    <button type="button" id="btn-close-tv-chart-x" class="icon-btn" onclick="closeTvChartModal()">✕</button>
                 </div>
             </div>
             <div class="chart-mode-row" style="margin-bottom:8px;">
-                <div class="h2h-pill-group">
+                <div class="h2h-pill-group" id="tv-chart-period-group">
                     <button type="button" id="tv-chart-mode-6" class="preset-btn" onclick="setTvChartMode(6)">6 mes.</button>
                     <button type="button" id="tv-chart-mode-12" class="preset-btn active" onclick="setTvChartMode(12)">1 rok</button>
                     <button type="button" id="tv-chart-mode-0" class="preset-btn" onclick="setTvChartMode(0)">All-time</button>
                 </div>
                 <div class="chart-quick-btns">
-                    <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('top5'); renderTvChartPlayerChips(); renderTvChartCanvas();">Top 5</button>
-                    <button type="button" class="chart-quick-btn" onclick="setChartPlayersPreset('all'); renderTvChartPlayerChips(); renderTvChartCanvas();">Všetci</button>
+                    <button type="button" id="btn-tv-chart-top5" class="chart-quick-btn" onclick="setChartPlayersPreset('top5'); renderTvChartPlayerChips(); renderTvChartCanvas();">Top 5</button>
+                    <button type="button" id="btn-tv-chart-all" class="chart-quick-btn" onclick="setChartPlayersPreset('all'); renderTvChartPlayerChips(); renderTvChartCanvas();">Všetci</button>
                 </div>
             </div>
             <div class="tv-chart-chips" id="tv-chart-player-chips"></div>
             <canvas id="tvChartCanvas" width="1920" height="1080"></canvas>
             <div class="chart-nav-bar" style="margin-top:0; margin-bottom:10px;">
-                <button type="button" class="chart-nav-btn" id="tv-chart-first-btn" onclick="jumpTvChartWindow('start')" title="Na začiatok histórie">«</button>
-                <button type="button" class="chart-nav-btn" id="tv-chart-prev-btn" onclick="panTvChartWindow(-1)" title="Starší krok (doľava)">‹</button>
+                <button type="button" class="chart-nav-btn" id="tv-chart-first-btn" onclick="jumpTvChartWindow('start')">«</button>
+                <button type="button" class="chart-nav-btn" id="tv-chart-prev-btn" onclick="panTvChartWindow(-1)">‹</button>
                 <input type="range" id="tv-chart-slider" class="tv-range" min="0" max="0" step="1" value="0" oninput="setTvChartWindowStart(this.value)">
-                <button type="button" class="chart-nav-btn" id="tv-chart-next-btn" onclick="panTvChartWindow(1)" title="Novší krok (doprava)">›</button>
-                <button type="button" class="chart-nav-btn" id="tv-chart-last-btn" onclick="jumpTvChartWindow('end')" title="Najnovších 10 krokov">»</button>
+                <button type="button" class="chart-nav-btn" id="tv-chart-next-btn" onclick="panTvChartWindow(1)">›</button>
+                <button type="button" class="chart-nav-btn" id="tv-chart-last-btn" onclick="jumpTvChartWindow('end')">»</button>
             </div>
             <div class="tv-controls-grid">
                 <div class="tv-ctrl-card">
                     <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Blur pod grafom</span>
+                        <span class="tv-ctrl-label">Blur pozadia</span>
                         <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)" title="Znížiť blur o 10 %">−</button>
-                            <span class="tv-pct-badge" id="tv-chart-blur-val" onclick="setTvBlur(50)" title="Kliknutím obnovíš predvolených 50 %">50%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)" title="Zvýšiť blur o 10 %">+</button>
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
+                            <span class="tv-pct-badge" id="tv-chart-blur-val" onclick="setTvBlur(50)">50%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
                         </div>
                     </div>
                     <input type="range" id="tv-chart-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
                 </div>
                 <div class="tv-ctrl-card">
                     <div class="tv-ctrl-top">
-                        <span class="tv-ctrl-label">Priehľadnosť pod grafom</span>
+                        <span class="tv-ctrl-label">Priehľadnosť</span>
                         <div class="tv-ctrl-steppers">
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)" title="Znížiť priehľadnosť o 10 %">−</button>
-                            <span class="tv-pct-badge" id="tv-chart-transp-val" onclick="setTvTransparency(40)" title="Kliknutím obnovíš predvolených 40 %">40%</span>
-                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)" title="Zvýšiť priehľadnosť o 10 %">+</button>
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
+                            <span class="tv-pct-badge" id="tv-chart-transp-val" onclick="setTvTransparency(40)">40%</span>
+                            <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
                         </div>
                     </div>
                     <input type="range" id="tv-chart-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
                 </div>
             </div>
             <div class="grid-3">
-                <button type="button" class="btn btn-primary" onclick="downloadTvChartGraphic('png')">Stiahnuť PNG</button>
-                <button type="button" class="btn btn-primary" onclick="downloadTvChartGraphic('jpg')">Stiahnuť JPG</button>
-                <button type="button" class="btn btn-secondary" onclick="closeTvChartModal()">Zavrieť</button>
+                <button type="button" id="btn-tv-chart-dl-png" class="btn btn-primary" onclick="downloadTvChartGraphic('png')">Stiahnuť PNG</button>
+                <button type="button" id="btn-tv-chart-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
+                <button type="button" id="btn-tv-chart-close" class="btn btn-secondary" onclick="closeTvChartModal()">Zavrieť</button>
             </div>
         </div>
     </div>
 
-    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v1.0) -->
+    <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v1.1) -->
     <div class="bottom-dock">
         <div class="news-bar" id="news-bar" aria-label="Tenisové správy, počasie a štatistiky">
             <button type="button" class="news-badge" id="news-badge-btn" onclick="reshuffleNewsTicker()" title="Kliknutím premiešaš poradie správ">
@@ -3279,6 +3494,8 @@
         let state = {
             config: {
                 windowMonths: 12,
+                K: 32,
+                D: 200,
                 location: { name: "", lat: null, lon: null }
             },
             players: [],
@@ -3298,8 +3515,27 @@
             dir: "asc"
         };
 
-        const ELO_K = 32;
-        const ELO_D = 200;
+        function getEloK() {
+            const k = Number(state.config && state.config.K);
+            return (isFinite(k) && k > 0) ? k : 32;
+        }
+        function getEloD() {
+            const d = Number(state.config && state.config.D);
+            return (isFinite(d) && d > 0) ? d : 200;
+        }
+        function getPlayerBaseElo(playerObj) {
+            return (playerObj && typeof playerObj.baseElo === "number" && isFinite(playerObj.baseElo))
+                ? playerObj.baseElo
+                : 1500.0;
+        }
+        function getPlayerCurrentElo(playerId, is4H) {
+            const list = is4H ? computedElo4H : computedElo2H;
+            const found = list.find(p => p.id === playerId);
+            if (found) return found.elo;
+            const rawP = state.players.find(p => p.id === playerId);
+            return getPlayerBaseElo(rawP);
+        }
+
         let tableViewMode = "points"; // "points" | "elo2h" | "elo4h"
 
         let computedPlayers = [];
@@ -3311,6 +3547,8 @@
         let elo4HMatchesCount = 0;
         let elo2HLeaderSnaps = [];
         let elo4HLeaderSnaps = [];
+        let elo2HTimelinePoints = [];
+        let elo4HTimelinePoints = [];
 
         let h2hMode = "players";      // "players" | "teams"
         let h2hTypeFilter = "all";    // "all" | "2H" | "4H"
@@ -3320,6 +3558,7 @@
         let computedAchievements = [];
 
         const CHART_WINDOW_SIZE = 10;
+        let chartMetric = "points";   // "points" | "elo2h" | "elo4h"
         let chartModeMonths = 12;     // 6 | 12 | 0 (All-time)
         let chartTimelinePoints = [];
         let chartInteractiveHits = [];
@@ -3506,10 +3745,14 @@
         /* ==================== NORMALIZÁCIA A UKLADANIE STAVU ==================== */
         function normalizeState() {
             if (!state.config || typeof state.config !== "object") {
-                state.config = { windowMonths: 12, location: { name: "", lat: null, lon: null } };
+                state.config = { windowMonths: 12, K: 32, D: 200, location: { name: "", lat: null, lon: null } };
             }
             const wm = Number(state.config.windowMonths);
             state.config.windowMonths = VALID_WINDOWS.includes(wm) ? wm : 12;
+            const kVal = Number(state.config.K);
+            const dVal = Number(state.config.D);
+            state.config.K = (isFinite(kVal) && kVal > 0) ? kVal : 32;
+            state.config.D = (isFinite(dVal) && dVal > 0) ? dVal : 200;
             state.config.location = normalizeLocationConfig(state.config.location);
 
             if (!Array.isArray(state.players)) state.players = [];
@@ -3674,18 +3917,22 @@
                         windowMonths: forceOverwrite
                             ? (VALID_WINDOWS.includes(Number(rCfg.windowMonths)) ? Number(rCfg.windowMonths) : 12)
                             : preservedWindow,
+                        K: (Number(rCfg.K) > 0) ? Number(rCfg.K) : 32,
+                        D: (Number(rCfg.D) > 0) ? Number(rCfg.D) : 200,
                         location: rCfg.location || { name: "", lat: null, lon: null }
                     },
                     players: remoteData.players,
                     matches: remoteData.matches,
                     updatedAt: remoteUpdated || Date.now()
                 };
+                tvCustomBgImage = null;
                 normalizeState();
                 sortMatchesChronologically();
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
                 recalculateAll();
                 populateSelects();
                 refreshAllViews();
+                scheduleTvRender();
                 fetchHomeWeather(false);
 
                 setDbButtonSyncedState(true);
@@ -3919,20 +4166,21 @@
 
         /* ==================== VÝPOČET ELO 2H (ELO2MASTER) & ELO 4H (ELO4MASTER) ==================== */
         function computeEloRatings() {
-            const K = ELO_K;
-            const D = ELO_D;
+            const K = getEloK();
+            const D = getEloD();
             const today = getTodayMidnight();
 
             const initEloMap = () => {
                 const map = {};
                 state.players.forEach((p, idx) => {
+                    const startElo = getPlayerBaseElo(p);
                     map[p.id] = {
                         ...p,
                         color: p.color || PLAYER_COLORS[idx % PLAYER_COLORS.length],
-                        elo: 1500.0,
-                        effectiveStartElo: 1500.0,
-                        minElo: 1500.0,
-                        maxElo: 1500.0,
+                        elo: startElo,
+                        effectiveStartElo: startElo,
+                        minElo: startElo,
+                        maxElo: startElo,
                         lastDelta: 0,
                         matches: 0,
                         wins: 0,
@@ -3976,6 +4224,14 @@
             let last2HMatchDelta = null;
             elo2HMatchesCount = 0;
             elo2HLeaderSnaps = [];
+            elo2HTimelinePoints = [{
+                step: 0,
+                label: "Štart",
+                date: "",
+                title: "Štart histórie ELO 2H (počiatočné ELO)",
+                match: null,
+                elos: Object.fromEntries(Object.values(map2H).map(p => [p.id, p.elo]))
+            }];
 
             state.matches.forEach(m => {
                 if (m.type !== "2H") return;
@@ -4048,6 +4304,15 @@
                     cm.eloTeam1 = [{ id: pA.id, name: pA.name, before: rA, after: newEloA }];
                     cm.eloTeam2 = [{ id: pB.id, name: pB.name, before: rB, after: newEloB }];
                     elo2HLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map2H) });
+                    const gemsPart = cm.gems ? ` (${cm.gems})` : "";
+                    elo2HTimelinePoints.push({
+                        step: elo2HTimelinePoints.length,
+                        label: `#${elo2HMatchesCount}`,
+                        date: cm.date,
+                        title: `2H #${elo2HMatchesCount} (${formatDateSk(cm.date)}): ${cm.teamNameA} vs ${cm.teamNameB} ${cm.sets1}:${cm.sets2}${gemsPart}`,
+                        match: cm,
+                        elos: Object.fromEntries(Object.values(map2H).map(p => [p.id, p.elo]))
+                    });
                 }
             });
 
@@ -4056,6 +4321,14 @@
             let last4HMatchDelta = null;
             elo4HMatchesCount = 0;
             elo4HLeaderSnaps = [];
+            elo4HTimelinePoints = [{
+                step: 0,
+                label: "Štart",
+                date: "",
+                title: "Štart histórie ELO 4H (počiatočné ELO)",
+                match: null,
+                elos: Object.fromEntries(Object.values(map4H).map(p => [p.id, p.elo]))
+            }];
 
             state.matches.forEach(m => {
                 if (m.type !== "4H") return;
@@ -4127,6 +4400,15 @@
                         { id: pB2.id, name: pB2.name, before: rB2, after: pB2.elo }
                     ];
                     elo4HLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map4H) });
+                    const gemsPart = cm.gems ? ` (${cm.gems})` : "";
+                    elo4HTimelinePoints.push({
+                        step: elo4HTimelinePoints.length,
+                        label: `#${elo4HMatchesCount}`,
+                        date: cm.date,
+                        title: `4H #${elo4HMatchesCount} (${formatDateSk(cm.date)}): ${cm.teamNameA} vs ${cm.teamNameB} ${cm.sets1}:${cm.sets2}${gemsPart}`,
+                        match: cm,
+                        elos: Object.fromEntries(Object.values(map4H).map(p => [p.id, p.elo]))
+                    });
                 }
             });
 
@@ -4184,6 +4466,15 @@
         }
 
         /* ==================== RENDER TABUĽKY & POSLEDNÉHO ZÁPASU ==================== */
+        function triggerGreenBtnFlash(btnEl) {
+            if (!btnEl) return;
+            btnEl.classList.remove("flash-green");
+            void btnEl.offsetWidth;
+            btnEl.classList.add("flash-green");
+            clearTimeout(btnEl._flashTimer);
+            btnEl._flashTimer = setTimeout(() => btnEl.classList.remove("flash-green"), 400);
+        }
+
         function setTableViewMode(mode) {
             const validMode = (mode === "elo2h" || mode === "elo4h") ? mode : "points";
             tableViewMode = validMode;
@@ -4191,6 +4482,7 @@
             document.getElementById("tmode-btn-points").classList.toggle("active", tableViewMode === "points");
             document.getElementById("tmode-btn-elo2h").classList.toggle("active", tableViewMode === "elo2h");
             document.getElementById("tmode-btn-elo4h").classList.toggle("active", tableViewMode === "elo4h");
+            triggerGreenBtnFlash(document.getElementById(`tmode-btn-${validMode}`));
 
             if (tableViewMode === "points") {
                 tableSort = { key: "rank", dir: "asc" };
@@ -4407,12 +4699,12 @@
                         : `ELO tabuľka – Dvojhra 2H (${srcList.length} hráčov)`;
                 }
                 if (rangePill) {
-                    rangePill.textContent = `K=${ELO_K} · D=${ELO_D} · ${mCount} záp.`;
+                    rangePill.textContent = `K=${getEloK()} · D=${getEloD()} · ${mCount} záp.`;
                 }
                 if (legendEl) {
                     legendEl.innerHTML = isDoubles
-                        ? `<span>👥 <strong>ELO 4H:</strong> K=${ELO_K} · D=${ELO_D} · priemer dvojice · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 4H (1+ rok)</span>`
-                        : `<span>🎾 <strong>ELO 2H:</strong> K=${ELO_K} · D=${ELO_D} · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 2H (1+ rok)</span>`;
+                        ? `<span>👥 <strong>ELO 4H:</strong> K=${getEloK()} · D=${getEloD()} · priemer dvojice · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 4H (1+ rok)</span>`
+                        : `<span>🎾 <strong>ELO 2H:</strong> K=${getEloK()} · D=${getEloD()} · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 2H (1+ rok)</span>`;
                 }
 
                 thead.innerHTML = `
@@ -4629,6 +4921,7 @@
         /* ==================== SPRÁVA HRÁČOV ==================== */
         function addNewPlayer() {
             const nameInput = document.getElementById("new-player-name");
+            const eloInput = document.getElementById("new-player-elo");
             const name = nameInput.value.trim();
             if (!name) {
                 showToast("Zadaj meno hráča!", true);
@@ -4641,15 +4934,21 @@
                 return;
             }
 
+            const parsedElo = eloInput ? parseFloat(eloInput.value) : 1500;
+            const baseElo = (isFinite(parsedElo) && parsedElo > 0) ? Math.round(parsedElo * 10) / 10 : 1500.0;
+
             const color = PLAYER_COLORS[state.players.length % PLAYER_COLORS.length];
-            state.players.push({ id: cleanId, name, color });
+            const newPl = { id: cleanId, name, color };
+            if (baseElo !== 1500.0) newPl.baseElo = baseElo;
+            state.players.push(newPl);
             nameInput.value = "";
+            if (eloInput) eloInput.value = "1500";
 
             saveState();
             recalculateAll();
             populateSelects();
             refreshAllViews();
-            showToast(`Hráč ${name} bol pridaný (začína s 0.00 bodmi).`);
+            showToast(`Hráč ${name} bol pridaný (0.00 bodov · štart ${baseElo.toFixed(1)} ELO).`);
         }
 
         /* ==================== FORMULÁRE ZÁPASOV (2H / 4H) ==================== */
@@ -4692,6 +4991,7 @@
                 "hist-t1p1", "hist-t1p2", "hist-t2p1", "hist-t2p2",
                 "edit-t1p1", "edit-t1p2", "edit-t2p1", "edit-t2p2",
                 "h2h-p1", "h2h-p2", "h2h-t1p1", "h2h-t1p2", "h2h-t2p1", "h2h-t2p2",
+                "mm-p1", "mm-p2", "mm-p3", "mm-p4",
                 "profile-select"
             ];
             const prevValues = {};
@@ -4717,6 +5017,7 @@
             ensureUniqueSelects(["match-t1p1", "match-t1p2", "match-t2p1", "match-t2p2"], formModes.new === "4H" ? 4 : 2);
             ensureUniqueSelects(["hist-t1p1", "hist-t1p2", "hist-t2p1", "hist-t2p2"], formModes.hist === "4H" ? 4 : 2);
             ensureUniqueSelects(["h2h-t1p1", "h2h-t1p2", "h2h-t2p1", "h2h-t2p2"], 4);
+            ensureUniqueSelects(["mm-p1", "mm-p2", "mm-p3", "mm-p4"], 4);
 
             const hp1 = document.getElementById("h2h-p1");
             const hp2 = document.getElementById("h2h-p2");
@@ -4761,7 +5062,9 @@
             const outLbl = document.getElementById("preview-outcome-label");
             const hintEl = document.getElementById("preview-expiry-hint");
 
-            modeLbl.textContent = is4H ? "Živý náhľad bodovania (Štvorhra 4H)" : "Živý náhľad bodovania (Dvojhra 2H)";
+            modeLbl.textContent = is4H
+                ? "Živý náhľad: Body + ELO 4H (Priemer dvojíc)"
+                : "Živý náhľad: Body + ELO 2H";
 
             const reqCount = is4H ? 4 : 2;
             if (t1Objs.length < (is4H ? 2 : 1) || t2Objs.length < (is4H ? 2 : 1)) {
@@ -4786,8 +5089,35 @@
             const nameA = t1Objs.map(p => p.name).join(" / ");
             const nameB = t2Objs.map(p => p.name).join(" / ");
 
-            document.getElementById("new-team1-pts").textContent = t1Objs.map(p => `${p.name}: ${formatPts(p.points)} b`).join(" · ");
-            document.getElementById("new-team2-pts").textContent = t2Objs.map(p => `${p.name}: ${formatPts(p.points)} b`).join(" · ");
+            const elos1 = t1Objs.map(p => getPlayerCurrentElo(p.id, is4H));
+            const elos2 = t2Objs.map(p => getPlayerCurrentElo(p.id, is4H));
+            const avgEloA = elos1.reduce((a, b) => a + b, 0) / elos1.length;
+            const avgEloB = elos2.reduce((a, b) => a + b, 0) / elos2.length;
+
+            document.getElementById("new-team1-pts").textContent = is4H
+                ? `Ø ${avgEloA.toFixed(1)} ELO · ` + t1Objs.map(p => `${p.name} ${formatPts(p.points)}b`).join(" / ")
+                : `${avgEloA.toFixed(1)} ELO · ${formatPts(t1Objs[0].points)} b`;
+            document.getElementById("new-team2-pts").textContent = is4H
+                ? `Ø ${avgEloB.toFixed(1)} ELO · ` + t2Objs.map(p => `${p.name} ${formatPts(p.points)}b`).join(" / ")
+                : `${avgEloB.toFixed(1)} ELO · ${formatPts(t2Objs[0].points)} b`;
+
+            const K = getEloK();
+            const D = getEloD();
+            const eA = 1 / (1 + Math.pow(10, (avgEloB - avgEloA) / D));
+            const eB = 1 - eA;
+            const sA = outcome === "A" ? 1 : (outcome === "B" ? 0 : 0.5);
+            const rawDeltaA = K * (sA - eA);
+
+            let deltaA, deltaB;
+            if (is4H) {
+                deltaA = Math.round(rawDeltaA * 10) / 10;
+                deltaB = -deltaA;
+            } else {
+                const newA = Math.round((avgEloA + rawDeltaA) * 10) / 10;
+                const newB = Math.round((avgEloB - rawDeltaA) * 10) / 10;
+                deltaA = Math.round((newA - avgEloA) * 10) / 10;
+                deltaB = Math.round((newB - avgEloB) * 10) / 10;
+            }
 
             if (hasDup) {
                 outLbl.textContent = `⚠️ Vyber ${reqCount} rôznych hráčov!`;
@@ -4811,27 +5141,107 @@
             const expDt = wm > 0 ? addCalendarMonths(dateStr, wm) : null;
             const countsNow = wm === 0 || (expDt && diffDays(expDt, today) >= 0);
 
-            document.getElementById("prev-name-a").textContent = nameA;
-            document.getElementById("prev-name-b").textContent = nameB;
-            document.getElementById("prev-gain-a").innerHTML = `Zisk: <strong style="color:${p1 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p1)} b</strong>${is4H ? ' / hráč' : ''}`;
-            document.getElementById("prev-gain-b").innerHTML = `Zisk: <strong style="color:${p2 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p2)} b</strong>${is4H ? ' / hráč' : ''}`;
+            const fmtDelta = (d) => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+            const colDelta = (d) => d > 0 ? "var(--win)" : (d < 0 ? "var(--loss)" : "var(--text-muted)");
+
+            document.getElementById("prev-name-a").textContent = is4H ? `${nameA} (Ø ${avgEloA.toFixed(1)})` : `${nameA} (${avgEloA.toFixed(1)})`;
+            document.getElementById("prev-name-b").textContent = is4H ? `${nameB} (Ø ${avgEloB.toFixed(1)})` : `${nameB} (${avgEloB.toFixed(1)})`;
+
+            document.getElementById("prev-gain-a").innerHTML =
+                `Body: <strong style="color:${p1 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p1)} b</strong>${is4H ? '/h' : ''} · ` +
+                `ELO: <strong style="color:${colDelta(deltaA)}">${fmtDelta(deltaA)}</strong> <span style="opacity:0.8;">(${(eA * 100).toFixed(0)}%)</span>`;
+            document.getElementById("prev-gain-b").innerHTML =
+                `Body: <strong style="color:${p2 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p2)} b</strong>${is4H ? '/h' : ''} · ` +
+                `ELO: <strong style="color:${colDelta(deltaB)}">${fmtDelta(deltaB)}</strong> <span style="opacity:0.8;">(${(eB * 100).toFixed(0)}%)</span>`;
 
             const addA = countsNow ? p1 : 0;
             const addB = countsNow ? p2 : 0;
-            document.getElementById("prev-total-a").innerHTML = t1Objs.map(p =>
-                `<div>${escapeHtml(p.name)}: <strong>${formatPts(p.points + addA)} b</strong></div>`
-            ).join("");
-            document.getElementById("prev-total-b").innerHTML = t2Objs.map(p =>
-                `<div>${escapeHtml(p.name)}: <strong>${formatPts(p.points + addB)} b</strong></div>`
-            ).join("");
+            document.getElementById("prev-total-a").innerHTML = t1Objs.map((p, idx) => {
+                const newElo = (Math.round((elos1[idx] + deltaA) * 10) / 10).toFixed(1);
+                return `<div>${escapeHtml(p.name)}: <strong>${formatPts(p.points + addA)} b</strong> · <span style="color:#a5f3fc;">${newElo} ELO</span></div>`;
+            }).join("");
+            document.getElementById("prev-total-b").innerHTML = t2Objs.map((p, idx) => {
+                const newElo = (Math.round((elos2[idx] + deltaB) * 10) / 10).toFixed(1);
+                return `<div>${escapeHtml(p.name)}: <strong>${formatPts(p.points + addB)} b</strong> · <span style="color:#a5f3fc;">${newElo} ELO</span></div>`;
+            }).join("");
 
             if (wm === 0) {
-                hintEl.innerHTML = `V režime <strong>All-time</strong> platia body zo zápasu neobmedzene.`;
+                hintEl.innerHTML = `V režime <strong>All-time</strong> platia body neobmedzene · ELO sa počíta s <strong>K=${K}, D=${D}</strong>.`;
             } else if (countsNow && expDt) {
-                hintEl.innerHTML = `Pri lehote <strong>${wm} mes.</strong> budú body z tohto zápasu platné do <strong style="color:var(--tennis-lime);">${formatDateSk(expDt)}</strong>.`;
+                hintEl.innerHTML = `Body pri lehote <strong>${wm} mes.</strong> platia do <strong style="color:var(--tennis-lime);">${formatDateSk(expDt)}</strong> · ELO (${is4H ? '4H' : '2H'}): <strong>K=${K}, D=${D}</strong>.`;
             } else if (expDt) {
-                hintEl.innerHTML = `<span style="color:var(--warn);">Upozornenie: Dátum zápasu je starší ako aktuálna lehota (${wm} mes.) – body už vypršali ${formatDateSk(expDt)}, ale zápas sa uloží do histórie.</span>`;
+                hintEl.innerHTML = `<span style="color:var(--warn);">Dátum je starší ako lehota (${wm} mes.) – body už vypršali ${formatDateSk(expDt)}, ale zápas sa uloží do histórie aj do ELO.</span>`;
             }
+        }
+
+        function renderMatchmaker() {
+            const box = document.getElementById("matchmaker-results");
+            if (!box) return;
+            const ids = ["mm-p1", "mm-p2", "mm-p3", "mm-p4"].map(id => {
+                const el = document.getElementById(id);
+                return el ? el.value : "";
+            });
+            if (ids.some(x => !x) || new Set(ids).size < 4) {
+                box.innerHTML = `<div style="color:var(--loss); font-size:0.8rem; font-weight:700;">Vyber 4 rôznych tenistov pre výpočet najvyrovnanejšieho rozdelenia dvojíc podľa ELO 4H.</div>`;
+                return;
+            }
+
+            const pls = ids.map(id => {
+                const p = computedPlayers.find(x => x.id === id);
+                return p ? { ...p, elo4: getPlayerCurrentElo(p.id, true) } : null;
+            });
+            if (pls.some(p => !p)) return;
+
+            const D = getEloD();
+            const combos = [
+                { a1: pls[0], a2: pls[1], b1: pls[2], b2: pls[3] },
+                { a1: pls[0], a2: pls[2], b1: pls[1], b2: pls[3] },
+                { a1: pls[0], a2: pls[3], b1: pls[1], b2: pls[2] }
+            ].map(c => {
+                const avgA = (c.a1.elo4 + c.a2.elo4) / 2;
+                const avgB = (c.b1.elo4 + c.b2.elo4) / 2;
+                const diff = Math.abs(avgA - avgB);
+                const probA = 1 / (1 + Math.pow(10, (avgB - avgA) / D));
+                return { ...c, avgA, avgB, diff, probA, probB: 1 - probA };
+            }).sort((x, y) => x.diff - y.diff);
+
+            box.innerHTML = combos.map((c, idx) => {
+                const isBest = idx === 0;
+                return `
+                    <div class="mm-option-card ${isBest ? 'best-balance' : ''}">
+                        <div class="mm-option-info">
+                            <div style="font-size:0.7rem; font-weight:800; color:${isBest ? 'var(--tennis-lime)' : 'var(--text-muted)'}; text-transform:uppercase;">
+                                ${isBest ? '★ Najvyrovnanejší zápas (Odporúčané)' : `Alternatíva #${idx + 1}`} · Rozdiel Ø ${c.diff.toFixed(1)} ELO
+                            </div>
+                            <div style="font-size:0.87rem; font-weight:700; margin-top:2px;">
+                                ${escapeHtml(c.a1.name)} / ${escapeHtml(c.a2.name)} <span style="color:var(--text-muted); font-size:0.75rem;">(Ø ${c.avgA.toFixed(1)})</span>
+                                <span style="color:var(--clay-light); margin:0 5px;">VS</span>
+                                ${escapeHtml(c.b1.name)} / ${escapeHtml(c.b2.name)} <span style="color:var(--text-muted); font-size:0.75rem;">(Ø ${c.avgB.toFixed(1)})</span>
+                            </div>
+                            <div style="font-size:0.74rem; color:var(--text-muted); margin-top:2px;">
+                                Šanca na výhru (ELO 4H): <strong>${(c.probA * 100).toFixed(1)}%</strong> : <strong>${(c.probB * 100).toFixed(1)}%</strong>
+                            </div>
+                        </div>
+                        <button type="button" class="preset-btn mm-apply-btn"
+                            data-ctx-title="Preniesť dvojice do zápisu"
+                            data-ctx-desc="Prepne formulár hore na Štvorhru (4H) a doplní tieto dve dvojice bez prepísania zadaných setov."
+                            onclick="applyMatchmakerCombo('${escapeHtml(c.a1.id)}','${escapeHtml(c.a2.id)}','${escapeHtml(c.b1.id)}','${escapeHtml(c.b2.id)}')">
+                            Použiť v zápise ↑
+                        </button>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function applyMatchmakerCombo(a1, a2, b1, b2) {
+            setMatchFormType("new", "4H");
+            document.getElementById("match-t1p1").value = a1;
+            document.getElementById("match-t1p2").value = a2;
+            document.getElementById("match-t2p1").value = b1;
+            document.getElementById("match-t2p2").value = b2;
+            updateMatchPreview();
+            document.getElementById("new-match-form-card").scrollIntoView({ behavior: "smooth" });
+            showToast("Dvojice boli prenesené do zápisu štvorhry (4H)!");
         }
 
         function collectAndValidateMatch(scope) {
@@ -4909,7 +5319,80 @@
             showToast(`Zápas zaradený na pozíciu #${inserted ? inserted.index : computedMatches.length} (${formatDateSk(payload.date)})!`);
         }
 
-        /* ==================== GRAF VÝVOJA BODOV (v0.4) ==================== */
+        /* ==================== GRAF VÝVOJA BODOV & ELO 2H / 4H (v1.1) ==================== */
+        function getActiveChartTimeline() {
+            if (chartMetric === "elo2h") return elo2HTimelinePoints;
+            if (chartMetric === "elo4h") return elo4HTimelinePoints;
+            return chartTimelinePoints;
+        }
+
+        function getActiveChartPlayersPool() {
+            if (chartMetric === "elo2h") return computedElo2H;
+            if (chartMetric === "elo4h") return computedElo4H;
+            return computedPlayers;
+        }
+
+        function getPointMetricVal(pt, playerId) {
+            if (!pt) return 0;
+            if (chartMetric === "points") return (pt.pts && typeof pt.pts[playerId] === "number") ? pt.pts[playerId] : 0;
+            return (pt.elos && typeof pt.elos[playerId] === "number") ? pt.elos[playerId] : 1500.0;
+        }
+
+        function syncChartMetricUI() {
+            const isPts = chartMetric === "points";
+            ["points", "elo2h", "elo4h"].forEach(m => {
+                const b = document.getElementById(`chart-metric-${m}`);
+                if (b) b.classList.toggle("active", chartMetric === m);
+                const tb = document.getElementById(`tv-chart-metric-${m}`);
+                if (tb) tb.classList.toggle("active", chartMetric === m);
+            });
+            const perGrp = document.getElementById("chart-period-group");
+            if (perGrp) perGrp.style.display = isPts ? "inline-flex" : "none";
+            const tvPerGrp = document.getElementById("tv-chart-period-group");
+            if (tvPerGrp) tvPerGrp.style.display = isPts ? "inline-flex" : "none";
+
+            const pref = document.getElementById("chart-title-prefix");
+            if (pref) {
+                pref.textContent = chartMetric === "elo2h"
+                    ? "Vývoj ELO Dvojhra (2H)"
+                    : (chartMetric === "elo4h" ? "Vývoj ELO Štvorhra (4H)" : "Vývoj bodov v čase");
+            }
+            const tvTitle = document.getElementById("tv-chart-modal-title");
+            if (tvTitle) {
+                tvTitle.textContent = chartMetric === "elo2h"
+                    ? "Televízny graf ELO 2H FullHD"
+                    : (chartMetric === "elo4h" ? "Televízny graf ELO 4H FullHD" : "Televízny graf bodov FullHD");
+            }
+        }
+
+        function setChartMetric(metric) {
+            chartMetric = (metric === "elo2h" || metric === "elo4h") ? metric : "points";
+            triggerGreenBtnFlash(document.getElementById(`chart-metric-${chartMetric}`));
+            lastChartHighlightStep = null;
+            chartWindowStart = null;
+            tvChartWindowStart = null;
+            syncChartMetricUI();
+            renderChartChips();
+            drawPointsChart();
+            const tvMod = document.getElementById("tv-chart-modal");
+            if (tvMod && tvMod.classList.contains("open")) {
+                renderTvChartPlayerChips();
+                renderTvChartCanvas();
+            }
+        }
+
+        function setTvChartMetric(metric) {
+            chartMetric = (metric === "elo2h" || metric === "elo4h") ? metric : "points";
+            lastChartHighlightStep = null;
+            chartWindowStart = null;
+            tvChartWindowStart = null;
+            syncChartMetricUI();
+            renderChartChips();
+            drawPointsChart();
+            renderTvChartPlayerChips();
+            renderTvChartCanvas();
+        }
+
         function setChartMode(months) {
             const mVal = Number(months);
             chartModeMonths = (mVal === 6 || mVal === 12 || mVal === 0) ? mVal : 12;
@@ -4923,18 +5406,20 @@
         }
 
         function setChartPlayersPreset(preset) {
+            const pool = getActiveChartPlayersPool();
             if (preset === "all") {
-                computedPlayers.forEach(p => { state.chartVisiblePlayers[p.id] = true; });
+                pool.forEach(p => { state.chartVisiblePlayers[p.id] = true; });
             } else if (preset === "top5") {
-                const lastPt = chartTimelinePoints.length > 0 ? chartTimelinePoints[chartTimelinePoints.length - 1] : null;
-                const ranked = [...computedPlayers].sort((a, b) => {
-                    const va = lastPt ? (lastPt.pts[a.id] || 0) : a.points;
-                    const vb = lastPt ? (lastPt.pts[b.id] || 0) : b.points;
+                const tl = getActiveChartTimeline();
+                const lastPt = tl.length > 0 ? tl[tl.length - 1] : null;
+                const ranked = [...pool].sort((a, b) => {
+                    const va = lastPt ? getPointMetricVal(lastPt, a.id) : (chartMetric === "points" ? a.points : a.elo);
+                    const vb = lastPt ? getPointMetricVal(lastPt, b.id) : (chartMetric === "points" ? b.points : b.elo);
                     if (vb !== va) return vb - va;
                     return a.rank - b.rank;
                 });
                 const topIds = new Set(ranked.slice(0, 5).map(p => p.id));
-                computedPlayers.forEach(p => { state.chartVisiblePlayers[p.id] = topIds.has(p.id); });
+                pool.forEach(p => { state.chartVisiblePlayers[p.id] = topIds.has(p.id); });
             }
             saveState(false);
             renderChartChips();
@@ -4957,7 +5442,6 @@
                 pts: { ...zeroMap }
             }];
 
-            // Predpočítame expiry timestamp pre každý zápas pri zvolenom režime
             const precalc = computedMatches.map(m => {
                 const dt = parseIsoLocal(m.date);
                 const expDt = mode > 0 ? addCalendarMonths(m.date, mode) : null;
@@ -5006,7 +5490,6 @@
                 });
             }
 
-            // Ak je režim 6M alebo 12M a od posledného zápasu uplynul čas, pridáme finálny bod "Dnes"
             if (mode > 0 && precalc.length > 0) {
                 const today = getTodayMidnight();
                 const todayTime = today.getTime();
@@ -5046,15 +5529,17 @@
             }
 
             chartTimelinePoints = ptsTimeline;
-            const newSig = `${mode}_${ptsTimeline.length}`;
+            const newSig = `${chartMetric}_${mode}_${ptsTimeline.length}_${elo2HTimelinePoints.length}_${elo4HTimelinePoints.length}`;
             if (newSig !== lastTimelineSig) {
                 lastTimelineSig = newSig;
-                chartWindowStart = null; // skočí na najnovšie okno
+                chartWindowStart = null;
+                tvChartWindowStart = null;
             }
         }
 
         function getChartWindowBounds(startVal) {
-            const total = chartTimelinePoints.length;
+            const tl = getActiveChartTimeline();
+            const total = tl.length;
             if (total === 0) return { start: 0, end: -1, maxStart: 0, count: 0 };
             const winSize = Math.min(CHART_WINDOW_SIZE, total);
             const maxStart = Math.max(0, total - winSize);
@@ -5066,10 +5551,11 @@
         }
 
         function formatChartRangeText(bounds) {
+            const tl = getActiveChartTimeline();
             if (bounds.count === 0) return "—";
-            const pStart = chartTimelinePoints[bounds.start];
-            const pEnd = chartTimelinePoints[bounds.end];
-            const totalSteps = Math.max(0, chartTimelinePoints.length - 1);
+            const pStart = tl[bounds.start];
+            const pEnd = tl[bounds.end];
+            const totalSteps = Math.max(0, tl.length - 1);
             if (!pStart || !pEnd) return "—";
             if (bounds.start === bounds.end) return `${pStart.label} (z ${totalSteps})`;
             return `${pStart.label} – ${pEnd.label} (z ${totalSteps})`;
@@ -5119,27 +5605,31 @@
         }
 
         function renderChartChips() {
+            syncChartMetricUI();
             const wrap = document.getElementById("chart-player-chips");
             if (!wrap) return;
             wrap.innerHTML = "";
+            const tl = getActiveChartTimeline();
+            const pool = getActiveChartPlayersPool();
             const countEl = document.getElementById("chart-steps-count");
-            if (countEl) countEl.textContent = Math.max(0, chartTimelinePoints.length - 1);
+            if (countEl) countEl.textContent = Math.max(0, tl.length - 1);
 
-            const lastPt = chartTimelinePoints.length > 0 ? chartTimelinePoints[chartTimelinePoints.length - 1] : null;
-            const sortedForChips = [...computedPlayers].sort((a, b) => {
-                const va = lastPt ? (lastPt.pts[a.id] || 0) : a.points;
-                const vb = lastPt ? (lastPt.pts[b.id] || 0) : b.points;
+            const lastPt = tl.length > 0 ? tl[tl.length - 1] : null;
+            const sortedForChips = [...pool].sort((a, b) => {
+                const va = lastPt ? getPointMetricVal(lastPt, a.id) : (chartMetric === "points" ? a.points : a.elo);
+                const vb = lastPt ? getPointMetricVal(lastPt, b.id) : (chartMetric === "points" ? b.points : b.elo);
                 if (vb !== va) return vb - va;
                 return a.name.localeCompare(b.name, "sk");
             });
 
             sortedForChips.forEach(p => {
                 const isVis = state.chartVisiblePlayers[p.id] !== false;
-                const val = lastPt ? (lastPt.pts[p.id] || 0) : p.points;
+                const val = lastPt ? getPointMetricVal(lastPt, p.id) : (chartMetric === "points" ? p.points : p.elo);
+                const valTxt = chartMetric === "points" ? `${formatPts(val)} b` : val.toFixed(1);
                 const chip = document.createElement("button");
                 chip.type = "button";
                 chip.className = "player-chip" + (isVis ? " active" : "");
-                chip.innerHTML = `<span class="chip-dot" style="background:${p.color}; opacity:${isVis ? 1 : 0.3}"></span>${escapeHtml(p.name)} (${formatPts(val)} b)`;
+                chip.innerHTML = `<span class="chip-dot" style="background:${p.color}; opacity:${isVis ? 1 : 0.3}"></span>${escapeHtml(p.name)} (${valTxt})`;
                 chip.onclick = () => {
                     state.chartVisiblePlayers[p.id] = !isVis;
                     saveState(false);
@@ -5151,6 +5641,8 @@
         }
 
         function drawPointsChart(highlightStep = null) {
+            const tl = getActiveChartTimeline();
+            const pool = getActiveChartPlayersPool();
             const bounds = getChartWindowBounds(chartWindowStart);
             chartWindowStart = bounds.start;
             syncChartNavUI();
@@ -5168,7 +5660,7 @@
             ctx.scale(dpr, dpr);
             ctx.clearRect(0, 0, width, height);
 
-            const visiblePlayers = computedPlayers.filter(p => state.chartVisiblePlayers[p.id] !== false);
+            const visiblePlayers = pool.filter(p => state.chartVisiblePlayers[p.id] !== false);
             if (visiblePlayers.length === 0 || bounds.count === 0) {
                 ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
                 ctx.font = "13px sans-serif";
@@ -5177,24 +5669,34 @@
                 return;
             }
 
-            const visiblePoints = chartTimelinePoints.slice(bounds.start, bounds.end + 1);
+            const visiblePoints = tl.slice(bounds.start, bounds.end + 1);
+            const isPts = chartMetric === "points";
 
-            let maxVal = 0;
+            let minVal = Infinity, maxVal = -Infinity;
             visiblePoints.forEach(pt => {
                 visiblePlayers.forEach(p => {
-                    const v = pt.pts[p.id] || 0;
+                    const v = getPointMetricVal(pt, p.id);
+                    if (v < minVal) minVal = v;
                     if (v > maxVal) maxVal = v;
                 });
             });
 
-            // Pekné zaokrúhlenie osi Y (od 0 po čistý násobok)
-            const yMin = 0;
-            let yMax = Math.max(2, maxVal * 1.12);
-            if (yMax <= 5) yMax = Math.ceil(yMax);
-            else if (yMax <= 20) yMax = Math.ceil(yMax / 2) * 2;
-            else yMax = Math.ceil(yMax / 5) * 5;
+            let yMin, yMax;
+            if (isPts) {
+                yMin = 0;
+                yMax = Math.max(2, (maxVal > 0 ? maxVal : 0) * 1.12);
+                if (yMax <= 5) yMax = Math.ceil(yMax);
+                else if (yMax <= 20) yMax = Math.ceil(yMax / 2) * 2;
+                else yMax = Math.ceil(yMax / 5) * 5;
+            } else {
+                if (!isFinite(minVal)) { minVal = 1400; maxVal = 1600; }
+                const padElo = Math.max((maxVal - minVal) * 0.14, 14);
+                yMin = Math.floor((minVal - padElo) / 10) * 10;
+                yMax = Math.ceil((maxVal + padElo) / 10) * 10;
+                if (yMax <= yMin) { yMin -= 20; yMax += 20; }
+            }
 
-            const padL = 44, padR = 20, padT = 20, padB = 34;
+            const padL = isPts ? 44 : 48, padR = 20, padT = 20, padB = 34;
             const plotW = width - padL - padR;
             const plotH = height - padT - padB;
 
@@ -5202,11 +5704,8 @@
                 if (visiblePoints.length <= 1) return padL + plotW / 2;
                 return padL + (localIdx / (visiblePoints.length - 1)) * plotW;
             };
-            const getY = (val) => {
-                return padT + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
-            };
+            const getY = (val) => padT + plotH - ((val - yMin) / (yMax - yMin)) * plotH;
 
-            // Vodorovná mriežka + Y osi
             ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
             ctx.lineWidth = 1;
             ctx.fillStyle = "rgba(255, 255, 255, 0.82)";
@@ -5221,11 +5720,10 @@
                 ctx.moveTo(padL, y);
                 ctx.lineTo(width - padR, y);
                 ctx.stroke();
-                const lbl = Number.isInteger(val) ? String(val) : val.toFixed(1);
+                const lbl = isPts ? (Number.isInteger(val) ? String(val) : val.toFixed(1)) : val.toFixed(0);
                 ctx.fillText(lbl, padL - 6, y + 4);
             }
 
-            // Zvislá mriežka + X osi
             ctx.textAlign = "center";
             visiblePoints.forEach((pt, localIdx) => {
                 const x = getX(localIdx);
@@ -5239,7 +5737,6 @@
                 ctx.fillText(pt.label, x, height - 10);
             });
 
-            // Zvýraznená zvislá čiara pri aktívnom bode
             if (highlightStep !== null && highlightStep >= bounds.start && highlightStep <= bounds.end) {
                 const hx = getX(highlightStep - bounds.start);
                 ctx.strokeStyle = "rgba(249, 115, 22, 0.65)";
@@ -5262,7 +5759,7 @@
                 ctx.lineJoin = "round";
                 ctx.beginPath();
                 visiblePoints.forEach((pt, localIdx) => {
-                    const val = pt.pts[p.id] || 0;
+                    const val = getPointMetricVal(pt, p.id);
                     const x = getX(localIdx);
                     const y = getY(val);
                     if (localIdx === 0) ctx.moveTo(x, y);
@@ -5272,7 +5769,7 @@
 
                 visiblePoints.forEach((pt, localIdx) => {
                     const globalIdx = bounds.start + localIdx;
-                    const val = pt.pts[p.id] || 0;
+                    const val = getPointMetricVal(pt, p.id);
                     const x = getX(localIdx);
                     const y = getY(val);
                     const isPlayed = pt.match && (pt.match.team1.includes(p.id) || pt.match.team2.includes(p.id));
@@ -5285,7 +5782,7 @@
                     ctx.fill();
                     ctx.stroke();
 
-                    chartInteractiveHits.push({ x, y, step: globalIdx, player: p, pts: val, point: pt });
+                    chartInteractiveHits.push({ x, y, step: globalIdx, player: p, val, point: pt });
                 });
             });
         }
@@ -5326,8 +5823,10 @@
                     }
                     const infoEl = document.getElementById("chart-point-info");
                     if (infoEl) {
-                        const modeTxt = chartModeMonths === 0 ? "All-time" : `${chartModeMonths}M`;
-                        infoEl.innerHTML = `<strong style="color:${best.player.color}">${escapeHtml(best.player.name)}: ${formatPts(best.pts)} b (${modeTxt})</strong> — ${escapeHtml(best.point.title)}`;
+                        const valStr = chartMetric === "points"
+                            ? `${formatPts(best.val)} b (${chartModeMonths === 0 ? "All-time" : chartModeMonths + "M"})`
+                            : `${best.val.toFixed(1)} ELO (${chartMetric === "elo4h" ? "4H" : "2H"})`;
+                        infoEl.innerHTML = `<strong style="color:${best.player.color}">${escapeHtml(best.player.name)}: ${valStr}</strong> — ${escapeHtml(best.point.title)}`;
                     }
                 }
             };
@@ -5586,12 +6085,21 @@
                         `;
                     }).join("");
 
+                const elo1 = getPlayerCurrentElo(id1, false);
+                const elo2 = getPlayerCurrentElo(id2, false);
+                const K = getEloK();
+                const D = getEloD();
+                const prob1 = 1 / (1 + Math.pow(10, (elo2 - elo1) / D));
+                const prob2 = 1 - prob1;
+                const gain1 = (K * (1 - prob1)).toFixed(1);
+                const gain2 = (K * (1 - prob2)).toFixed(1);
+
                 box.innerHTML = `
                     <div class="preview-box" style="margin-top:0;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:0.94rem; flex-wrap:wrap; gap:6px;">
-                            <span style="color:${p1.color}" class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(p1.id)}')">${escapeHtml(p1.name)} (${formatPts(p1.points)} b)</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:0.92rem; flex-wrap:wrap; gap:6px;">
+                            <span style="color:${p1.color}" class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(p1.id)}')">${escapeHtml(p1.name)} (${formatPts(p1.points)} b · ${elo1.toFixed(1)} ELO)</span>
                             <span style="color:var(--text-muted); font-size:0.78rem;">${total} vzájomných (${cnt2H}× 2H · ${cnt4H}× 4H)</span>
-                            <span style="color:${p2.color}" class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(p2.id)}')">${escapeHtml(p2.name)} (${formatPts(p2.points)} b)</span>
+                            <span style="color:${p2.color}" class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(p2.id)}')">${escapeHtml(p2.name)} (${formatPts(p2.points)} b · ${elo2.toFixed(1)} ELO)</span>
                         </div>
                         <div class="h2h-bar-wrap">
                             <div class="h2h-seg-a" style="width:${pct1}%"></div>
@@ -5604,12 +6112,20 @@
                             <div><strong style="color:var(--blue-accent); font-size:1.08rem;">${w2}</strong><br>Výhry ${escapeHtml(p2.name)}</div>
                         </div>
                         <div style="font-size:0.78rem; color:var(--text-main); margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-                            <span style="color:var(--text-muted);">Sety a Gemy:</span>
+                            <span style="color:var(--text-muted);">1) Sety a Gemy:</span>
                             <span><strong>${sets1} : ${sets2}</strong> (Sety) · <strong>${gems1} : ${gems2}</strong> (Gemy)</span>
                         </div>
                         <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-                            <span style="color:var(--text-muted);">Získané body vo vzájomných:</span>
+                            <span style="color:var(--text-muted);">2) Získané body vo vzájomných:</span>
                             <span><strong style="color:var(--win)">${escapeHtml(p1.name)}: ${formatPts(pts1)} b</strong> · <strong style="color:var(--blue-accent)">${escapeHtml(p2.name)}: ${formatPts(pts2)} b</strong></span>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">3) Šanca na výhru (ELO 2H):</span>
+                            <span><strong style="color:var(--win)">${(prob1 * 100).toFixed(1)}%</strong> : <strong style="color:var(--blue-accent)">${(prob2 * 100).toFixed(1)}%</strong></span>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">4) Zisk ELO 2H pri výhre:</span>
+                            <span>${escapeHtml(p1.name)}: <strong style="color:var(--win)">+${gain1}</strong> | ${escapeHtml(p2.name)}: <strong style="color:var(--win)">+${gain2}</strong></span>
                         </div>
                     </div>
                     ${matchesListHtml}
@@ -5693,12 +6209,21 @@
                         `;
                     }).join("");
 
+                const avgA = (getPlayerCurrentElo(idA1, true) + getPlayerCurrentElo(idA2, true)) / 2;
+                const avgB = (getPlayerCurrentElo(idB1, true) + getPlayerCurrentElo(idB2, true)) / 2;
+                const K = getEloK();
+                const D = getEloD();
+                const probA = 1 / (1 + Math.pow(10, (avgB - avgA) / D));
+                const probB = 1 - probA;
+                const winGainA = (K * (1 - probA)).toFixed(1);
+                const winGainB = (K * (1 - probB)).toFixed(1);
+
                 box.innerHTML = `
                     <div class="preview-box" style="margin-top:0;">
                         <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.90rem; flex-wrap:wrap; gap:4px;">
-                            <span style="color:var(--win)">${escapeHtml(teamTitleA)}</span>
+                            <span style="color:var(--win)">${escapeHtml(teamTitleA)} (Ø ${avgA.toFixed(1)})</span>
                             <span style="color:var(--text-muted); font-size:0.78rem;">${total} vzájomných (4H)</span>
-                            <span style="color:var(--blue-accent)">${escapeHtml(teamTitleB)}</span>
+                            <span style="color:var(--blue-accent)">${escapeHtml(teamTitleB)} (Ø ${avgB.toFixed(1)})</span>
                         </div>
                         <div class="h2h-bar-wrap">
                             <div class="h2h-seg-a" style="width:${pctA}%"></div>
@@ -5711,12 +6236,20 @@
                             <div><strong style="color:var(--blue-accent); font-size:1.08rem;">${wB}</strong><br>Výhry B</div>
                         </div>
                         <div style="font-size:0.78rem; color:var(--text-main); margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-                            <span style="color:var(--text-muted);">Sety a Gemy:</span>
+                            <span style="color:var(--text-muted);">1) Sety a Gemy:</span>
                             <span><strong>${setsA} : ${setsB}</strong> (Sety) · <strong>${gemsA} : ${gemsB}</strong> (Gemy)</span>
                         </div>
                         <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-                            <span style="color:var(--text-muted);">Body (na 1 hráča páru):</span>
+                            <span style="color:var(--text-muted);">2) Body (na 1 hráča páru):</span>
                             <span><strong style="color:var(--win)">A: ${formatPts(ptsA)} b</strong> · <strong style="color:var(--blue-accent)">B: ${formatPts(ptsB)} b</strong></span>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">3) Šanca na výhru (ELO 4H):</span>
+                            <span><strong style="color:var(--win)">${(probA * 100).toFixed(1)}%</strong> : <strong style="color:var(--blue-accent)">${(probB * 100).toFixed(1)}%</strong></span>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">4) Zisk ELO 4H pri výhre:</span>
+                            <span>Tím A: <strong style="color:var(--win)">+${winGainA}</strong> | Tím B: <strong style="color:var(--win)">+${winGainB}</strong></span>
                         </div>
                     </div>
                     ${matchesListHtml}
@@ -6788,6 +7321,8 @@
                         state = {
                             config: {
                                 windowMonths: VALID_WINDOWS.includes(Number(iCfg.windowMonths)) ? Number(iCfg.windowMonths) : 12,
+                                K: (Number(iCfg.K) > 0) ? Number(iCfg.K) : 32,
+                                D: (Number(iCfg.D) > 0) ? Number(iCfg.D) : 200,
                                 location: iCfg.location || { name: "", lat: null, lon: null }
                             },
                             players: imported.players,
@@ -6847,11 +7382,12 @@
             if (!confirm("Naozaj chceš vymazať celú lokálnu databázu (hráčov aj všetky zápasy) a vrátiť aplikáciu do čistého štartu?")) return;
             localStorage.removeItem(STORAGE_KEY);
             state = {
-                config: { windowMonths: 12, location: { name: "", lat: null, lon: null } },
+                config: { windowMonths: 12, K: 32, D: 200, location: { name: "", lat: null, lon: null } },
                 players: [],
                 matches: [],
                 updatedAt: 0
             };
+            tvCustomBgImage = null;
             setDbButtonSyncedState(false);
             recalculateAll();
             populateSelects();
@@ -6866,6 +7402,40 @@
             showToast("Lokálna databáza bola vymazaná (čistý štart).");
         }
 
+
+        function syncEloParamInputsUI() {
+            const kEl = document.getElementById("cfg-k");
+            const dEl = document.getElementById("cfg-d");
+            if (kEl) kEl.value = getEloK();
+            if (dEl) dEl.value = getEloD();
+        }
+
+        function updateEloParams() {
+            const kEl = document.getElementById("cfg-k");
+            const dEl = document.getElementById("cfg-d");
+            const kVal = kEl ? parseFloat(kEl.value) : 32;
+            const dVal = dEl ? parseFloat(dEl.value) : 200;
+            state.config.K = (isFinite(kVal) && kVal > 0) ? kVal : 32;
+            state.config.D = (isFinite(dVal) && dVal > 0) ? dVal : 200;
+            syncEloParamInputsUI();
+            saveState();
+            recalculateAll();
+            populateSelects();
+            refreshAllViews();
+            showToast(`ELO parametre upravené (K=${state.config.K}, D=${state.config.D}).`);
+        }
+
+        function resetEloParamsDefault() {
+            state.config.K = 32;
+            state.config.D = 200;
+            syncEloParamInputsUI();
+            saveState();
+            recalculateAll();
+            populateSelects();
+            refreshAllViews();
+            showToast("Obnovené základné ELO parametre (K=32, D=200).");
+        }
+
         /* ==================== TV GRAFIKA & TV GRAF FULLHD (v0.5) ==================== */
         const TV_SETTINGS_KEY = "TENISTAB_TV_CFG_V1";
         let tvMode = "points"; // "points" | "elo2h" | "elo4h" | "last"
@@ -6875,6 +7445,43 @@
         let tvBgImage = null;
         let tvBgLoaded = false;
         let tvBgPromise = null;
+        let tvCustomBgImage = null;
+
+        function triggerCustomTvBgPicker() {
+            const inp = document.getElementById("tv-custom-bg-input");
+            if (inp) inp.click();
+        }
+
+        function handleCustomTvBgUpload(ev) {
+            const file = ev.target.files && ev.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const rawImg = new Image();
+                rawImg.onload = () => {
+                    const off = document.createElement("canvas");
+                    off.width = 1920;
+                    off.height = 1080;
+                    const octx = off.getContext("2d");
+                    const scale = Math.max(1920 / rawImg.naturalWidth, 1080 / rawImg.naturalHeight);
+                    const dw = rawImg.naturalWidth * scale;
+                    const dh = rawImg.naturalHeight * scale;
+                    octx.drawImage(rawImg, (1920 - dw) / 2, (1080 - dh) / 2, dw, dh);
+
+                    const cropped = new Image();
+                    cropped.onload = () => {
+                        tvCustomBgImage = cropped;
+                        scheduleTvRender();
+                        showToast("Vlastné pozadie (1920×1080) bolo vložené!");
+                    };
+                    cropped.src = off.toDataURL("image/jpeg", 0.92);
+                };
+                rawImg.onerror = () => showToast("Nepodarilo sa načítať vybraný obrázok.", true);
+                rawImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            ev.target.value = "";
+        }
         let tvChartWindowStart = null;
 
         function loadTvSettings() {
@@ -7054,6 +7661,15 @@
         }
 
         function drawTvBackgroundLayer(targetCtx, W, H, forceFallbackBg = false) {
+            if (tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) {
+                targetCtx.drawImage(tvCustomBgImage, 0, 0, W, H);
+                const vig = targetCtx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, W * 0.72);
+                vig.addColorStop(0, "rgba(0, 18, 15, 0.08)");
+                vig.addColorStop(1, "rgba(0, 12, 10, 0.42)");
+                targetCtx.fillStyle = vig;
+                targetCtx.fillRect(0, 0, W, H);
+                return;
+            }
             if (!forceFallbackBg && tvBgLoaded && tvBgImage && tvBgImage.naturalWidth > 0) {
                 const imgW = tvBgImage.naturalWidth;
                 const imgH = tvBgImage.naturalHeight;
@@ -7508,7 +8124,7 @@
             const expTxt = m.expiryDateStr
                 ? (m.isValid ? `BODY PLATIA DO: ${m.expiryDateStr}` : `BODY MIMO LEHOTY`)
                 : "BODY: ALL-TIME";
-            ctx.fillText(`${expTxt}  ·  ELO K=${ELO_K}, D=${ELO_D}  ·  ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 4, footY);
+            ctx.fillText(`${expTxt}  ·  ELO K=${getEloK()}, D=${getEloD()}  ·  ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 4, footY);
         }
 
         function renderTvCanvas(targetCanvas = null, forceFallbackBg = false) {
@@ -7553,7 +8169,7 @@
             ctx.font = "800 29px sans-serif";
             ctx.textAlign = "left";
             const tvHeadTitle = isEloTv
-                ? (isElo4H ? `TENISTAB | ELO ŠTVORHRA 4H (K=${ELO_K} · D=${ELO_D})` : `TENISTAB | ELO DVOJHRA 2H (K=${ELO_K} · D=${ELO_D})`)
+                ? (isElo4H ? `TENISTAB | ELO ŠTVORHRA 4H (K=${getEloK()} · D=${getEloD()})` : `TENISTAB | ELO DVOJHRA 2H (K=${getEloK()} · D=${getEloD()})`)
                 : `TENISTAB | REBRÍČEK 2H + 4H (${wmLabel})`;
             ctx.fillText(tvHeadTitle, innerX + 30, topY + 43);
 
@@ -7949,10 +8565,11 @@
         }
 
         function renderTvChartPlayerChips() {
+            syncChartMetricUI();
             const wrap = document.getElementById("tv-chart-player-chips");
             if (!wrap) return;
             wrap.innerHTML = "";
-            computedPlayers.forEach(p => {
+            getActiveChartPlayersPool().forEach(p => {
                 const isVis = state.chartVisiblePlayers[p.id] !== false;
                 const chip = document.createElement("button");
                 chip.type = "button";
@@ -7993,6 +8610,7 @@
 
         function openTvChartModal() {
             syncTvControlsUI();
+            syncChartMetricUI();
             syncTvChartModeButtons();
             if (tvChartWindowStart === null) {
                 tvChartWindowStart = getChartWindowBounds(chartWindowStart).start;
@@ -8080,6 +8698,9 @@
             const ctx = canvas.getContext("2d");
             const W = canvas.width, H = canvas.height;
 
+            const tl = getActiveChartTimeline();
+            const pool = getActiveChartPlayersPool();
+            const isPts = chartMetric === "points";
             const bounds = getChartWindowBounds(tvChartWindowStart);
             tvChartWindowStart = bounds.start;
             if (!targetCanvas) syncTvChartNavUI();
@@ -8107,10 +8728,16 @@
             ctx.restore();
 
             const modeTitle = chartModeMonths === 0 ? "ALL-TIME" : (chartModeMonths === 12 ? "1 ROK (12 MES.)" : "6 MESIACOV");
+            const tvChartTitle = isPts
+                ? `TENISTAB | VÝVOJ BODOV (${modeTitle})`
+                : (chartMetric === "elo4h"
+                    ? `TENISTAB | VÝVOJ ELO ŠTVORHRA 4H (K=${getEloK()} · D=${getEloD()})`
+                    : `TENISTAB | VÝVOJ ELO DVOJHRA 2H (K=${getEloK()} · D=${getEloD()})`);
+
             ctx.fillStyle = "#ffffff";
-            ctx.font = "800 31px sans-serif";
+            ctx.font = "800 30px sans-serif";
             ctx.textAlign = "left";
-            ctx.fillText(`TENISTAB | VÝVOJ BODOV (${modeTitle})`, innerX + 32, topY + 47);
+            ctx.fillText(tvChartTitle, innerX + 32, topY + 47, innerW - 500);
 
             ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
             ctx.font = "700 22px sans-serif";
@@ -8127,7 +8754,7 @@
             ctx.stroke();
             ctx.restore();
 
-            const visiblePlayers = computedPlayers.filter(p => state.chartVisiblePlayers[p.id] !== false);
+            const visiblePlayers = pool.filter(p => state.chartVisiblePlayers[p.id] !== false);
             if (visiblePlayers.length === 0 || bounds.count === 0) {
                 ctx.fillStyle = "rgba(255, 255, 255, 0.84)";
                 ctx.font = "700 30px sans-serif";
@@ -8136,22 +8763,32 @@
                 return;
             }
 
-            const visiblePoints = chartTimelinePoints.slice(bounds.start, bounds.end + 1);
-            let maxVal = 0;
+            const visiblePoints = tl.slice(bounds.start, bounds.end + 1);
+            let minVal = Infinity, maxVal = -Infinity;
             visiblePoints.forEach(pt => {
                 visiblePlayers.forEach(p => {
-                    const v = pt.pts[p.id] || 0;
+                    const v = getPointMetricVal(pt, p.id);
+                    if (v < minVal) minVal = v;
                     if (v > maxVal) maxVal = v;
                 });
             });
 
-            const yMin = 0;
-            let yMax = Math.max(2, maxVal * 1.12);
-            if (yMax <= 5) yMax = Math.ceil(yMax);
-            else if (yMax <= 20) yMax = Math.ceil(yMax / 2) * 2;
-            else yMax = Math.ceil(yMax / 5) * 5;
+            let yMin, yMax;
+            if (isPts) {
+                yMin = 0;
+                yMax = Math.max(2, (maxVal > 0 ? maxVal : 0) * 1.12);
+                if (yMax <= 5) yMax = Math.ceil(yMax);
+                else if (yMax <= 20) yMax = Math.ceil(yMax / 2) * 2;
+                else yMax = Math.ceil(yMax / 5) * 5;
+            } else {
+                if (!isFinite(minVal)) { minVal = 1400; maxVal = 1600; }
+                const padElo = Math.max((maxVal - minVal) * 0.14, 15);
+                yMin = Math.floor((minVal - padElo) / 10) * 10;
+                yMax = Math.ceil((maxVal + padElo) / 10) * 10;
+                if (yMax <= yMin) { yMin -= 20; yMax += 20; }
+            }
 
-            const padL = 104, padR = 290, padT = 46, padB = 92;
+            const padL = isPts ? 104 : 114, padR = 290, padT = 46, padB = 92;
             const plotX = plotBoxX + padL, plotY = plotBoxY + padT, plotW = plotBoxW - padL - padR, plotH = plotBoxH - padT - padB;
 
             const getX = (localIdx) => visiblePoints.length <= 1 ? plotX + plotW / 2 : plotX + (localIdx / (visiblePoints.length - 1)) * plotW;
@@ -8168,7 +8805,8 @@
                 ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
                 ctx.font = "800 22px sans-serif";
                 ctx.textAlign = "right";
-                ctx.fillText(Number.isInteger(val) ? String(val) : val.toFixed(1), plotX - 18, y + 8);
+                const lbl = isPts ? (Number.isInteger(val) ? String(val) : val.toFixed(1)) : val.toFixed(0);
+                ctx.fillText(lbl, plotX - 18, y + 8);
             }
 
             visiblePoints.forEach((pt, localIdx) => {
@@ -8202,7 +8840,7 @@
                 ctx.shadowBlur = 10;
                 ctx.beginPath();
                 visiblePoints.forEach((pt, localIdx) => {
-                    const x = getX(localIdx), y = getY(pt.pts[p.id] || 0);
+                    const x = getX(localIdx), y = getY(getPointMetricVal(pt, p.id));
                     if (localIdx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
                 });
                 ctx.stroke();
@@ -8210,7 +8848,7 @@
 
                 visiblePoints.forEach((pt, localIdx) => {
                     const globalIdx = bounds.start + localIdx;
-                    const val = pt.pts[p.id] || 0;
+                    const val = getPointMetricVal(pt, p.id);
                     const x = getX(localIdx), y = getY(val);
                     const isPlayed = pt.match && (pt.match.team1.includes(p.id) || pt.match.team2.includes(p.id));
                     const r = (isPlayed || globalIdx === 0 || pt.isToday) ? 10 : 6;
@@ -8239,35 +8877,20 @@
             const labelDotR = Math.min(7, Math.max(5, Math.round(labelFontSize * 0.30)));
             const labelBaselineOff = Math.round(labelFontSize * 0.36);
 
-            // 1. Ohraničenie východiskových pozícií priamo do bezpečného pásma plotBoxu
-            endLabels.forEach(lb => {
-                lb.y = Math.max(minLabelY, Math.min(maxLabelY, lb.rawY));
-            });
-
-            // 2. Rozostup zhora nadol
+            endLabels.forEach(lb => { lb.y = Math.max(minLabelY, Math.min(maxLabelY, lb.rawY)); });
             for (let i = 1; i < endLabels.length; i++) {
-                if (endLabels[i].y < endLabels[i - 1].y + minLabelGap) {
-                    endLabels[i].y = endLabels[i - 1].y + minLabelGap;
-                }
+                if (endLabels[i].y < endLabels[i - 1].y + minLabelGap) endLabels[i].y = endLabels[i - 1].y + minLabelGap;
             }
-
-            // 3. Orezanie zdola + lokálny posun nahor (posunie len kolidujúce spodné štítky, horné ostanú pri svojich čiarach)
             if (endLabels.length > 0 && endLabels[endLabels.length - 1].y > maxLabelY) {
                 endLabels[endLabels.length - 1].y = maxLabelY;
                 for (let i = endLabels.length - 2; i >= 0; i--) {
-                    if (endLabels[i].y > endLabels[i + 1].y - minLabelGap) {
-                        endLabels[i].y = endLabels[i + 1].y - minLabelGap;
-                    }
+                    if (endLabels[i].y > endLabels[i + 1].y - minLabelGap) endLabels[i].y = endLabels[i + 1].y - minLabelGap;
                 }
             }
-
-            // 4. Finálna poistka zhora nadol, aby ani horný štítok nikdy nevybehol nad minLabelY
             if (endLabels.length > 0 && endLabels[0].y < minLabelY) {
                 endLabels[0].y = minLabelY;
                 for (let i = 1; i < endLabels.length; i++) {
-                    if (endLabels[i].y < endLabels[i - 1].y + minLabelGap) {
-                        endLabels[i].y = endLabels[i - 1].y + minLabelGap;
-                    }
+                    if (endLabels[i].y < endLabels[i - 1].y + minLabelGap) endLabels[i].y = endLabels[i - 1].y + minLabelGap;
                 }
             }
 
@@ -8296,13 +8919,15 @@
                 ctx.fillStyle = "#a5f3fc";
                 ctx.font = `800 ${labelFontSize}px sans-serif`;
                 ctx.textAlign = "right";
-                ctx.fillText(formatPts(lb.val), plotBoxX + plotBoxW - 22, lb.y + labelBaselineOff);
+                ctx.fillText(isPts ? formatPts(lb.val) : lb.val.toFixed(1), plotBoxX + plotBoxW - 22, lb.y + labelBaselineOff);
             });
         }
 
         function downloadTvChartGraphic(format = "png") {
             const canvas = document.getElementById("tvChartCanvas");
-            const modeTag = chartModeMonths === 0 ? "AllTime" : `${chartModeMonths}M`;
+            const modeTag = chartMetric === "elo2h"
+                ? "ELO_2H"
+                : (chartMetric === "elo4h" ? "ELO_4H" : (chartModeMonths === 0 ? "Body_AllTime" : `Body_${chartModeMonths}M`));
             exportCanvasImage(canvas, `TenisTAB_TV_Graf_${modeTag}_${getTodayIso()}`, format, renderTvChartCanvas);
         }
 
@@ -9599,7 +10224,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.0! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.1! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -10073,7 +10698,7 @@
             add("TIP", "Kliknutím na meno ľubovoľného hráča v priebežnej tabuľke otvoríš jeho detailnú kartu vrátane kalendára expirácie bodov, spoluhráčskej chémie 4H a bilancie proti súperom.");
             add("VEDELI STE?", "Tabuľku si môžeš zoradiť podľa akéhokoľvek stĺpca – stačí kliknúť na hlavičku (Body, 2H, 4H, Zápasy, Gemy %, Úsp. % alebo Exp. 30d).");
             add("TIP", "V sekcii Graf si môžeš prepínať vývoj bodov v kĺzavom okne 6 mesiacov, 1 rok alebo All-time a plynulo posúvať históriu prstom, myšou či posuvníkom.");
-            add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlo TV vygeneruje FullHD grafiku (PNG aj JPG) pre Body, ELO 2H, ELO 4H aj Posledný zápas s bodmi a ELO zmenou.");
+            add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlá TV a TV Graf vygenerujú FullHD PNG grafiku pre Body, ELO 2H, ELO 4H aj Posledný zápas – a cez Vložiť pozadie si môžeš nahrať vlastnú fotku.");
             add("VEDELI STE?", "Zelené tlačidlo v hornej časti tabuľky ti jedným klikom stiahne najnovšiu oficiálnu databázu z GitHubu – keď stmavne, máš istotu, že vidíš aktuálne dáta.");
             add("TIP", "Ak si zabudol zapísať starší zápas, v sekcii História ho vložíš s pôvodným dátumom a aplikácia ho sama zaradí chronologicky a prepočíta celú tabuľku.");
             add("VEDELI STE?", "Ikony pri menách v tabuľke prezrádzajú formu – 🔥 znamená 3 a viac výhier v rade, ❄️ sériu 3 a viac prehier a ⚫ označuje hráča, ktorý nehral viac ako rok (radí sa pod aktívnych).");
@@ -10200,7 +10825,9 @@
         function refreshAllViews() {
             updateEmptyWelcomeCard();
             syncLocationInputsUI();
+            syncEloParamInputsUI();
             renderLeaderboard();
+            renderMatchmaker();
             updateMatchPreview();
             renderChartChips();
             drawPointsChart();
@@ -10209,6 +10836,137 @@
             renderAchievements();
             renderMatchHistory();
             renderNewsTicker();
+        }
+
+        function initGlobalPcTooltips() {
+            const tipMap = [
+                [".brand", "Zmena farebného motívu", "Kliknutím prepneš medzi 8 farebnými motívmi (Jar, Leto, Jeseň, Zima, Tyrkys, Smoke, Antuka, Hala).", "Predvolený motív sa riadi ročným obdobím."],
+                ["#table-sync-db-btn", "Synchronizácia s GitHubom", "Stiahne najnovšiu oficiálnu databázu (databaza.json) zo servera a obnoví aj pôvodné TV.jpeg pozadie.", "Tmavozelená = dáta sú aktuálne."],
+                ["#tmode-btn-points", "Bodová tabuľka (2H + 4H)", "Kombinovaný rebríček podľa získaných bodov za dvojhry (1 b) aj štvorhry (0.5 b) vo zvolenej lehote.", ""],
+                ["#tmode-btn-elo2h", "ELO rebríček – Dvojhra (2H)", "Celoživotný singlový ELO rebríček počítaný z dvojhier podľa parametrov K a D.", "Ak bol posledný zápas 2H, banner hore ukáže posun ELO."],
+                ["#tmode-btn-elo4h", "ELO rebríček – Štvorhra (4H)", "Celoživotný deblový ELO rebríček jednotlivcov počítaný z priemeru dvojíc.", "Ak bol posledný zápas 4H, banner hore ukáže posun ELO."],
+                ["#window-selector-bar .preset-btn", "Časová lehota platnosti bodov", "Nastaví kĺzavé okno platnosti bodov v tabuľke (3 až 36 mesiacov alebo All-time bez expirácie).", ""],
+                ["#new-player-name", "Meno nového hráča", "Zadaj jedinečné meno tenistu. Po pridaní začína v bodovej tabuľke na 0.00 bodoch.", "Potvrdiť môžeš aj klávesom Enter."],
+                ["#new-player-elo", "Počiatočné ELO (2H aj 4H)", "Nastaví východiskovú ELO hodnotu pre nového hráča (štandard je 1500.0).", "Vyššie štartovacie ELO použi len pre výrazne silnejšieho nového člena."],
+                ["#btn-add-new-player", "Pridať hráča do databázy", "Uloží nového tenistu do tabuľky aj do výberov pre zápasy a H2H.", ""],
+                ["#match-type-2H", "Zápis dvojhry (2H)", "Prepne formulár na singlový zápas 1 vs 1 (výhra = 1.00 b, remíza = 0.50 b + ELO 2H).", ""],
+                ["#match-type-4H", "Zápis štvorhry (4H)", "Prepne formulár na deblový zápas 2 vs 2 (výhra = 0.50 b/hráč, remíza = 0.25 b/hráč + ELO 4H).", ""],
+                ["#match-date", "Dátum odohratia zápasu", "Určuje chronologické poradie pre ELO aj dátum expirácie bodov v kĺzavej lehote.", ""],
+                ["#match-t1p1", "Výber hráča (Strana A)", "Vyber hráča na prvej strane zápasu. V živom náhľade uvidíš body aj ELO zmenu.", ""],
+                ["#match-t1p2", "Výber spoluhráča A2 (4H)", "Vyber druhého hráča do dvojice A pre štvorhru.", ""],
+                ["#match-t2p1", "Výber súpera (Strana B)", "Vyber hráča na druhej strane zápasu.", ""],
+                ["#match-t2p2", "Výber súpera B2 (4H)", "Vyber druhého hráča do dvojice B pre štvorhru.", ""],
+                ["#sets-t1", "Vyhraté sety – Strana A", "Počet vyhratých setov prvej strany. Doplní sa automaticky po zadaní gemov.", ""],
+                ["#sets-t2", "Vyhraté sety – Strana B", "Počet vyhratých setov druhej strany. Doplní sa automaticky po zadaní gemov.", ""],
+                ["#match-gems", "Presné skóre na gemy", "Zadaj skóre setov oddelené medzerou (napr. 6:4 7:5). Automaticky spočíta sety, kanáre a tiebreaky.", ""],
+                ["#match-note", "Poznámka k zápasu", "Krátka poznámka (max 160 znakov) sa zobrazí v histórii, v TV karte posledného zápasu aj v NEWS.", ""],
+                ["#btn-save-match", "Zapísať zápas", "Uloží zápas chronologicky do databázy a okamžite prepočíta body, ELO, grafy aj odznaky.", ""],
+                ["#mm-p1, #mm-p2, #mm-p3, #mm-p4", "Matchmaker – výber štvorice", "Vyber 4 rôznych hráčov na kurte. Systém vypočíta najvyrovnanejšie dvojice podľa ELO 4H.", ""],
+                ["#chart-metric-points", "Graf vývoja bodov", "Zobrazí vývoj bodov v čase podľa zvoleného kĺzavého okna (6M / 12M / All-time).", ""],
+                ["#chart-metric-elo2h", "Graf vývoja ELO 2H", "Zobrazí celoživotný vývoj ELO hodnotenia hráčov v dvojhre (2H).", ""],
+                ["#chart-metric-elo4h", "Graf vývoja ELO 4H", "Zobrazí celoživotný vývoj ELO hodnotenia jednotlivcov v štvorhre (4H).", ""],
+                ["#chart-mode-6, #chart-mode-12, #chart-mode-0", "Kĺzavé okno grafu bodov", "Určuje, za aké obdobie sa v každom bode grafu sčítavajú platné body.", ""],
+                ["#btn-chart-top5, #btn-tv-chart-top5", "Filter Top 5", "Nechá v grafe zapnutých iba 5 najlepších hráčov pre maximálnu prehľadnosť.", ""],
+                ["#btn-chart-all, #btn-tv-chart-all", "Zobraziť všetkých", "Zapne krivky všetkých hráčov v aktuálnej disciplíne.", ""],
+                ["#chart-first-btn, #tv-chart-first-btn", "Na začiatok histórie", "Posunie 10-krokové okno grafu na úplný štart.", ""],
+                ["#chart-prev-btn, #tv-chart-prev-btn", "O krok dozadu", "Posunie zobrazené okno grafu o 1 starší zápas doľava.", ""],
+                ["#chart-next-btn, #tv-chart-next-btn", "O krok dopredu", "Posunie zobrazené okno grafu o 1 novší zápas doprava.", ""],
+                ["#chart-last-btn, #tv-chart-last-btn", "Na najnovšie zápasy", "Skočí na posledných 10 krokov histórie.", ""],
+                ["#h2h-mode-players", "H2H: Hráč vs Hráč", "Porovná vzájomnú bilanciu dvoch tenistov (keď hrali proti sebe) vrátane predikcie ELO 2H.", ""],
+                ["#h2h-mode-teams", "H2H: Dvojica vs Dvojica", "Porovná vzájomné štvorhry dvoch konkrétnych párov vrátane predikcie ELO 4H.", ""],
+                ["#h2h-type-all, #h2h-type-2H, #h2h-type-4H", "Filter typu zápasov v H2H", "Prepína započítané vzájomné súboje medzi všetkými (2H+4H), len dvojhrami alebo len štvorhrami.", ""],
+                ["#h2h-scope-alltime, #h2h-scope-window", "Obdobie pre H2H", "Prepína medzi celou históriou a aktuálne zvolenou časovou lehotou.", ""],
+                ["#h2h-p1, #h2h-p2, #h2h-t1p1, #h2h-t1p2, #h2h-t2p1, #h2h-t2p2", "Výber aktérov pre H2H", "Zvoľ hráčov pre výpočet vzájomnej bilancie, šance na výhru a očakávaného ELO zisku.", ""],
+                ["#profile-select", "Výber profilu hráča", "Zobrazí kompletnú kartu hráča: rozpad 2H/4H, ELO, kalendár expirácie, odznaky, chémiu a súperov.", ""],
+                ["#prof-scope-window, #prof-scope-alltime", "Rozsah profilu hráča", "Prepína štatistiky na karte hráča medzi aktuálnou lehotou a celou históriou.", ""],
+                ["#ach-scope-alltime, #ach-scope-window", "Rozsah výpočtu odznakov", "Prepína držiteľov odznakov medzi historickými rekordmi a aktuálnou lehotou.", ""],
+                ["#hist-type-2H, #hist-type-4H", "Typ dodatočného zápasu", "Vyber, či do histórie vkladáš staršiu dvojhru (2H) alebo štvorhru (4H).", ""],
+                ["#hist-date", "Pôvodný dátum zápasu", "Zápas sa automaticky zaradí chronologicky a celé ELO aj body sa prepočítajú od začiatku.", ""],
+                ["#hist-gems", "Gemy historického zápasu", "Voliteľné presné gemy (napr. 6:4 6:3) – automaticky doplnia sety.", ""],
+                ["#hist-note", "Poznámka k historickému zápasu", "Voliteľný krátky popis zápasu do histórie a NEWS.", ""],
+                ["#history-sort-order", "Zoradenie histórie", "Zobrazí zoznam zápasov od najnovšieho alebo chronologicky od zápasu #1.", ""],
+                ["#history-filter-player", "Filter podľa hráča", "Zobrazí iba zápasy, v ktorých nastúpil vybraný tenista.", ""],
+                ["#history-filter-type", "Filter podľa disciplíny", "Zobrazí len dvojhry (2H), len štvorhry (4H) alebo všetky zápasy.", ""],
+                ["#history-filter-validity", "Filter platnosti bodov", "Odfiltruje platné zápasy v aktuálnom okne alebo už expirované zápasy.", ""],
+                ["#cfg-home-city, #welcome-home-city", "Domovské mesto / okres", "Mesto sa uloží do databaza.json a slúži na predpoveď počasia a regionálne hlášky v NEWS.", "Zadaj okresné mesto (napr. Čadca, Žilina)."],
+                ["#btn-save-home-city", "Uložiť domovské mesto", "Vyhľadá súradnice zadaného mesta, uloží ich do databázy a aktualizuje počasie v NEWS.", ""],
+                ["#cfg-k", "Koeficient K (štandard 32)", "Určuje maximálny zisk alebo stratu ELO bodov v jednom zápase. Vyššie K (napr. 40) = rýchlejšie a výraznejšie skoky v rebríčku; nižšie K (napr. 16) = stabilnejší a pokojnejší rebríček.", "Zmena okamžite prepočíta celú históriu ELO 2H aj 4H."],
+                ["#cfg-d", "Faktor citlivosti D (štandard 200)", "Určuje citlivosť výpočtu šance na výhru podľa rozdielu ELO súperov. Nižšie D (napr. 150) = prísnejší trest za prehru favorita a väčší bonus pre outsidera; vyššie D (napr. 400) = miernejšie rozdiely.", "Zmena okamžite prepočíta všetky predikcie aj historické ELO."],
+                ["#btn-reset-elo-params", "Obnoviť predvolené ELO parametre", "Vráti parametre na klubový štandard K=32 a D=200 a prepočíta rebríčky.", ""],
+                ["#tv-mode-points", "TV Tabuľka – Body", "Prepne televíznu grafiku na hlavnú bodovú tabuľku (2H + 4H).", ""],
+                ["#tv-mode-elo2h", "TV Tabuľka – ELO 2H", "Prepne televíznu grafiku na ELO rebríček dvojhry.", ""],
+                ["#tv-mode-elo4h", "TV Tabuľka – ELO 4H", "Prepne televíznu grafiku na ELO rebríček štvorhry.", ""],
+                ["#tv-mode-last", "TV Karta – Posledný zápas", "Zobrazí broadcast výsledkovú kartu posledného zápasu s bodmi aj ELO zmenou.", ""],
+                ["#tv-blur-slider, #tv-chart-blur-slider", "Rozmazanie pozadia (Blur)", "Plynulo nastavuje mieru rozmazania obrázka priamo pod skleneným panelom (0 – 100 %).", ""],
+                ["#tv-transp-slider, #tv-chart-transp-slider", "Priehľadnosť panelu", "Nastavuje priehľadnosť tmavého skla pod tabuľkou alebo grafom (0 % nepriehľadné – 100 % čisté pozadie).", ""],
+                ["#btn-tv-dl-png, #btn-tv-chart-dl-png", "Export FullHD PNG", "Stiahne televíznu grafiku v rozlíšení 1920×1080 px pripravenú na zdieľanie.", ""],
+                ["#btn-tv-custom-bg, #btn-tv-chart-custom-bg", "Vlastné pozadie (1920×1080)", "Vyber vlastnú fotku z galérie – aplikácia ju automaticky oreže/zväčší na FullHD podklad.", "Pri načítaní databázy z GitHubu sa vráti predvolené TV.jpeg."],
+                ["#tv-chart-metric-points", "TV Graf – Body", "Zobrazí v televíznom grafe vývoj bodov (2H + 4H).", ""],
+                ["#tv-chart-metric-elo2h", "TV Graf – ELO 2H", "Zobrazí v televíznom grafe vývoj ELO dvojhry (2H).", ""],
+                ["#tv-chart-metric-elo4h", "TV Graf – ELO 4H", "Zobrazí v televíznom grafe vývoj ELO štvorhry (4H).", ""],
+                [".tv-btn", "Televízna grafika FullHD", "Otvorí generátor FullHD infografiky (1920×1080) pre tabuľky, posledný zápas alebo graf.", ""],
+                ["#news-badge-btn", "Premiešať NEWS", "Kliknutím premieša poradie správ v informačnej lište.", ""],
+                [".news-viewport", "Pozastaviť / spustiť NEWS", "Prejdením myšou alebo kliknutím pozastavíš bežiaci pás správ.", ""]
+            ];
+
+            tipMap.forEach(([selector, title, desc, tip]) => {
+                document.querySelectorAll(selector).forEach(el => {
+                    if (!el.getAttribute("data-ctx-desc")) {
+                        el.setAttribute("data-ctx-title", title);
+                        el.setAttribute("data-ctx-desc", desc);
+                        if (tip) el.setAttribute("data-ctx-tip", tip);
+                    }
+                });
+            });
+
+            const mq = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 768px)");
+            const tipEl = document.getElementById("pc-ctx-tooltip");
+            if (!tipEl) return;
+
+            const hideTip = () => {
+                tipEl.classList.remove("visible");
+                tipEl.setAttribute("aria-hidden", "true");
+            };
+
+            const showFor = (target) => {
+                if (!mq.matches || !target || !target.closest) return;
+                if (target.closest(".ctx-btn-wrap")) { hideTip(); return; }
+                const el = target.closest("[data-ctx-desc]");
+                if (!el) { hideTip(); return; }
+
+                const title = el.getAttribute("data-ctx-title") || "";
+                const desc = el.getAttribute("data-ctx-desc") || "";
+                const tip = el.getAttribute("data-ctx-tip") || "";
+                tipEl.innerHTML =
+                    (title ? `<div class="ctx-popover-head"><span>${escapeHtml(title)}</span></div>` : "") +
+                    `<div class="ctx-popover-desc" style="margin-bottom:${tip ? '6px' : '0'};">${escapeHtml(desc)}</div>` +
+                    (tip ? `<div class="ctx-popover-tip">${escapeHtml(tip)}</div>` : "");
+
+                tipEl.classList.add("visible");
+                tipEl.setAttribute("aria-hidden", "false");
+
+                const rect = el.getBoundingClientRect();
+                const tw = tipEl.offsetWidth;
+                const th = tipEl.offsetHeight;
+                let left = rect.left + rect.width / 2 - tw / 2;
+                left = Math.max(10, Math.min(window.innerWidth - tw - 10, left));
+                let top = rect.top - th - 10;
+                if (top < 10) top = rect.bottom + 10;
+                if (top + th > window.innerHeight - 10) top = Math.max(10, window.innerHeight - th - 10);
+
+                tipEl.style.left = `${Math.round(left)}px`;
+                tipEl.style.top = `${Math.round(top)}px`;
+            };
+
+            document.addEventListener("pointerover", e => showFor(e.target));
+            document.addEventListener("focusin", e => showFor(e.target));
+            document.addEventListener("pointerout", e => {
+                if (!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest("[data-ctx-desc]")) hideTip();
+            });
+            document.addEventListener("focusout", hideTip);
+            document.addEventListener("input", hideTip);
+            document.addEventListener("click", hideTip);
+            window.addEventListener("scroll", hideTip, true);
         }
 
         function switchTab(secId, btnEl) {
@@ -10262,6 +11020,7 @@
             setupTvChartCanvasEvents();
             loadTvSettings();
             ensureTvBackgroundLoaded();
+            initGlobalPcTooltips();
 
             document.addEventListener("keydown", e => {
                 if (e.key === "Escape") {
