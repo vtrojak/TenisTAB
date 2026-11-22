@@ -542,6 +542,7 @@
         }
 
         table.elo-table tbody tr {
+            cursor: pointer;
             transition: background 0.15s;
         }
 
@@ -1070,6 +1071,341 @@
             font-size: 0.76rem;
         }
 
+
+        .stat-tile-value {
+            font-size: 1.08rem;
+            font-weight: 800;
+            margin-top: 2px;
+            color: var(--text-main);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        /* H2H & PROFIL HRÁČA */
+        .h2h-bar-wrap {
+            height: 12px;
+            background: var(--bg-input);
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+            margin: 10px 0;
+            border: 1px solid var(--border);
+        }
+
+        .h2h-seg-a { background: #34d399; height: 100%; transition: width 0.3s ease; }
+        .h2h-seg-d { background: #facc15; height: 100%; transition: width 0.3s ease; }
+        .h2h-seg-b { background: #38bdf8; height: 100%; transition: width 0.3s ease; }
+
+        .h2h-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .h2h-pill-group {
+            display: inline-flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .h2h-pill-group .preset-btn {
+            flex: 0 0 auto;
+            min-width: auto;
+            padding: 5px 10px;
+            font-size: 0.72rem;
+        }
+
+        .h2h-pill-group .preset-btn.active {
+            border-color: rgba(190, 242, 100, 0.72);
+            color: var(--tennis-lime);
+        }
+
+        .profile-section-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            color: var(--text-muted);
+            margin: 14px 0 7px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .profile-split-card {
+            background: rgba(8, 18, 30, 0.72);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        .exp-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 10px;
+            border-radius: 9px;
+            background: rgba(8, 18, 30, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            margin-bottom: 6px;
+            font-size: 0.77rem;
+            flex-wrap: wrap;
+        }
+
+        .exp-item-row.soon {
+            border-color: rgba(251, 146, 60, 0.50);
+            background: rgba(249, 115, 22, 0.12);
+        }
+
+        .profile-quick-link {
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .profile-quick-link:hover {
+            color: var(--tennis-lime);
+        }
+
+        @media (max-width: 480px) {
+            .stat-tile-value {
+                font-size: 0.94rem;
+            }
+            .grid-3 {
+                gap: 6px;
+            }
+        }
+
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        /* ACHIEVEMENTS / ODZNAKY – 256×256 PNG IKONY Z GITHUBU + HEX FALLBACK */
+        .ach-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .ach-card {
+            --ach-glow: rgba(255, 255, 255, 0.22);
+            --ach-tint: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(145deg, rgba(12, 25, 40, 0.82), rgba(8, 18, 30, 0.78));
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 14px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 18, 16, 0.34), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+            transition: transform 0.18s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+
+        .ach-card::before {
+            content: "";
+            position: absolute;
+            top: -24px;
+            left: -24px;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, var(--ach-tint) 0%, transparent 72%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ach-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--ach-glow);
+            box-shadow: 0 10px 28px rgba(0, 14, 12, 0.46), 0 0 18px var(--ach-tint), inset 0 1px 1px rgba(255, 255, 255, 0.26);
+        }
+
+        .ach-card.ach-green  { --ach-glow: rgba(74, 222, 128, 0.58);  --ach-tint: rgba(74, 222, 128, 0.20);  border-color: rgba(74, 222, 128, 0.36); }
+        .ach-card.ach-blue   { --ach-glow: rgba(56, 189, 248, 0.58);  --ach-tint: rgba(56, 189, 248, 0.20);  border-color: rgba(56, 189, 248, 0.36); }
+        .ach-card.ach-purple { --ach-glow: rgba(192, 132, 252, 0.58); --ach-tint: rgba(192, 132, 252, 0.20); border-color: rgba(192, 132, 252, 0.36); }
+        .ach-card.ach-red    { --ach-glow: rgba(248, 113, 113, 0.58); --ach-tint: rgba(248, 113, 113, 0.20); border-color: rgba(248, 113, 113, 0.36); }
+        .ach-card.ach-gold   { --ach-glow: rgba(250, 204, 21, 0.58);  --ach-tint: rgba(250, 204, 21, 0.18);  border-color: rgba(250, 204, 21, 0.36); }
+
+        .ach-crest {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            background: transparent;
+        }
+
+        .ach-icon-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            background: transparent;
+            user-select: none;
+            -webkit-user-drag: none;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 8px var(--ach-tint));
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
+        }
+
+        .ach-card:hover .ach-icon-img {
+            transform: scale(1.07);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.52)) drop-shadow(0 0 14px var(--ach-glow));
+        }
+
+        .ach-fallback-hex {
+            width: 68px;
+            height: 68px;
+            align-items: center;
+            justify-content: center;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.42));
+        }
+
+        .hex-outer {
+            width: 64px;
+            height: 64px;
+            clip-path: polygon(50% 3%, 93% 26%, 93% 74%, 50% 97%, 7% 74%, 7% 26%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5px;
+        }
+
+        .hex-inner {
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(50% 3%, 93% 26%, 93% 74%, 50% 97%, 7% 74%, 7% 26%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hex-inner i {
+            font-size: 1.45rem;
+            line-height: 1;
+            display: inline-block;
+        }
+
+        .ach-body {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ach-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.31;
+        }
+
+        .ach-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            line-height: 1.3;
+        }
+
+        .ach-record-pill {
+            display: inline-block;
+            margin-top: 7px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: rgba(0, 20, 18, 0.38);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+        }
+
+        .ach-holders {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 7px;
+        }
+
+        .ach-holder-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(136, 0, 0, 0.45);
+            border: 1px solid rgba(255, 160, 160, 0.35);
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .ach-holder-chip:hover {
+            background: rgba(165, 0, 0, 0.75);
+            border-color: rgba(255, 200, 200, 0.65);
+        }
+
+        .profile-badges-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 7px;
+        }
+
+        .profile-mini-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(10, 22, 36, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .profile-mini-badge-img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            background: transparent;
+            flex-shrink: 0;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+        }
+
+        @media (max-width: 560px) {
+            .ach-grid {
+                grid-template-columns: 1fr;
+            }
+            .ach-crest {
+                width: 72px;
+                height: 72px;
+            }
+        }
+
         /* BOTTOM DOCK (NAV) */
         .bottom-dock {
             position: fixed;
@@ -1336,7 +1672,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.1</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v0.3</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -1359,7 +1695,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v0.1</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v0.3</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -1557,7 +1893,192 @@
             </div>
         </section>
 
-        <!-- ==================== SEKCIA 3: HISTÓRIA & SPRÁVA DATABÁZY ==================== -->
+
+        <!-- ==================== SEKCIA 3: H2H & DETAILNÝ PROFIL HRÁČA ==================== -->
+        <section id="sec-h2h" class="section">
+
+            <!-- KARTA 1: VZÁJOMNÉ SÚBOJE (H2H) -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot"></span>
+                        Vzájomné súboje (H2H)
+                    </div>
+                    <div class="h2h-pill-group">
+                        <button type="button" id="h2h-mode-players" class="preset-btn active" onclick="setH2HMode('players')">Hráč vs Hráč</button>
+                        <button type="button" id="h2h-mode-teams" class="preset-btn" onclick="setH2HMode('teams')">Dvojica vs Dvojica</button>
+                    </div>
+                </div>
+
+                <!-- FILTRE TYPU A OBDOBIA PRE H2H -->
+                <div class="h2h-filter-bar">
+                    <div class="h2h-pill-group" id="h2h-type-group">
+                        <button type="button" id="h2h-type-all" class="preset-btn active" onclick="setH2HTypeFilter('all')">2H + 4H</button>
+                        <button type="button" id="h2h-type-2H" class="preset-btn" onclick="setH2HTypeFilter('2H')">Len 2H</button>
+                        <button type="button" id="h2h-type-4H" class="preset-btn" onclick="setH2HTypeFilter('4H')">Len 4H</button>
+                    </div>
+                    <div class="h2h-pill-group">
+                        <button type="button" id="h2h-scope-alltime" class="preset-btn active" onclick="setH2HScope('alltime')">Celá história</button>
+                        <button type="button" id="h2h-scope-window" class="preset-btn" onclick="setH2HScope('window')">Aktuálna lehota</button>
+                    </div>
+                </div>
+
+                <!-- H2H REŽIM 1: HRÁČ PROTI HRÁČOVI -->
+                <div id="h2h-players-selectors" style="margin-bottom: 12px;">
+                    <div class="grid-2">
+                        <div>
+                            <label for="h2h-p1">Tenista A</label>
+                            <select id="h2h-p1" onchange="renderH2H()"></select>
+                        </div>
+                        <div>
+                            <label for="h2h-p2">Tenista B</label>
+                            <select id="h2h-p2" onchange="renderH2H()"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- H2H REŽIM 2: DVOJICA VS DVOJICA (4H) -->
+                <div id="h2h-teams-selectors" style="display:none;">
+                    <div class="team-select-box" style="border-color: rgba(16, 185, 129, 0.38); margin-bottom:8px;">
+                        <div class="team-select-title" style="color: var(--win);">
+                            <span>Dvojica A</span>
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <label for="h2h-t1p1">Hráč A1</label>
+                                <select id="h2h-t1p1" onchange="renderH2H()"></select>
+                            </div>
+                            <div>
+                                <label for="h2h-t1p2">Hráč A2</label>
+                                <select id="h2h-t1p2" onchange="renderH2H()"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="team-select-box" style="border-color: rgba(56, 189, 248, 0.38); margin-bottom:12px;">
+                        <div class="team-select-title" style="color: var(--blue-accent);">
+                            <span>Dvojica B</span>
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <label for="h2h-t2p1">Hráč B1</label>
+                                <select id="h2h-t2p1" onchange="renderH2H()"></select>
+                            </div>
+                            <div>
+                                <label for="h2h-t2p2">Hráč B2</label>
+                                <select id="h2h-t2p2" onchange="renderH2H()"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="h2h-content"></div>
+            </div>
+
+            <!-- KARTA 2: DETAILNÝ PROFIL HRÁČA -->
+            <div class="card" id="player-profile-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        Detailná karta hráča
+                    </div>
+                    <div class="h2h-pill-group">
+                        <button type="button" id="prof-scope-window" class="preset-btn active" onclick="setProfileScope('window')">Aktuálna lehota</button>
+                        <button type="button" id="prof-scope-alltime" class="preset-btn" onclick="setProfileScope('alltime')">All-time</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="profile-select">Vyber hráča (alebo klikni na meno v tabuľke)</label>
+                    <select id="profile-select" onchange="renderPlayerProfile()"></select>
+                </div>
+                <div id="profile-content"></div>
+            </div>
+
+        </section>
+
+
+        <!-- ==================== SEKCIA 4: ODZNAKY & ACHIEVEMENTY ==================== -->
+        <section id="sec-badges" class="section">
+            <div class="summary-grid">
+                <div class="stat-tile">
+                    <div class="stat-tile-label">Najviac odznakov</div>
+                    <div class="stat-tile-value" id="ach-top-collector">—</div>
+                    <div class="stat-tile-sub" id="ach-top-collector-count">0 titulov</div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-label">Jednotlivci</div>
+                    <div class="stat-tile-value">14</div>
+                    <div class="stat-tile-sub">Kategórie 1 – 3</div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-label">Tímy &amp; Zápasy</div>
+                    <div class="stat-tile-value">4</div>
+                    <div class="stat-tile-sub">Kategória 4</div>
+                </div>
+            </div>
+
+            <!-- PREPÍNAČ ROZSAHU PRE ODZNAKY -->
+            <div class="card" style="padding: 12px 14px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+                    <div style="font-size:0.82rem; font-weight:700; color:var(--text-main);">
+                        🏆 Rozsah výpočtu odznakov
+                    </div>
+                    <div class="h2h-pill-group">
+                        <button type="button" id="ach-scope-alltime" class="preset-btn active" onclick="setBadgesScope('alltime')">Celá história (All-time)</button>
+                        <button type="button" id="ach-scope-window" class="preset-btn" onclick="setBadgesScope('window')">Aktuálna lehota</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KATEGÓRIA 1 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: #f59e0b;"></span>
+                        1. Série a momentálna forma
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Klikni na meno pre detail hráča</span>
+                </div>
+                <div class="ach-grid" id="ach-cat-1"></div>
+            </div>
+
+            <!-- KATEGÓRIA 2 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        2. Kanáre, tiebreaky a skóre
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Automatický rozbor všetkých setov</span>
+                </div>
+                <div class="ach-grid" id="ach-cat-2"></div>
+            </div>
+
+            <!-- KATEGÓRIA 3 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--blue-accent);"></span>
+                        3. Bodové míľniky a aktivita
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Rekordy v kombinovanej tabuľke 2H + 4H</span>
+                </div>
+                <div class="ach-grid" id="ach-cat-3"></div>
+            </div>
+
+            <!-- KATEGÓRIA 4 -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: #e879f9;"></span>
+                        4. Tímové odznaky a zápasové rekordy
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Deblové páry a najväčšie bitky</span>
+                </div>
+                <div class="ach-grid" id="ach-cat-4"></div>
+            </div>
+        </section>
+
+        <!-- ==================== SEKCIA 5: HISTÓRIA & SPRÁVA DATABÁZY ==================== -->
         <section id="sec-history" class="section">
 
             <!-- KARTA 1: INFO O GITHUB SYNC -->
@@ -1856,7 +2377,7 @@
         </div>
     </div>
 
-    <!-- SPODNÁ NAVIGÁCIA (v0.1: 3 KARTY) -->
+    <!-- SPODNÁ NAVIGÁCIA (v0.3: 5 KARIET) -->
     <div class="bottom-dock">
         <nav class="bottom-nav">
             <button class="nav-item active" onclick="switchTab('sec-table', this)">
@@ -1866,6 +2387,14 @@
             <button class="nav-item" onclick="switchTab('sec-match', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                 Nový zápas
+            </button>
+            <button class="nav-item" onclick="switchTab('sec-h2h', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                H2H &amp; Hráči
+            </button>
+            <button class="nav-item" onclick="switchTab('sec-badges', this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.31C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.31C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                Odznaky
             </button>
             <button class="nav-item" onclick="switchTab('sec-history', this)">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -1878,6 +2407,7 @@
         const STORAGE_KEY = "TENISTAB_DB_V1";
         const THEME_STORAGE_KEY = "TENISTAB_THEME_V1";
         const REMOTE_JSON_FILES = ["databaza.json", "data.json"];
+        const ACHIEVEMENT_ICON_DIRS = ["./", "./icons/", "./ikony/", "./badges/", "./img/", "./images/", "./achievements/"];
         const VALID_WINDOWS = [3, 6, 12, 18, 24, 36, 0];
 
         const SEASON_THEMES = [
@@ -1925,6 +2455,13 @@
         let computedPlayers = [];
         let computedMatches = [];
         let validMatchesCount = 0;
+
+        let h2hMode = "players";      // "players" | "teams"
+        let h2hTypeFilter = "all";    // "all" | "2H" | "4H"
+        let h2hScope = "alltime";     // "alltime" | "window"
+        let profileScope = "window";  // "window" | "alltime"
+        let badgesScope = "alltime";  // "alltime" | "window"
+        let computedAchievements = [];
 
         /* ==================== TÉMY ==================== */
         function getSeasonKeyByDate(date = new Date()) {
@@ -2500,6 +3037,8 @@
                 const btnMonths = Number(btn.getAttribute("data-months"));
                 btn.classList.toggle("active", btnMonths === wm);
             });
+
+            buildAchievements();
         }
 
         function setWindowMonths(months) {
@@ -2715,9 +3254,9 @@
                 }
 
                 const tr = document.createElement("tr");
-                if (p.isInactive || (p.matches === 0 && p.points === 0)) {
-                    if (p.isInactive) tr.className = "row-inactive";
-                }
+                if (p.isInactive) tr.className = "row-inactive";
+                tr.title = `Kliknutím otvoríš detailný profil hráča ${p.name}`;
+                tr.onclick = () => openPlayerDetail(p.id);
 
                 tr.innerHTML = `
                     <td><span class="rank-badge ${rankClass}" title="${isTied ? 'Delené ' + p.rank + '. miesto' : p.rank + '. miesto'}">${rankLabel}</span></td>
@@ -2807,7 +3346,9 @@
             const ids = [
                 "match-t1p1", "match-t1p2", "match-t2p1", "match-t2p2",
                 "hist-t1p1", "hist-t1p2", "hist-t2p1", "hist-t2p2",
-                "edit-t1p1", "edit-t1p2", "edit-t2p1", "edit-t2p2"
+                "edit-t1p1", "edit-t1p2", "edit-t2p1", "edit-t2p2",
+                "h2h-p1", "h2h-p2", "h2h-t1p1", "h2h-t1p2", "h2h-t2p1", "h2h-t2p2",
+                "profile-select"
             ];
             const prevValues = {};
             ids.forEach(id => {
@@ -2831,6 +3372,18 @@
 
             ensureUniqueSelects(["match-t1p1", "match-t1p2", "match-t2p1", "match-t2p2"], formModes.new === "4H" ? 4 : 2);
             ensureUniqueSelects(["hist-t1p1", "hist-t1p2", "hist-t2p1", "hist-t2p2"], formModes.hist === "4H" ? 4 : 2);
+            ensureUniqueSelects(["h2h-t1p1", "h2h-t1p2", "h2h-t2p1", "h2h-t2p2"], 4);
+
+            const hp1 = document.getElementById("h2h-p1");
+            const hp2 = document.getElementById("h2h-p2");
+            if (hp1 && hp2 && (!hp1.value || !hp2.value || hp1.value === hp2.value) && computedPlayers.length >= 2) {
+                hp1.value = computedPlayers[0].id;
+                hp2.value = computedPlayers[1].id;
+            }
+            const profSel = document.getElementById("profile-select");
+            if (profSel && !prevValues["profile-select"] && computedPlayers.length >= 1) {
+                profSel.value = computedPlayers[0].id;
+            }
 
             const histFilter = document.getElementById("history-filter-player");
             if (histFilter) {
@@ -3010,6 +3563,1156 @@
 
             const inserted = computedMatches.find(m => m.id === newId);
             showToast(`Zápas zaradený na pozíciu #${inserted ? inserted.index : computedMatches.length} (${formatDateSk(payload.date)})!`);
+        }
+
+        /* ==================== H2H & DETAILNÝ PROFIL HRÁČA (v0.2) ==================== */
+        function formatGemsForOrder(gemsStr, isFirst) {
+            if (!gemsStr || !gemsStr.trim()) return "";
+            const cleaned = gemsStr.replace(/,/g, " ").trim();
+            if (isFirst) return cleaned;
+            return cleaned.split(/\s+/).map(part => {
+                const m = part.match(/^(\d+)([:\-])(\d+)(.*)$/);
+                if (m) return `${m[3]}${m[2]}${m[1]}${m[4]}`;
+                return part;
+            }).join(" ");
+        }
+
+        function samePairTeam(teamArr, id1, id2) {
+            if (!Array.isArray(teamArr) || teamArr.length !== 2) return false;
+            return (teamArr[0] === id1 && teamArr[1] === id2) || (teamArr[0] === id2 && teamArr[1] === id1);
+        }
+
+        function setH2HMode(mode) {
+            h2hMode = mode === "teams" ? "teams" : "players";
+            document.getElementById("h2h-mode-players").classList.toggle("active", h2hMode === "players");
+            document.getElementById("h2h-mode-teams").classList.toggle("active", h2hMode === "teams");
+            document.getElementById("h2h-players-selectors").style.display = h2hMode === "players" ? "block" : "none";
+            document.getElementById("h2h-teams-selectors").style.display = h2hMode === "teams" ? "block" : "none";
+            const typeGrp = document.getElementById("h2h-type-group");
+            if (typeGrp) typeGrp.style.display = h2hMode === "players" ? "inline-flex" : "none";
+            renderH2H();
+        }
+
+        function setH2HTypeFilter(t) {
+            h2hTypeFilter = (t === "2H" || t === "4H") ? t : "all";
+            document.getElementById("h2h-type-all").classList.toggle("active", h2hTypeFilter === "all");
+            document.getElementById("h2h-type-2H").classList.toggle("active", h2hTypeFilter === "2H");
+            document.getElementById("h2h-type-4H").classList.toggle("active", h2hTypeFilter === "4H");
+            renderH2H();
+        }
+
+        function setH2HScope(sc) {
+            h2hScope = sc === "window" ? "window" : "alltime";
+            document.getElementById("h2h-scope-alltime").classList.toggle("active", h2hScope === "alltime");
+            document.getElementById("h2h-scope-window").classList.toggle("active", h2hScope === "window");
+            renderH2H();
+        }
+
+        function setProfileScope(sc) {
+            profileScope = sc === "alltime" ? "alltime" : "window";
+            document.getElementById("prof-scope-window").classList.toggle("active", profileScope === "window");
+            document.getElementById("prof-scope-alltime").classList.toggle("active", profileScope === "alltime");
+            renderPlayerProfile();
+        }
+
+        function openPlayerDetail(playerId) {
+            const profSel = document.getElementById("profile-select");
+            if (profSel && computedPlayers.some(p => p.id === playerId)) {
+                profSel.value = playerId;
+            }
+            const navBtn = document.querySelectorAll(".bottom-nav .nav-item")[2];
+            switchTab("sec-h2h", navBtn);
+            renderPlayerProfile();
+            setTimeout(() => {
+                const card = document.getElementById("player-profile-card");
+                if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 60);
+        }
+
+        function renderH2H() {
+            const box = document.getElementById("h2h-content");
+            if (!box) return;
+
+            const wm = Number(state.config.windowMonths) || 0;
+            const scopeBtnWin = document.getElementById("h2h-scope-window");
+            if (scopeBtnWin) {
+                scopeBtnWin.textContent = wm === 0 ? "Aktuálna (All-time)" : `Aktuálna (${wm} mes.)`;
+            }
+
+            const baseMatches = h2hScope === "window"
+                ? computedMatches.filter(m => m.isValid)
+                : computedMatches;
+
+            if (h2hMode === "players") {
+                const id1 = document.getElementById("h2h-p1").value;
+                const id2 = document.getElementById("h2h-p2").value;
+                if (!id1 || !id2 || id1 === id2) {
+                    box.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem;">Vyber dvoch rôznych tenistov pre zobrazenie vzájomnej bilancie (keď stáli na opačných stranách siete).</div>`;
+                    return;
+                }
+
+                const p1 = computedPlayers.find(p => p.id === id1);
+                const p2 = computedPlayers.find(p => p.id === id2);
+                if (!p1 || !p2) return;
+
+                const mutual = baseMatches.filter(m => {
+                    if (h2hTypeFilter !== "all" && m.type !== h2hTypeFilter) return false;
+                    const p1InT1 = m.team1.includes(id1);
+                    const p1InT2 = m.team2.includes(id1);
+                    const p2InT1 = m.team1.includes(id2);
+                    const p2InT2 = m.team2.includes(id2);
+                    return (p1InT1 && p2InT2) || (p1InT2 && p2InT1);
+                });
+
+                let w1 = 0, w2 = 0, draws = 0;
+                let sets1 = 0, sets2 = 0;
+                let gems1 = 0, gems2 = 0;
+                let pts1 = 0, pts2 = 0;
+                let cnt2H = 0, cnt4H = 0;
+
+                mutual.forEach(m => {
+                    if (m.type === "2H") cnt2H++; else cnt4H++;
+                    const isFirst = m.team1.includes(id1);
+                    const sA = isFirst ? Number(m.sets1) : Number(m.sets2);
+                    const sB = isFirst ? Number(m.sets2) : Number(m.sets1);
+                    sets1 += sA; sets2 += sB;
+
+                    const g = parseGemsString(m.gems);
+                    gems1 += isFirst ? g.g1 : g.g2;
+                    gems2 += isFirst ? g.g2 : g.g1;
+
+                    pts1 = Math.round((pts1 + (isFirst ? m.ptsA : m.ptsB)) * 100) / 100;
+                    pts2 = Math.round((pts2 + (isFirst ? m.ptsB : m.ptsA)) * 100) / 100;
+
+                    if (sA > sB) w1++;
+                    else if (sB > sA) w2++;
+                    else draws++;
+                });
+
+                const total = mutual.length;
+                const pct1 = total > 0 ? (w1 / total) * 100 : 50;
+                const pctD = total > 0 ? (draws / total) * 100 : 0;
+                const pct2 = total > 0 ? (w2 / total) * 100 : 50;
+
+                const matchesListHtml = total === 0
+                    ? `<div style="color:var(--text-muted); font-size:0.82rem; margin-top:8px;">Títo hráči proti sebe vo zvolenom filtri zatiaľ neodohrali žiaden zápas.</div>`
+                    : mutual.slice().reverse().map(m => {
+                        const isFirst = m.team1.includes(id1);
+                        const sA = isFirst ? m.sets1 : m.sets2;
+                        const sB = isFirst ? m.sets2 : m.sets1;
+                        const pA = isFirst ? m.ptsA : m.ptsB;
+                        const pB = isFirst ? m.ptsB : m.ptsA;
+                        const teamA = isFirst ? m.teamNameA : m.teamNameB;
+                        const teamB = isFirst ? m.teamNameB : m.teamNameA;
+                        const gemsFormatted = formatGemsForOrder(m.gems, isFirst);
+                        const isDraw = sA === sB;
+                        const colA = pA > pB ? "var(--win)" : (pA < pB ? "var(--loss)" : "var(--draw)");
+                        const valTag = wm > 0
+                            ? (m.isValid ? `<span class="validity-badge val-active">Platí</span>` : `<span class="validity-badge val-expired">Expirovalo</span>`)
+                            : "";
+
+                        return `
+                            <div class="match-card ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" style="margin-top:8px; padding:9px 11px;">
+                                <div style="min-width:0; flex:1;">
+                                    <div class="match-meta">
+                                        <span>#${m.index} · ${formatDateSk(m.date)}</span>
+                                        <span class="type-badge type-${m.type}">${m.type}</span>
+                                        ${valTag}
+                                    </div>
+                                    <div class="match-title">
+                                        ${escapeHtml(teamA)} <span style="color:var(--text-muted); font-weight:400;">vs</span> ${escapeHtml(teamB)}
+                                        <span class="match-score-pill">${sA}:${sB}</span>
+                                        <span class="match-gems">${gemsFormatted ? '(' + escapeHtml(gemsFormatted) + ')' : ''}</span>
+                                    </div>
+                                </div>
+                                <div style="text-align:right; font-size:0.77rem; font-weight:800; color:${colA}; white-space:nowrap;">
+                                    ${escapeHtml(p1.name)} +${formatPts(pA)} b
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+
+                box.innerHTML = `
+                    <div class="preview-box" style="margin-top:0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:0.94rem; flex-wrap:wrap; gap:6px;">
+                            <span style="color:${p1.color}" class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(p1.id)}')">${escapeHtml(p1.name)} (${formatPts(p1.points)} b)</span>
+                            <span style="color:var(--text-muted); font-size:0.78rem;">${total} vzájomných (${cnt2H}× 2H · ${cnt4H}× 4H)</span>
+                            <span style="color:${p2.color}" class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(p2.id)}')">${escapeHtml(p2.name)} (${formatPts(p2.points)} b)</span>
+                        </div>
+                        <div class="h2h-bar-wrap">
+                            <div class="h2h-seg-a" style="width:${pct1}%"></div>
+                            <div class="h2h-seg-d" style="width:${pctD}%"></div>
+                            <div class="h2h-seg-b" style="width:${pct2}%"></div>
+                        </div>
+                        <div class="grid-3" style="text-align:center; font-size:0.81rem; margin-top:8px;">
+                            <div><strong style="color:var(--win); font-size:1.08rem;">${w1}</strong><br>Výhry ${escapeHtml(p1.name)}</div>
+                            <div><strong style="color:var(--draw); font-size:1.08rem;">${draws}</strong><br>Remízy</div>
+                            <div><strong style="color:var(--blue-accent); font-size:1.08rem;">${w2}</strong><br>Výhry ${escapeHtml(p2.name)}</div>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">Sety a Gemy:</span>
+                            <span><strong>${sets1} : ${sets2}</strong> (Sety) · <strong>${gems1} : ${gems2}</strong> (Gemy)</span>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">Získané body vo vzájomných:</span>
+                            <span><strong style="color:var(--win)">${escapeHtml(p1.name)}: ${formatPts(pts1)} b</strong> · <strong style="color:var(--blue-accent)">${escapeHtml(p2.name)}: ${formatPts(pts2)} b</strong></span>
+                        </div>
+                    </div>
+                    ${matchesListHtml}
+                `;
+            } else {
+                // Dvojica vs Dvojica (4H)
+                const idA1 = document.getElementById("h2h-t1p1").value;
+                const idA2 = document.getElementById("h2h-t1p2").value;
+                const idB1 = document.getElementById("h2h-t2p1").value;
+                const idB2 = document.getElementById("h2h-t2p2").value;
+
+                if (new Set([idA1, idA2, idB1, idB2]).size < 4) {
+                    box.innerHTML = `<div style="color:var(--loss); font-size:0.84rem; font-weight:700;">Vyber 4 rôznych tenistov pre porovnanie dvoch deblových párov.</div>`;
+                    return;
+                }
+
+                const pA1 = computedPlayers.find(p => p.id === idA1);
+                const pA2 = computedPlayers.find(p => p.id === idA2);
+                const pB1 = computedPlayers.find(p => p.id === idB1);
+                const pB2 = computedPlayers.find(p => p.id === idB2);
+                if (!pA1 || !pA2 || !pB1 || !pB2) return;
+
+                const mutual = baseMatches.filter(m =>
+                    m.type === "4H" && (
+                        (samePairTeam(m.team1, idA1, idA2) && samePairTeam(m.team2, idB1, idB2)) ||
+                        (samePairTeam(m.team1, idB1, idB2) && samePairTeam(m.team2, idA1, idA2))
+                    )
+                );
+
+                let wA = 0, wB = 0, draws = 0;
+                let setsA = 0, setsB = 0;
+                let gemsA = 0, gemsB = 0;
+                let ptsA = 0, ptsB = 0;
+
+                mutual.forEach(m => {
+                    const isFirst = samePairTeam(m.team1, idA1, idA2);
+                    const sA = isFirst ? Number(m.sets1) : Number(m.sets2);
+                    const sB = isFirst ? Number(m.sets2) : Number(m.sets1);
+                    setsA += sA; setsB += sB;
+
+                    const g = parseGemsString(m.gems);
+                    gemsA += isFirst ? g.g1 : g.g2;
+                    gemsB += isFirst ? g.g2 : g.g1;
+
+                    ptsA = Math.round((ptsA + (isFirst ? m.ptsA : m.ptsB)) * 100) / 100;
+                    ptsB = Math.round((ptsB + (isFirst ? m.ptsB : m.ptsA)) * 100) / 100;
+
+                    if (sA > sB) wA++;
+                    else if (sB > sA) wB++;
+                    else draws++;
+                });
+
+                const total = mutual.length;
+                const pctA = total > 0 ? (wA / total) * 100 : 50;
+                const pctD = total > 0 ? (draws / total) * 100 : 0;
+                const pctB = total > 0 ? (wB / total) * 100 : 50;
+
+                const teamTitleA = `${pA1.name} / ${pA2.name}`;
+                const teamTitleB = `${pB1.name} / ${pB2.name}`;
+
+                const matchesListHtml = total === 0
+                    ? `<div style="color:var(--text-muted); font-size:0.82rem; margin-top:8px;">Tieto dve presné dvojice spolu vo zvolenom období neodohrali žiaden vzájomný zápas.</div>`
+                    : mutual.slice().reverse().map(m => {
+                        const isFirst = samePairTeam(m.team1, idA1, idA2);
+                        const sA = isFirst ? m.sets1 : m.sets2;
+                        const sB = isFirst ? m.sets2 : m.sets1;
+                        const pGain = isFirst ? m.ptsA : m.ptsB;
+                        const gemsFormatted = formatGemsForOrder(m.gems, isFirst);
+                        const isDraw = sA === sB;
+                        const col = sA > sB ? "var(--win)" : (sB > sA ? "var(--loss)" : "var(--draw)");
+                        return `
+                            <div class="match-card ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" style="margin-top:8px; padding:9px 11px;">
+                                <div style="min-width:0; flex:1;">
+                                    <div class="match-meta">Zápas #${m.index} · ${formatDateSk(m.date)} <span class="type-badge type-4H">4H</span></div>
+                                    <div class="match-title">${escapeHtml(teamTitleA)} vs ${escapeHtml(teamTitleB)} <span class="match-score-pill">${sA}:${sB}</span> <span class="match-gems">${gemsFormatted ? '(' + escapeHtml(gemsFormatted) + ')' : ''}</span></div>
+                                </div>
+                                <div style="text-align:right; font-size:0.77rem; font-weight:800; color:${col}; white-space:nowrap;">
+                                    +${formatPts(pGain)} b/hráč
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+
+                box.innerHTML = `
+                    <div class="preview-box" style="margin-top:0;">
+                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.90rem; flex-wrap:wrap; gap:4px;">
+                            <span style="color:var(--win)">${escapeHtml(teamTitleA)}</span>
+                            <span style="color:var(--text-muted); font-size:0.78rem;">${total} vzájomných (4H)</span>
+                            <span style="color:var(--blue-accent)">${escapeHtml(teamTitleB)}</span>
+                        </div>
+                        <div class="h2h-bar-wrap">
+                            <div class="h2h-seg-a" style="width:${pctA}%"></div>
+                            <div class="h2h-seg-d" style="width:${pctD}%"></div>
+                            <div class="h2h-seg-b" style="width:${pctB}%"></div>
+                        </div>
+                        <div class="grid-3" style="text-align:center; font-size:0.81rem; margin-top:8px;">
+                            <div><strong style="color:var(--win); font-size:1.08rem;">${wA}</strong><br>Výhry A</div>
+                            <div><strong style="color:var(--draw); font-size:1.08rem;">${draws}</strong><br>Remízy</div>
+                            <div><strong style="color:var(--blue-accent); font-size:1.08rem;">${wB}</strong><br>Výhry B</div>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">Sety a Gemy:</span>
+                            <span><strong>${setsA} : ${setsB}</strong> (Sety) · <strong>${gemsA} : ${gemsB}</strong> (Gemy)</span>
+                        </div>
+                        <div style="font-size:0.78rem; color:var(--text-main); margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                            <span style="color:var(--text-muted);">Body (na 1 hráča páru):</span>
+                            <span><strong style="color:var(--win)">A: ${formatPts(ptsA)} b</strong> · <strong style="color:var(--blue-accent)">B: ${formatPts(ptsB)} b</strong></span>
+                        </div>
+                    </div>
+                    ${matchesListHtml}
+                `;
+            }
+        }
+
+        function renderPlayerProfile() {
+            const sel = document.getElementById("profile-select");
+            const box = document.getElementById("profile-content");
+            if (!sel || !box) return;
+
+            const wm = Number(state.config.windowMonths) || 0;
+            const profWinBtn = document.getElementById("prof-scope-window");
+            if (profWinBtn) {
+                profWinBtn.textContent = wm === 0 ? "Aktuálna (All-time)" : `Aktuálna (${wm} mes.)`;
+            }
+
+            const id = sel.value;
+            const p = computedPlayers.find(pl => pl.id === id);
+            if (!p) {
+                box.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem;">Zatiaľ nie je vybraný žiaden hráč.</div>`;
+                return;
+            }
+
+            const useAllTime = profileScope === "alltime" || wm === 0;
+            const scopeMatches = useAllTime ? computedMatches : computedMatches.filter(m => m.isValid);
+
+            // Výpočet kompletných štatistík hráča v zvolenom rozsahu
+            const stats = {
+                points: 0, pts2H: 0, pts4H: 0,
+                matches: 0, wins: 0, draws: 0, losses: 0,
+                m2H: 0, w2H: 0, d2H: 0, l2H: 0,
+                m4H: 0, w4H: 0, d4H: 0, l4H: 0,
+                setsWon: 0, setsLost: 0, gemsWon: 0, gemsLost: 0,
+                form: []
+            };
+
+            const partnersMap = {};
+            const opponentsMap = {};
+            const activeScoringMatches = [];
+
+            scopeMatches.forEach(m => {
+                const inT1 = m.team1.includes(id);
+                const inT2 = m.team2.includes(id);
+                if (!inT1 && !inT2) return;
+
+                const sA = inT1 ? Number(m.sets1) : Number(m.sets2);
+                const sB = inT1 ? Number(m.sets2) : Number(m.sets1);
+                const g = parseGemsString(m.gems);
+                const gA = inT1 ? g.g1 : g.g2;
+                const gB = inT1 ? g.g2 : g.g1;
+                const earned = inT1 ? m.ptsA : m.ptsB;
+                const res = sA > sB ? "W" : (sB > sA ? "L" : "D");
+
+                stats.matches++;
+                stats.points = Math.round((stats.points + earned) * 100) / 100;
+                stats.setsWon += sA;
+                stats.setsLost += sB;
+                stats.gemsWon += gA;
+                stats.gemsLost += gB;
+                stats.form.push(res);
+
+                if (res === "W") stats.wins++;
+                else if (res === "L") stats.losses++;
+                else stats.draws++;
+
+                if (m.type === "2H") {
+                    stats.m2H++;
+                    stats.pts2H = Math.round((stats.pts2H + earned) * 100) / 100;
+                    if (res === "W") stats.w2H++;
+                    else if (res === "L") stats.l2H++;
+                    else stats.d2H++;
+                } else {
+                    stats.m4H++;
+                    stats.pts4H = Math.round((stats.pts4H + earned) * 100) / 100;
+                    if (res === "W") stats.w4H++;
+                    else if (res === "L") stats.l4H++;
+                    else stats.d4H++;
+                }
+
+                // Zápasy s aktívnymi bodmi pre kalendár expirácie (len keď wm > 0 a zápas platí a dal > 0 bodov)
+                if (wm > 0 && m.isValid && earned > 0) {
+                    activeScoringMatches.push({
+                        index: m.index,
+                        date: m.date,
+                        type: m.type,
+                        earned,
+                        expiryDate: m.expiryDate,
+                        expiryDateStr: m.expiryDateStr,
+                        daysUntilExpiry: m.daysUntilExpiry,
+                        oppName: inT1 ? m.teamNameB : m.teamNameA,
+                        score: `${sA}:${sB}`
+                    });
+                }
+
+                // Spoluhráč v štvorhre
+                const myTeam = inT1 ? m.team1 : m.team2;
+                const oppTeam = inT1 ? m.team2 : m.team1;
+                if (m.type === "4H") {
+                    myTeam.filter(pid => pid !== id).forEach(partId => {
+                        if (!partnersMap[partId]) {
+                            const po = computedPlayers.find(x => x.id === partId);
+                            partnersMap[partId] = {
+                                id: partId, name: po ? po.name : partId, color: po ? po.color : "#94a3b8",
+                                matches: 0, wins: 0, draws: 0, losses: 0, setsWon: 0, setsLost: 0, pts: 0
+                            };
+                        }
+                        const rec = partnersMap[partId];
+                        rec.matches++;
+                        rec.setsWon += sA; rec.setsLost += sB;
+                        rec.pts = Math.round((rec.pts + earned) * 100) / 100;
+                        if (res === "W") rec.wins++; else if (res === "L") rec.losses++; else rec.draws++;
+                    });
+                }
+
+                // Súperi na druhej strane siete (2H aj 4H)
+                oppTeam.forEach(oppId => {
+                    if (!opponentsMap[oppId]) {
+                        const oo = computedPlayers.find(x => x.id === oppId);
+                        opponentsMap[oppId] = {
+                            id: oppId, name: oo ? oo.name : oppId, color: oo ? oo.color : "#94a3b8",
+                            matches: 0, wins: 0, draws: 0, losses: 0, setsWon: 0, setsLost: 0, pts: 0
+                        };
+                    }
+                    const rec = opponentsMap[oppId];
+                    rec.matches++;
+                    rec.setsWon += sA; rec.setsLost += sB;
+                    rec.pts = Math.round((rec.pts + earned) * 100) / 100;
+                    if (res === "W") rec.wins++; else if (res === "L") rec.losses++; else rec.draws++;
+                });
+            });
+
+            const rankCounts = {};
+            computedPlayers.forEach(pl => { rankCounts[pl.rank] = (rankCounts[pl.rank] || 0) + 1; });
+            const rankStr = rankCounts[p.rank] > 1 ? `#${p.rank}=` : `#${p.rank}`;
+
+            const winPct = stats.matches > 0 ? (((stats.wins + 0.5 * stats.draws) / stats.matches) * 100).toFixed(1) : "0.0";
+            const totalG = stats.gemsWon + stats.gemsLost;
+            const gemPct = totalG > 0 ? ((stats.gemsWon / totalG) * 100).toFixed(1) + "%" : "—";
+            const winPct2H = stats.m2H > 0 ? (((stats.w2H + 0.5 * stats.d2H) / stats.m2H) * 100).toFixed(1) + "%" : "—";
+            const winPct4H = stats.m4H > 0 ? (((stats.w4H + 0.5 * stats.d4H) / stats.m4H) * 100).toFixed(1) + "%" : "—";
+
+            // Najbližšia expirácia (aj ak je > 30 dní)
+            activeScoringMatches.sort((a, b) => (a.daysUntilExpiry ?? 99999) - (b.daysUntilExpiry ?? 99999));
+            const nextExp = activeScoringMatches.length > 0 ? activeScoringMatches[0] : null;
+
+            // Obľúbený súper & Nemesis
+            const opponentsList = Object.values(opponentsMap).sort((a, b) => {
+                if (b.matches !== a.matches) return b.matches - a.matches;
+                return b.pts - a.pts;
+            });
+
+            let favoriteOpp = null;
+            let nemesis = null;
+            opponentsList.forEach(op => {
+                const diffW = op.wins - op.losses;
+                if (op.wins > 0 && (!favoriteOpp || diffW > (favoriteOpp.wins - favoriteOpp.losses) || (diffW === (favoriteOpp.wins - favoriteOpp.losses) && op.wins > favoriteOpp.wins))) {
+                    favoriteOpp = op;
+                }
+                const diffL = op.losses - op.wins;
+                if (op.losses > 0 && (!nemesis || diffL > (nemesis.losses - nemesis.wins) || (diffL === (nemesis.losses - nemesis.wins) && op.losses > nemesis.losses))) {
+                    nemesis = op;
+                }
+            });
+
+            const nemesisHtml = (favoriteOpp || nemesis) ? `
+                <div class="grid-2" style="margin-top:10px;">
+                    <div class="stat-tile" style="text-align:left; border-color:rgba(16,185,129,0.34);">
+                        <div class="stat-tile-label" style="color:var(--win);">🎯 Obľúbený súper</div>
+                        <div style="font-weight:800; font-size:0.90rem; margin-top:3px;">
+                            ${favoriteOpp ? `<span class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(favoriteOpp.id)}')">${escapeHtml(favoriteOpp.name)}</span> (${favoriteOpp.wins}V-${favoriteOpp.draws}R-${favoriteOpp.losses}P)` : '—'}
+                        </div>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">
+                            ${favoriteOpp ? `Získané body proti nemu: +${formatPts(favoriteOpp.pts)} b` : 'Zatiaľ bez výhry'}
+                        </div>
+                    </div>
+                    <div class="stat-tile" style="text-align:left; border-color:rgba(239,68,68,0.34);">
+                        <div class="stat-tile-label" style="color:var(--loss);">⚡ Nemesis</div>
+                        <div style="font-weight:800; font-size:0.90rem; margin-top:3px;">
+                            ${nemesis ? `<span class="profile-quick-link" onclick="openPlayerDetail('${escapeHtml(nemesis.id)}')">${escapeHtml(nemesis.name)}</span> (${nemesis.wins}V-${nemesis.draws}R-${nemesis.losses}P)` : '—'}
+                        </div>
+                        <div style="font-size:0.72rem; color:var(--text-muted);">
+                            ${nemesis ? `Bilancia setov: ${nemesis.setsWon}:${nemesis.setsLost}` : 'Neporazený'}
+                        </div>
+                    </div>
+                </div>
+            ` : "";
+
+            // Kalendár expirácie aktívnych bodov (len pri kĺzavej lehote > 0)
+            let expiryCalendarHtml = "";
+            if (wm > 0) {
+                const listRows = activeScoringMatches.length === 0
+                    ? `<div style="color:var(--text-muted); font-size:0.8rem;">Hráč momentálne nemá žiadne aktívne body v ${wm}-mesačnom okne.</div>`
+                    : activeScoringMatches.slice(0, 8).map(item => {
+                        const isSoon = item.daysUntilExpiry <= 30;
+                        const daysTxt = item.daysUntilExpiry === 0 ? "dnes" : `o ${item.daysUntilExpiry} d.`;
+                        return `
+                            <div class="exp-item-row ${isSoon ? 'soon' : ''}">
+                                <div>
+                                    <span class="type-badge type-${item.type}" style="margin-right:4px;">${item.type}</span>
+                                    <strong>+${formatPts(item.earned)} b</strong>
+                                    <span style="color:var(--text-muted);"> · ${formatDateSk(item.date)} vs ${escapeHtml(item.oppName)} (${item.score})</span>
+                                </div>
+                                <div style="font-weight:800; color:${isSoon ? '#fdba74' : 'var(--win)'}; white-space:nowrap;">
+                                    Padá ${item.expiryDateStr} (${daysTxt})
+                                </div>
+                            </div>
+                        `;
+                    }).join("") + (activeScoringMatches.length > 8
+                        ? `<div style="font-size:0.73rem; color:var(--text-muted); text-align:right; margin-top:4px;">+ ďalších ${activeScoringMatches.length - 8} bodovaných zápasov s neskoršou expiráciou</div>`
+                        : "");
+
+                expiryCalendarHtml = `
+                    <div class="profile-section-title">
+                        <span>⏳ Kalendár expirácie aktívnych bodov (${wm} mes.)</span>
+                        <span style="font-size:0.7rem; color:var(--tennis-lime);">Zoradené od najbližšej</span>
+                    </div>
+                    ${listRows}
+                `;
+            }
+
+            // Spoluhráčska chémia (4H)
+            const partnersList = Object.values(partnersMap).sort((a, b) => (b.matches !== a.matches ? b.matches - a.matches : b.pts - a.pts));
+            const partnersHtml = partnersList.length === 0 ? "" : `
+                <div class="profile-section-title">
+                    <span>🤝 Spoluhráčska chémia (Štvorhra 4H)</span>
+                    <span style="font-size:0.7rem;">${partnersList.length} parťákov</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="elo-table">
+                        <thead>
+                            <tr>
+                                <th>Spoluhráč</th>
+                                <th class="text-right">Záp.</th>
+                                <th class="text-right">V-R-P</th>
+                                <th class="text-right">Sety</th>
+                                <th class="text-right">Úsp. (%)</th>
+                                <th class="text-right">Body</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${partnersList.map(pt => {
+                                const pct = (((pt.wins + 0.5 * pt.draws) / pt.matches) * 100).toFixed(1);
+                                return `
+                                    <tr onclick="openPlayerDetail('${escapeHtml(pt.id)}')">
+                                        <td>
+                                            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${pt.color}; margin-right:6px;"></span>
+                                            <strong>${escapeHtml(pt.name)}</strong>
+                                        </td>
+                                        <td class="text-right">${pt.matches}</td>
+                                        <td class="text-right"><span style="color:var(--win); font-weight:700;">${pt.wins}</span>-${pt.draws}-${pt.losses}</td>
+                                        <td class="text-right">${pt.setsWon}:${pt.setsLost}</td>
+                                        <td class="text-right"><strong>${pct}%</strong></td>
+                                        <td class="text-right" style="color:#a5f3fc; font-weight:800;">+${formatPts(pt.pts)}</td>
+                                    </tr>
+                                `;
+                            }).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            // Bilancia proti súperom
+            const opponentsHtml = opponentsList.length === 0 ? "" : `
+                <div class="profile-section-title">
+                    <span>⚔️ Bilancia proti súperom (${useAllTime ? 'All-time' : wm + ' mes.'})</span>
+                    <span style="font-size:0.7rem;">Klikni pre profil súpera</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="elo-table">
+                        <thead>
+                            <tr>
+                                <th>Súper</th>
+                                <th class="text-right">Záp.</th>
+                                <th class="text-right">V-R-P</th>
+                                <th class="text-right">Sety</th>
+                                <th class="text-right">Úsp. (%)</th>
+                                <th class="text-right">Body</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${opponentsList.map(op => {
+                                const pct = (((op.wins + 0.5 * op.draws) / op.matches) * 100).toFixed(1);
+                                return `
+                                    <tr onclick="openPlayerDetail('${escapeHtml(op.id)}')">
+                                        <td>
+                                            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${op.color}; margin-right:6px;"></span>
+                                            <strong>${escapeHtml(op.name)}</strong>
+                                        </td>
+                                        <td class="text-right">${op.matches}</td>
+                                        <td class="text-right"><span style="color:var(--win); font-weight:700;">${op.wins}</span>-${op.draws}-${op.losses}</td>
+                                        <td class="text-right">${op.setsWon}:${op.setsLost}</td>
+                                        <td class="text-right"><strong>${pct}%</strong></td>
+                                        <td class="text-right" style="color:#a5f3fc; font-weight:800;">+${formatPts(op.pts)}</td>
+                                    </tr>
+                                `;
+                            }).join("")}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            const last5 = stats.form.slice(-5).reverse();
+            const formHtml = last5.length > 0
+                ? `<div class="form-dots">` + last5.map(f => `<span class="form-dot form-${f}">${f === 'W' ? 'V' : (f === 'D' ? 'R' : 'P')}</span>`).join("") + `</div>`
+                : `<span style="color:var(--text-muted);">—</span>`;
+
+            box.innerHTML = `
+                <div class="grid-3" style="margin-bottom:10px;">
+                    <div class="stat-tile">
+                        <div class="stat-tile-label">Poradie v tabuľke</div>
+                        <div class="stat-tile-value" style="color:${p.color};">${rankStr}</div>
+                        <div class="stat-tile-sub">${formatPts(stats.points)} b (${useAllTime ? 'All-time' : wm + 'M'})</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="stat-tile-label">Rozpad 2H / 4H</div>
+                        <div class="stat-tile-value" style="color:#a5f3fc;">${formatPts(stats.pts2H)} / ${formatPts(stats.pts4H)}</div>
+                        <div class="stat-tile-sub">${stats.m2H}× 2H · ${stats.m4H}× 4H</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="stat-tile-label">Expiruje (30 d.)</div>
+                        <div class="stat-tile-value" style="color:${p.expiring30 > 0 ? '#fdba74' : 'var(--win)'};">${wm === 0 ? '—' : (p.expiring30 > 0 ? '-' + formatPts(p.expiring30) : '0.00')}</div>
+                        <div class="stat-tile-sub">${wm === 0 ? 'All-time režim' : (nextExp ? 'Najbližšie: ' + nextExp.expiryDateStr : 'Bez aktívnych bodov')}</div>
+                    </div>
+                </div>
+
+                <div class="stat-tile" style="text-align:left; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                    <span>Bilancia: <strong>${stats.matches} záp. (${stats.wins}V - ${stats.draws}R - ${stats.losses}P)</strong></span>
+                    <span>Úspešnosť: <strong style="color:var(--clay-light);">${winPct}%</strong></span>
+                    <span>Sety: <strong>${stats.setsWon}:${stats.setsLost}</strong> · Gemy: <strong>${stats.gemsWon}:${stats.gemsLost} (${gemPct})</strong></span>
+                    <span>Forma: ${formHtml}</span>
+                </div>
+
+                <div class="grid-2">
+                    <div class="profile-split-card" style="border-color:rgba(125,211,252,0.34);">
+                        <div style="font-size:0.71rem; font-weight:800; color:var(--blue-accent); text-transform:uppercase; margin-bottom:4px;">🎾 Dvojhra (2H)</div>
+                        <div style="font-size:0.92rem; font-weight:800;">${formatPts(stats.pts2H)} bodov <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${stats.m2H} záp.)</span></div>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Bilancia: <strong>${stats.w2H}V-${stats.d2H}R-${stats.l2H}P</strong> · Úsp.: <strong>${winPct2H}</strong></div>
+                    </div>
+                    <div class="profile-split-card" style="border-color:rgba(216,180,254,0.34);">
+                        <div style="font-size:0.71rem; font-weight:800; color:#e9d5ff; text-transform:uppercase; margin-bottom:4px;">👥 Štvorhra (4H)</div>
+                        <div style="font-size:0.92rem; font-weight:800;">${formatPts(stats.pts4H)} bodov <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${stats.m4H} záp.)</span></div>
+                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Bilancia: <strong>${stats.w4H}V-${stats.d4H}R-${stats.l4H}P</strong> · Úsp.: <strong>${winPct4H}</strong></div>
+                    </div>
+                </div>
+
+                ${nemesisHtml}
+                ${(() => {
+                    const owned = computedAchievements.filter(a => a.holders.some(h => h.id === id));
+                    if (owned.length === 0) return "";
+                    return `
+                        <div class="profile-section-title">
+                            <span>🏅 Držiteľ odznakov (${owned.length})</span>
+                            <span style="font-size:0.7rem;">${badgesScope === 'alltime' ? 'Celá história' : 'Aktuálna lehota'}</span>
+                        </div>
+                        <div class="profile-badges-wrap">
+                            ${owned.map(b => `
+                                <span class="profile-mini-badge" style="border-color:${b.accent}88;">
+                                    <img class="profile-mini-badge-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(b.iconFile)}" alt="${escapeHtml(b.title)}" width="22" height="22" loading="lazy" data-icon-file="${escapeHtml(b.iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                                    <span data-fallback-display="inline" style="display:none; color:${b.accent};">🏆</span>
+                                    <strong>${escapeHtml(b.title)}</strong> <span style="color:var(--text-muted); font-weight:600;">(${b.valueText})</span>
+                                </span>
+                            `).join("")}
+                        </div>
+                    `;
+                })()}
+                ${expiryCalendarHtml}
+                ${partnersHtml}
+                ${opponentsHtml}
+            `;
+        }
+
+        /* ==================== ODZNAKY & ACHIEVEMENTY (v0.3) ==================== */
+        function skPlural(n, one, few, many) {
+            const absN = Math.abs(Number(n) || 0);
+            if (!Number.isInteger(absN)) return many;
+            if (absN === 1) return one;
+            if (absN >= 2 && absN <= 4) return few;
+            return many;
+        }
+
+        function skCount(n, one, few, many) {
+            return `${n} ${skPlural(n, one, few, many)}`;
+        }
+
+        function handleAchIconError(imgEl) {
+            const file = imgEl.getAttribute("data-icon-file");
+            const nextIdx = (parseInt(imgEl.getAttribute("data-dir-idx") || "0", 10)) + 1;
+            if (file && nextIdx < ACHIEVEMENT_ICON_DIRS.length) {
+                imgEl.setAttribute("data-dir-idx", String(nextIdx));
+                imgEl.src = ACHIEVEMENT_ICON_DIRS[nextIdx] + file;
+            } else {
+                imgEl.onerror = null;
+                imgEl.style.display = "none";
+                const fallback = imgEl.nextElementSibling;
+                if (fallback) fallback.style.display = fallback.dataset.fallbackDisplay || "flex";
+            }
+        }
+
+        function getAchievementIconHtml(iconFile, title, faClass, themeKey) {
+            const palettes = {
+                "ach-green":  { bg1: "#052e16", bg2: "#090e1a", border: "#4ade80", fg: "#86efac" },
+                "ach-blue":   { bg1: "#082f49", bg2: "#090e1a", border: "#38bdf8", fg: "#7dd3fc" },
+                "ach-purple": { bg1: "#3b0764", bg2: "#090e1a", border: "#c084fc", fg: "#e879f9" },
+                "ach-red":    { bg1: "#450a0a", bg2: "#090e1a", border: "#f87171", fg: "#fca5a5" },
+                "ach-gold":   { bg1: "#451a03", bg2: "#090e1a", border: "#f59e0b", fg: "#fbbf24" }
+            };
+            const pal = palettes[themeKey] || palettes["ach-green"];
+            const safeTitle = escapeHtml(title);
+            const safeFile = escapeHtml(iconFile);
+            return `
+                <img class="ach-icon-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${safeFile}" alt="${safeTitle}" width="80" height="80" loading="lazy" decoding="async" data-icon-file="${safeFile}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                <div class="ach-fallback-hex" data-fallback-display="flex" style="display:none;">
+                    <div class="hex-outer" style="background: ${pal.border};">
+                        <div class="hex-inner" style="background: linear-gradient(145deg, ${pal.bg1}, ${pal.bg2});">
+                            <i class="${faClass}" style="color: ${pal.fg};" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function findTopHolders(itemsArr, valFn, minThreshold = 1) {
+            let maxVal = -Infinity;
+            itemsArr.forEach(item => {
+                const v = valFn(item);
+                if (v !== null && v !== undefined && !isNaN(v) && v >= minThreshold && v > maxVal) {
+                    maxVal = v;
+                }
+            });
+            if (maxVal === -Infinity) return { value: 0, holders: [] };
+            const holders = itemsArr.filter(item => valFn(item) === maxVal);
+            return { value: maxVal, holders };
+        }
+
+        function setBadgesScope(sc) {
+            badgesScope = sc === "window" ? "window" : "alltime";
+            document.getElementById("ach-scope-alltime").classList.toggle("active", badgesScope === "alltime");
+            document.getElementById("ach-scope-window").classList.toggle("active", badgesScope === "window");
+            buildAchievements();
+            renderAchievements();
+            renderPlayerProfile();
+        }
+
+        function buildAchievements() {
+            const wm = Number(state.config.windowMonths) || 0;
+            const scopeBtnWin = document.getElementById("ach-scope-window");
+            if (scopeBtnWin) {
+                scopeBtnWin.textContent = wm === 0 ? "Aktuálna (All-time)" : `Aktuálna (${wm} mes.)`;
+            }
+
+            const matchesScope = (badgesScope === "window" && wm > 0)
+                ? computedMatches.filter(m => m.isValid)
+                : computedMatches;
+
+            const pStatsMap = {};
+            computedPlayers.forEach(p => {
+                pStatsMap[p.id] = {
+                    id: p.id, name: p.name, color: p.color,
+                    matches: 0, wins: 0, draws: 0, losses: 0,
+                    points: 0, pts2H: 0, pts4H: 0,
+                    gemsWon: 0, gemsLost: 0,
+                    curWinStreak: 0, maxWinStreak: 0,
+                    curLossStreak: 0, maxLossStreak: 0,
+                    curUnbeatenStreak: 0, maxUnbeatenStreak: 0,
+                    bagelsGiven: 0, bagelsTaken: 0,
+                    tbPlayed: 0, cleanSweeps: 0,
+                    partnersSet: new Set()
+                };
+            });
+
+            const pairsMap = {};
+            let maxGemDiffVal = 0;
+            let steamrollerMatches = [];
+            let maxTotalGemsVal = 0;
+            let marathonMatches = [];
+
+            matchesScope.forEach(m => {
+                const t1 = m.team1.map(id => pStatsMap[id]).filter(Boolean);
+                const t2 = m.team2.map(id => pStatsMap[id]).filter(Boolean);
+                if (t1.length === 0 || t2.length === 0) return;
+
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                const parsedSets = parseSetsFromGemsString(m.gems);
+                const g = parseGemsString(m.gems);
+                const totalGems = g.g1 + g.g2;
+                const gemDiff = Math.abs(g.g1 - g.g2);
+
+                if (gemDiff > maxGemDiffVal) {
+                    maxGemDiffVal = gemDiff;
+                    steamrollerMatches = [m];
+                } else if (gemDiff === maxGemDiffVal && maxGemDiffVal > 0) {
+                    steamrollerMatches.push(m);
+                }
+
+                if (totalGems > maxTotalGemsVal) {
+                    maxTotalGemsVal = totalGems;
+                    marathonMatches = [m];
+                } else if (totalGems === maxTotalGemsVal && maxTotalGemsVal > 0) {
+                    marathonMatches.push(m);
+                }
+
+                // Kanáre a tiebreaky
+                parsedSets.forEach(st => {
+                    if (st.g1 === 6 && st.g2 === 0) {
+                        t1.forEach(p => p.bagelsGiven++);
+                        t2.forEach(p => p.bagelsTaken++);
+                    } else if (st.g2 === 6 && st.g1 === 0) {
+                        t2.forEach(p => p.bagelsGiven++);
+                        t1.forEach(p => p.bagelsTaken++);
+                    }
+                    if ((st.g1 === 7 && st.g2 === 6) || (st.g1 === 6 && st.g2 === 7)) {
+                        [...t1, ...t2].forEach(p => p.tbPlayed++);
+                    }
+                });
+
+                const applySide = (arr, res, oppSets, mySets, ptsEarned, gW, gL) => {
+                    arr.forEach(p => {
+                        p.matches++;
+                        p.points = Math.round((p.points + ptsEarned) * 100) / 100;
+                        if (m.type === "2H") p.pts2H = Math.round((p.pts2H + ptsEarned) * 100) / 100;
+                        else p.pts4H = Math.round((p.pts4H + ptsEarned) * 100) / 100;
+                        p.gemsWon += gW;
+                        p.gemsLost += gL;
+
+                        if (res === "W") {
+                            p.wins++;
+                            if (oppSets === 0 && mySets >= 2) p.cleanSweeps++;
+                            p.curWinStreak++;
+                            if (p.curWinStreak > p.maxWinStreak) p.maxWinStreak = p.curWinStreak;
+                            p.curLossStreak = 0;
+                            p.curUnbeatenStreak++;
+                            if (p.curUnbeatenStreak > p.maxUnbeatenStreak) p.maxUnbeatenStreak = p.curUnbeatenStreak;
+                        } else if (res === "L") {
+                            p.losses++;
+                            p.curLossStreak++;
+                            if (p.curLossStreak > p.maxLossStreak) p.maxLossStreak = p.curLossStreak;
+                            p.curWinStreak = 0;
+                            p.curUnbeatenStreak = 0;
+                        } else {
+                            p.draws++;
+                            p.curWinStreak = 0;
+                            p.curLossStreak = 0;
+                            p.curUnbeatenStreak++;
+                            if (p.curUnbeatenStreak > p.maxUnbeatenStreak) p.maxUnbeatenStreak = p.curUnbeatenStreak;
+                        }
+                    });
+                };
+
+                const res1 = s1 > s2 ? "W" : (s2 > s1 ? "L" : "D");
+                const res2 = s2 > s1 ? "W" : (s1 > s2 ? "L" : "D");
+                applySide(t1, res1, s2, s1, m.ptsA, g.g1, g.g2);
+                applySide(t2, res2, s1, s2, m.ptsB, g.g2, g.g1);
+
+                // Pevné dvojice a spoluhráči (4H)
+                if (m.type === "4H") {
+                    if (t1.length === 2) {
+                        t1[0].partnersSet.add(t1[1].id);
+                        t1[1].partnersSet.add(t1[0].id);
+                        const k1 = [t1[0].id, t1[1].id].sort().join("__");
+                        if (!pairsMap[k1]) {
+                            pairsMap[k1] = { key: k1, p1: t1[0], p2: t1[1], name: `${t1[0].name} / ${t1[1].name}`, matches: 0, pts: 0 };
+                        }
+                        pairsMap[k1].matches++;
+                        pairsMap[k1].pts = Math.round((pairsMap[k1].pts + m.ptsA) * 100) / 100;
+                    }
+                    if (t2.length === 2) {
+                        t2[0].partnersSet.add(t2[1].id);
+                        t2[1].partnersSet.add(t2[0].id);
+                        const k2 = [t2[0].id, t2[1].id].sort().join("__");
+                        if (!pairsMap[k2]) {
+                            pairsMap[k2] = { key: k2, p1: t2[0], p2: t2[1], name: `${t2[0].name} / ${t2[1].name}`, matches: 0, pts: 0 };
+                        }
+                        pairsMap[k2].matches++;
+                        pairsMap[k2].pts = Math.round((pairsMap[k2].pts + m.ptsB) * 100) / 100;
+                    }
+                }
+            });
+
+            const activePlayers = Object.values(pStatsMap).filter(p => p.matches > 0).map(p => ({
+                ...p,
+                uniquePartnersCount: p.partnersSet.size,
+                avgGemDiff: p.matches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.matches) * 10) / 10 : null
+            }));
+            const pairsList = Object.values(pairsMap);
+
+            // Výpočty rekordov
+            const rWinStreak   = findTopHolders(activePlayers, p => p.maxWinStreak, 1);
+            const rHotHand     = findTopHolders(activePlayers, p => p.curWinStreak, 1);
+            const rLossStreak  = findTopHolders(activePlayers, p => p.maxLossStreak, 1);
+            const rUnbeaten    = findTopHolders(activePlayers, p => p.maxUnbeatenStreak, 1);
+
+            const rBagelGive   = findTopHolders(activePlayers, p => p.bagelsGiven, 1);
+            const rBagelTake   = findTopHolders(activePlayers, p => p.bagelsTaken, 1);
+            const rCleanSweeps = findTopHolders(activePlayers, p => p.cleanSweeps, 1);
+            const rTbPlayed    = findTopHolders(activePlayers, p => p.tbPlayed, 1);
+            const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, -99);
+
+            const rPointsKing  = findTopHolders(activePlayers, p => p.points, 0.25);
+            const rSinglesKing = findTopHolders(activePlayers, p => p.pts2H, 0.5);
+            const rIronMan     = findTopHolders(activePlayers, p => p.matches, 1);
+            const rDiplomat    = findTopHolders(activePlayers, p => p.draws, 1);
+            const rChameleon   = findTopHolders(activePlayers, p => p.uniquePartnersCount, 1);
+
+            const rBestPairPts = findTopHolders(pairsList, pr => pr.pts, 0.25);
+            const rFreqPair    = findTopHolders(pairsList, pr => pr.matches, 1);
+
+            const collectPlayersByIds = (ids) => {
+                const res = [];
+                ids.forEach(id => {
+                    const pl = computedPlayers.find(x => x.id === id);
+                    if (pl && !res.some(h => h.id === pl.id)) res.push(pl);
+                });
+                return res;
+            };
+
+            const bestPairPlayers = collectPlayersByIds(rBestPairPts.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const freqPairPlayers = collectPlayersByIds(rFreqPair.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const steamrollerHolders = collectPlayersByIds(
+                steamrollerMatches.flatMap(m => (m.gems1 >= m.gems2 ? m.team1 : m.team2))
+            );
+            const marathonHolders = collectPlayersByIds(
+                marathonMatches.flatMap(m => [...m.team1, ...m.team2])
+            );
+
+            computedAchievements = [
+                // KATEGÓRIA 1: Série a momentálna forma
+                {
+                    id: "unstoppable", cat: 1, title: "Nezastaviteľný",
+                    desc: "Najdlhšia víťazná šnúra bez prerušenia (2H + 4H)",
+                    iconFile: "nezastavitelny.png", faClass: "fa-solid fa-shield-halved",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${skCount(rWinStreak.value, "výhra", "výhry", "výhier")} v rade`,
+                    holders: rWinStreak.holders
+                },
+                {
+                    id: "hot_hand", cat: 1, title: "Horúca ruka",
+                    desc: "Najdlhšia práve prebiehajúca víťazná séria",
+                    iconFile: "ruka.png", faClass: "fa-solid fa-fire",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${skCount(rHotHand.value, "aktívna výhra", "aktívne výhry", "aktívnych výhier")}`,
+                    holders: rHotHand.holders
+                },
+                {
+                    id: "free_fall", cat: 1, title: "Voľný pád",
+                    desc: "Najviac prehier v rade za sebou",
+                    iconFile: "pad.png", faClass: "fa-solid fa-arrow-trend-down",
+                    theme: "ach-red", accent: "#f87171", isNegative: true,
+                    valueText: `${skCount(rLossStreak.value, "prehra", "prehry", "prehier")} v rade`,
+                    holders: rLossStreak.holders
+                },
+                {
+                    id: "bulletproof", cat: 1, title: "Nepriestrelný",
+                    desc: "Najdlhšia séria zápasov bez prehry (výhry + remízy)",
+                    iconFile: "nepriestrelny.png", faClass: "fa-solid fa-helmet-safety",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${rUnbeaten.value} záp. bez prehry`,
+                    holders: rUnbeaten.holders
+                },
+
+                // KATEGÓRIA 2: Kanáre, tiebreaky a skóre
+                {
+                    id: "master_baker", cat: 2, title: "Čistič",
+                    desc: "Najviac rozdaných kanárov (setov 6:0)",
+                    iconFile: "cistic.png", faClass: "fa-solid fa-broom",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${rBagelGive.value}× set 6:0`,
+                    holders: rBagelGive.holders
+                },
+                {
+                    id: "bagel_receiver", cat: 2, title: "Ornitológ",
+                    desc: "Najviac inkasovaných kanárov (setov 0:6)",
+                    iconFile: "ornitolog.png", faClass: "fa-solid fa-crow",
+                    theme: "ach-red", accent: "#f87171", isNegative: true,
+                    valueText: `${rBagelTake.value}× set 0:6`,
+                    holders: rBagelTake.holders
+                },
+                {
+                    id: "surgeon", cat: 2, title: "Chirurg",
+                    desc: "Najviac výhier bez straty setu (2:0, 3:0 alebo 4:0)",
+                    iconFile: "chirurg.png", faClass: "fa-solid fa-heart-pulse",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${rCleanSweeps.value}× bez straty setu`,
+                    holders: rCleanSweeps.holders
+                },
+                {
+                    id: "nerves_of_steel", cat: 2, title: "Muž zo železa",
+                    desc: "Najviac odohratých tiebreakových setov (7:6 / 6:7)",
+                    iconFile: "muz_zo_zeleza.png", faClass: "fa-solid fa-7",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${skCount(rTbPlayed.value, "odohratý TB", "odohraté TB", "odohratých TB")}`,
+                    holders: rTbPlayed.holders
+                },
+                {
+                    id: "sniper", cat: 2, title: "Sniper",
+                    desc: "Najlepšia priemerná gemová bilancia na zápas (min. 3 štarty)",
+                    iconFile: "sniper.png", faClass: "fa-solid fa-crosshairs",
+                    theme: "ach-gold", accent: "#fbbf24", isNegative: false,
+                    valueText: `${rSniper.value >= 0 ? '+' : ''}${Number(rSniper.value).toFixed(1)} gemu / záp.`,
+                    holders: rSniper.holders
+                },
+
+                // KATEGÓRIA 3: Bodové míľniky a aktivita
+                {
+                    id: "points_king", cat: 3, title: "Kráľ bodov",
+                    desc: "Najviac získaných bodov spolu (kombinovane 2H + 4H)",
+                    iconFile: "vrchol.png", faClass: "fa-solid fa-mountain",
+                    theme: "ach-gold", accent: "#fbbf24", isNegative: false,
+                    valueText: `${formatPts(rPointsKing.value)} bodov`,
+                    holders: rPointsKing.holders
+                },
+                {
+                    id: "singles_king", cat: 3, title: "Kráľ dvojhry",
+                    desc: "Najviac získaných bodov v singlových zápasoch (2H)",
+                    iconFile: "obor.png", faClass: "fa-solid fa-crown",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${formatPts(rSinglesKing.value)} b (2H)`,
+                    holders: rSinglesKing.holders
+                },
+                {
+                    id: "iron_man", cat: 3, title: "Železný muž kurtu",
+                    desc: "Najviac odohratých zápasov celkovo (2H + 4H)",
+                    iconFile: "zelezny_muz.png", faClass: "fa-solid fa-robot",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${skCount(rIronMan.value, "zápas", "zápasy", "zápasov")}`,
+                    holders: rIronMan.holders
+                },
+                {
+                    id: "diplomat", cat: 3, title: "Diplomat",
+                    desc: "Kráľ remíz – najviac nerozhodných zápasov",
+                    iconFile: "diplomat.png", faClass: "fa-solid fa-scale-balanced",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${skCount(rDiplomat.value, "remíza", "remízy", "remíz")}`,
+                    holders: rDiplomat.holders
+                },
+                {
+                    id: "chameleon", cat: 3, title: "Chameleón",
+                    desc: "Najviac rôznych spoluhráčov v štvorhre (4H)",
+                    iconFile: "chameleon.png", faClass: "fa-solid fa-diagram-project",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${skCount(rChameleon.value, "rôzny parťák", "rôzni parťáci", "rôznych parťákov")}`,
+                    holders: rChameleon.holders
+                },
+
+                // KATEGÓRIA 4: Tímové odznaky a zápasové rekordy
+                {
+                    id: "dynamic_duo", cat: 4, title: "Dynamické duo",
+                    desc: rBestPairPts.holders.length > 0
+                        ? `Najúspešnejšia pevná dvojica podľa získaných bodov (${rBestPairPts.holders.map(x => x.name).join(", ")})`
+                        : "Najúspešnejšia pevná dvojica podľa získaných bodov v 4H",
+                    iconFile: "dynamicke_duo.png", faClass: "fa-solid fa-handshake-simple",
+                    theme: "ach-purple", accent: "#c084fc", isNegative: false,
+                    valueText: rBestPairPts.holders.length > 0 ? `${formatPts(rBestPairPts.value)} b / hráč` : "—",
+                    holders: bestPairPlayers
+                },
+                {
+                    id: "steamroller", cat: 4, title: "Parný valec",
+                    desc: steamrollerMatches.length > 0
+                        ? `Najvyšší rozdiel gemov v jednom zápase (${steamrollerMatches.map(m => '#' + m.index + ' ' + m.gems).join(', ')})`
+                        : "Najvyšší rozdiel gemov v jednom zápase",
+                    iconFile: "valec.png", faClass: "fa-solid fa-burst",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: maxGemDiffVal > 0 ? `Rozdiel +${skCount(maxGemDiffVal, "gem", "gemy", "gemov")}` : "—",
+                    holders: steamrollerHolders
+                },
+                {
+                    id: "blood_sweat", cat: 4, title: "Krv, pot a slzy",
+                    desc: marathonMatches.length > 0
+                        ? `Najdlhšia bitka podľa počtu gemov (${marathonMatches.map(m => '#' + m.index + ' ' + m.gems).join(', ')})`
+                        : "Najdlhšia bitka podľa počtu gemov",
+                    iconFile: "krv_pot.png", faClass: "fa-solid fa-stopwatch",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: maxTotalGemsVal > 0 ? `${skCount(maxTotalGemsVal, "odohratý gem", "odohraté gemy", "odohratých gemov")}` : "—",
+                    holders: marathonHolders
+                },
+                {
+                    id: "inseparable_pair", cat: 4, title: "Nerozlučná dvojka",
+                    desc: rFreqPair.holders.length > 0
+                        ? `Najčastejšie spolu nastupujúci deblový pár (${rFreqPair.holders.map(x => x.name).join(", ")})`
+                        : "Najčastejšie spolu nastupujúci deblový pár",
+                    iconFile: "nerozlucna_dvojka.png", faClass: "fa-solid fa-link",
+                    theme: "ach-purple", accent: "#c084fc", isNegative: false,
+                    valueText: rFreqPair.holders.length > 0 ? `${skCount(rFreqPair.value, "spoločný štart", "spoločné štarty", "spoločných štartov")}` : "—",
+                    holders: freqPairPlayers
+                }
+            ];
+        }
+
+        function renderAchievements() {
+            const renderCat = (catNum, containerId) => {
+                const el = document.getElementById(containerId);
+                if (!el) return;
+                const items = computedAchievements.filter(a => a.cat === catNum);
+                el.innerHTML = items.map(ach => {
+                    const holdersHtml = ach.holders.length === 0
+                        ? `<span style="font-size:0.74rem; color:var(--text-muted);">Zatiaľ bez držiteľa</span>`
+                        : ach.holders.map(h => `
+                            <span class="ach-holder-chip" onclick="openPlayerDetail('${escapeHtml(h.id)}')">
+                                <span style="width:7px; height:7px; border-radius:50%; background:${h.color}; display:inline-block;"></span>
+                                ${escapeHtml(h.name)}
+                            </span>
+                        `).join("");
+
+                    return `
+                        <div class="ach-card ${ach.theme}">
+                            <div class="ach-crest">
+                                ${getAchievementIconHtml(ach.iconFile, ach.title, ach.faClass, ach.theme)}
+                            </div>
+                            <div class="ach-body">
+                                <div class="ach-title">${escapeHtml(ach.title)}</div>
+                                <div class="ach-desc">${escapeHtml(ach.desc)}</div>
+                                <div class="ach-record-pill" style="color:${ach.accent || '#4ade80'}">
+                                    Rekord: ${ach.holders.length > 0 ? ach.valueText : "—"}
+                                </div>
+                                <div class="ach-holders">${holdersHtml}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            };
+
+            renderCat(1, "ach-cat-1");
+            renderCat(2, "ach-cat-2");
+            renderCat(3, "ach-cat-3");
+            renderCat(4, "ach-cat-4");
+
+            const badgeCounts = {};
+            computedAchievements.forEach(ach => {
+                if (ach.isNegative) return;
+                ach.holders.forEach(h => {
+                    badgeCounts[h.id] = (badgeCounts[h.id] || 0) + 1;
+                });
+            });
+
+            let bestPlayer = null;
+            let bestCount = 0;
+            computedPlayers.forEach(p => {
+                const c = badgeCounts[p.id] || 0;
+                if (c > bestCount) {
+                    bestCount = c;
+                    bestPlayer = p;
+                }
+            });
+
+            const topEl = document.getElementById("ach-top-collector");
+            const cntEl = document.getElementById("ach-top-collector-count");
+            if (topEl) topEl.textContent = bestPlayer ? bestPlayer.name : "—";
+            if (cntEl) cntEl.textContent = `${bestCount} pozitívnych odznakov`;
         }
 
         /* ==================== EDITÁCIA A HISTÓRIA ==================== */
@@ -3288,6 +4991,9 @@
             updateEmptyWelcomeCard();
             renderLeaderboard();
             updateMatchPreview();
+            renderH2H();
+            renderPlayerProfile();
+            renderAchievements();
             renderMatchHistory();
         }
 
