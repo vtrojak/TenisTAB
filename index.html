@@ -32,10 +32,24 @@
             --radius: 16px;
             --shadow: 0 10px 30px rgba(8, 20, 34, 0.34);
             --glass-blur: blur(16px) saturate(160%);
-            --btn-glass-bg: linear-gradient(135deg, rgba(136, 0, 0, 0.72), rgba(136, 0, 0, 0.46));
-            --btn-glass-hover: linear-gradient(135deg, rgba(165, 0, 0, 0.88), rgba(136, 0, 0, 0.65));
-            --btn-glass-border: rgba(255, 160, 160, 0.42);
-            --btn-glass-shadow: 0 6px 20px rgba(136, 0, 0, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.30);
+            --btn-top: #008f7c;
+            --btn-bot: #005e51;
+            --btn-hover-top: #00a690;
+            --btn-hover-bot: #007363;
+            --btn-edge: #00362e;
+            --btn-muted-top: #0b4742;
+            --btn-muted-bot: #07302d;
+            --btn-muted-edge: #031a18;
+            --btn-border: #40d0be;
+            --btn-accent: #99f6e4;
+            --btn-glow: rgba(64, 208, 190, 0.44);
+            --btn-3d-bg: linear-gradient(180deg, var(--btn-top) 0%, var(--btn-bot) 100%);
+            --btn-3d-hover: linear-gradient(180deg, var(--btn-hover-top) 0%, var(--btn-hover-bot) 100%);
+            --btn-3d-muted: linear-gradient(180deg, var(--btn-muted-top) 0%, var(--btn-muted-bot) 100%);
+            --btn-3d-shadow: 0 3px 0 var(--btn-edge), 0 6px 14px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.36);
+            --btn-3d-shadow-sm: 0 2px 0 var(--btn-edge), 0 4px 10px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+            --btn-3d-shadow-muted: 0 2px 0 var(--btn-muted-edge), 0 4px 9px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            --btn-3d-active-shadow: 0 1px 0 var(--btn-edge), 0 2px 5px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.22);
         }
 
         * {
@@ -468,9 +482,9 @@
         }
 
         .table-mode-btn {
-            background: #000000;
+            background: linear-gradient(180deg, #1c1c1e 0%, #050505 100%);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.28);
+            border: 1.5px solid rgba(255, 255, 255, 0.92);
             border-radius: 12px;
             padding: 11px 8px;
             font-size: 0.80rem;
@@ -478,8 +492,8 @@
             cursor: pointer;
             text-align: center;
             letter-spacing: 0.2px;
-            box-shadow: 0 5px 16px rgba(0, 0, 0, 0.42);
-            transition: all 0.18s ease;
+            box-shadow: 0 3px 0 #000000, 0 6px 15px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+            transition: transform 0.12s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -487,49 +501,56 @@
         }
 
         .table-mode-btn:hover {
-            background: #171717;
-            border-color: rgba(255, 255, 255, 0.55);
+            background: linear-gradient(180deg, #2b2b2f 0%, #0e0e10 100%);
+            border-color: #ffffff;
+            box-shadow: 0 3px 0 #000000, 0 7px 18px rgba(0, 0, 0, 0.50), 0 0 10px rgba(255, 255, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.32);
         }
 
         .table-mode-btn:active {
-            transform: scale(0.98);
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #000000, 0 2px 6px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.18);
         }
 
         .table-mode-btn.active {
-            background: #ffffff;
+            background: linear-gradient(180deg, #ffffff 0%, #eef2f6 100%);
             color: #000000;
             border-color: #ffffff;
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.30);
+            box-shadow: 0 3px 0 #94a3b8, 0 6px 18px rgba(255, 255, 255, 0.24), inset 0 1px 0 #ffffff;
         }
 
         .table-mode-btn.active:hover {
-            background: #f3f4f6;
+            background: linear-gradient(180deg, #ffffff 0%, #e5ebf1 100%);
             color: #000000;
+        }
+
+        .table-mode-btn.active:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #94a3b8, 0 2px 8px rgba(255, 255, 255, 0.20), inset 0 1px 0 #ffffff;
         }
 
         @keyframes tableModeGreenFlash {
             0% {
-                background: linear-gradient(135deg, #065f46 0%, #22c55e 50%, #bef264 100%);
-                color: #052e16;
-                border-color: #bef264;
-                box-shadow: 0 0 18px rgba(190, 242, 100, 0.55);
-            }
-            60% {
-                background: linear-gradient(135deg, #10b981 0%, #a3e635 55%, #dcfce7 100%);
-                color: #052e16;
+                background: linear-gradient(180deg, #bbf7d0 0%, #86efac 100%);
+                color: #064e3b;
                 border-color: #dcfce7;
-                box-shadow: 0 0 14px rgba(110, 231, 183, 0.45);
+                box-shadow: 0 3px 0 #6ee7b7, 0 0 14px rgba(134, 239, 172, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+            }
+            55% {
+                background: linear-gradient(180deg, #ecfdf5 0%, #dcfce7 100%);
+                color: #052e16;
+                border-color: #ffffff;
+                box-shadow: 0 3px 0 #a7f3d0, 0 0 10px rgba(187, 247, 208, 0.28), inset 0 1px 0 #ffffff;
             }
             100% {
-                background: #ffffff;
+                background: linear-gradient(180deg, #ffffff 0%, #eef2f6 100%);
                 color: #000000;
                 border-color: #ffffff;
-                box-shadow: 0 6px 20px rgba(255, 255, 255, 0.30);
+                box-shadow: 0 3px 0 #94a3b8, 0 6px 18px rgba(255, 255, 255, 0.24), inset 0 1px 0 #ffffff;
             }
         }
 
         .table-mode-btn.flash-green {
-            animation: tableModeGreenFlash 0.36s ease-out;
+            animation: tableModeGreenFlash 0.50s ease-out;
         }
 
         .delta-tag {
@@ -573,9 +594,9 @@
         }
 
         .window-bar .preset-btn.active {
-            border-color: rgba(190, 242, 100, 0.75);
-            box-shadow: 0 0 12px rgba(190, 242, 100, 0.25), 0 4px 14px rgba(136, 0, 0, 0.48), inset 0 1px 1px rgba(255, 255, 255, 0.35);
-            color: var(--tennis-lime);
+            border-color: var(--btn-accent);
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 12px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+            color: var(--btn-accent);
         }
 
         /* TABLE */
@@ -872,8 +893,8 @@
         }
 
         input:focus, select:focus {
-            border-color: rgba(255, 255, 255, 0.65);
-            box-shadow: 0 0 0 2px rgba(136, 0, 0, 0.35);
+            border-color: var(--btn-accent);
+            box-shadow: 0 0 0 2px var(--btn-glow);
         }
 
         input.auto-filled-flash {
@@ -908,30 +929,81 @@
             align-items: center;
         }
 
-        /* BUTTONS: #880000 GLASS EFFECT */
+        /* BUTTONS: PLNÝ 3D EFEKT VO FARBÁCH TÉMY + SVETELNÝ ODLESK (v1.21) */
+        .btn-primary, .btn-secondary, .preset-btn, .tv-btn,
+        .icon-btn, .icon-btn-alt, .chart-nav-btn, .tv-step-btn,
+        .nav-item, .player-chip {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .btn-primary::after, .btn-secondary::after, .preset-btn::after, .tv-btn::after,
+        .icon-btn::after, .icon-btn-alt::after, .chart-nav-btn::after, .tv-step-btn::after,
+        .nav-item::after, .player-chip::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 18%,
+                rgba(255, 255, 255, 0.52) 50%,
+                rgba(255, 255, 255, 0) 82%
+            );
+            transform: translateX(-140%) skewX(-20deg);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .btn-light-hit::after {
+            animation: btnLightSweep 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .btn-light-hit {
+            border-color: var(--btn-accent) !important;
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 16px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.50) !important;
+        }
+
+        @keyframes btnLightSweep {
+            0%   { transform: translateX(-140%) skewX(-20deg); opacity: 0.95; }
+            65%  { opacity: 0.85; }
+            100% { transform: translateX(145%) skewX(-20deg); opacity: 0; }
+        }
+
         .preset-btn {
             flex: 1;
             min-width: 48px;
             padding: 7px 8px;
-            background: rgba(136, 0, 0, 0.42);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 160, 160, 0.32);
+            background: var(--btn-3d-muted);
+            border: 1px solid rgba(255, 255, 255, 0.20);
             border-radius: 9px;
-            color: #ffffff;
+            color: rgba(255, 255, 255, 0.92);
             font-weight: 700;
             font-size: 0.78rem;
             cursor: pointer;
             text-align: center;
-            transition: all 0.18s ease;
-            box-shadow: 0 3px 10px rgba(136, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.22);
+            transition: transform 0.1s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+            box-shadow: var(--btn-3d-shadow-muted);
         }
 
-        .preset-btn.active, .preset-btn:hover {
-            background: linear-gradient(135deg, rgba(165, 0, 0, 0.85), rgba(136, 0, 0, 0.68));
-            border-color: rgba(255, 200, 200, 0.65);
+        .preset-btn:hover {
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-border);
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(136, 0, 0, 0.48), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+            box-shadow: var(--btn-3d-shadow-sm);
+        }
+
+        .preset-btn.active {
+            background: var(--btn-3d-bg);
+            border-color: var(--btn-accent);
+            color: var(--btn-accent);
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 12px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+        }
+
+        .preset-btn:active {
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         .btn {
@@ -941,27 +1013,33 @@
             font-weight: 700;
             font-size: 0.9rem;
             cursor: pointer;
-            transition: transform 0.12s, background 0.2s, box-shadow 0.2s;
+            transition: transform 0.1s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
         }
 
-        .btn:active { transform: scale(0.98); }
+        .btn:active {
+            transform: translateY(2px);
+        }
 
         .btn-primary, .btn-secondary {
-            background: var(--btn-glass-bg);
+            background: var(--btn-3d-bg);
             color: #ffffff;
-            border: 1px solid var(--btn-glass-border);
-            box-shadow: var(--btn-glass-shadow);
+            border: 1.5px solid var(--btn-border);
+            box-shadow: var(--btn-3d-shadow);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
         }
 
         .btn-primary:hover, .btn-secondary:hover {
-            background: var(--btn-glass-hover);
-            border-color: rgba(255, 200, 200, 0.65);
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-accent);
+            box-shadow: 0 3px 0 var(--btn-edge), 0 8px 18px rgba(0, 0, 0, 0.42), 0 0 12px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+        }
+
+        .btn-primary:active, .btn-secondary:active {
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         .btn-danger {
@@ -1076,13 +1154,14 @@
 
         .match-score-pill {
             display: inline-block;
-            background: rgba(136, 0, 0, 0.58);
-            border: 1px solid rgba(255, 160, 160, 0.35);
+            background: var(--btn-3d-bg);
+            border: 1px solid var(--btn-border);
             color: #ffffff;
             padding: 1px 7px;
             border-radius: 6px;
             font-weight: 800;
             margin-left: 4px;
+            box-shadow: 0 1px 0 var(--btn-edge), inset 0 1px 0 rgba(255, 255, 255, 0.28);
         }
 
         .match-gems {
@@ -1106,22 +1185,26 @@
         }
 
         .icon-btn, .icon-btn-alt {
-            background: var(--btn-glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--btn-3d-bg);
             color: #ffffff;
-            border: 1px solid var(--btn-glass-border);
+            border: 1px solid var(--btn-border);
             border-radius: 8px;
             padding: 6px 9px;
             font-size: 0.75rem;
             cursor: pointer;
             font-weight: 700;
-            box-shadow: 0 3px 10px rgba(136, 0, 0, 0.30), inset 0 1px 1px rgba(255, 255, 255, 0.25);
-            transition: all 0.15s;
+            box-shadow: var(--btn-3d-shadow-sm);
+            transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
         .icon-btn:hover, .icon-btn-alt:hover {
-            background: var(--btn-glass-hover);
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-accent);
+        }
+
+        .icon-btn:active, .icon-btn-alt:active {
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         .match-note-line {
@@ -1222,8 +1305,8 @@
         }
 
         .h2h-pill-group .preset-btn.active {
-            border-color: rgba(190, 242, 100, 0.72);
-            color: var(--tennis-lime);
+            border-color: var(--btn-accent);
+            color: var(--btn-accent);
         }
 
         .profile-section-title {
@@ -1641,8 +1724,8 @@
         }
 
         .ach-holder-chip:hover {
-            background: #880000;
-            border-color: #880000;
+            background: var(--btn-top);
+            border-color: var(--btn-accent);
         }
 
         .ach-empty-holder {
@@ -1842,22 +1925,32 @@
             font-size: 0.74rem;
             font-weight: 700;
             cursor: pointer;
-            border: 1px solid rgba(255, 160, 160, 0.30);
-            background: rgba(136, 0, 0, 0.34);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            color: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: var(--btn-3d-muted);
+            color: rgba(255, 255, 255, 0.76);
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            transition: all 0.15s;
+            box-shadow: var(--btn-3d-shadow-muted);
+            transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+        }
+
+        .player-chip:hover {
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-border);
+            color: #ffffff;
         }
 
         .player-chip.active {
             color: #ffffff;
-            border-color: rgba(255, 190, 190, 0.65);
-            background: rgba(136, 0, 0, 0.72);
-            box-shadow: 0 2px 10px rgba(136, 0, 0, 0.38);
+            border-color: var(--btn-accent);
+            background: var(--btn-3d-bg);
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 10px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+        }
+
+        .player-chip:active {
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         .chip-dot {
@@ -1907,8 +2000,8 @@
             height: 28px;
             flex-shrink: 0;
             border-radius: 8px;
-            border: 1px solid var(--btn-glass-border);
-            background: var(--btn-glass-bg);
+            border: 1px solid var(--btn-border);
+            background: var(--btn-3d-bg);
             color: #ffffff;
             font-size: 0.92rem;
             font-weight: 800;
@@ -1917,15 +2010,18 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.15s, opacity 0.15s, transform 0.1s;
+            box-shadow: var(--btn-3d-shadow-sm);
+            transition: background 0.15s, border-color 0.15s, opacity 0.15s, transform 0.1s, box-shadow 0.15s;
         }
 
         .chart-nav-btn:hover:not(:disabled) {
-            background: var(--btn-glass-hover);
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-accent);
         }
 
         .chart-nav-btn:active:not(:disabled) {
-            transform: scale(0.94);
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         .chart-nav-btn:disabled {
@@ -2016,12 +2112,10 @@
 
 
         .tv-btn {
-            background: var(--btn-glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: var(--btn-3d-bg);
             color: #ffffff;
-            border: 1px solid var(--btn-glass-border);
-            padding: 6px 11px;
+            border: 1.5px solid var(--btn-border);
+            padding: 6px 12px;
             border-radius: 999px;
             font-size: 0.72rem;
             font-weight: 700;
@@ -2029,13 +2123,21 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            box-shadow: var(--btn-glass-shadow);
-            transition: all 0.18s ease;
+            box-shadow: var(--btn-3d-shadow-sm);
+            transition: transform 0.1s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
             white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
         }
 
         .tv-btn:hover {
-            background: var(--btn-glass-hover);
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-accent);
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 12px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+        }
+
+        .tv-btn:active {
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         .modal-box.tv-modal-box {
@@ -2103,8 +2205,8 @@
             width: 26px;
             height: 24px;
             border-radius: 7px;
-            border: 1px solid var(--btn-glass-border);
-            background: var(--btn-glass-bg);
+            border: 1px solid var(--btn-border);
+            background: var(--btn-3d-bg);
             color: #ffffff;
             font-size: 0.85rem;
             font-weight: 800;
@@ -2113,11 +2215,12 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.15s, transform 0.1s;
+            box-shadow: var(--btn-3d-shadow-sm);
+            transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.15s;
         }
 
-        .tv-step-btn:hover { background: var(--btn-glass-hover); }
-        .tv-step-btn:active { transform: scale(0.94); }
+        .tv-step-btn:hover { background: var(--btn-3d-hover); border-color: var(--btn-accent); }
+        .tv-step-btn:active { transform: translateY(2px); box-shadow: var(--btn-3d-active-shadow); }
 
         .tv-pct-badge {
             min-width: 42px;
@@ -2543,9 +2646,9 @@
         .nav-item {
             flex: 1;
             max-width: 135px;
-            background: rgba(136, 0, 0, 0.22);
-            border: 1px solid rgba(255, 160, 160, 0.18);
-            color: rgba(255, 255, 255, 0.82);
+            background: var(--btn-3d-muted);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: rgba(255, 255, 255, 0.86);
             padding: 6px 2px;
             border-radius: 11px;
             font-size: 0.64rem;
@@ -2555,7 +2658,8 @@
             flex-direction: column;
             align-items: center;
             gap: 3px;
-            transition: all 0.18s ease;
+            box-shadow: var(--btn-3d-shadow-muted);
+            transition: transform 0.1s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
         }
 
         .nav-item svg {
@@ -2563,12 +2667,24 @@
             height: 19px;
         }
 
-        .nav-item.active, .nav-item:hover {
+        .nav-item:hover {
             color: #ffffff;
-            background: var(--btn-glass-bg);
-            border-color: var(--btn-glass-border);
-            box-shadow: 0 4px 12px rgba(136, 0, 0, 0.42), inset 0 1px 1px rgba(255, 255, 255, 0.30);
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-border);
+            box-shadow: var(--btn-3d-shadow-sm);
+        }
+
+        .nav-item.active {
+            color: var(--btn-accent);
+            background: var(--btn-3d-bg);
+            border-color: var(--btn-accent);
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 12px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.36);
             font-weight: 700;
+        }
+
+        .nav-item:active {
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         /* TOAST */
@@ -2779,7 +2895,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.2</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.21</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2810,7 +2926,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.2</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.21</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3793,14 +3909,46 @@
         const VALID_WINDOWS = [3, 6, 12, 18, 24, 36, 0];
 
         const SEASON_THEMES = [
-            { key: "spring",    label: "Jar 🌱",    gradient: "linear-gradient(135deg, #ffd9e0 0%, #f0ff2b 50%, #4af100 100%)", themeColor: "#119100" },
-            { key: "summer",    label: "Leto ☀️",   gradient: "linear-gradient(135deg, #9a2c71 0%, #ee815d 50%, #eecd2b 100%)", themeColor: "#b02047" },
-            { key: "autumn",    label: "Jeseň 🍂",  gradient: "linear-gradient(135deg, #a71a0a 0%, #ffdb2d 50%, #ff6a2d 100%)", themeColor: "#812700" },
-            { key: "winter",    label: "Zima ❄️",   gradient: "linear-gradient(135deg, #14b8a6 0%, #f8fafc 50%, #94a3b8 100%)", themeColor: "#0f766e" },
-            { key: "turquoise", label: "Tyrkys 💎", gradient: "linear-gradient(135deg, #007256 0%, #40d0be 100%)",             themeColor: "#007263" },
-            { key: "smoke",     label: "Smoke 🌫️",  gradient: "linear-gradient(135deg, #362c2b 0%, #989898 50%, #28343c 100%)", themeColor: "#23272c" },
-            { key: "clay",      label: "Antuka 🧱", gradient: "linear-gradient(135deg, #873319 0%, #5c2010 50%, #3a1308 100%)", themeColor: "#5c2010" },
-            { key: "indoor",    label: "Hala 🏟️",   gradient: "linear-gradient(135deg, #004068 0%, #7ceaed 50%, #1334e6 100%)", themeColor: "#0b1e4a" }
+            {
+                key: "spring", label: "Jar 🌱",
+                gradient: "linear-gradient(135deg, #ffd9e0 0%, #f0ff2b 50%, #4af100 100%)", themeColor: "#119100",
+                btn: { top: "#1da80c", bot: "#106e06", hoverTop: "#24bf11", hoverBot: "#148508", edge: "#083d03", mutedTop: "#134a0e", mutedBot: "#0c3109", mutedEdge: "#051904", border: "#4ade80", accent: "#e5ff4d", glow: "rgba(229, 255, 77, 0.42)" }
+            },
+            {
+                key: "summer", label: "Leto ☀️",
+                gradient: "linear-gradient(135deg, #9a2c71 0%, #ee815d 50%, #eecd2b 100%)", themeColor: "#b02047",
+                btn: { top: "#c82854", bot: "#8a1637", hoverTop: "#de3261", hoverBot: "#a31b42", edge: "#4d0a1d", mutedTop: "#5e1a32", mutedBot: "#3f1021", mutedEdge: "#220711", border: "#f47299", accent: "#fde047", glow: "rgba(253, 224, 71, 0.42)" }
+            },
+            {
+                key: "autumn", label: "Jeseň 🍂",
+                gradient: "linear-gradient(135deg, #a71a0a 0%, #ffdb2d 50%, #ff6a2d 100%)", themeColor: "#812700",
+                btn: { top: "#b83b0a", bot: "#7a2304", hoverTop: "#d1460f", hoverBot: "#942b05", edge: "#471201", mutedTop: "#59220e", mutedBot: "#3c1508", mutedEdge: "#210a03", border: "#fb923c", accent: "#ffdb2d", glow: "rgba(255, 219, 45, 0.42)" }
+            },
+            {
+                key: "winter", label: "Zima ❄️",
+                gradient: "linear-gradient(135deg, #14b8a6 0%, #f8fafc 50%, #94a3b8 100%)", themeColor: "#0f766e",
+                btn: { top: "#159288", bot: "#0d5f59", hoverTop: "#19a89d", hoverBot: "#10756e", edge: "#063632", mutedTop: "#15464a", mutedBot: "#0e2f33", mutedEdge: "#06191c", border: "#5eead4", accent: "#e0f2fe", glow: "rgba(186, 230, 253, 0.44)" }
+            },
+            {
+                key: "turquoise", label: "Tyrkys 💎",
+                gradient: "linear-gradient(135deg, #007256 0%, #40d0be 100%)", themeColor: "#007263",
+                btn: { top: "#008f7c", bot: "#005e51", hoverTop: "#00a690", hoverBot: "#007363", edge: "#00362e", mutedTop: "#0b4742", mutedBot: "#07302d", mutedEdge: "#031a18", border: "#40d0be", accent: "#99f6e4", glow: "rgba(64, 208, 190, 0.44)" }
+            },
+            {
+                key: "smoke", label: "Smoke 🌫️",
+                gradient: "linear-gradient(135deg, #362c2b 0%, #989898 50%, #28343c 100%)", themeColor: "#23272c",
+                btn: { top: "#525b66", bot: "#343b44", hoverTop: "#636e7b", hoverBot: "#414a56", edge: "#1b1f25", mutedTop: "#2f353e", mutedBot: "#20252c", mutedEdge: "#101318", border: "#94a3b8", accent: "#e2e8f0", glow: "rgba(226, 232, 240, 0.36)" }
+            },
+            {
+                key: "clay", label: "Antuka 🧱",
+                gradient: "linear-gradient(135deg, #873319 0%, #5c2010 50%, #3a1308 100%)", themeColor: "#5c2010",
+                btn: { top: "#a33f1f", bot: "#6e2510", hoverTop: "#ba4a27", hoverBot: "#852e15", edge: "#3d1206", mutedTop: "#542214", mutedBot: "#39160c", mutedEdge: "#1f0a05", border: "#f59e6c", accent: "#fed7aa", glow: "rgba(253, 186, 116, 0.42)" }
+            },
+            {
+                key: "indoor", label: "Hala 🏟️",
+                gradient: "linear-gradient(135deg, #004068 0%, #7ceaed 50%, #1334e6 100%)", themeColor: "#0b1e4a",
+                btn: { top: "#1e4fd6", bot: "#123299", hoverTop: "#295feb", hoverBot: "#173eb8", edge: "#091b5c", mutedTop: "#162c66", mutedBot: "#0e1d47", mutedEdge: "#060e26", border: "#60a5fa", accent: "#7ceaed", glow: "rgba(124, 234, 237, 0.44)" }
+            }
         ];
 
         const PLAYER_COLORS = [
@@ -3923,8 +4071,22 @@
             currentSeasonThemeIndex = idx !== -1 ? idx : 0;
             const theme = SEASON_THEMES[currentSeasonThemeIndex];
 
-            document.documentElement.style.setProperty("--app-bg-gradient", theme.gradient);
-            document.documentElement.style.background = theme.themeColor;
+            const rootStyle = document.documentElement.style;
+            rootStyle.setProperty("--app-bg-gradient", theme.gradient);
+            rootStyle.background = theme.themeColor;
+            if (theme.btn) {
+                rootStyle.setProperty("--btn-top", theme.btn.top);
+                rootStyle.setProperty("--btn-bot", theme.btn.bot);
+                rootStyle.setProperty("--btn-hover-top", theme.btn.hoverTop);
+                rootStyle.setProperty("--btn-hover-bot", theme.btn.hoverBot);
+                rootStyle.setProperty("--btn-edge", theme.btn.edge);
+                rootStyle.setProperty("--btn-muted-top", theme.btn.mutedTop);
+                rootStyle.setProperty("--btn-muted-bot", theme.btn.mutedBot);
+                rootStyle.setProperty("--btn-muted-edge", theme.btn.mutedEdge);
+                rootStyle.setProperty("--btn-border", theme.btn.border);
+                rootStyle.setProperty("--btn-accent", theme.btn.accent);
+                rootStyle.setProperty("--btn-glow", theme.btn.glow);
+            }
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute("content", theme.themeColor);
 
@@ -4794,7 +4956,16 @@
             void btnEl.offsetWidth;
             btnEl.classList.add("flash-green");
             clearTimeout(btnEl._flashTimer);
-            btnEl._flashTimer = setTimeout(() => btnEl.classList.remove("flash-green"), 400);
+            btnEl._flashTimer = setTimeout(() => btnEl.classList.remove("flash-green"), 540);
+        }
+
+        function triggerThemedBtnSheen(btnEl) {
+            if (!btnEl || btnEl.disabled) return;
+            btnEl.classList.remove("btn-light-hit");
+            void btnEl.offsetWidth;
+            btnEl.classList.add("btn-light-hit");
+            clearTimeout(btnEl._sheenTimer);
+            btnEl._sheenTimer = setTimeout(() => btnEl.classList.remove("btn-light-hit"), 440);
         }
 
         function setTableViewMode(mode) {
@@ -6881,7 +7052,7 @@
                 : `<span style="color:var(--text-muted);">—</span>`;
 
             box.innerHTML = `
-                <div class="grid-3" style="margin-bottom:10px;">
+                <div style="display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:10px;">
                     <div class="stat-tile">
                         <div class="stat-tile-label">Poradie v tabuľke</div>
                         <div class="stat-tile-value" style="color:${p.color};">${rankStr}</div>
@@ -11010,7 +11181,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.2! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.21! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -11808,6 +11979,11 @@
             loadTvSettings();
             ensureTvBackgroundLoaded();
             initGlobalPcTooltips();
+
+            document.addEventListener("click", e => {
+                const btn = e.target.closest(".btn-primary, .btn-secondary, .preset-btn, .tv-btn, .icon-btn, .icon-btn-alt, .chart-nav-btn, .tv-step-btn, .nav-item, .player-chip");
+                if (btn) triggerThemedBtnSheen(btn);
+            });
 
             document.addEventListener("keydown", e => {
                 if (e.key === "Escape") {
