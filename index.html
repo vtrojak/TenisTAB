@@ -1294,58 +1294,214 @@
             margin-bottom: 14px;
         }
 
-        /* ACHIEVEMENTS / ODZNAKY – 256×256 PNG IKONY Z GITHUBU + HEX FALLBACK */
+        /* ACHIEVEMENTS / ODZNAKY – PASTELOVÁ BIELA + INTERAKTÍVNY TMAVÝ DETAIL (v1.2) */
         .ach-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 14px;
+            align-items: stretch;
         }
 
         .ach-card {
-            --ach-glow: rgba(255, 255, 255, 0.22);
-            --ach-tint: rgba(255, 255, 255, 0.05);
-            background: linear-gradient(145deg, rgba(12, 25, 40, 0.82), rgba(8, 18, 30, 0.78));
-            backdrop-filter: blur(16px) saturate(160%);
-            -webkit-backdrop-filter: blur(16px) saturate(160%);
-            border: 1px solid var(--border);
+            --ach-glow: rgba(100, 116, 139, 0.38);
+            --ach-tint: rgba(148, 163, 184, 0.14);
+            --ach-front-bg: linear-gradient(145deg, #ffffff 0%, #f4f7fa 100%);
+            --ach-front-border: rgba(148, 163, 184, 0.55);
+            --ach-front-accent: #0f766e;
+            --ach-pill-bg: rgba(15, 23, 42, 0.06);
+            --ach-pill-border: rgba(15, 23, 42, 0.16);
+            --ach-back-bg: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            --ach-back-border: rgba(255, 255, 255, 0.35);
+            --ach-back-accent: #e2e8f0;
+
+            display: grid;
+            grid-template-columns: 1fr;
+            background: var(--ach-front-bg);
+            border: 1.5px solid var(--ach-front-border);
             border-radius: 16px;
-            padding: 15px 14px;
-            display: flex;
-            gap: 14px;
-            align-items: flex-start;
+            padding: 0;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0, 18, 16, 0.34), inset 0 1px 1px rgba(255, 255, 255, 0.18);
-            transition: transform 0.18s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 8px 22px rgba(4, 16, 28, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+            transition: transform 0.18s ease, border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
         }
 
         .ach-card::before {
             content: "";
             position: absolute;
-            top: -24px;
-            left: -24px;
-            width: 140px;
-            height: 140px;
+            top: -28px;
+            left: -28px;
+            width: 150px;
+            height: 150px;
             background: radial-gradient(circle, var(--ach-tint) 0%, transparent 72%);
             pointer-events: none;
             z-index: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        /* Svetelný efekt pri prepnutí dlaždice */
+        .ach-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 20%,
+                rgba(255, 255, 255, 0.62) 50%,
+                rgba(255, 255, 255, 0) 80%
+            );
+            transform: translateX(-130%) skewX(-18deg);
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+        }
+
+        .ach-card.ach-flash::after {
+            animation: achLightSweep 0.58s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .ach-card.ach-flash {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.65), 0 0 26px var(--ach-glow), 0 10px 26px rgba(0, 12, 20, 0.42);
+        }
+
+        @keyframes achLightSweep {
+            0%   { transform: translateX(-130%) skewX(-18deg); opacity: 0.95; }
+            65%  { opacity: 0.85; }
+            100% { transform: translateX(135%) skewX(-18deg); opacity: 0; }
         }
 
         .ach-card:hover {
             transform: translateY(-2px);
             border-color: var(--ach-glow);
-            box-shadow: 0 10px 28px rgba(0, 14, 12, 0.46), 0 0 18px var(--ach-tint), inset 0 1px 1px rgba(255, 255, 255, 0.26);
+            box-shadow: 0 10px 26px rgba(4, 14, 24, 0.34), 0 0 16px var(--ach-tint);
         }
 
-        .ach-card.ach-green  { --ach-glow: rgba(74, 222, 128, 0.58);  --ach-tint: rgba(74, 222, 128, 0.20);  border-color: rgba(74, 222, 128, 0.36); }
-        .ach-card.ach-blue   { --ach-glow: rgba(56, 189, 248, 0.58);  --ach-tint: rgba(56, 189, 248, 0.20);  border-color: rgba(56, 189, 248, 0.36); }
-        .ach-card.ach-purple { --ach-glow: rgba(192, 132, 252, 0.58); --ach-tint: rgba(192, 132, 252, 0.20); border-color: rgba(192, 132, 252, 0.36); }
-        .ach-card.ach-red    { --ach-glow: rgba(248, 113, 113, 0.58); --ach-tint: rgba(248, 113, 113, 0.20); border-color: rgba(248, 113, 113, 0.36); }
-        .ach-card.ach-gold   { --ach-glow: rgba(250, 204, 21, 0.58);  --ach-tint: rgba(250, 204, 21, 0.18);  border-color: rgba(250, 204, 21, 0.36); }
+        .ach-card.is-flipped {
+            background: var(--ach-back-bg);
+            border-color: var(--ach-back-border);
+            box-shadow: 0 12px 28px rgba(2, 10, 18, 0.46), 0 0 18px var(--ach-tint), inset 0 1px 1px rgba(255, 255, 255, 0.22);
+        }
+
+        .ach-card.is-flipped::before {
+            opacity: 0.35;
+        }
+
+        /* Farebné palety: pastelová biela (predná) + výrazná tmavá (informačná) */
+        .ach-card.ach-green {
+            --ach-glow: rgba(34, 197, 94, 0.72);
+            --ach-tint: rgba(74, 222, 128, 0.22);
+            --ach-front-bg: linear-gradient(145deg, #ffffff 0%, #f1fbf4 100%);
+            --ach-front-border: rgba(34, 197, 94, 0.55);
+            --ach-front-accent: #15803d;
+            --ach-pill-bg: rgba(22, 163, 74, 0.12);
+            --ach-pill-border: rgba(22, 163, 74, 0.34);
+            --ach-back-bg: linear-gradient(145deg, #065f46 0%, #052e16 100%);
+            --ach-back-border: rgba(110, 231, 183, 0.65);
+            --ach-back-accent: #86efac;
+        }
+
+        .ach-card.ach-blue {
+            --ach-glow: rgba(14, 165, 233, 0.72);
+            --ach-tint: rgba(56, 189, 248, 0.22);
+            --ach-front-bg: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%);
+            --ach-front-border: rgba(14, 165, 233, 0.55);
+            --ach-front-accent: #0369a1;
+            --ach-pill-bg: rgba(2, 132, 199, 0.12);
+            --ach-pill-border: rgba(2, 132, 199, 0.34);
+            --ach-back-bg: linear-gradient(145deg, #075985 0%, #082f49 100%);
+            --ach-back-border: rgba(125, 211, 252, 0.65);
+            --ach-back-accent: #7dd3fc;
+        }
+
+        .ach-card.ach-purple {
+            --ach-glow: rgba(168, 85, 247, 0.72);
+            --ach-tint: rgba(192, 132, 252, 0.22);
+            --ach-front-bg: linear-gradient(145deg, #ffffff 0%, #faf5ff 100%);
+            --ach-front-border: rgba(168, 85, 247, 0.55);
+            --ach-front-accent: #7e22ce;
+            --ach-pill-bg: rgba(147, 51, 234, 0.12);
+            --ach-pill-border: rgba(147, 51, 234, 0.34);
+            --ach-back-bg: linear-gradient(145deg, #6b21a8 0%, #3b0764 100%);
+            --ach-back-border: rgba(216, 180, 254, 0.65);
+            --ach-back-accent: #e9d5ff;
+        }
+
+        .ach-card.ach-red {
+            --ach-glow: rgba(239, 68, 68, 0.72);
+            --ach-tint: rgba(248, 113, 113, 0.22);
+            --ach-front-bg: linear-gradient(145deg, #ffffff 0%, #fef2f2 100%);
+            --ach-front-border: rgba(239, 68, 68, 0.55);
+            --ach-front-accent: #b91c1c;
+            --ach-pill-bg: rgba(220, 38, 38, 0.11);
+            --ach-pill-border: rgba(220, 38, 38, 0.34);
+            --ach-back-bg: linear-gradient(145deg, #991b1b 0%, #450a0a 100%);
+            --ach-back-border: rgba(252, 165, 165, 0.65);
+            --ach-back-accent: #fecaca;
+        }
+
+        .ach-card.ach-gold {
+            --ach-glow: rgba(234, 179, 8, 0.72);
+            --ach-tint: rgba(250, 204, 21, 0.22);
+            --ach-front-bg: linear-gradient(145deg, #ffffff 0%, #fefce8 100%);
+            --ach-front-border: rgba(234, 179, 8, 0.60);
+            --ach-front-accent: #a16207;
+            --ach-pill-bg: rgba(202, 138, 4, 0.13);
+            --ach-pill-border: rgba(202, 138, 4, 0.36);
+            --ach-back-bg: linear-gradient(145deg, #854d0e 0%, #422006 100%);
+            --ach-back-border: rgba(253, 224, 71, 0.65);
+            --ach-back-accent: #fde047;
+        }
+
+        /* Obe vrstvy v rovnakej grid bunke -> veľkosť dlaždice sa preklikom nikdy nemení */
+        .ach-face {
+            grid-area: 1 / 1;
+            padding: 14px 13px;
+            position: relative;
+            z-index: 1;
+            min-width: 0;
+            transition: opacity 0.24s ease, visibility 0.24s ease, transform 0.24s ease;
+        }
+
+        .ach-face-front {
+            display: flex;
+            gap: 13px;
+            align-items: flex-start;
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        .ach-card.is-flipped .ach-face-front {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.98);
+        }
+
+        .ach-face-back {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 7px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.98);
+            color: #ffffff;
+        }
+
+        .ach-card.is-flipped .ach-face-back {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: scale(1);
+        }
 
         .ach-crest {
-            width: 80px;
-            height: 80px;
+            width: 78px;
+            height: 78px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -1363,13 +1519,13 @@
             background: transparent;
             user-select: none;
             -webkit-user-drag: none;
-            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 8px var(--ach-tint));
+            filter: drop-shadow(0 5px 10px rgba(15, 23, 42, 0.28));
             transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
         }
 
         .ach-card:hover .ach-icon-img {
-            transform: scale(1.07);
-            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.52)) drop-shadow(0 0 14px var(--ach-glow));
+            transform: scale(1.06);
+            filter: drop-shadow(0 7px 14px rgba(15, 23, 42, 0.36));
         }
 
         .ach-fallback-hex {
@@ -1377,7 +1533,7 @@
             height: 68px;
             align-items: center;
             justify-content: center;
-            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.42));
+            filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.28));
         }
 
         .hex-outer {
@@ -1413,18 +1569,41 @@
             z-index: 1;
         }
 
+        .ach-title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
         .ach-title {
-            font-size: 0.88rem;
+            font-size: 0.90rem;
             font-weight: 800;
-            color: var(--text-main);
-            line-height: 1.31;
+            color: #0f172a;
+            line-height: 1.28;
+        }
+
+        .ach-info-dot {
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--ach-front-accent);
+            background: var(--ach-pill-bg);
+            border: 1px solid var(--ach-pill-border);
+            margin-top: 1px;
         }
 
         .ach-desc {
-            font-size: 0.72rem;
-            color: var(--text-muted);
+            font-size: 0.73rem;
+            color: #334155;
             margin-top: 2px;
-            line-height: 1.3;
+            line-height: 1.32;
         }
 
         .ach-record-pill {
@@ -1434,8 +1613,9 @@
             font-weight: 800;
             padding: 2px 8px;
             border-radius: 6px;
-            background: rgba(0, 20, 18, 0.38);
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: var(--ach-pill-bg);
+            border: 1px solid var(--ach-pill-border);
+            color: var(--ach-front-accent);
         }
 
         .ach-holders {
@@ -1449,20 +1629,162 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            font-size: 0.74rem;
+            font-size: 0.73rem;
             font-weight: 700;
             padding: 3px 8px;
             border-radius: 999px;
-            background: rgba(136, 0, 0, 0.45);
-            border: 1px solid rgba(255, 160, 160, 0.35);
+            background: #1e293b;
+            border: 1px solid rgba(15, 23, 42, 0.25);
             color: #ffffff;
             cursor: pointer;
             transition: all 0.15s;
         }
 
         .ach-holder-chip:hover {
-            background: rgba(165, 0, 0, 0.75);
-            border-color: rgba(255, 200, 200, 0.65);
+            background: #880000;
+            border-color: #880000;
+        }
+
+        .ach-empty-holder {
+            font-size: 0.73rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Informačná (zadná) strana dlaždice */
+        .ach-back-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+        }
+
+        .ach-back-title {
+            font-size: 0.86rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.25;
+        }
+
+        .ach-back-hint {
+            font-size: 0.64rem;
+            font-weight: 700;
+            color: var(--ach-back-accent);
+            background: rgba(0, 0, 0, 0.26);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 999px;
+            padding: 2px 7px;
+            white-space: nowrap;
+        }
+
+        .ach-back-rules {
+            font-size: 0.71rem;
+            color: rgba(255, 255, 255, 0.90);
+            line-height: 1.32;
+        }
+
+        .ach-rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        .ach-rank-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 3px 8px;
+            border-radius: 7px;
+            background: rgba(0, 0, 0, 0.24);
+            font-size: 0.72rem;
+            line-height: 1.25;
+        }
+
+        .ach-rank-row.is-first {
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            font-weight: 700;
+        }
+
+        .ach-rank-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .ach-rank-pos {
+            font-weight: 800;
+            color: var(--ach-back-accent);
+            flex-shrink: 0;
+        }
+
+        .ach-rank-name {
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ach-rank-val {
+            color: var(--ach-back-accent);
+            font-weight: 800;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .ach-back-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            font-size: 0.68rem;
+            color: rgba(255, 255, 255, 0.86);
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .ach-back-foot strong {
+            color: #ffffff;
+        }
+
+        .ach-timer-bar {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.14);
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .ach-card.is-flipped .ach-timer-bar {
+            opacity: 1;
+        }
+
+        .ach-timer-fill {
+            width: 100%;
+            height: 100%;
+            background: var(--ach-back-accent);
+            transform-origin: left center;
+            transform: scaleX(1);
+        }
+
+        .ach-card.is-flipped .ach-timer-fill {
+            animation: achCountdownBar 30s linear forwards;
+        }
+
+        @keyframes achCountdownBar {
+            from { transform: scaleX(1); }
+            to   { transform: scaleX(0); }
         }
 
         .profile-badges-wrap {
@@ -1495,7 +1817,7 @@
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
         }
 
-        @media (max-width: 560px) {
+        @media (max-width: 640px) {
             .ach-grid {
                 grid-template-columns: 1fr;
             }
@@ -2457,7 +2779,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.1</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.2</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -2488,7 +2810,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.1</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.2</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -2902,7 +3224,7 @@
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Jednotlivci</div>
-                    <div class="stat-tile-value">14</div>
+                    <div class="stat-tile-value">24</div>
                     <div class="stat-tile-sub">Kategórie 1 – 3</div>
                 </div>
                 <div class="stat-tile">
@@ -2932,7 +3254,7 @@
                         <span class="card-title-dot" style="background: #f59e0b;"></span>
                         1. Série a momentálna forma
                     </div>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">Klikni na meno pre detail hráča</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Klikni na dlaždicu pre detail · na meno pre profil</span>
                 </div>
                 <div class="ach-grid" id="ach-cat-1"></div>
             </div>
@@ -6695,13 +7017,112 @@
             return { value: maxVal, holders };
         }
 
+        const achFlipTimers = {};
+
+        function clearAllAchTimers() {
+            Object.keys(achFlipTimers).forEach(k => {
+                clearTimeout(achFlipTimers[k]);
+                delete achFlipTimers[k];
+            });
+        }
+
+        function triggerAchLightFlash(cardEl) {
+            if (!cardEl) return;
+            cardEl.classList.remove("ach-flash");
+            void cardEl.offsetWidth;
+            cardEl.classList.add("ach-flash");
+            clearTimeout(cardEl._flashTimer);
+            cardEl._flashTimer = setTimeout(() => cardEl.classList.remove("ach-flash"), 620);
+        }
+
+        function closeAchievementCard(achId, withFlash = true) {
+            if (achFlipTimers[achId]) {
+                clearTimeout(achFlipTimers[achId]);
+                delete achFlipTimers[achId];
+            }
+            const cardEl = document.querySelector(`.ach-card[data-ach-id="${achId}"]`);
+            if (!cardEl || !cardEl.classList.contains("is-flipped")) return;
+            cardEl.classList.remove("is-flipped");
+            cardEl.setAttribute("aria-expanded", "false");
+            if (withFlash) triggerAchLightFlash(cardEl);
+        }
+
+        function resetAllAchievementCards() {
+            clearAllAchTimers();
+            document.querySelectorAll(".ach-card.is-flipped").forEach(el => {
+                el.classList.remove("is-flipped");
+                el.setAttribute("aria-expanded", "false");
+            });
+        }
+
+        function toggleAchievementCard(achId) {
+            const cardEl = document.querySelector(`.ach-card[data-ach-id="${achId}"]`);
+            if (!cardEl) return;
+
+            if (cardEl.classList.contains("is-flipped")) {
+                closeAchievementCard(achId, true);
+                return;
+            }
+
+            if (achFlipTimers[achId]) {
+                clearTimeout(achFlipTimers[achId]);
+                delete achFlipTimers[achId];
+            }
+
+            // Reštart 30s progresovej lišty
+            const fillEl = cardEl.querySelector(".ach-timer-fill");
+            if (fillEl) {
+                fillEl.style.animation = "none";
+                void fillEl.offsetWidth;
+                fillEl.style.animation = "";
+            }
+
+            cardEl.classList.add("is-flipped");
+            cardEl.setAttribute("aria-expanded", "true");
+            triggerAchLightFlash(cardEl);
+
+            achFlipTimers[achId] = setTimeout(() => {
+                closeAchievementCard(achId, true);
+            }, 30000);
+        }
+
         function setBadgesScope(sc) {
             badgesScope = sc === "window" ? "window" : "alltime";
             document.getElementById("ach-scope-alltime").classList.toggle("active", badgesScope === "alltime");
             document.getElementById("ach-scope-window").classList.toggle("active", badgesScope === "window");
+            resetAllAchievementCards();
             buildAchievements();
             renderAchievements();
             renderPlayerProfile();
+        }
+
+        function buildTop3Ranking(itemsArr, valFn, labelFn, fmtValFn, minThreshold = 1) {
+            const eligible = itemsArr
+                .map(item => ({ item, val: valFn(item) }))
+                .filter(x => x.val !== null && x.val !== undefined && !isNaN(x.val) && x.val >= minThreshold)
+                .sort((a, b) => {
+                    if (b.val !== a.val) return b.val - a.val;
+                    return labelFn(a.item).localeCompare(labelFn(b.item), "sk");
+                });
+
+            if (eligible.length === 0) return [];
+
+            // Zoskupenie rovnakých hodnôt do max 3 riadkov (1. držiteľ + 2 najbližší prenásledovatelia)
+            const groups = [];
+            eligible.forEach(entry => {
+                const last = groups[groups.length - 1];
+                if (last && last.val === entry.val) {
+                    last.labels.push(labelFn(entry.item));
+                } else {
+                    groups.push({ val: entry.val, labels: [labelFn(entry.item)] });
+                }
+            });
+
+            return groups.slice(0, 3).map((g, idx) => ({
+                pos: idx + 1,
+                name: g.labels.join(", "),
+                valueText: fmtValFn(g.val)
+            }));
         }
 
         function buildAchievements() {
@@ -6715,28 +7136,54 @@
                 ? computedMatches.filter(m => m.isValid)
                 : computedMatches;
 
+            const today = getTodayMidnight();
+
             const pStatsMap = {};
             computedPlayers.forEach(p => {
                 pStatsMap[p.id] = {
                     id: p.id, name: p.name, color: p.color,
                     matches: 0, wins: 0, draws: 0, losses: 0,
                     points: 0, pts2H: 0, pts4H: 0,
+                    ptsWinter: 0, ptsSummer: 0,
                     gemsWon: 0, gemsLost: 0,
                     curWinStreak: 0, maxWinStreak: 0,
                     curLossStreak: 0, maxLossStreak: 0,
                     curUnbeatenStreak: 0, maxUnbeatenStreak: 0,
                     bagelsGiven: 0, bagelsTaken: 0,
                     tbPlayed: 0, cleanSweeps: 0,
-                    maxEloGain: 0,
+                    comebackWins: 0, marathonCount: 0, closeLosses: 0,
+                    maxEloGain: 0, maxEloLoss2H: 0,
+                    lastDateObj: null, maxGapDays: 0,
                     partnersSet: new Set()
                 };
             });
 
             const pairsMap = {};
+            const matchGemDiffList = [];
+            const matchTotalGemsList = [];
             let maxGemDiffVal = 0;
             let steamrollerMatches = [];
             let maxTotalGemsVal = 0;
             let marathonMatches = [];
+
+            // Sledovanie doby nepretržitého držania 1. miesta pre každý odznak
+            const ownershipSince = {};
+            const updateOwnershipFor = (achId, leaderKeys, matchDateIso) => {
+                if (!ownershipSince[achId]) ownershipSince[achId] = {};
+                const curMap = ownershipSince[achId];
+                const newSet = new Set(leaderKeys);
+                Object.keys(curMap).forEach(k => {
+                    if (!newSet.has(k)) delete curMap[k];
+                });
+                leaderKeys.forEach(k => {
+                    if (!curMap[k]) curMap[k] = matchDateIso;
+                });
+            };
+
+            const getLeaderIdsForMetric = (list, valFn, minTh) => {
+                const top = findTopHolders(list, valFn, minTh);
+                return top.holders.map(x => x.id || x.key);
+            };
 
             matchesScope.forEach(m => {
                 const t1 = m.team1.map(id => pStatsMap[id]).filter(Boolean);
@@ -6749,6 +7196,39 @@
                 const g = parseGemsString(m.gems);
                 const totalGems = g.g1 + g.g2;
                 const gemDiff = Math.abs(g.g1 - g.g2);
+                const mDateObj = parseIsoLocal(m.date);
+                const mMonth = mDateObj ? (mDateObj.getMonth() + 1) : 0;
+                const isWinterSeason = mMonth >= 11 || (mMonth >= 1 && mMonth <= 4);
+                const isSummerSeason = mMonth >= 5 && mMonth <= 10;
+
+                // Comeback (najdlhšia pauza v dňoch medzi 2 po sebe idúcimi zápasmi hráča)
+                if (mDateObj) {
+                    [...t1, ...t2].forEach(p => {
+                        if (p.lastDateObj) {
+                            const gap = diffDays(mDateObj, p.lastDateObj);
+                            if (gap > p.maxGapDays) p.maxGapDays = gap;
+                        }
+                        p.lastDateObj = mDateObj;
+                    });
+                }
+
+                // Zápasové rekordy
+                if (gemDiff > 0) {
+                    matchGemDiffList.push({
+                        key: m.id,
+                        label: `#${m.index} ${g.g1 >= g.g2 ? m.teamNameA : m.teamNameB} (${m.gems})`,
+                        val: gemDiff,
+                        match: m
+                    });
+                }
+                if (totalGems > 0) {
+                    matchTotalGemsList.push({
+                        key: m.id,
+                        label: `#${m.index} ${m.teamNameA} vs ${m.teamNameB}`,
+                        val: totalGems,
+                        match: m
+                    });
+                }
 
                 if (gemDiff > maxGemDiffVal) {
                     maxGemDiffVal = gemDiff;
@@ -6778,12 +7258,33 @@
                     }
                 });
 
+                // Fénix (obrat po prehratom 1. sete)
+                if (parsedSets.length >= 2) {
+                    const firstSet = parsedSets[0];
+                    if (firstSet.g1 < firstSet.g2 && s1 > s2) {
+                        t1.forEach(p => p.comebackWins++);
+                    } else if (firstSet.g2 < firstSet.g1 && s2 > s1) {
+                        t2.forEach(p => p.comebackWins++);
+                    }
+                }
+
+                // Maratónec (3+ sety; pri 3:0 / 0:3 len ak spolu aspoň 25 gemov)
+                const totalSets = s1 + s2;
+                const isThreeZero = (s1 === 3 && s2 === 0) || (s1 === 0 && s2 === 3);
+                if (totalSets >= 3 && (!isThreeZero || totalGems >= 25)) {
+                    [...t1, ...t2].forEach(p => p.marathonCount++);
+                }
+
                 const applySide = (arr, res, oppSets, mySets, ptsEarned, gW, gL) => {
                     arr.forEach(p => {
                         p.matches++;
                         p.points = Math.round((p.points + ptsEarned) * 100) / 100;
                         if (m.type === "2H") p.pts2H = Math.round((p.pts2H + ptsEarned) * 100) / 100;
                         else p.pts4H = Math.round((p.pts4H + ptsEarned) * 100) / 100;
+
+                        if (isWinterSeason) p.ptsWinter = Math.round((p.ptsWinter + ptsEarned) * 100) / 100;
+                        else if (isSummerSeason) p.ptsSummer = Math.round((p.ptsSummer + ptsEarned) * 100) / 100;
+
                         p.gemsWon += gW;
                         p.gemsLost += gL;
 
@@ -6797,6 +7298,10 @@
                             if (p.curUnbeatenStreak > p.maxUnbeatenStreak) p.maxUnbeatenStreak = p.curUnbeatenStreak;
                         } else if (res === "L") {
                             p.losses++;
+                            // Smoliar / O chlp: prehra, kde sú zadané gemy a rozdiel gemov v prospech víťaza <= 2
+                            if (totalGems > 0 && (gL - gW) <= 2) {
+                                p.closeLosses++;
+                            }
                             p.curLossStreak++;
                             if (p.curLossStreak > p.maxLossStreak) p.maxLossStreak = p.curLossStreak;
                             p.curWinStreak = 0;
@@ -6816,11 +7321,24 @@
                 applySide(t1, res1, s2, s1, m.ptsA, g.g1, g.g2);
                 applySide(t2, res2, s1, s2, m.ptsB, g.g2, g.g1);
 
+                // Lovec obrov (najväčší zisk ELO v 2H/4H)
                 if (typeof m.eloDeltaA === "number" && m.eloDeltaA > 0) {
                     t1.forEach(p => { if (m.eloDeltaA > p.maxEloGain) p.maxEloGain = m.eloDeltaA; });
                 }
                 if (typeof m.eloDeltaB === "number" && m.eloDeltaB > 0) {
                     t2.forEach(p => { if (m.eloDeltaB > p.maxEloGain) p.maxEloGain = m.eloDeltaB; });
+                }
+
+                // Jánošík (najväčšia strata ELO v jednom zápase vo dvojhre 2H)
+                if (m.type === "2H") {
+                    if (typeof m.eloDeltaA === "number" && m.eloDeltaA < 0) {
+                        const lossAbs = Math.round(Math.abs(m.eloDeltaA) * 10) / 10;
+                        t1.forEach(p => { if (lossAbs > p.maxEloLoss2H) p.maxEloLoss2H = lossAbs; });
+                    }
+                    if (typeof m.eloDeltaB === "number" && m.eloDeltaB < 0) {
+                        const lossAbs = Math.round(Math.abs(m.eloDeltaB) * 10) / 10;
+                        t2.forEach(p => { if (lossAbs > p.maxEloLoss2H) p.maxEloLoss2H = lossAbs; });
+                    }
                 }
 
                 // Pevné dvojice a spoluhráči (4H)
@@ -6846,6 +7364,43 @@
                         pairsMap[k2].pts = Math.round((pairsMap[k2].pts + m.ptsB) * 100) / 100;
                     }
                 }
+
+                // Priebežné vyhodnotenie držiteľov po tomto zápase (pre výpočet "Drží od...")
+                const stepPlayers = Object.values(pStatsMap).filter(p => p.matches > 0);
+                const stepPairs = Object.values(pairsMap);
+                const dIso = m.date;
+
+                updateOwnershipFor("unstoppable",     getLeaderIdsForMetric(stepPlayers, p => p.maxWinStreak, 1), dIso);
+                updateOwnershipFor("hot_hand",        getLeaderIdsForMetric(stepPlayers, p => p.curWinStreak, 1), dIso);
+                updateOwnershipFor("free_fall",       getLeaderIdsForMetric(stepPlayers, p => p.maxLossStreak, 1), dIso);
+                updateOwnershipFor("bulletproof",     getLeaderIdsForMetric(stepPlayers, p => p.maxUnbeatenStreak, 1), dIso);
+
+                updateOwnershipFor("master_baker",    getLeaderIdsForMetric(stepPlayers, p => p.bagelsGiven, 1), dIso);
+                updateOwnershipFor("bagel_receiver",  getLeaderIdsForMetric(stepPlayers, p => p.bagelsTaken, 1), dIso);
+                updateOwnershipFor("surgeon",         getLeaderIdsForMetric(stepPlayers, p => p.cleanSweeps, 1), dIso);
+                updateOwnershipFor("nerves_of_steel", getLeaderIdsForMetric(stepPlayers, p => p.tbPlayed, 1), dIso);
+                updateOwnershipFor("sniper",          getLeaderIdsForMetric(stepPlayers, p => p.matches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.matches) * 10) / 10 : -999, -99), dIso);
+                updateOwnershipFor("phoenix",         getLeaderIdsForMetric(stepPlayers, p => p.comebackWins, 1), dIso);
+                updateOwnershipFor("marathoner",      getLeaderIdsForMetric(stepPlayers, p => p.marathonCount, 1), dIso);
+                updateOwnershipFor("unlucky",         getLeaderIdsForMetric(stepPlayers, p => p.closeLosses, 1), dIso);
+
+                updateOwnershipFor("points_king",     getLeaderIdsForMetric(stepPlayers, p => p.points, 0.25), dIso);
+                updateOwnershipFor("singles_king",    getLeaderIdsForMetric(stepPlayers, p => p.pts2H, 0.25), dIso);
+                updateOwnershipFor("doubles_king",    getLeaderIdsForMetric(stepPlayers, p => p.pts4H, 0.25), dIso);
+                updateOwnershipFor("winter_wolf",     getLeaderIdsForMetric(stepPlayers, p => p.ptsWinter, 0.25), dIso);
+                updateOwnershipFor("beach_boy",       getLeaderIdsForMetric(stepPlayers, p => p.ptsSummer, 0.25), dIso);
+                updateOwnershipFor("giant_killer",    getLeaderIdsForMetric(stepPlayers, p => p.maxEloGain, 0.1), dIso);
+                updateOwnershipFor("janosik",         getLeaderIdsForMetric(stepPlayers, p => p.maxEloLoss2H, 0.1), dIso);
+                updateOwnershipFor("iron_man",        getLeaderIdsForMetric(stepPlayers, p => p.matches, 1), dIso);
+                updateOwnershipFor("diplomat",        getLeaderIdsForMetric(stepPlayers, p => p.draws, 1), dIso);
+                updateOwnershipFor("chameleon",       getLeaderIdsForMetric(stepPlayers, p => p.partnersSet.size, 1), dIso);
+                updateOwnershipFor("sponsor",         getLeaderIdsForMetric(stepPlayers, p => p.losses, 1), dIso);
+                updateOwnershipFor("comeback",        getLeaderIdsForMetric(stepPlayers, p => p.maxGapDays, 1), dIso);
+
+                updateOwnershipFor("dynamic_duo",      getLeaderIdsForMetric(stepPairs, pr => pr.pts, 0.25), dIso);
+                updateOwnershipFor("inseparable_pair", getLeaderIdsForMetric(stepPairs, pr => pr.matches, 1), dIso);
+                updateOwnershipFor("steamroller",      steamrollerMatches.map(x => x.id), dIso);
+                updateOwnershipFor("blood_sweat",      marathonMatches.map(x => x.id), dIso);
             });
 
             const activePlayers = Object.values(pStatsMap).filter(p => p.matches > 0).map(p => ({
@@ -6854,6 +7409,21 @@
                 avgGemDiff: p.matches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.matches) * 10) / 10 : null
             }));
             const pairsList = Object.values(pairsMap);
+
+            const getHeldInfo = (achId) => {
+                const map = ownershipSince[achId];
+                if (!map) return { sinceStr: "—", daysText: "" };
+                const dates = Object.values(map).filter(Boolean).sort();
+                if (dates.length === 0) return { sinceStr: "—", daysText: "" };
+                // Najstarší nepretržitý dátum aktuálneho držiteľa
+                const sinceIso = dates[0];
+                const dt = parseIsoLocal(sinceIso);
+                const days = dt ? Math.max(0, diffDays(today, dt)) : 0;
+                return {
+                    sinceStr: formatDateSk(sinceIso),
+                    daysText: days === 0 ? "dnes" : skCount(days, "deň", "dni", "dní")
+                };
+            };
 
             // Výpočty rekordov
             const rWinStreak   = findTopHolders(activePlayers, p => p.maxWinStreak, 1);
@@ -6866,12 +7436,22 @@
             const rCleanSweeps = findTopHolders(activePlayers, p => p.cleanSweeps, 1);
             const rTbPlayed    = findTopHolders(activePlayers, p => p.tbPlayed, 1);
             const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, -99);
+            const rPhoenix     = findTopHolders(activePlayers, p => p.comebackWins, 1);
+            const rMarathoner  = findTopHolders(activePlayers, p => p.marathonCount, 1);
+            const rUnlucky     = findTopHolders(activePlayers, p => p.closeLosses, 1);
 
             const rPointsKing  = findTopHolders(activePlayers, p => p.points, 0.25);
+            const rSinglesKing = findTopHolders(activePlayers, p => p.pts2H, 0.25);
+            const rDoublesKing = findTopHolders(activePlayers, p => p.pts4H, 0.25);
+            const rWinterWolf  = findTopHolders(activePlayers, p => p.ptsWinter, 0.25);
+            const rBeachBoy    = findTopHolders(activePlayers, p => p.ptsSummer, 0.25);
             const rGiantKiller = findTopHolders(activePlayers, p => p.maxEloGain, 0.1);
+            const rJanosik     = findTopHolders(activePlayers, p => p.maxEloLoss2H, 0.1);
             const rIronMan     = findTopHolders(activePlayers, p => p.matches, 1);
             const rDiplomat    = findTopHolders(activePlayers, p => p.draws, 1);
             const rChameleon   = findTopHolders(activePlayers, p => p.uniquePartnersCount, 1);
+            const rSponsor     = findTopHolders(activePlayers, p => p.losses, 1);
+            const rComeback    = findTopHolders(activePlayers, p => p.maxGapDays, 1);
 
             const rBestPairPts = findTopHolders(pairsList, pr => pr.pts, 0.25);
             const rFreqPair    = findTopHolders(pairsList, pr => pr.matches, 1);
@@ -6894,197 +7474,403 @@
                 marathonMatches.flatMap(m => [...m.team1, ...m.team2])
             );
 
+            const pName = p => p.name;
+
             computedAchievements = [
-                // KATEGÓRIA 1: Série a momentálna forma
+                // KATEGÓRIA 1: Série a momentálna forma (4)
                 {
                     id: "unstoppable", cat: 1, title: "Nezastaviteľný",
                     desc: "Najdlhšia víťazná šnúra bez prerušenia (2H + 4H)",
+                    rules: "Získa hráč s najvyšším počtom po sebe idúcich výhier (2H aj 4H) bez jedinej remízy či prehry.",
                     iconFile: "nezastavitelny.png", faClass: "fa-solid fa-shield-halved",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${skCount(rWinStreak.value, "výhra", "výhry", "výhier")} v rade`,
-                    holders: rWinStreak.holders
+                    holders: rWinStreak.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.maxWinStreak, pName, v => `${v} V`, 1),
+                    held: getHeldInfo("unstoppable")
                 },
                 {
                     id: "hot_hand", cat: 1, title: "Horúca ruka",
                     desc: "Najdlhšia práve prebiehajúca víťazná séria",
+                    rules: "Patrí hráčovi s najdlhšou aktívnou sériou výhier, ktorá doteraz nebola prerušená.",
                     iconFile: "ruka.png", faClass: "fa-solid fa-fire",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${skCount(rHotHand.value, "aktívna výhra", "aktívne výhry", "aktívnych výhier")}`,
-                    holders: rHotHand.holders
+                    holders: rHotHand.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.curWinStreak, pName, v => `${v} V`, 1),
+                    held: getHeldInfo("hot_hand")
                 },
                 {
                     id: "free_fall", cat: 1, title: "Voľný pád",
                     desc: "Najviac prehier v rade za sebou",
+                    rules: "Negatívny klubový odznak za najdlhšiu neprerušenú sériu prehier (neráta sa do pozitívnych titulov).",
                     iconFile: "pad.png", faClass: "fa-solid fa-arrow-trend-down",
                     theme: "ach-red", accent: "#f87171", isNegative: true,
                     valueText: `${skCount(rLossStreak.value, "prehra", "prehry", "prehier")} v rade`,
-                    holders: rLossStreak.holders
+                    holders: rLossStreak.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.maxLossStreak, pName, v => `${v} P`, 1),
+                    held: getHeldInfo("free_fall")
                 },
                 {
                     id: "bulletproof", cat: 1, title: "Nepriestrelný",
                     desc: "Najdlhšia séria zápasov bez prehry (výhry + remízy)",
+                    rules: "Najviac zápasov za sebou, v ktorých hráč neprehral (počítajú sa výhry aj remízy).",
                     iconFile: "nepriestrelny.png", faClass: "fa-solid fa-helmet-safety",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${rUnbeaten.value} záp. bez prehry`,
-                    holders: rUnbeaten.holders
+                    holders: rUnbeaten.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.maxUnbeatenStreak, pName, v => `${v} záp.`, 1),
+                    held: getHeldInfo("bulletproof")
                 },
 
-                // KATEGÓRIA 2: Kanáre, tiebreaky a skóre
+                // KATEGÓRIA 2: Kanáre, tiebreaky a skóre (8)
                 {
                     id: "master_baker", cat: 2, title: "Čistič",
                     desc: "Najviac rozdaných kanárov (setov 6:0)",
+                    rules: "Započítava každý vyhratý set výsledkom 6:0 zo zadaných gemov v 2H aj 4H.",
                     iconFile: "cistic.png", faClass: "fa-solid fa-broom",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${rBagelGive.value}× set 6:0`,
-                    holders: rBagelGive.holders
+                    holders: rBagelGive.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.bagelsGiven, pName, v => `${v}×`, 1),
+                    held: getHeldInfo("master_baker")
                 },
                 {
                     id: "bagel_receiver", cat: 2, title: "Ornitológ",
                     desc: "Najviac inkasovaných kanárov (setov 0:6)",
+                    rules: "Negatívny odznak za najviac prehratých setov výsledkom 0:6 (neráta sa do pozitívnych titulov).",
                     iconFile: "ornitolog.png", faClass: "fa-solid fa-crow",
                     theme: "ach-red", accent: "#f87171", isNegative: true,
                     valueText: `${rBagelTake.value}× set 0:6`,
-                    holders: rBagelTake.holders
+                    holders: rBagelTake.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.bagelsTaken, pName, v => `${v}×`, 1),
+                    held: getHeldInfo("bagel_receiver")
                 },
                 {
                     id: "surgeon", cat: 2, title: "Chirurg",
                     desc: "Najviac výhier bez straty setu (2:0, 3:0 alebo 4:0)",
+                    rules: "Počítajú sa čisté víťazstvá s nulou na konte súpera a aspoň dvoma vyhratými setmi.",
                     iconFile: "chirurg.png", faClass: "fa-solid fa-heart-pulse",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${rCleanSweeps.value}× bez straty setu`,
-                    holders: rCleanSweeps.holders
+                    holders: rCleanSweeps.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.cleanSweeps, pName, v => `${v}×`, 1),
+                    held: getHeldInfo("surgeon")
                 },
                 {
                     id: "nerves_of_steel", cat: 2, title: "Muž zo železa",
                     desc: "Najviac odohratých tiebreakových setov (7:6 / 6:7)",
+                    rules: "Každý odohratý set s výsledkom 7:6 alebo 6:7 bez ohľadu na konečného víťaza.",
                     iconFile: "muz_zo_zeleza.png", faClass: "fa-solid fa-7",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: `${skCount(rTbPlayed.value, "odohratý TB", "odohraté TB", "odohratých TB")}`,
-                    holders: rTbPlayed.holders
+                    holders: rTbPlayed.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.tbPlayed, pName, v => `${v} TB`, 1),
+                    held: getHeldInfo("nerves_of_steel")
                 },
                 {
                     id: "sniper", cat: 2, title: "Sniper",
                     desc: "Najlepšia priemerná gemová bilancia na zápas (min. 3 štarty)",
+                    rules: "Priemerný rozdiel (vyhraté mínus prehraté gemy) na 1 zápas; podmienkou sú min. 3 zápasy.",
                     iconFile: "sniper.png", faClass: "fa-solid fa-crosshairs",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${rSniper.value >= 0 ? '+' : ''}${Number(rSniper.value).toFixed(1)} gemu / záp.`,
-                    holders: rSniper.holders
+                    holders: rSniper.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, pName, v => `${v >= 0 ? '+' : ''}${Number(v).toFixed(1)}`, -99),
+                    held: getHeldInfo("sniper")
+                },
+                {
+                    id: "phoenix", cat: 2, title: "Fénix (Kráľ obratov)",
+                    desc: "Najviac výhier po prehratom prvom sete",
+                    rules: "Započítava vyhraté zápasy, v ktorých hráč podľa gemov prehral úvodný set (napr. 0:1 → 2:1, 3:1).",
+                    iconFile: "fenix.png", faClass: "fa-solid fa-fire-flame-curved",
+                    theme: "ach-purple", accent: "#c084fc", isNegative: false,
+                    valueText: `${skCount(rPhoenix.value, "obrat", "obraty", "obratov")}`,
+                    holders: rPhoenix.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.comebackWins, pName, v => `${v}×`, 1),
+                    held: getHeldInfo("phoenix")
+                },
+                {
+                    id: "marathoner", cat: 2, title: "Maratónec",
+                    desc: "Najviac odohratých 3+ setových bitiek",
+                    rules: "Zápasy s 3 a viac setmi (2:1, 1:2, 3:1…); výsledok 3:0 / 0:3 sa ráta len pri min. 25 gemoch.",
+                    iconFile: "maratonec.png", faClass: "fa-solid fa-person-running",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${skCount(rMarathoner.value, "bitka", "bitky", "bitiek")}`,
+                    holders: rMarathoner.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.marathonCount, pName, v => `${v}×`, 1),
+                    held: getHeldInfo("marathoner")
+                },
+                {
+                    id: "unlucky", cat: 2, title: "Smoliar / O chlp",
+                    desc: "Najviac prehier o najviac 2 gemy",
+                    rules: "Negatívny odznak za prehry, kde víťaz získal najviac o 2 gemy viac (vrátane prehry s viac gemami).",
+                    iconFile: "smoliar.png", faClass: "fa-solid fa-heart-crack",
+                    theme: "ach-red", accent: "#f87171", isNegative: true,
+                    valueText: `${skCount(rUnlucky.value, "tesná prehra", "tesné prehry", "tesných prehier")}`,
+                    holders: rUnlucky.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.closeLosses, pName, v => `${v}×`, 1),
+                    held: getHeldInfo("unlucky")
                 },
 
-                // KATEGÓRIA 3: Bodové míľniky a aktivita
+                // KATEGÓRIA 3: Bodové míľniky a aktivita (12)
                 {
                     id: "points_king", cat: 3, title: "Kráľ bodov",
                     desc: "Najviac získaných bodov spolu (kombinovane 2H + 4H)",
+                    rules: "Súčet všetkých bodov z dvojhier (V=1, R=0.5) aj štvorhier (V=0.5, R=0.25) v zvolenom období.",
                     iconFile: "vrchol.png", faClass: "fa-solid fa-mountain",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${formatPts(rPointsKing.value)} bodov`,
-                    holders: rPointsKing.holders
+                    holders: rPointsKing.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.points, pName, v => `${formatPts(v)} b`, 0.25),
+                    held: getHeldInfo("points_king")
+                },
+                {
+                    id: "singles_king", cat: 3, title: "Kráľ dvojhry",
+                    desc: "Najviac získaných bodov čisto z dvojhier (2H)",
+                    rules: "Počítajú sa výhradne body zo singlových zápasov 2H (výhra 1 b, remíza 0.5 b).",
+                    iconFile: "kral_dvojhry.png", faClass: "fa-solid fa-crown",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${formatPts(rSinglesKing.value)} bodov`,
+                    holders: rSinglesKing.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.pts2H, pName, v => `${formatPts(v)} b`, 0.25),
+                    held: getHeldInfo("singles_king")
+                },
+                {
+                    id: "doubles_king", cat: 3, title: "Kráľ štvorhry",
+                    desc: "Najviac získaných bodov čisto zo štvorhier (4H)",
+                    rules: "Počítajú sa výhradne body z deblových zápasov 4H (výhra 0.5 b, remíza 0.25 b).",
+                    iconFile: "kral_stvorhry.png", faClass: "fa-solid fa-crown",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${formatPts(rDoublesKing.value)} bodov`,
+                    holders: rDoublesKing.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.pts4H, pName, v => `${formatPts(v)} b`, 0.25),
+                    held: getHeldInfo("doubles_king")
+                },
+                {
+                    id: "winter_wolf", cat: 3, title: "Zimný vlk (Halový kráľ)",
+                    desc: "Najviac bodov v halovej sezóne (november – apríl)",
+                    rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch november až apríl.",
+                    iconFile: "zimny_vlk.png", faClass: "fa-solid fa-snowflake",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${formatPts(rWinterWolf.value)} bodov`,
+                    holders: rWinterWolf.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.ptsWinter, pName, v => `${formatPts(v)} b`, 0.25),
+                    held: getHeldInfo("winter_wolf")
+                },
+                {
+                    id: "beach_boy", cat: 3, title: "Plážový chlapec (Antukový kráľ)",
+                    desc: "Najviac bodov vo vonkajšej sezóne (máj – október)",
+                    rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch máj až október.",
+                    iconFile: "plazovy_chlapec.png", faClass: "fa-solid fa-sun",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${formatPts(rBeachBoy.value)} bodov`,
+                    holders: rBeachBoy.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.ptsSummer, pName, v => `${formatPts(v)} b`, 0.25),
+                    held: getHeldInfo("beach_boy")
                 },
                 {
                     id: "giant_killer", cat: 3, title: "Lovec obrov",
                     desc: "Najväčší jednorazový zisk ELO v jednom zápase (2H alebo 4H)",
+                    rules: "Najvyšší jednorazový kladný posun ELO po skalpe papierovo silnejšieho súpera.",
                     iconFile: "obor.png", faClass: "fa-solid fa-bolt",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: `+${Number(rGiantKiller.value).toFixed(1)} ELO`,
-                    holders: rGiantKiller.holders
+                    holders: rGiantKiller.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.maxEloGain, pName, v => `+${Number(v).toFixed(1)}`, 0.1),
+                    held: getHeldInfo("giant_killer")
+                },
+                {
+                    id: "janosik", cat: 3, title: "Jánošík",
+                    desc: "Najväčšia jednorazová strata ELO v dvojhre (2H)",
+                    rules: "Negatívny odznak pre favorita, ktorý v jednom singlovom zápase (2H) odovzdal najviac ELO bodov.",
+                    iconFile: "janosik.png", faClass: "fa-solid fa-hand-holding-dollar",
+                    theme: "ach-red", accent: "#f87171", isNegative: true,
+                    valueText: `-${Number(rJanosik.value).toFixed(1)} ELO`,
+                    holders: rJanosik.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.maxEloLoss2H, pName, v => `-${Number(v).toFixed(1)}`, 0.1),
+                    held: getHeldInfo("janosik")
                 },
                 {
                     id: "iron_man", cat: 3, title: "Železný muž kurtu",
                     desc: "Najviac odohratých zápasov celkovo (2H + 4H)",
+                    rules: "Celkový počet absolvovaných dvojhier aj štvorhier vo zvolenom rozsahu.",
                     iconFile: "zelezny_muz.png", faClass: "fa-solid fa-robot",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: `${skCount(rIronMan.value, "zápas", "zápasy", "zápasov")}`,
-                    holders: rIronMan.holders
+                    holders: rIronMan.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.matches, pName, v => `${v} záp.`, 1),
+                    held: getHeldInfo("iron_man")
                 },
                 {
                     id: "diplomat", cat: 3, title: "Diplomat",
                     desc: "Kráľ remíz – najviac nerozhodných zápasov",
+                    rules: "Počítajú sa všetky zápasy (2H aj 4H), ktoré skončili remízou na sety.",
                     iconFile: "diplomat.png", faClass: "fa-solid fa-scale-balanced",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: `${skCount(rDiplomat.value, "remíza", "remízy", "remíz")}`,
-                    holders: rDiplomat.holders
+                    holders: rDiplomat.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.draws, pName, v => `${v} R`, 1),
+                    held: getHeldInfo("diplomat")
                 },
                 {
                     id: "chameleon", cat: 3, title: "Chameleón",
                     desc: "Najviac rôznych spoluhráčov v štvorhre (4H)",
+                    rules: "Počet unikátnych deblových partnerov, s ktorými hráč nastúpil na rovnakej strane siete.",
                     iconFile: "chameleon.png", faClass: "fa-solid fa-diagram-project",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: `${skCount(rChameleon.value, "rôzny parťák", "rôzni parťáci", "rôznych parťákov")}`,
-                    holders: rChameleon.holders
+                    holders: rChameleon.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.uniquePartnersCount, pName, v => `${v}`, 1),
+                    held: getHeldInfo("chameleon")
+                },
+                {
+                    id: "sponsor", cat: 3, title: "Sponzor",
+                    desc: "Najviac prehier celkovo (2H + 4H)",
+                    rules: "Negatívny klubový odznak za najvyšší celkový počet prehier v zvolenom období.",
+                    iconFile: "sponzor.png", faClass: "fa-solid fa-piggy-bank",
+                    theme: "ach-red", accent: "#f87171", isNegative: true,
+                    valueText: `${skCount(rSponsor.value, "prehra", "prehry", "prehier")}`,
+                    holders: rSponsor.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.losses, pName, v => `${v} P`, 1),
+                    held: getHeldInfo("sponsor")
+                },
+                {
+                    id: "comeback", cat: 3, title: "Comeback",
+                    desc: "Najdlhšia pauza v dňoch medzi dvoma zápasmi",
+                    rules: "Najväčší časový odstup v dňoch medzi dvoma po sebe idúcimi zápasmi hráča, ktorý sa vrátil na kurt.",
+                    iconFile: "comeback.png", faClass: "fa-solid fa-rotate-left",
+                    theme: "ach-purple", accent: "#c084fc", isNegative: false,
+                    valueText: `${skCount(rComeback.value, "deň", "dni", "dní")}`,
+                    holders: rComeback.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.maxGapDays, pName, v => `${v} d.`, 1),
+                    held: getHeldInfo("comeback")
                 },
 
-                // KATEGÓRIA 4: Tímové odznaky a zápasové rekordy
+                // KATEGÓRIA 4: Tímové odznaky a zápasové rekordy (4)
                 {
                     id: "dynamic_duo", cat: 4, title: "Dynamické duo",
                     desc: rBestPairPts.holders.length > 0
                         ? `Najúspešnejšia pevná dvojica podľa získaných bodov (${rBestPairPts.holders.map(x => x.name).join(", ")})`
                         : "Najúspešnejšia pevná dvojica podľa získaných bodov v 4H",
+                    rules: "Deblový pár (4H), ktorý spoločne nazbieral najviac tabuľkových bodov na jedného hráča.",
                     iconFile: "dynamicke_duo.png", faClass: "fa-solid fa-handshake-simple",
                     theme: "ach-purple", accent: "#c084fc", isNegative: false,
                     valueText: rBestPairPts.holders.length > 0 ? `${formatPts(rBestPairPts.value)} b / hráč` : "—",
-                    holders: bestPairPlayers
+                    holders: bestPairPlayers,
+                    top3: buildTop3Ranking(pairsList, pr => pr.pts, pr => pr.name, v => `${formatPts(v)} b`, 0.25),
+                    held: getHeldInfo("dynamic_duo")
                 },
                 {
                     id: "steamroller", cat: 4, title: "Parný valec",
                     desc: steamrollerMatches.length > 0
                         ? `Najvyšší rozdiel gemov v jednom zápase (${steamrollerMatches.map(m => '#' + m.index + ' ' + m.gems).join(', ')})`
                         : "Najvyšší rozdiel gemov v jednom zápase",
+                    rules: "Najdominantnejšie víťazstvo podľa absolútneho rozdielu vyhratých a prehratých gemov v zápase.",
                     iconFile: "valec.png", faClass: "fa-solid fa-burst",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: maxGemDiffVal > 0 ? `Rozdiel +${skCount(maxGemDiffVal, "gem", "gemy", "gemov")}` : "—",
-                    holders: steamrollerHolders
+                    holders: steamrollerHolders,
+                    top3: buildTop3Ranking(matchGemDiffList, x => x.val, x => x.label, v => `+${v} g.`, 1),
+                    held: getHeldInfo("steamroller")
                 },
                 {
                     id: "blood_sweat", cat: 4, title: "Krv, pot a slzy",
                     desc: marathonMatches.length > 0
                         ? `Najdlhšia bitka podľa počtu gemov (${marathonMatches.map(m => '#' + m.index + ' ' + m.gems).join(', ')})`
                         : "Najdlhšia bitka podľa počtu gemov",
+                    rules: "Zápas s najvyšším celkovým súčtom všetkých odohratých gemov oboch strán.",
                     iconFile: "krv_pot.png", faClass: "fa-solid fa-stopwatch",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: maxTotalGemsVal > 0 ? `${skCount(maxTotalGemsVal, "odohratý gem", "odohraté gemy", "odohratých gemov")}` : "—",
-                    holders: marathonHolders
+                    holders: marathonHolders,
+                    top3: buildTop3Ranking(matchTotalGemsList, x => x.val, x => x.label, v => `${v} g.`, 1),
+                    held: getHeldInfo("blood_sweat")
                 },
                 {
                     id: "inseparable_pair", cat: 4, title: "Nerozlučná dvojka",
                     desc: rFreqPair.holders.length > 0
                         ? `Najčastejšie spolu nastupujúci deblový pár (${rFreqPair.holders.map(x => x.name).join(", ")})`
                         : "Najčastejšie spolu nastupujúci deblový pár",
+                    rules: "Pevná dvojica v štvorhre (4H) s najvyšším počtom spoločne odohratých zápasov.",
                     iconFile: "nerozlucna_dvojka.png", faClass: "fa-solid fa-link",
                     theme: "ach-purple", accent: "#c084fc", isNegative: false,
                     valueText: rFreqPair.holders.length > 0 ? `${skCount(rFreqPair.value, "spoločný štart", "spoločné štarty", "spoločných štartov")}` : "—",
-                    holders: freqPairPlayers
+                    holders: freqPairPlayers,
+                    top3: buildTop3Ranking(pairsList, pr => pr.matches, pr => pr.name, v => `${v} záp.`, 1),
+                    held: getHeldInfo("inseparable_pair")
                 }
             ];
         }
 
         function renderAchievements() {
+            clearAllAchTimers();
+
             const renderCat = (catNum, containerId) => {
                 const el = document.getElementById(containerId);
                 if (!el) return;
                 const items = computedAchievements.filter(a => a.cat === catNum);
                 el.innerHTML = items.map(ach => {
                     const holdersHtml = ach.holders.length === 0
-                        ? `<span style="font-size:0.74rem; color:var(--text-muted);">Zatiaľ bez držiteľa</span>`
+                        ? `<span class="ach-empty-holder">Zatiaľ bez držiteľa</span>`
                         : ach.holders.map(h => `
-                            <span class="ach-holder-chip" onclick="openPlayerDetail('${escapeHtml(h.id)}')">
+                            <span class="ach-holder-chip" onclick="event.stopPropagation(); openPlayerDetail('${escapeHtml(h.id)}')" title="Otvoriť profil hráča ${escapeHtml(h.name)}">
                                 <span style="width:7px; height:7px; border-radius:50%; background:${h.color}; display:inline-block;"></span>
                                 ${escapeHtml(h.name)}
                             </span>
                         `).join("");
 
-                    return `
-                        <div class="ach-card ${ach.theme}">
-                            <div class="ach-crest">
-                                ${getAchievementIconHtml(ach.iconFile, ach.title, ach.faClass, ach.theme)}
-                            </div>
-                            <div class="ach-body">
-                                <div class="ach-title">${escapeHtml(ach.title)}</div>
-                                <div class="ach-desc">${escapeHtml(ach.desc)}</div>
-                                <div class="ach-record-pill" style="color:${ach.accent || '#4ade80'}">
-                                    Rekord: ${ach.holders.length > 0 ? ach.valueText : "—"}
+                    const top3List = Array.isArray(ach.top3) ? ach.top3 : [];
+                    const top3Html = top3List.length === 0
+                        ? `<div class="ach-rank-row"><span class="ach-rank-name" style="opacity:0.8;">Zatiaľ bez kvalifikovaného poradia</span></div>`
+                        : top3List.map(r => `
+                            <div class="ach-rank-row ${r.pos === 1 ? 'is-first' : ''}">
+                                <div class="ach-rank-left">
+                                    <span class="ach-rank-pos">${r.pos}.</span>
+                                    <span class="ach-rank-name" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span>
                                 </div>
-                                <div class="ach-holders">${holdersHtml}</div>
+                                <span class="ach-rank-val">${escapeHtml(r.valueText)}</span>
                             </div>
+                        `).join("");
+
+                    const heldObj = ach.held || { sinceStr: "—", daysText: "" };
+                    const heldFootHtml = ach.holders.length > 0 && heldObj.sinceStr !== "—"
+                        ? `<span>Drží od <strong>${escapeHtml(heldObj.sinceStr)}</strong> (${escapeHtml(heldObj.daysText)})</span>`
+                        : `<span>Držiteľ: <strong>zatiaľ neobsadený</strong></span>`;
+
+                    return `
+                        <div class="ach-card ${ach.theme}" data-ach-id="${escapeHtml(ach.id)}" role="button" tabindex="0" aria-expanded="false"
+                             onclick="toggleAchievementCard('${escapeHtml(ach.id)}')"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); toggleAchievementCard('${escapeHtml(ach.id)}');}">
+                            <div class="ach-face ach-face-front">
+                                <div class="ach-crest">
+                                    ${getAchievementIconHtml(ach.iconFile, ach.title, ach.faClass, ach.theme)}
+                                </div>
+                                <div class="ach-body">
+                                    <div class="ach-title-row">
+                                        <div class="ach-title">${escapeHtml(ach.title)}</div>
+                                        <span class="ach-info-dot" title="Kliknutím zobrazíš pravidlá a poradie Top 3">i</span>
+                                    </div>
+                                    <div class="ach-desc">${escapeHtml(ach.desc)}</div>
+                                    <div class="ach-record-pill">
+                                        Rekord: ${ach.holders.length > 0 ? ach.valueText : "—"}
+                                    </div>
+                                    <div class="ach-holders">${holdersHtml}</div>
+                                </div>
+                            </div>
+                            <div class="ach-face ach-face-back">
+                                <div class="ach-back-head">
+                                    <div class="ach-back-title">${escapeHtml(ach.title)}</div>
+                                    <span class="ach-back-hint">Späť ↺</span>
+                                </div>
+                                <div class="ach-back-rules">${escapeHtml(ach.rules || ach.desc)}</div>
+                                <div class="ach-rank-list">${top3Html}</div>
+                                <div class="ach-back-foot">
+                                    ${heldFootHtml}
+                                    <span style="opacity:0.72;">30s</span>
+                                </div>
+                            </div>
+                            <div class="ach-timer-bar"><div class="ach-timer-fill"></div></div>
                         </div>
                     `;
                 }).join("");
@@ -10224,7 +11010,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.1! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.2! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -10970,6 +11756,7 @@
         }
 
         function switchTab(secId, btnEl) {
+            if (secId !== "sec-badges") resetAllAchievementCards();
             document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
             document.getElementById(secId).classList.add("active");
             document.querySelectorAll(".bottom-nav .nav-item").forEach(b => b.classList.remove("active"));
