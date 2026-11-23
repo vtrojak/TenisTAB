@@ -1326,6 +1326,74 @@
             border-left-color: var(--draw);
         }
 
+        .match-card.res-win {
+            border-left-color: var(--win);
+        }
+
+        .match-card.res-draw {
+            border-left-color: var(--draw);
+        }
+
+        .match-card.res-loss {
+            border-left-color: var(--loss);
+        }
+
+        .profile-matches-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .profile-action-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            color: #ffffff;
+            font-size: 0.70rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: none;
+            letter-spacing: 0;
+            transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, transform 0.1s ease;
+        }
+
+        .profile-action-pill:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: var(--btn-accent);
+            box-shadow: 0 0 10px var(--btn-glow);
+        }
+
+        .profile-action-pill:active {
+            transform: scale(0.96);
+        }
+
+        .profile-action-pill.is-primary {
+            background: rgba(190, 242, 100, 0.16);
+            border-color: rgba(190, 242, 100, 0.45);
+            color: var(--tennis-lime);
+        }
+
+        .profile-res-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            font-size: 0.66rem;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .profile-res-W { background: #34d399; color: #022c22; }
+        .profile-res-D { background: #facc15; color: #422006; }
+        .profile-res-L { background: #f87171; color: #450a0a; }
+
         .match-card.is-expired {
             opacity: 0.68;
             border-left-color: rgba(148, 163, 184, 0.55);
@@ -3260,7 +3328,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.37</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.38</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3291,7 +3359,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.37</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.38</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3933,7 +4001,7 @@
             </div>
 
             <!-- KARTA 3: CHRONOLOGICKÝ ZOZNAM ZÁPASOV -->
-            <div class="card">
+            <div class="card" id="history-matches-card">
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-title-dot"></span>
@@ -4487,6 +4555,9 @@
         let h2hTypeFilter = "all";    // "all" | "2H" | "4H"
         let h2hScope = "alltime";     // "alltime" | "window"
         let profileScope = "window";  // "window" | "alltime"
+        let profileMatchesExpanded = false;
+        let profileMatchTypeFilter = "all"; // "all" | "2H" | "4H"
+        let profileLastPlayerId = null;
         let badgesScope = "alltime";  // "alltime" | "window"
         let computedAchievements = [];
 
@@ -7349,6 +7420,62 @@
             }, 60);
         }
 
+        function toggleProfileMatchesExpanded() {
+            profileMatchesExpanded = !profileMatchesExpanded;
+            renderPlayerProfile();
+        }
+
+        function setProfileMatchTypeFilter(type, scrollToList = false) {
+            profileMatchTypeFilter = (type === "2H" || type === "4H") ? type : "all";
+            profileMatchesExpanded = true;
+            renderPlayerProfile();
+            if (scrollToList) {
+                setTimeout(() => {
+                    const sec = document.getElementById("profile-matches-section");
+                    if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 40);
+            }
+        }
+
+        function openPlayerMatchesInHistory(playerId, typeFilter = "all", scopeMode = null) {
+            const navBtn = document.querySelector('.bottom-nav .nav-item[data-tab="sec-history"]');
+            switchTab("sec-history", navBtn);
+            historyExpanded = true;
+
+            const wm = Number(state.config.windowMonths) || 0;
+            const playerSel = document.getElementById("history-filter-player");
+            const typeSel = document.getElementById("history-filter-type");
+            const valSel = document.getElementById("history-filter-validity");
+            const sortSel = document.getElementById("history-sort-order");
+
+            if (playerSel && [...playerSel.options].some(o => o.value === playerId)) {
+                playerSel.value = playerId;
+            }
+            if (typeSel) {
+                typeSel.value = (typeFilter === "2H" || typeFilter === "4H") ? typeFilter : "all";
+            }
+            if (valSel) {
+                const useWindowOnly = scopeMode === "window" && wm > 0;
+                valSel.value = useWindowOnly ? "active" : "all";
+            }
+            if (sortSel) {
+                sortSel.value = "desc";
+            }
+
+            renderMatchHistory();
+
+            const pl = computedPlayers.find(x => x.id === playerId);
+            const discTxt = typeFilter === "2H" ? " (2H)" : (typeFilter === "4H" ? " (4H)" : "");
+            if (pl) {
+                showToast(`História vyfiltrovaná pre: ${pl.name}${discTxt}`);
+            }
+
+            setTimeout(() => {
+                const card = document.getElementById("history-matches-card");
+                if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 60);
+        }
+
         function renderH2H() {
             const box = document.getElementById("h2h-content");
             if (!box) return;
@@ -7642,6 +7769,12 @@
                 return;
             }
 
+            if (profileLastPlayerId !== id) {
+                profileLastPlayerId = id;
+                profileMatchesExpanded = false;
+                profileMatchTypeFilter = "all";
+            }
+
             const useAllTime = profileScope === "alltime" || wm === 0;
             const scopeMatches = useAllTime ? computedMatches : computedMatches.filter(m => m.isValid);
 
@@ -7658,6 +7791,7 @@
             const partnersMap = {};
             const opponentsMap = {};
             const activeScoringMatches = [];
+            const playerMatches = [];
 
             scopeMatches.forEach(m => {
                 const inT1 = m.team1.includes(id);
@@ -7671,6 +7805,8 @@
                 const gB = inT1 ? g.g2 : g.g1;
                 const earned = inT1 ? m.ptsA : m.ptsB;
                 const res = sA > sB ? "W" : (sB > sA ? "L" : "D");
+                const eloDelta = inT1 ? m.eloDeltaA : m.eloDeltaB;
+                playerMatches.push({ m, inT1, sA, sB, res, earned, eloDelta });
 
                 stats.matches++;
                 stats.points = Math.round((stats.points + earned) * 100) / 100;
@@ -7925,6 +8061,96 @@
                 ? `<div class="form-dots">` + last5.map(f => `<span class="form-dot form-${f}">${f === 'W' ? 'V' : (f === 'D' ? 'R' : 'P')}</span>`).join("") + `</div>`
                 : `<span style="color:var(--text-muted);">—</span>`;
 
+            // Odohrané zápasy hráča (zbaliteľný zoznam z pohľadu hráča + 1-klik do Histórie)
+            const filteredPlayerMatches = playerMatches
+                .filter(pm => profileMatchTypeFilter === "all" || pm.m.type === profileMatchTypeFilter)
+                .slice()
+                .reverse();
+
+            const effectiveScopeForHistory = useAllTime ? "alltime" : "window";
+            const formatPlayerTeamHtml = (teamIds) => {
+                const orderedIds = [...teamIds].sort((a, b) => (a === id ? -1 : (b === id ? 1 : 0)));
+                return orderedIds.map(pid => {
+                    const plObj = computedPlayers.find(x => x.id === pid);
+                    const nm = escapeHtml(plObj ? plObj.name : pid);
+                    return pid === id ? `<strong style="color:${p.color};">${nm}</strong>` : nm;
+                }).join(" / ");
+            };
+
+            const playerMatchesListHtml = !profileMatchesExpanded ? "" : (
+                `<div class="h2h-pill-group" style="margin-bottom:8px;">
+                    <button type="button" class="preset-btn ${profileMatchTypeFilter === 'all' ? 'active' : ''}" onclick="setProfileMatchTypeFilter('all')">Všetky (${stats.matches})</button>
+                    <button type="button" class="preset-btn ${profileMatchTypeFilter === '2H' ? 'active' : ''}" onclick="setProfileMatchTypeFilter('2H')">2H (${stats.m2H})</button>
+                    <button type="button" class="preset-btn ${profileMatchTypeFilter === '4H' ? 'active' : ''}" onclick="setProfileMatchTypeFilter('4H')">4H (${stats.m4H})</button>
+                </div>` +
+                (filteredPlayerMatches.length === 0
+                    ? `<div style="color:var(--text-muted); font-size:0.8rem; padding:4px 2px;">Žiadne zápasy pre zvolený filter (${useAllTime ? 'All-time' : wm + ' mes.'}).</div>`
+                    : filteredPlayerMatches.map(pm => {
+                        const { m, inT1, sA, sB, res, earned, eloDelta } = pm;
+                        const myTeamIds = inT1 ? m.team1 : m.team2;
+                        const oppTeamName = inT1 ? m.teamNameB : m.teamNameA;
+                        const gemsFormatted = formatGemsForOrder(m.gems, inT1);
+                        const resCls = res === "W" ? "res-win" : (res === "D" ? "res-draw" : "res-loss");
+                        const resLbl = res === "W" ? "V" : (res === "D" ? "R" : "P");
+                        const ptsCol = res === "W" ? "var(--win)" : (res === "D" ? "var(--draw)" : "var(--text-muted)");
+                        const hasElo = typeof eloDelta === "number" && !isNaN(eloDelta);
+                        const eloStr = hasElo ? `${eloDelta > 0 ? '+' : ''}${eloDelta.toFixed(1)} ELO` : "";
+                        const eloCol = hasElo ? (eloDelta > 0 ? "var(--win)" : (eloDelta < 0 ? "var(--loss)" : "var(--text-muted)")) : "var(--text-muted)";
+                        const valTag = wm > 0
+                            ? (m.isValid ? `<span class="validity-badge val-active">Platí</span>` : `<span class="validity-badge val-expired">Expirovalo</span>`)
+                            : "";
+                        const noteHtml = m.note ? `<div class="match-note-line">📝 ${escapeHtml(m.note)}</div>` : "";
+                        return `
+                            <div class="match-card ${resCls} ${!m.isValid ? 'is-expired' : ''}" style="margin-bottom:7px; padding:9px 11px;">
+                                <div style="min-width:0; flex:1;">
+                                    <div class="match-meta">
+                                        <span class="profile-res-pill profile-res-${res}">${resLbl}</span>
+                                        <span>#${m.index} · ${formatDateSk(m.date)}</span>
+                                        <span class="type-badge type-${m.type}">${m.type}</span>
+                                        ${valTag}
+                                    </div>
+                                    <div class="match-title">
+                                        ${formatPlayerTeamHtml(myTeamIds)} <span style="color:var(--text-muted); font-weight:400;">vs</span> ${escapeHtml(oppTeamName)}
+                                        <span class="match-score-pill">${sA}:${sB}</span>
+                                        <span class="match-gems">${gemsFormatted ? '(' + escapeHtml(gemsFormatted) + ')' : ''}</span>
+                                    </div>
+                                    ${noteHtml}
+                                </div>
+                                <div style="text-align:right; white-space:nowrap; font-size:0.75rem; line-height:1.35;">
+                                    <div style="font-weight:800; color:${ptsCol};">+${formatPts(earned)} b</div>
+                                    ${hasElo ? `<div style="font-weight:700; font-size:0.70rem; color:${eloCol};">${eloStr}</div>` : ""}
+                                </div>
+                            </div>
+                        `;
+                    }).join(""))
+            );
+
+            const profileMatchesHtml = `
+                <div id="profile-matches-section">
+                    <div class="profile-section-title">
+                        <span>🎾 Odohrané zápasy (${stats.matches})</span>
+                        <div class="profile-matches-actions">
+                            <button type="button" id="btn-prof-toggle-matches" class="profile-action-pill is-primary"
+                                data-ctx-title="Zápasy z pohľadu hráča"
+                                data-ctx-desc="Rozbalí alebo zbalí zoznam všetkých zápasov tohto hráča priamo tu – s jeho menom a skóre vždy na prvom mieste."
+                                onclick="toggleProfileMatchesExpanded()" aria-expanded="${profileMatchesExpanded ? 'true' : 'false'}">
+                                ${profileMatchesExpanded ? '▲ Zbaliť' : `▼ Rozbaliť (${stats.matches})`}
+                            </button>
+                            <button type="button" id="btn-prof-open-history" class="profile-action-pill"
+                                data-ctx-title="Otvoriť v Histórii (1 klik)"
+                                data-ctx-desc="Prepne na záložku História, automaticky rozbalí zoznam a vyfiltruje zápasy tohto hráča (vrátane možnosti editácie)."
+                                data-player-id="${escapeHtml(p.id)}"
+                                data-type-filter="${escapeHtml(profileMatchTypeFilter)}"
+                                data-scope-mode="${effectiveScopeForHistory}"
+                                onclick="openPlayerMatchesInHistory(this.dataset.playerId, this.dataset.typeFilter, this.dataset.scopeMode)">
+                                Otvoriť v Histórii →
+                            </button>
+                        </div>
+                    </div>
+                    ${playerMatchesListHtml}
+                </div>
+            `;
+
             box.innerHTML = `
                 <div style="display:grid; grid-template-columns:1fr; gap:8px; margin-bottom:10px;">
                     <div class="stat-tile">
@@ -7959,13 +8185,19 @@
                     return `
                 <div style="display:grid; grid-template-columns:1fr; gap:8px;">
                     <div class="profile-split-card" style="border-color:rgba(125,211,252,0.34);">
-                        <div style="font-size:0.71rem; font-weight:800; color:var(--blue-accent); text-transform:uppercase; margin-bottom:4px;">🎾 Dvojhra (2H)</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
+                            <span style="font-size:0.71rem; font-weight:800; color:var(--blue-accent); text-transform:uppercase;">🎾 Dvojhra (2H)</span>
+                            ${stats.m2H > 0 ? `<button type="button" class="profile-action-pill" onclick="setProfileMatchTypeFilter('2H', true)">Zápasy 2H (${stats.m2H}) ▾</button>` : ''}
+                        </div>
                         <div style="font-size:0.92rem; font-weight:800;">${formatPts(stats.pts2H)} bodov <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${stats.m2H} záp.)</span></div>
                         <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Bilancia: <strong>${stats.w2H}V-${stats.d2H}R-${stats.l2H}P</strong> · Úsp.: <strong>${winPct2H}</strong></div>
                         <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${e2Str}</div>
                     </div>
                     <div class="profile-split-card" style="border-color:rgba(216,180,254,0.34);">
-                        <div style="font-size:0.71rem; font-weight:800; color:#e9d5ff; text-transform:uppercase; margin-bottom:4px;">👥 Štvorhra (4H)</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px;">
+                            <span style="font-size:0.71rem; font-weight:800; color:#e9d5ff; text-transform:uppercase;">👥 Štvorhra (4H)</span>
+                            ${stats.m4H > 0 ? `<button type="button" class="profile-action-pill" onclick="setProfileMatchTypeFilter('4H', true)">Zápasy 4H (${stats.m4H}) ▾</button>` : ''}
+                        </div>
                         <div style="font-size:0.92rem; font-weight:800;">${formatPts(stats.pts4H)} bodov <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${stats.m4H} záp.)</span></div>
                         <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Bilancia: <strong>${stats.w4H}V-${stats.d4H}R-${stats.l4H}P</strong> · Úsp.: <strong>${winPct4H}</strong></div>
                         <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${e4Str}</div>
@@ -7973,6 +8205,7 @@
                 </div>`;
                 })()}
 
+                ${profileMatchesHtml}
                 ${nemesisHtml}
                 ${(() => {
                     const owned = computedAchievements.filter(a => a.holders.some(h => h.id === id));
@@ -12740,7 +12973,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.37! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.38! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
