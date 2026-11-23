@@ -116,28 +116,142 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 11px;
             cursor: pointer;
             user-select: none;
-            transition: opacity 0.15s ease, transform 0.12s ease;
+            transition: opacity 0.15s ease;
         }
 
-        .brand:hover { opacity: 0.92; }
-        .brand:active { transform: scale(0.98); }
+        .brand:hover .brand-title { opacity: 0.95; }
 
         .brand-ball {
-            width: 34px;
-            height: 34px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #ecfccb, #a3e635 70%, #4d7c0f);
+            background: radial-gradient(circle at 32% 24%, #f7fee7 0%, #bef264 38%, #84cc16 74%, #3f6212 100%);
+            border: 2px solid rgba(255, 255, 255, 0.78);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 14px rgba(190, 242, 100, 0.45);
+            box-shadow:
+                0 4px 0 #2b450b,
+                0 7px 16px rgba(0, 0, 0, 0.52),
+                0 0 14px rgba(190, 242, 100, 0.55),
+                inset 0 2px 3px rgba(255, 255, 255, 0.88),
+                inset 0 -3px 5px rgba(20, 45, 5, 0.48);
             font-weight: 900;
             color: #052e16;
-            font-size: 0.88rem;
-            letter-spacing: -0.5px;
+            font-size: 0.90rem;
+            letter-spacing: -0.6px;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            flex-shrink: 0;
+            transform: translateY(-1px);
+            transition: transform 0.10s ease, box-shadow 0.14s ease, filter 0.16s ease, border-color 0.16s ease;
+        }
+
+        .brand-ball::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 18%,
+                rgba(255, 255, 255, 0.68) 50%,
+                rgba(255, 255, 255, 0) 82%
+            );
+            transform: translateX(-140%) skewX(-20deg);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .brand-ball.btn-light-hit::after {
+            animation: btnLightSweep 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .brand:hover .brand-ball {
+            filter: brightness(1.07);
+            border-color: #ffffff;
+            box-shadow:
+                0 4px 0 #2b450b,
+                0 9px 20px rgba(0, 0, 0, 0.56),
+                0 0 18px rgba(190, 242, 100, 0.72),
+                inset 0 2px 3px rgba(255, 255, 255, 0.92),
+                inset 0 -3px 5px rgba(20, 45, 5, 0.42);
+        }
+
+        .brand:active .brand-ball {
+            transform: translateY(2px);
+            box-shadow:
+                0 1px 0 #2b450b,
+                0 2px 6px rgba(0, 0, 0, 0.46),
+                0 0 10px rgba(190, 242, 100, 0.45),
+                inset 0 1px 2px rgba(255, 255, 255, 0.70);
+        }
+
+        /* VLASTNÝ GRAFICKÝ ŠTÝL (v1.32) */
+        .custom-theme-preview {
+            width: 100%;
+            height: 46px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255, 255, 255, 0.42);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.36), inset 0 1px 1px rgba(255, 255, 255, 0.38);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            margin-bottom: 12px;
+        }
+
+        .custom-theme-preview-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(8, 18, 30, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.32);
+            color: #ffffff;
+            font-size: 0.76rem;
+            font-weight: 800;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .color-picker-tile {
+            background: rgba(8, 18, 30, 0.72);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .color-picker-tile label {
+            margin-bottom: 5px;
+            font-size: 0.72rem;
+            text-align: center;
+        }
+
+        .color-picker-input {
+            width: 100%;
+            height: 42px;
+            padding: 3px;
+            border-radius: 9px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.32);
+        }
+
+        .color-picker-hex {
+            margin-top: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            text-transform: uppercase;
         }
 
         .brand-title {
@@ -3138,7 +3252,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.31</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.32</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3169,7 +3283,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.31</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.32</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3679,6 +3793,60 @@
                 </div>
             </div>
 
+            <!-- KARTA 1B: VLASTNÝ GRAFICKÝ ŠTÝL -->
+            <div class="card" id="custom-theme-card">
+                <div class="card-header" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none; cursor: pointer;" onclick="toggleCustomThemePanel()" id="custom-theme-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--blue-accent);"></span>
+                        <span><i class="fa-regular fa-user" style="margin-right: 6px; color: var(--tennis-lime);"></i>Vlastný grafický štýl</span>
+                    </div>
+                    <button type="button" class="param-pill history-toggle-pill" id="custom-theme-toggle-pill" onclick="event.stopPropagation(); toggleCustomThemePanel();" aria-expanded="false">▼ Rozbaliť</button>
+                </div>
+
+                <div id="custom-theme-body" style="display:none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                    <div class="custom-theme-preview" id="custom-theme-preview-bar">
+                        <span class="custom-theme-preview-badge">
+                            <i class="fa-regular fa-user"></i>
+                            <span id="custom-theme-preview-name">Vlast.</span>
+                        </span>
+                        <span style="font-size: 0.70rem; font-weight: 800; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.65);">Náhľad 135° gradientu</span>
+                    </div>
+
+                    <div class="grid-3" style="margin-bottom: 12px;">
+                        <div class="color-picker-tile">
+                            <label for="custom-color-1">Farba 1</label>
+                            <input type="color" id="custom-color-1" class="color-picker-input" value="#0f766e" oninput="updateCustomThemePreview()">
+                            <div class="color-picker-hex" id="custom-color-1-hex">#0F766E</div>
+                        </div>
+                        <div class="color-picker-tile">
+                            <label for="custom-color-2">Farba 2</label>
+                            <input type="color" id="custom-color-2" class="color-picker-input" value="#0ea5e9" oninput="updateCustomThemePreview()">
+                            <div class="color-picker-hex" id="custom-color-2-hex">#0EA5E9</div>
+                        </div>
+                        <div class="color-picker-tile">
+                            <label for="custom-color-3">Farba 3</label>
+                            <input type="color" id="custom-color-3" class="color-picker-input" value="#1e1b4b" oninput="updateCustomThemePreview()">
+                            <div class="color-picker-hex" id="custom-color-3-hex">#1E1B4B</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="custom-theme-name" class="note-label-row">
+                            <span>Názov štýlu (max 6 znakov · ikona <i class="fa-regular fa-user"></i>)</span>
+                            <span class="note-counter" id="custom-theme-name-count">0 / 6</span>
+                        </label>
+                        <input type="text" id="custom-theme-name" maxlength="6" placeholder="napr. Môj, Klub..." oninput="updateCustomThemePreview()">
+                    </div>
+
+                    <button type="button" class="btn btn-primary" id="btn-save-custom-theme" onclick="saveCustomTheme()">
+                        <i class="fa-regular fa-user"></i> Uložiť a aktivovať vlastný štýl
+                    </button>
+                    <div id="custom-theme-status" class="loc-status-hint" style="margin-top: 8px;">
+                        Po uložení sa zaradí ako 9. motív pri kliknutí na tlačidlo <strong>TT</strong> a zostane uložený natrvalo v prehliadači.
+                    </div>
+                </div>
+            </div>
+
             <!-- KARTA 2: DODATOČNE VLOŽIŤ HISTORICKÝ ZÁPAS -->
             <div class="card">
                 <div class="card-header">
@@ -4171,6 +4339,7 @@
     <script>
         const STORAGE_KEY = "TENISTAB_DB_V1";
         const THEME_STORAGE_KEY = "TENISTAB_THEME_V1";
+        const CUSTOM_THEME_STORAGE_KEY = "TENISTAB_CUSTOM_THEME_V1";
         const REMOTE_JSON_FILES = ["databaza.json", "data.json"];
         const ACHIEVEMENT_ICON_DIRS = ["./", "./icons/", "./ikony/", "./badges/", "./img/", "./images/", "./achievements/"];
         const VALID_WINDOWS = [3, 6, 12, 18, 24, 36, 0];
@@ -4314,7 +4483,7 @@
         let lastTimelineSig = "";
         let lastChartHighlightStep = null;
 
-        /* ==================== TÉMY ==================== */
+        /* ==================== TÉMY & VLASTNÝ GRAFICKÝ ŠTÝL (v1.32) ==================== */
         function getSeasonKeyByDate(date = new Date()) {
             const month = date.getMonth() + 1;
             if (month >= 3 && month <= 5) return "spring";
@@ -4323,24 +4492,229 @@
             return "winter";
         }
 
-        function saveThemePreference(themeKey, seasonKey = getSeasonKeyByDate()) {
+        function hexToRgb(hex) {
+            const clean = String(hex || "#007263").replace("#", "").trim();
+            const full = clean.length === 3
+                ? clean.split("").map(c => c + c).join("")
+                : clean.padEnd(6, "0").slice(0, 6);
+            const num = parseInt(full, 16);
+            return {
+                r: isNaN(num) ? 0 : (num >> 16) & 255,
+                g: isNaN(num) ? 114 : (num >> 8) & 255,
+                b: isNaN(num) ? 99 : num & 255
+            };
+        }
+
+        function rgbToHsl(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h = 0, s = 0;
+            const l = (max + min) / 2;
+            if (max !== min) {
+                const d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    default: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+
+        function hslToHex(h, s, l) {
+            h = ((h % 360) + 360) % 360;
+            s = Math.max(0, Math.min(100, s)) / 100;
+            l = Math.max(0, Math.min(100, l)) / 100;
+            const a = s * Math.min(l, 1 - l);
+            const f = (n) => {
+                const k = (n + h / 30) % 12;
+                const col = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * col).toString(16).padStart(2, "0");
+            };
+            return `#${f(0)}${f(8)}${f(4)}`;
+        }
+
+        function buildCustomThemeObject(rawName, c1, c2, c3) {
+            const safeC1 = /^#[0-9a-fA-F]{6}$/.test(c1) ? c1 : "#0f766e";
+            const safeC2 = /^#[0-9a-fA-F]{6}$/.test(c2) ? c2 : "#0ea5e9";
+            const safeC3 = /^#[0-9a-fA-F]{6}$/.test(c3) ? c3 : "#1e1b4b";
+            const cleanName = String(rawName || "").trim().slice(0, 6) || "Vlast.";
+
+            const rgb1 = hexToRgb(safeC1);
+            const rgb2 = hexToRgb(safeC2);
+            const rgb3 = hexToRgb(safeC3);
+            const hsl1 = rgbToHsl(rgb1.r, rgb1.g, rgb1.b);
+            const hsl2 = rgbToHsl(rgb2.r, rgb2.g, rgb2.b);
+            const hsl3 = rgbToHsl(rgb3.r, rgb3.g, rgb3.b);
+
+            const baseH = hsl1.s >= 15 ? hsl1.h : (hsl2.s >= 15 ? hsl2.h : hsl3.h);
+            const baseS = Math.max(22, Math.min(78, Math.round((hsl1.s + hsl2.s) / 2)));
+            const accentH = hsl2.s >= 15 ? hsl2.h : baseH;
+            const accentS = Math.max(35, Math.min(92, hsl2.s || baseS));
+
+            const accentHex = hslToHex(accentH, accentS, 76);
+            const borderHex = hslToHex(accentH, Math.min(85, accentS), 62);
+            const glowRgb = hexToRgb(borderHex);
+
+            return {
+                key: "custom",
+                isCustom: true,
+                label: cleanName,
+                customName: cleanName,
+                colors: [safeC1, safeC2, safeC3],
+                gradient: `linear-gradient(135deg, ${safeC1} 0%, ${safeC2} 50%, ${safeC3} 100%)`,
+                themeColor: hslToHex(baseH, Math.min(70, baseS), 20),
+                btn: {
+                    top: hslToHex(baseH, baseS, 36),
+                    bot: hslToHex(baseH, baseS, 24),
+                    hoverTop: hslToHex(baseH, Math.min(85, baseS + 6), 43),
+                    hoverBot: hslToHex(baseH, baseS, 30),
+                    edge: hslToHex(baseH, baseS, 13),
+                    mutedTop: hslToHex(baseH, Math.max(16, Math.round(baseS * 0.55)), 22),
+                    mutedBot: hslToHex(baseH, Math.max(14, Math.round(baseS * 0.50)), 15),
+                    mutedEdge: hslToHex(baseH, Math.max(12, Math.round(baseS * 0.45)), 8),
+                    border: borderHex,
+                    accent: accentHex,
+                    glow: `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, 0.44)`
+                },
+                tmode: {
+                    flashTop: hslToHex(accentH, accentS, 48),
+                    flashBot: hslToHex(baseH, baseS, 30),
+                    flashText: "#ffffff",
+                    activeTop: hslToHex(accentH, Math.min(90, accentS), 74),
+                    activeBot: hslToHex(accentH, Math.min(88, accentS), 60),
+                    activeEdge: hslToHex(baseH, baseS, 24),
+                    activeText: "#061522"
+                }
+            };
+        }
+
+        function registerCustomThemeInList(themeObj) {
+            const idx = SEASON_THEMES.findIndex(t => t.key === "custom");
+            if (idx !== -1) {
+                SEASON_THEMES[idx] = themeObj;
+            } else {
+                SEASON_THEMES.push(themeObj);
+            }
+        }
+
+        function loadCustomThemeFromStorage() {
             try {
-                localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ themeKey, savedSeason: seasonKey }));
+                const raw = localStorage.getItem(CUSTOM_THEME_STORAGE_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (parsed && Array.isArray(parsed.colors) && parsed.colors.length === 3) {
+                    const obj = buildCustomThemeObject(parsed.name, parsed.colors[0], parsed.colors[1], parsed.colors[2]);
+                    registerCustomThemeInList(obj);
+                    return obj;
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function syncCustomThemeFormUI() {
+            const existing = SEASON_THEMES.find(t => t.key === "custom");
+            const c1El = document.getElementById("custom-color-1");
+            const c2El = document.getElementById("custom-color-2");
+            const c3El = document.getElementById("custom-color-3");
+            const nameEl = document.getElementById("custom-theme-name");
+            const statusEl = document.getElementById("custom-theme-status");
+            if (!c1El || !c2El || !c3El || !nameEl) return;
+
+            if (existing && Array.isArray(existing.colors)) {
+                c1El.value = existing.colors[0];
+                c2El.value = existing.colors[1];
+                c3El.value = existing.colors[2];
+                nameEl.value = existing.customName || existing.label || "";
+                if (statusEl) {
+                    statusEl.innerHTML = `Uložený vlastný štýl: <strong style="color:var(--tennis-lime);"><i class="fa-regular fa-user"></i> ${escapeHtml(existing.label)}</strong> (${existing.colors.join(" → ").toUpperCase()}) · dostupný ako 9. motív na tlačidle <strong>TT</strong>.`;
+                }
+            }
+            updateCustomThemePreview();
+        }
+
+        function toggleCustomThemePanel() {
+            const body = document.getElementById("custom-theme-body");
+            const pill = document.getElementById("custom-theme-toggle-pill");
+            const header = document.getElementById("custom-theme-header");
+            if (!body || !pill) return;
+            const willOpen = body.style.display === "none";
+            body.style.display = willOpen ? "block" : "none";
+            pill.textContent = willOpen ? "▲ Zbaliť" : "▼ Rozbaliť";
+            pill.setAttribute("aria-expanded", willOpen ? "true" : "false");
+            if (header) {
+                header.style.marginBottom = willOpen ? "0" : "0";
+            }
+            if (willOpen) updateCustomThemePreview();
+        }
+
+        function updateCustomThemePreview() {
+            const c1El = document.getElementById("custom-color-1");
+            const c2El = document.getElementById("custom-color-2");
+            const c3El = document.getElementById("custom-color-3");
+            const nameEl = document.getElementById("custom-theme-name");
+            const bar = document.getElementById("custom-theme-preview-bar");
+            const namePrev = document.getElementById("custom-theme-preview-name");
+            const cnt = document.getElementById("custom-theme-name-count");
+            if (!c1El || !c2El || !c3El || !bar) return;
+
+            const c1 = c1El.value;
+            const c2 = c2El.value;
+            const c3 = c3El.value;
+            bar.style.background = `linear-gradient(135deg, ${c1} 0%, ${c2} 50%, ${c3} 100%)`;
+            const h1 = document.getElementById("custom-color-1-hex");
+            const h2 = document.getElementById("custom-color-2-hex");
+            const h3 = document.getElementById("custom-color-3-hex");
+            if (h1) h1.textContent = c1.toUpperCase();
+            if (h2) h2.textContent = c2.toUpperCase();
+            if (h3) h3.textContent = c3.toUpperCase();
+
+            const rawName = nameEl ? nameEl.value : "";
+            if (namePrev) namePrev.textContent = rawName.trim().slice(0, 6) || "Vlast.";
+            if (cnt) cnt.textContent = `${rawName.length} / 6`;
+        }
+
+        function saveCustomTheme() {
+            const c1El = document.getElementById("custom-color-1");
+            const c2El = document.getElementById("custom-color-2");
+            const c3El = document.getElementById("custom-color-3");
+            const nameEl = document.getElementById("custom-theme-name");
+            if (!c1El || !c2El || !c3El) return;
+
+            const cleanName = (nameEl ? nameEl.value : "").trim().slice(0, 6) || "Vlast.";
+            if (nameEl) nameEl.value = cleanName;
+            const colors = [c1El.value, c2El.value, c3El.value];
+
+            const themeObj = buildCustomThemeObject(cleanName, colors[0], colors[1], colors[2]);
+            registerCustomThemeInList(themeObj);
+            try {
+                localStorage.setItem(CUSTOM_THEME_STORAGE_KEY, JSON.stringify({ name: cleanName, colors }));
+            } catch (e) {}
+
+            syncCustomThemeFormUI();
+            applySeasonTheme("custom", true, true);
+        }
+
+        function saveThemePreference(themeKey) {
+            try {
+                localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ themeKey, userLocked: true }));
             } catch (e) {}
         }
 
         function getInitialThemeKey() {
-            const currentSeason = getSeasonKeyByDate();
             try {
                 const raw = localStorage.getItem(THEME_STORAGE_KEY);
                 if (raw) {
                     const parsed = JSON.parse(raw);
-                    if (parsed && SEASON_THEMES.some(t => t.key === parsed.themeKey) && parsed.savedSeason === currentSeason) {
+                    if (parsed && SEASON_THEMES.some(t => t.key === parsed.themeKey)) {
                         return parsed.themeKey;
                     }
                 }
             } catch (e) {}
-            saveThemePreference(currentSeason, currentSeason);
+            const currentSeason = getSeasonKeyByDate();
+            saveThemePreference(currentSeason);
             return currentSeason;
         }
 
@@ -4377,15 +4751,23 @@
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute("content", theme.themeColor);
 
-            if (persist) saveThemePreference(theme.key, getSeasonKeyByDate());
+            if (persist) saveThemePreference(theme.key);
             const tvMod = document.getElementById("tv-modal");
             if (tvMod && tvMod.classList.contains("open")) renderTvCanvas();
             const tvChartMod = document.getElementById("tv-chart-modal");
             if (tvChartMod && tvChartMod.classList.contains("open")) renderTvChartCanvas();
-            if (showNotification) showToast(`Motív: ${theme.label}`);
+            if (showNotification) {
+                if (theme.isCustom) {
+                    showToast(`Motív: <i class="fa-regular fa-user" style="margin:0 4px 0 2px;"></i>${escapeHtml(theme.label)}`, false, true);
+                } else {
+                    showToast(`Motív: ${theme.label}`);
+                }
+            }
         }
 
         function cycleSeasonTheme() {
+            const ballEl = document.querySelector(".brand-ball");
+            if (ballEl) triggerThemedBtnSheen(ballEl);
             const nextIdx = (currentSeasonThemeIndex + 1) % SEASON_THEMES.length;
             applySeasonTheme(SEASON_THEMES[nextIdx].key, true, true);
         }
@@ -12019,7 +12401,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.31! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.32! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -12660,7 +13042,7 @@
 
         function initGlobalPcTooltips() {
             const tipMap = [
-                [".brand", "Zmena farebného motívu", "Kliknutím prepneš medzi 8 farebnými motívmi (Jar, Leto, Jeseň, Zima, Tyrkys, Smoke, Antuka, Hala).", "Predvolený motív sa riadi ročným obdobím."],
+                [".brand", "Zmena farebného motívu", "Kliknutím na 3D tlačidlo TT prepínaš medzi 8 motívmi (+ vlastným štýlom z karty História).", "Zvolený motív ostane uložený natrvalo v prehliadači."],
                 ["#table-sync-db-btn", "Synchronizácia s GitHubom", "Stiahne najnovšiu oficiálnu databázu (databaza.json) zo servera a obnoví aj pôvodné TV.jpeg pozadie.", "Tmavozelená = dáta sú aktuálne."],
                 ["#tmode-btn-points", "Bodová tabuľka (2H + 4H)", "Kombinovaný rebríček podľa získaných bodov za dvojhry (1 b) aj štvorhry (0.5 b) vo zvolenej lehote.", ""],
                 ["#tmode-btn-elo2h", "ELO rebríček – Dvojhra (2H)", "Celoživotný singlový ELO rebríček počítaný z dvojhier podľa parametrov K a D.", "Ak bol posledný zápas 2H, banner hore ukáže posun ELO."],
@@ -12801,9 +13183,10 @@
             }
         }
 
-        function showToast(msg, isError = false) {
+        function showToast(msg, isError = false, isHtml = false) {
             const t = document.getElementById("toast");
-            t.textContent = msg;
+            if (isHtml) t.innerHTML = msg;
+            else t.textContent = msg;
             t.style.background = isError ? "#7f1d1d" : "#065f46";
             t.style.borderColor = isError ? "#f87171" : "#34d399";
             t.classList.add("show");
@@ -12812,7 +13195,9 @@
         }
 
         async function initApp() {
+            loadCustomThemeFromStorage();
             applySeasonTheme(getInitialThemeKey(), false, false);
+            syncCustomThemeFormUI();
 
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) {
