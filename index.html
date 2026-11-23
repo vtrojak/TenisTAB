@@ -3138,7 +3138,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.29</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.30</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3169,7 +3169,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.29</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.30</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -11533,25 +11533,53 @@
                 return [resultItem];
             }
 
-            // Do 6 dní -> max posledné 3 zápasy chronologicky (rozlíšené 2H vs 4H)
+            // Do 6 dní -> max posledné 3 zápasy od najnovšieho po najstarší (priorita novšieho)
             const recentMatches = pastMatches.filter(m => {
                 const age = getMatchAgeDays(m.date);
                 return age >= 0 && age <= 6;
-            }).slice(-3);
+            }).slice(-3).reverse();
 
             const result = [];
-            recentMatches.forEach(m => {
+            const usedJokeTags = new Set();
+
+            recentMatches.forEach((m, idx) => {
                 const { resultItem, specialItems, jokeItems } = buildPool(m);
                 const noteItem = buildReporterNoteItem(m);
-                const pickCount = Math.random() < 0.5 ? 2 : 3;
-                const extras = shuffleNewsArray([
-                    ...shuffleNewsArray(specialItems).slice(0, 2),
-                    ...shuffleNewsArray(jokeItems).slice(0, 2)
-                ]);
-                const picked = noteItem
-                    ? [resultItem, noteItem, ...extras.slice(0, Math.max(1, pickCount - 1))]
-                    : [resultItem, ...extras.slice(0, pickCount - 1)];
-                picked.forEach(item => result.push(item));
+
+                if (idx === 0) {
+                    const pickCount = Math.random() < 0.5 ? 2 : 3;
+                    const jokeTagSet = new Set(jokeItems.map(j => j.tag));
+                    const extras = shuffleNewsArray([
+                        ...shuffleNewsArray(specialItems).slice(0, 2),
+                        ...shuffleNewsArray(jokeItems).slice(0, 2)
+                    ]);
+                    const chosenExtras = extras.slice(0, Math.max(1, pickCount - 1));
+                    chosenExtras.forEach(it => {
+                        if (jokeTagSet.has(it.tag)) usedJokeTags.add(it.tag);
+                    });
+                    const picked = noteItem
+                        ? [resultItem, noteItem, ...chosenExtras]
+                        : [resultItem, ...chosenExtras];
+                    picked.forEach(item => result.push(item));
+                } else {
+                    const labeledResult = {
+                        ...resultItem,
+                        tag: idx === 1 ? "MINULÝ ZÁPAS" : "PREDMINULÝ ZÁPAS"
+                    };
+                    result.push(labeledResult);
+
+                    if (noteItem) {
+                        result.push(noteItem);
+                    } else if (jokeItems.length > 0) {
+                        const availableJokes = jokeItems.filter(j => !usedJokeTags.has(j.tag));
+                        const poolToPick = availableJokes.length > 0 ? availableJokes : jokeItems;
+                        const chosenJoke = poolToPick[Math.floor(Math.random() * poolToPick.length)];
+                        if (chosenJoke) {
+                            usedJokeTags.add(chosenJoke.tag);
+                            result.push(chosenJoke);
+                        }
+                    }
+                }
             });
             return result;
         }
@@ -11991,7 +12019,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.29! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.30! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
