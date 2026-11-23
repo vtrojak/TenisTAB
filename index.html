@@ -5561,8 +5561,8 @@
                 return `<div class="lm-cell lm-row-2 lm-cell-gem ${gCls}">${gBot}</div>`;
             }).join("");
 
-            const typeTxt = lastM.type === "4H" ? "Štvorhra 4H" : "Dvojhra 2H";
-            lmLabel.textContent = `Posledný odohratý zápas (#${lastM.index} · ${typeTxt}) · ${formatDateSk(lastM.date)}`;
+            const typeTxt = lastM.type === "4H" ? "Štvorhra" : "Dvojhra";
+            lmLabel.textContent = `Posledný zápas (#${lastM.index} · ${typeTxt}) · ${formatDateSk(lastM.date)}`;
             lmBoard.innerHTML = `
                 <div class="lm-scoreboard ${isDraw ? 'is-draw' : ''}" style="grid-template-columns: ${gridCols};">
                     <div class="lm-cell lm-cell-team ${topTeamCls}" title="${escapeHtml(topTeam)}">${escapeHtml(topTeam)}</div>
@@ -5586,7 +5586,7 @@
                 const eloTag = lastM.type === "4H" ? "Posun ELO 4H" : "Posun ELO 2H";
                 lmMeta.innerHTML = `${eloTag}: <strong style="color:#ffffff;">${escapeHtml(topTeam)}</strong> (<span style="color:${colD(topDelta)}; font-weight:800;">${fmtD(topDelta)}</span>) · <strong style="color:#ffffff;">${escapeHtml(botTeam)}</strong> (<span style="color:${colD(botDelta)}; font-weight:800;">${fmtD(botDelta)}</span>)`;
             } else {
-                const perPlayerSuffix = lastM.type === "4H" ? " b/hráč" : " b";
+                const perPlayerSuffix = lastM.type === "4H" ? " b" : " b";
                 const topCol = topPts > 0 ? "var(--win)" : "var(--text-muted)";
                 const botCol = botPts > 0 ? "var(--draw)" : "var(--text-muted)";
                 const expInfo = lastM.expiryDateStr
