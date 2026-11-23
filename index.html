@@ -3260,7 +3260,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.35</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.36</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3291,7 +3291,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.35</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.36</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -6712,12 +6712,21 @@
             }
         }
 
+        function ensureChartHasVisiblePlayer() {
+            const pool = getActiveChartPlayersPool();
+            if (pool.length > 0 && !pool.some(p => state.chartVisiblePlayers[p.id] !== false)) {
+                pool.forEach(p => { state.chartVisiblePlayers[p.id] = true; });
+                saveState(false);
+            }
+        }
+
         function setChartMetric(metric) {
             chartMetric = (metric === "elo2h" || metric === "elo4h") ? metric : "points";
             triggerGreenBtnFlash(document.getElementById(`chart-metric-${chartMetric}`));
             lastChartHighlightStep = null;
             chartWindowStart = null;
             tvChartWindowStart = null;
+            ensureChartHasVisiblePlayer();
             syncChartMetricUI();
             renderChartChips();
             drawPointsChart();
@@ -6733,6 +6742,7 @@
             lastChartHighlightStep = null;
             chartWindowStart = null;
             tvChartWindowStart = null;
+            ensureChartHasVisiblePlayer();
             syncChartMetricUI();
             renderChartChips();
             drawPointsChart();
@@ -8929,6 +8939,7 @@
                     iconFile: "chemia.png", faClass: "fa-solid fa-flask",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: rGoodChemistry.holders.length > 0 ? `${Number(rGoodChemistry.value).toFixed(1)}% úspešnosť` : "—",
+                    pairNames: rGoodChemistry.holders.map(x => x.name),
                     holders: goodChemPlayers,
                     top3: buildTop3Ranking(pairsList, pairWinPctFn, pr => pr.name, v => `${Number(v).toFixed(1)}%`, 0.1),
                     held: getHeldInfo("good_chemistry")
@@ -8942,6 +8953,7 @@
                     iconFile: "duo.png", faClass: "fa-solid fa-trophy",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: rUnbeatableDuo.holders.length > 0 ? `${skCount(rUnbeatableDuo.value, "výhra", "výhry", "výhier")} v rade` : "—",
+                    pairNames: rUnbeatableDuo.holders.map(x => x.name),
                     holders: unbeatableDuoPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.maxWinStreak, pr => pr.name, v => `${v} V`, 1),
                     held: getHeldInfo("unbeatable_duo")
@@ -8955,6 +8967,7 @@
                     iconFile: "drama.png", faClass: "fa-solid fa-masks-theater",
                     theme: "ach-purple", accent: "#c084fc", isNegative: false,
                     valueText: rDramatics.holders.length > 0 ? `${skCount(rDramatics.value, "vyhratá dráma", "vyhraté drámy", "vyhratých drám")}` : "—",
+                    pairNames: rDramatics.holders.map(x => x.name),
                     holders: dramaticsPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.dramaWins, pr => pr.name, v => `${v}×`, 1),
                     held: getHeldInfo("dramatics")
@@ -8968,6 +8981,7 @@
                     iconFile: "patmat.png", faClass: "fa-solid fa-face-dizzy",
                     theme: "ach-red", accent: "#f87171", isNegative: true,
                     valueText: rPatMat.holders.length > 0 ? `${skCount(rPatMat.value, "spoločná prehra", "spoločné prehry", "spoločných prehier")}` : "—",
+                    pairNames: rPatMat.holders.map(x => x.name),
                     holders: patMatPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.losses, pr => pr.name, v => `${v} P`, 1),
                     held: getHeldInfo("pat_mat")
@@ -9103,10 +9117,12 @@
             updateNoteCounter("edit-note", "edit-note-count");
 
             document.getElementById("edit-match-modal").classList.add("open");
+            syncModalBodyScrollLock();
         }
 
         function closeEditMatchModal() {
             document.getElementById("edit-match-modal").classList.remove("open");
+            syncModalBodyScrollLock();
         }
 
         function saveEditedMatch() {
@@ -9458,6 +9474,10 @@
             reader.onload = e => {
                 const rawImg = new Image();
                 rawImg.onload = () => {
+                    if (!rawImg.naturalWidth || !rawImg.naturalHeight) {
+                        showToast("Vybraný obrázok nemá platné rozmery.", true);
+                        return;
+                    }
                     const off = document.createElement("canvas");
                     off.width = 1920;
                     off.height = 1080;
@@ -10191,12 +10211,16 @@
                     : `TENISTAB | REBRÍČEK 2H + 4H (${wmLabel})`);
             ctx.fillText(tvHeadTitle, innerX + 30, topY + 43, innerW - 430);
 
+            const allEloRowsForCount = isEloPairs ? computedElo4HPairs : (isElo4H ? computedElo4H : computedElo2H);
+            const totalItemsCount = isEloTv ? allEloRowsForCount.length : computedPlayers.length;
+            const top20Tag = totalItemsCount > 20 ? `TOP 20 Z ${totalItemsCount} · ` : "";
+
             ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
             ctx.font = "700 21px sans-serif";
             ctx.textAlign = "right";
             const tvRightStats = isEloTv
-                ? `ZÁPASOV: ${isElo4H ? elo4HMatchesCount : elo2HMatchesCount} · AKTUALIZÁCIA: ${formatDateSk(getTodayMidnight())}`
-                : `PLATNÝCH ZÁPASOV: ${validMatchesCount} · AKTUALIZÁCIA: ${formatDateSk(getTodayMidnight())}`;
+                ? `${top20Tag}ZÁPASOV: ${isElo4H ? elo4HMatchesCount : elo2HMatchesCount} · ${formatDateSk(getTodayMidnight())}`
+                : `${top20Tag}PLATNÝCH ZÁPASOV: ${validMatchesCount} · ${formatDateSk(getTodayMidnight())}`;
             ctx.fillText(tvRightStats, innerX + innerW - 24, topY + 42);
 
             if (isEloTv) {
@@ -10247,6 +10271,8 @@
                 eRows.forEach((p, i) => {
                     const ry = rowsStartY + i * (rowH + rowGap);
                     ctx.save();
+                    if (p.isInactive) ctx.globalAlpha = 0.50;
+                    ctx.save();
                     drawRoundedRectPath(ctx, innerX, ry, innerW, rowH, 11);
                     ctx.fillStyle = i % 2 === 0 ? "rgba(255, 255, 255, 0.13)" : "rgba(255, 255, 255, 0.07)";
                     ctx.fill();
@@ -10268,13 +10294,15 @@
                     const badgeSize = Math.min(40, Math.max(24, rowH - 8));
                     ctx.save();
                     drawRoundedRectPath(ctx, eCols[0].x - badgeSize / 2, ry + (rowH - badgeSize) / 2, badgeSize, badgeSize, 8);
-                    ctx.fillStyle = p.rank === 1 ? "#facc15" : (p.rank === 2 ? "#e2e8f0" : (p.rank === 3 ? "#fb923c" : "rgba(255, 255, 255, 0.16)"));
+                    ctx.fillStyle = p.isInactive
+                        ? "rgba(160, 174, 172, 0.24)"
+                        : (p.rank === 1 ? "#facc15" : (p.rank === 2 ? "#e2e8f0" : (p.rank === 3 ? "#fb923c" : "rgba(255, 255, 255, 0.16)")));
                     ctx.fill();
                     ctx.restore();
 
                     ctx.font = `800 ${Math.round(fontSize * 0.80)}px sans-serif`;
                     ctx.textAlign = "center";
-                    ctx.fillStyle = (p.rank === 1 || p.rank === 2) ? "#090e1a" : "#ffffff";
+                    ctx.fillStyle = (!p.isInactive && (p.rank === 1 || p.rank === 2)) ? "#090e1a" : "#ffffff";
                     ctx.fillText(`${p.rank}`, eCols[0].x, textY - 1);
 
                     const dotR = Math.max(5, Math.round(fontSize * 0.22));
@@ -10352,6 +10380,7 @@
                             fx += fSize + fGap;
                         });
                     }
+                    ctx.restore();
                 });
                 ctx.restore();
                 return;
@@ -10411,6 +10440,8 @@
 
             rowsSource.forEach((p, i) => {
                 const ry = rowsStartY + i * (rowH + rowGap);
+                ctx.save();
+                if (p.isInactive) ctx.globalAlpha = 0.50;
 
                 ctx.save();
                 drawRoundedRectPath(ctx, innerX, ry, innerW, rowH, 11);
@@ -10440,13 +10471,15 @@
 
                 ctx.save();
                 drawRoundedRectPath(ctx, badgeX, badgeY, badgeSize, badgeSize, 8);
-                ctx.fillStyle = rank === 1 ? "#facc15" : (rank === 2 ? "#e2e8f0" : (rank === 3 ? "#fb923c" : "rgba(255, 255, 255, 0.16)"));
+                ctx.fillStyle = p.isInactive
+                    ? "rgba(160, 174, 172, 0.24)"
+                    : (rank === 1 ? "#facc15" : (rank === 2 ? "#e2e8f0" : (rank === 3 ? "#fb923c" : "rgba(255, 255, 255, 0.16)")));
                 ctx.fill();
                 ctx.restore();
 
                 ctx.font = `800 ${Math.round(fontSize * 0.80)}px sans-serif`;
                 ctx.textAlign = "center";
-                ctx.fillStyle = (rank === 1 || rank === 2) ? "#090e1a" : "#ffffff";
+                ctx.fillStyle = (!p.isInactive && (rank === 1 || rank === 2)) ? "#090e1a" : "#ffffff";
                 ctx.fillText(rankLbl, cols[0].x, textY - 1);
 
                 const dotR = Math.max(5, Math.round(fontSize * 0.22));
@@ -10508,6 +10541,7 @@
                         fx += fSize + fGap;
                     });
                 }
+                ctx.restore();
             });
             ctx.restore();
         }
@@ -10602,12 +10636,24 @@
             const wrap = document.getElementById("tv-chart-player-chips");
             if (!wrap) return;
             wrap.innerHTML = "";
-            getActiveChartPlayersPool().forEach(p => {
+            const tl = getActiveChartTimeline();
+            const pool = getActiveChartPlayersPool();
+            const lastPt = tl.length > 0 ? tl[tl.length - 1] : null;
+            const sortedForChips = [...pool].sort((a, b) => {
+                const va = lastPt ? getPointMetricVal(lastPt, a.id) : (chartMetric === "points" ? a.points : a.elo);
+                const vb = lastPt ? getPointMetricVal(lastPt, b.id) : (chartMetric === "points" ? b.points : b.elo);
+                if (vb !== va) return vb - va;
+                return a.name.localeCompare(b.name, "sk");
+            });
+
+            sortedForChips.forEach(p => {
                 const isVis = state.chartVisiblePlayers[p.id] !== false;
+                const val = lastPt ? getPointMetricVal(lastPt, p.id) : (chartMetric === "points" ? p.points : p.elo);
+                const valTxt = chartMetric === "points" ? `${formatPts(val)} b` : val.toFixed(1);
                 const chip = document.createElement("button");
                 chip.type = "button";
                 chip.className = "player-chip" + (isVis ? " active" : "");
-                chip.innerHTML = `<span class="chip-dot" style="background:${p.color}; opacity:${isVis ? 1 : 0.3}"></span>${escapeHtml(p.name)}`;
+                chip.innerHTML = `<span class="chip-dot" style="background:${p.color}; opacity:${isVis ? 1 : 0.3}"></span>${escapeHtml(p.name)} (${valTxt})`;
                 chip.onclick = () => {
                     state.chartVisiblePlayers[p.id] = !isVis;
                     saveState(false);
@@ -10642,6 +10688,7 @@
         }
 
         function openTvChartModal() {
+            ensureChartHasVisiblePlayer();
             syncTvControlsUI();
             syncChartMetricUI();
             syncTvChartModeButtons();
@@ -10985,10 +11032,12 @@
         let homeWeatherFetchedAt = 0;
         let homeWeatherFailed = false;
         let weatherFetchSeq = 0;
+        let weatherFetchInFlightSig = null;
         let weatherQuipSeed = Math.floor(Math.random() * 1000);
 
         function resetWeatherMemoryState(clearStorage = false) {
             weatherFetchSeq++;
+            weatherFetchInFlightSig = null;
             homeWeather = null;
             localWeather = null;
             localLocationName = "";
@@ -11463,23 +11512,23 @@
             }
         };
 
-        function localizeWeatherQuip(quip, useCadcaMode, cityNameForNeutral = "") {
-            if (useCadcaMode || !quip) return quip;
-            const inCity = cityNameForNeutral ? `v meste ${cityNameForNeutral}` : "";
+        function localizeWeatherQuip(quip, isCadcaLoc) {
+            if (!quip || !quip.includes("Marcel")) return quip;
+            const playersList = (state && Array.isArray(state.players)) ? state.players : [];
+            const hasBelo = playersList.some(p =>
+                String(p && p.name || "").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") === "belo"
+            );
+            // Interný klubový vtip: ak je v tabuľke Belo a zároveň lokalita Čadca, ostáva meno Marcel
+            if (isCadcaLoc && hasBelo) return quip;
+
+            const validPlayers = playersList.filter(p => p && String(p.name || "").trim().length > 0);
+            if (validPlayers.length > 0) {
+                const picked = validPlayers[Math.abs(weatherQuipSeed + validPlayers.length) % validPlayers.length];
+                return quip.replace(/\bMarcel\b/g, picked.name.trim());
+            }
             return quip
-                .replace("V januári na Kysuciach ", "V januári ")
-                .replace("Február na Kysuciach ", "Február ")
-                .replace("ale na Kysuciach je vonku ", "ale vonku je ")
-                .replace("len kysuckí otužilci", "len najtvrdší otužilci")
-                .replace("v Čadci to volá", inCity ? `${inCity} to volá` : "dnes to volá")
-                .replace("Májová klasika v Čadci", inCity ? `Májová klasika ${inCity}` : "Májová klasika")
-                .replace("počasie v Čadci prekvapiť", inCity ? `počasie ${inCity} prekvapiť` : "počasie prekvapiť")
-                .replace("júnové podmienky v Čadci", inCity ? `júnové podmienky ${inCity}` : "júnové podmienky")
-                .replace("sezóna v Čadci:", inCity ? `sezóna ${inCity}:` : "sezóna:")
-                .replace("vie Kysuce schladiť", "vie počasie schladiť")
-                .replace("augustové počasie v Čadci", inCity ? `augustové počasie ${inCity}` : "augustové počasie")
-                .replace("podmienky na Kysuciach", inCity ? `podmienky ${inCity}` : "podmienky")
-                .replace("október v Čadci praje", inCity ? `október ${inCity} praje` : "október praje");
+                .replace("Marcel, už si zajednal halu na víkend?", "Už má niekto zajednanú halu na víkend?")
+                .replace("Marcel, volaj do haly, či dnes kúria.", "Radšej volajte do haly, či dnes kúria.");
         }
 
         function decodeWmoWeather(code) {
@@ -11530,9 +11579,13 @@
                 renderNewsTicker(false);
                 return;
             }
-            const reqSeq = ++weatherFetchSeq;
             const loc = getLocationContext();
             const startLocSig = getWeatherLocSig();
+            if (!force && weatherFetchInFlightSig === startLocSig) {
+                return;
+            }
+            const reqSeq = ++weatherFetchSeq;
+            weatherFetchInFlightSig = startLocSig;
             try {
                 const coords = await getBrowserCoords();
                 if (reqSeq !== weatherFetchSeq || getWeatherLocSig() !== startLocSig) return;
@@ -11615,6 +11668,10 @@
                 if (reqSeq !== weatherFetchSeq) return;
                 homeWeatherFailed = true;
                 renderNewsTicker(false);
+            } finally {
+                if (reqSeq === weatherFetchSeq) {
+                    weatherFetchInFlightSig = null;
+                }
             }
         }
 
@@ -11656,9 +11713,7 @@
             }
 
             const rawQuip = quipList[weatherQuipSeed % quipList.length];
-            const useCadcaQuips = !usingLocal && loc.isCadca;
-            const neutralCityLabel = usingLocal ? "" : (loc.hasCity && !loc.isCadca ? loc.name : "");
-            const quip = localizeWeatherQuip(rawQuip, useCadcaQuips, neutralCityLabel);
+            const quip = localizeWeatherQuip(rawQuip, loc.isCadca);
 
             const tempStr = skNum(temp, 1);
             const precipExtra = (precip > 0) ? `, zrážky ${skNum(precip, 1)} mm` : "";
@@ -12124,7 +12179,7 @@
 
         function buildWindowPointsTimelineForLeader() {
             const wm = Number(state.config.windowMonths) || 0;
-            const matches = computedMatches || [];
+            const matches = (computedMatches || []).filter(m => getMatchAgeDays(m.date) >= 0);
             if (matches.length === 0) return [];
             const precalc = matches.map(m => {
                 const dt = parseIsoLocal(m.date);
@@ -12277,30 +12332,53 @@
             return expiryPool[seed % expiryPool.length];
         }
 
-        function buildLeaderChangeNewsItem(snaps) {
+        function findLatestLeaderCoup(snaps, maxAgeDays = 14) {
             if (!snaps || snaps.length < 2) return null;
-            const last = snaps[snaps.length - 1];
-            const prev = snaps[snaps.length - 2];
-            if (!last.match || !last.match.date) return null;
-            const matchAge = getMatchAgeDays(last.match.date);
-            if (matchAge < 0 || matchAge >= 30) return null;
-            if (!last.leaderId || !prev.leaderId || last.leaderId === prev.leaderId) return null;
+            const pastSnaps = snaps.filter(s => s && s.match && s.match.date && getMatchAgeDays(s.match.date) >= 0);
+            if (pastSnaps.length < 2) return null;
 
-            const newPlayer = state.players.find(p => p.id === last.leaderId);
-            const prevPlayer = state.players.find(p => p.id === prev.leaderId);
-            if (!newPlayer || !prevPlayer) return null;
+            const curLeaderId = pastSnaps[pastSnaps.length - 1].leaderId;
+            if (!curLeaderId) return null;
 
-            let reignStartIdx = snaps.length - 2;
-            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === prev.leaderId) {
+            let reignStartIdx = pastSnaps.length - 1;
+            while (reignStartIdx > 0 && pastSnaps[reignStartIdx - 1].leaderId === curLeaderId) {
                 reignStartIdx--;
             }
-            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date
-                ? snaps[reignStartIdx].match.date
-                : last.match.date;
-            const startDays = parseIsoToUtcDays(startDate);
-            const endDays = parseIsoToUtcDays(last.match.date);
-            const reignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
+            if (reignStartIdx === 0) return null;
 
+            const coupSnap = pastSnaps[reignStartIdx];
+            const prevSnap = pastSnaps[reignStartIdx - 1];
+            const prevLeaderId = prevSnap.leaderId;
+            if (!prevLeaderId || prevLeaderId === curLeaderId) return null;
+
+            const matchAge = getMatchAgeDays(coupSnap.match.date);
+            if (matchAge < 0 || matchAge >= maxAgeDays) return null;
+
+            let prevStartIdx = reignStartIdx - 1;
+            while (prevStartIdx > 0 && pastSnaps[prevStartIdx - 1].leaderId === prevLeaderId) {
+                prevStartIdx--;
+            }
+            const startDate = pastSnaps[prevStartIdx].match.date || coupSnap.match.date;
+            const startDays = parseIsoToUtcDays(startDate);
+            const endDays = parseIsoToUtcDays(coupSnap.match.date);
+            const prevReignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
+
+            return { coupSnap, curLeaderId, prevLeaderId, prevReignDays };
+        }
+
+        function buildLeaderChangeNewsItem(snaps) {
+            const coup = findLatestLeaderCoup(snaps, 14);
+            if (!coup) return null;
+            const last = coup.coupSnap;
+
+            const currentTop = computedPlayers.find(p => !p.isInactive && p.matches > 0);
+            if (currentTop && currentTop.id !== coup.curLeaderId) return null;
+
+            const newPlayer = state.players.find(p => p.id === coup.curLeaderId);
+            const prevPlayer = state.players.find(p => p.id === coup.prevLeaderId);
+            if (!newPlayer || !prevPlayer) return null;
+
+            const reignDays = coup.prevReignDays;
             const newName = newPlayer.name;
             const prevName = prevPlayer.name;
             const seed = (Number(last.match.index) || 0) + weatherQuipSeed;
@@ -12367,29 +12445,19 @@
         }
 
         function buildEloLeaderChangeNewsItem(snaps, isDoubles) {
-            if (!snaps || snaps.length < 2) return null;
-            const last = snaps[snaps.length - 1];
-            const prev = snaps[snaps.length - 2];
-            if (!last.match || !last.match.date) return null;
-            const matchAge = getMatchAgeDays(last.match.date);
-            if (matchAge < 0 || matchAge >= 30) return null;
-            if (!last.leaderId || !prev.leaderId || last.leaderId === prev.leaderId) return null;
+            const coup = findLatestLeaderCoup(snaps, 14);
+            if (!coup) return null;
+            const last = coup.coupSnap;
 
-            const newPlayer = state.players.find(p => p.id === last.leaderId);
-            const prevPlayer = state.players.find(p => p.id === prev.leaderId);
+            const currentEloList = isDoubles ? computedElo4H : computedElo2H;
+            const currentTop = currentEloList.find(p => !p.isInactive && p.matches > 0);
+            if (currentTop && currentTop.id !== coup.curLeaderId) return null;
+
+            const newPlayer = state.players.find(p => p.id === coup.curLeaderId);
+            const prevPlayer = state.players.find(p => p.id === coup.prevLeaderId);
             if (!newPlayer || !prevPlayer) return null;
 
-            let reignStartIdx = snaps.length - 2;
-            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === prev.leaderId) {
-                reignStartIdx--;
-            }
-            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date
-                ? snaps[reignStartIdx].match.date
-                : last.match.date;
-            const startDays = parseIsoToUtcDays(startDate);
-            const endDays = parseIsoToUtcDays(last.match.date);
-            const reignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
-
+            const reignDays = coup.prevReignDays;
             const newName = newPlayer.name;
             const prevName = prevPlayer.name;
             const seed = (Number(last.match.index) || 0) + weatherQuipSeed + (isDoubles ? 7 : 3);
@@ -12467,29 +12535,18 @@
         }
 
         function buildEloPairsLeaderChangeNewsItem(snaps) {
-            if (!snaps || snaps.length < 2) return null;
-            const last = snaps[snaps.length - 1];
-            const prev = snaps[snaps.length - 2];
-            if (!last.match || !last.match.date) return null;
-            const matchAge = getMatchAgeDays(last.match.date);
-            if (matchAge < 0 || matchAge >= 30) return null;
-            if (!last.leaderId || !prev.leaderId || last.leaderId === prev.leaderId) return null;
+            const coup = findLatestLeaderCoup(snaps, 14);
+            if (!coup) return null;
+            const last = coup.coupSnap;
 
-            const newPair = computedElo4HPairs.find(pr => pr.key === last.leaderId);
-            const prevPair = computedElo4HPairs.find(pr => pr.key === prev.leaderId);
+            const currentTopPair = computedElo4HPairs.find(pr => !pr.isInactive && pr.matches > 0);
+            if (currentTopPair && currentTopPair.key !== coup.curLeaderId) return null;
+
+            const newPair = computedElo4HPairs.find(pr => pr.key === coup.curLeaderId);
+            const prevPair = computedElo4HPairs.find(pr => pr.key === coup.prevLeaderId);
             if (!newPair || !prevPair) return null;
 
-            let reignStartIdx = snaps.length - 2;
-            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === prev.leaderId) {
-                reignStartIdx--;
-            }
-            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date
-                ? snaps[reignStartIdx].match.date
-                : last.match.date;
-            const startDays = parseIsoToUtcDays(startDate);
-            const endDays = parseIsoToUtcDays(last.match.date);
-            const reignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
-
+            const reignDays = coup.prevReignDays;
             const newName = newPair.name;
             const prevName = prevPair.name;
             const seed = (Number(last.match.index) || 0) + weatherQuipSeed + 11;
@@ -12564,7 +12621,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.35! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.36! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -12640,11 +12697,13 @@
                     add("MONOPOL", `${activeRanked[0].name} kraľuje tabuľke s náskokom ${skPts(gap, "gen")}. Zvyšok ligy vraj tajne rokuje, či mu do ďalších zápasov nepridelia drevenú raketu.`);
                 }
 
-                // Najtesnejší susedia v tabuľke (s aspoň 0.25 b)
+                // Najtesnejší susedia v tabuľke (mimo čela, ktoré už pokrýva DRÁMA NA ČELE)
                 const scoringActive = activeRanked.filter(p => p.points > 0);
                 if (scoringActive.length >= 2) {
                     let minGap = Infinity, closePair = null;
                     for (let i = 0; i < scoringActive.length - 1; i++) {
+                        if (gap <= 1.5 && i === 0) continue;
+                        if (gap === 0 && Math.abs(scoringActive[i].points - activeRanked[0].points) < 0.001) continue;
                         const g = Math.round((scoringActive[i].points - scoringActive[i + 1].points) * 100) / 100;
                         if (g < minGap) { minGap = g; closePair = [scoringActive[i], scoringActive[i + 1]]; }
                     }
@@ -12791,7 +12850,6 @@
                 const cnt4H = matches.filter(m => m.type === "4H").length;
                 let totalSets = 0, totalGems = 0, totalDraws = 0;
                 const h2h2H = {};
-                const pairs4H = {};
 
                 matches.forEach(m => {
                     const s1 = Number(m.sets1) || 0;
@@ -12815,19 +12873,6 @@
                         if (s1 > s2) { if (m.team1[0] === ids[0]) r.w1++; else r.w2++; }
                         else if (s2 > s1) { if (m.team2[0] === ids[0]) r.w1++; else r.w2++; }
                         else r.d++;
-                    } else if (m.type === "4H") {
-                        [m.team1, m.team2].forEach(tm => {
-                            if (tm.length === 2) {
-                                const ids = [...tm].sort();
-                                const k = ids.join("__");
-                                if (!pairs4H[k]) {
-                                    const p1 = players.find(x => x.id === ids[0]);
-                                    const p2 = players.find(x => x.id === ids[1]);
-                                    pairs4H[k] = { name: `${p1 ? p1.name : ids[0]} / ${p2 ? p2.name : ids[1]}`, matches: 0 };
-                                }
-                                pairs4H[k].matches++;
-                            }
-                        });
                     }
                 });
 
@@ -12925,13 +12970,18 @@
                 add("ŤAŽKÝ BATOH", "Kilogramy nabraté po Vianociach môžu dobre slúžiť ako tréningová záťaž po celý rok!");
             }
 
-            // 8. Správy priamo z Achievementov (všetky 4 kategórie – správne skloňovanie a jednotné/množné číslo)
+            // 8. Správy priamo z Achievementov (všetkých 32 odznakov · dynamický rozsah All-time vs. okno)
+            const isWindowBadges = badgesScope === "window" && wm > 0;
+            const achScopeLabel = isWindowBadges ? `v ${wm}-mesačnom okne` : "histórie";
+            const achRecCap = isWindowBadges ? `Rekord (${wm}M)` : "Historický rekord";
+            const achRecLow = isWindowBadges ? `rekord (${wm}M)` : "historický rekord";
+
             const achTemplates = {
                 unstoppable: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
                     return ["NEZASTAVITEĽNÝ", holders.length > 1
-                        ? `O historický rekord víťaznej série (${a.valueText}) sa delia ${n}.`
-                        : `Historický rekord víťaznej série (${a.valueText}) stále drží ${n}.`];
+                        ? `O ${achRecLow} víťaznej série (${a.valueText}) sa delia ${n}.`
+                        : `${achRecCap} víťaznej série (${a.valueText}) stále drží ${n}.`];
                 },
                 hot_hand: (holders, a) => {
                     const fresh = holders.filter(h => {
@@ -13036,14 +13086,83 @@
                         ? `Najúspešnejšie pevné dvojice 4H (${pNames.join(" a ")}) nazbierali zhodne po ${valTxt}.`
                         : `Najúspešnejšia pevná dvojica 4H (${pNames[0]}) nazbierala už ${valTxt}.`];
                 },
+                phoenix: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["FÉNIX KURTU", holders.length > 1
+                        ? `Králi obratov po prehratom prvom sete (${a.valueText}): ${n} nikdy neskladajú zbrane.`
+                        : `Kráľom obratov po prehratom prvom sete (${a.valueText}) je ${n} – proti nemu nie je vyhraté ani po prvom sete.`];
+                },
+                marathoner: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["MARATÓNEC", holders.length > 1
+                        ? `Najviac 3+ setových bitiek (${a.valueText}) absolvovali ${n}.`
+                        : `Najviac 3+ setových bitiek (${a.valueText}) má v nohách ${n}.`];
+                },
+                unlucky: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["SMOLIAR O CHLP", holders.length > 1
+                        ? `Odznak Smoliar / O chlp (${a.valueText} do 2 gemov) si delia ${n} – občas stačí centimeter na čiare.`
+                        : `Odznak Smoliar / O chlp (${a.valueText} do 2 gemov) patrí ${skName(holders[0].name, "dat")} – šťastena mu pri tesných záveroch dlhuje kávu.`];
+                },
+                singles_king: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["KRÁĽ DVOJHRY", holders.length > 1
+                        ? `Najviac singlových bodov 2H (${valTxt}) nazbierali ${n}.`
+                        : `Kráľom dvojhry 2H je ${n} so ziskom ${valTxt}.`];
+                },
+                doubles_king: (holders, a) => {
+                    // V režime okna už rovnaké dáta pokrýva správa DEBLOVÝ MÁG
+                    if (isWindowBadges) return ["KRÁĽ ŠTVORHRY", ""];
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["KRÁĽ ŠTVORHRY", holders.length > 1
+                        ? `Historicky najviac deblových bodov 4H (${valTxt}) nazbierali ${n}.`
+                        : `Historickým kráľom štvorhry 4H je ${n} so ziskom ${valTxt}.`];
+                },
+                winter_wolf: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["ZIMNÝ VLK", holders.length > 1
+                        ? `Halovej sezóne (november – apríl) vládnu ${n} so ziskom ${valTxt}.`
+                        : `Zimným vlkom haly (november – apríl) je ${n} – nazbieral ${valTxt}.`];
+                },
+                beach_boy: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["PLÁŽOVÝ CHLAPEC", holders.length > 1
+                        ? `Vonkajšej antukovej sezóne (máj – október) kraľujú ${n} (${valTxt}).`
+                        : `Antukovým špecialistom letnej sezóny (máj – október) je ${n} (${valTxt}).`];
+                },
+                janosik: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["JÁNOŠÍK KURTU", holders.length > 1
+                        ? `Titul Jánošík za najštedrejšie rozdanie ELO v jednej dvojhre (${valTxt}) si delia ${n}.`
+                        : `Titul Jánošík drží ${n} – v jedinej dvojhre rozdal súperovi rekordných ${valTxt}!`];
+                },
+                sponsor: (holders, a) => {
+                    // V režime okna už rovnaké dáta pokrýva správa SPONZOR BODOV
+                    if (isWindowBadges) return ["SPONZOR KLUBU", ""];
+                    const n = skJoinNames(holders, "nom");
+                    return ["SPONZOR KLUBU", holders.length > 1
+                        ? `Historický titul Sponzor (${a.valueText}) zdieľajú ${n} – bodový poklad pre zvyšok ligy.`
+                        : `Historickým Sponzorom ligy je ${n} (${a.valueText}) – bez neho by tabuľka bola oveľa chudobnejšia.`];
+                },
+                comeback: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    return ["NAJDLHŠÍ COMEBACK", holders.length > 1
+                        ? `Najdlhšiu prestávku pred návratom na kurt (${a.valueText}) zvládli ${n}.`
+                        : `Rekordný návrat na kurt po pauze ${a.valueText} si pripísal ${n}!`];
+                },
                 steamroller: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
                     const scorePart = a.scoreSummary ? `, ${a.scoreSummary}` : "";
-                    return ["PARNÝ VALEC", `Rekordný debakel histórie (${a.valueText}${scorePart}) ${holders.length > 1 ? "majú" : "má"} na svedomí ${n}.`];
+                    return ["PARNÝ VALEC", `Rekordný debakel ${achScopeLabel} (${a.valueText}${scorePart}) ${holders.length > 1 ? "majú" : "má"} na svedomí ${n}.`];
                 },
                 blood_sweat: (holders, a) => {
                     const scorePart = a.scoreSummary ? ` (${a.scoreSummary})` : "";
-                    return ["KRV, POT A SLZY", `Najdlhšia bitka histórie priniesla až ${a.valueText}${scorePart}!`];
+                    return ["KRV, POT A SLZY", `Najdlhšia bitka ${achScopeLabel} priniesla až ${a.valueText}${scorePart}!`];
                 },
                 inseparable_pair: (holders, a) => {
                     const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
@@ -13052,6 +13171,31 @@
                     return ["NEROZLUČNÁ DVOJKA", pNames.length > 1
                         ? `Nerozlučné dvojice na kurte: ${pNames.join(" a ")} nastúpili zhodne do ${genTxt}!`
                         : `Parťáci na kurte: ${pNames[0]} spolu nastúpili už do ${genTxt}!`];
+                },
+                good_chemistry: (holders, a) => {
+                    const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["DOBRÁ CHÉMIA", pNames.length > 1
+                        ? `Najvyššiu úspešnosť v štvorhre (${valTxt}) držia zhodne páry ${pNames.join(" a ")}.`
+                        : `Najlepšiu chémiu v debli má dvojica ${pNames[0]} (${valTxt})!`];
+                },
+                unbeatable_duo: (holders, a) => {
+                    const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
+                    return ["DREAM TEAM 4H", pNames.length > 1
+                        ? `O ${achRecLow} deblovej víťaznej série (${a.valueText}) sa delia dvojice ${pNames.join(" a ")}.`
+                        : `Dream Team štvorhry: pár ${pNames[0]} dokázal potiahnuť šnúru ${a.valueText}!`];
+                },
+                dramatics: (holders, a) => {
+                    const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
+                    return ["DRAMATICI 4H", pNames.length > 1
+                        ? `Králi tesných deblových drám (${a.valueText}): dvojice ${pNames.join(" a ")}.`
+                        : `Pár ${pNames[0]} je postrachom záverov štvorhier – na konte má už ${a.valueText}!`];
+                },
+                pat_mat: (holders, a) => {
+                    const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
+                    return ["PAT A MAT", pNames.length > 1
+                        ? `Klubový titul Pat a Mat (${a.valueText} v 4H) si delia dvojice ${pNames.join(" a ")}.`
+                        : `Pár ${pNames[0]} zbiera odznak Pat a Mat (${a.valueText} v 4H) – aspoň sa pri tom dobre zabávajú!`];
                 }
             };
 
@@ -13135,10 +13279,10 @@
             const elo2HLeaderChangeItem = buildEloLeaderChangeNewsItem(elo2HLeaderSnaps, false);
             const elo4HLeaderChangeItem = buildEloLeaderChangeNewsItem(elo4HLeaderSnaps, true);
             const elo4HPairsLeaderChangeItem = buildEloPairsLeaderChangeNewsItem(elo4HPairsLeaderSnaps);
-            const currentLeaderReignItem = buildCurrentLeaderReignNewsItem(leaderSnaps);
-            const elo2HReignItem = buildEloCurrentLeaderReignNewsItem(elo2HLeaderSnaps, false);
-            const elo4HReignItem = buildEloCurrentLeaderReignNewsItem(elo4HLeaderSnaps, true);
-            const elo4HPairsReignItem = buildEloPairsCurrentLeaderReignNewsItem(elo4HPairsLeaderSnaps);
+            const currentLeaderReignItem = leaderChangeItem ? null : buildCurrentLeaderReignNewsItem(leaderSnaps);
+            const elo2HReignItem = elo2HLeaderChangeItem ? null : buildEloCurrentLeaderReignNewsItem(elo2HLeaderSnaps, false);
+            const elo4HReignItem = elo4HLeaderChangeItem ? null : buildEloCurrentLeaderReignNewsItem(elo4HLeaderSnaps, true);
+            const elo4HPairsReignItem = elo4HPairsLeaderChangeItem ? null : buildEloPairsCurrentLeaderReignNewsItem(elo4HPairsLeaderSnaps);
             const weatherItem = getWeatherNewsItem();
             const extraWeather = buildExtraWeatherNewsItems();
             const extraDynamicOther = [
@@ -13425,11 +13569,13 @@
                 }
             });
 
-            await syncFromRemoteJSON(false);
+            const syncedRemote = await syncFromRemoteJSON(false);
             initialSyncDone = true;
             updateEmptyWelcomeCard();
 
-            fetchHomeWeather(false);
+            if (!syncedRemote) {
+                fetchHomeWeather(false);
+            }
             setInterval(() => fetchHomeWeather(false), 25 * 60 * 1000);
         }
 
