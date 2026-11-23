@@ -3138,7 +3138,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.30</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.31</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3169,7 +3169,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.30</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.31</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -7357,7 +7357,7 @@
             });
 
             const nemesisHtml = (favoriteOpp || nemesis) ? `
-                <div class="grid-2" style="margin-top:10px;">
+                <div style="display:grid; grid-template-columns:1fr; gap:8px; margin-top:8px;">
                     <div class="stat-tile" style="text-align:left; border-color:rgba(16,185,129,0.34);">
                         <div class="stat-tile-label" style="color:var(--win);">🎯 Obľúbený súper</div>
                         <div style="font-weight:800; font-size:0.90rem; margin-top:3px;">
@@ -7530,7 +7530,7 @@
                     const e2Str = e2 ? `ELO 2H: <strong style="color:#a5f3fc;">${e2.elo.toFixed(1)}</strong> (#${e2.rank})` : "ELO 2H: —";
                     const e4Str = e4 ? `ELO 4H: <strong style="color:#e9d5ff;">${e4.elo.toFixed(1)}</strong> (#${e4.rank})` : "ELO 4H: —";
                     return `
-                <div class="grid-2">
+                <div style="display:grid; grid-template-columns:1fr; gap:8px;">
                     <div class="profile-split-card" style="border-color:rgba(125,211,252,0.34);">
                         <div style="font-size:0.71rem; font-weight:800; color:var(--blue-accent); text-transform:uppercase; margin-bottom:4px;">🎾 Dvojhra (2H)</div>
                         <div style="font-size:0.92rem; font-weight:800;">${formatPts(stats.pts2H)} bodov <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">(${stats.m2H} záp.)</span></div>
@@ -12019,7 +12019,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.30! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.31! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
