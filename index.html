@@ -3138,7 +3138,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.28</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.29</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3169,7 +3169,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.28</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.29</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3190,7 +3190,7 @@
 
             <!-- POSLEDNÝ ODOHRATÝ ZÁPAS (TV GLASS-NEON SCOREBOARD) -->
             <div class="stat-tile" id="last-match-banner" style="margin-bottom: 14px; padding: 12px 14px;">
-                <div class="stat-tile-label" id="last-match-label">Posledný odohratý zápas</div>
+                <div class="stat-tile-label" id="last-match-label">Posledný zápas</div>
                 <div id="last-match-board" class="lm-board-wrap"></div>
                 <div class="stat-tile-sub" id="last-match-meta" style="margin-top: 8px;">—</div>
             </div>
@@ -5514,7 +5514,7 @@
             const lmMeta = document.getElementById("last-match-meta");
 
             if (computedMatches.length === 0) {
-                lmLabel.textContent = "Posledný odohratý zápas";
+                lmLabel.textContent = "Posledný zápas";
                 lmBoard.classList.remove("many-sets");
                 lmBoard.innerHTML = `<div class="lm-empty-state">Zatiaľ žiadny odohratý zápas</div>`;
                 lmMeta.textContent = "Pridaj prvý zápas v sekcii Nový zápas alebo načítaj databaza.json";
@@ -5561,7 +5561,7 @@
                 return `<div class="lm-cell lm-row-2 lm-cell-gem ${gCls}">${gBot}</div>`;
             }).join("");
 
-            const typeTxt = lastM.type === "4H" ? "Štvorhra" : "Dvojhra";
+            const typeTxt = lastM.type === "4H" ? "Štvorhra 4H" : "Dvojhra 2H";
             lmLabel.textContent = `Posledný zápas (#${lastM.index} · ${typeTxt}) · ${formatDateSk(lastM.date)}`;
             lmBoard.innerHTML = `
                 <div class="lm-scoreboard ${isDraw ? 'is-draw' : ''}" style="grid-template-columns: ${gridCols};">
@@ -5586,13 +5586,15 @@
                 const eloTag = lastM.type === "4H" ? "Posun ELO 4H" : "Posun ELO 2H";
                 lmMeta.innerHTML = `${eloTag}: <strong style="color:#ffffff;">${escapeHtml(topTeam)}</strong> (<span style="color:${colD(topDelta)}; font-weight:800;">${fmtD(topDelta)}</span>) · <strong style="color:#ffffff;">${escapeHtml(botTeam)}</strong> (<span style="color:${colD(botDelta)}; font-weight:800;">${fmtD(botDelta)}</span>)`;
             } else {
-                const perPlayerSuffix = lastM.type === "4H" ? " b" : " b";
                 const topCol = topPts > 0 ? "var(--win)" : "var(--text-muted)";
                 const botCol = botPts > 0 ? "var(--draw)" : "var(--text-muted)";
-                const expInfo = lastM.expiryDateStr
-                    ? (lastM.isValid ? ` · Platí do ${lastM.expiryDateStr}` : ` · Mimo aktuálnej lehoty`)
+                const expText = lastM.expiryDateStr
+                    ? (lastM.isValid ? `Platí do ${lastM.expiryDateStr}` : `Mimo aktuálnej lehoty`)
                     : "";
-                lmMeta.innerHTML = `Body: <strong style="color:#ffffff;">${escapeHtml(topTeam)}</strong> (<span style="color:${topCol}; font-weight:800;">+${formatPts(topPts)}${perPlayerSuffix}</span>) · <strong style="color:#ffffff;">${escapeHtml(botTeam)}</strong> (<span style="color:${botCol}; font-weight:800;">+${formatPts(botPts)}${perPlayerSuffix}</span>)${escapeHtml(expInfo)}`;
+                const expLineHtml = expText
+                    ? `<div style="margin-top: 2px;">${escapeHtml(expText)}</div>`
+                    : "";
+                lmMeta.innerHTML = `<div>B: <strong style="color:#ffffff;">${escapeHtml(topTeam)}</strong> (<span style="color:${topCol}; font-weight:800;">+${formatPts(topPts)} b</span>) · <strong style="color:#ffffff;">${escapeHtml(botTeam)}</strong> (<span style="color:${botCol}; font-weight:800;">+${formatPts(botPts)} b</span>)</div>${expLineHtml}`;
             }
         }
 
@@ -11989,7 +11991,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.28! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.29! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
