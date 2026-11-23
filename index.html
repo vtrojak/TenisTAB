@@ -3120,7 +3120,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.25</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.26</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3151,7 +3151,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.25</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.26</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -5056,12 +5056,14 @@
                     cm.eloTeam1 = [{ id: pA.id, name: pA.name, before: rA, after: newEloA }];
                     cm.eloTeam2 = [{ id: pB.id, name: pB.name, before: rB, after: newEloB }];
                     elo2HLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map2H) });
-                    const gemsPart = cm.gems ? ` (${cm.gems})` : "";
+                    const swap2H = (Number(cm.sets2) || 0) > (Number(cm.sets1) || 0);
+                    const gems2H = formatGemsForOrder(cm.gems, !swap2H);
+                    const gemsPart = gems2H ? ` (${gems2H})` : "";
                     elo2HTimelinePoints.push({
                         step: elo2HTimelinePoints.length,
                         label: `#${elo2HMatchesCount}`,
                         date: cm.date,
-                        title: `2H #${elo2HMatchesCount} (${formatDateSk(cm.date)}): ${cm.teamNameA} vs ${cm.teamNameB} ${cm.sets1}:${cm.sets2}${gemsPart}`,
+                        title: `2H #${elo2HMatchesCount} (${formatDateSk(cm.date)}): ${swap2H ? cm.teamNameB : cm.teamNameA} vs ${swap2H ? cm.teamNameA : cm.teamNameB} ${swap2H ? cm.sets2 : cm.sets1}:${swap2H ? cm.sets1 : cm.sets2}${gemsPart}`,
                         match: cm,
                         elos: Object.fromEntries(Object.values(map2H).map(p => [p.id, p.elo]))
                     });
@@ -5233,12 +5235,14 @@
                         { id: pB2.id, name: pB2.name, before: rB2, after: pB2.elo }
                     ];
                     elo4HLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map4H) });
-                    const gemsPart = cm.gems ? ` (${cm.gems})` : "";
+                    const swap4H = (Number(cm.sets2) || 0) > (Number(cm.sets1) || 0);
+                    const gems4H = formatGemsForOrder(cm.gems, !swap4H);
+                    const gemsPart = gems4H ? ` (${gems4H})` : "";
                     elo4HTimelinePoints.push({
                         step: elo4HTimelinePoints.length,
                         label: `#${elo4HMatchesCount}`,
                         date: cm.date,
-                        title: `4H #${elo4HMatchesCount} (${formatDateSk(cm.date)}): ${cm.teamNameA} vs ${cm.teamNameB} ${cm.sets1}:${cm.sets2}${gemsPart}`,
+                        title: `4H #${elo4HMatchesCount} (${formatDateSk(cm.date)}): ${swap4H ? cm.teamNameB : cm.teamNameA} vs ${swap4H ? cm.teamNameA : cm.teamNameB} ${swap4H ? cm.sets2 : cm.sets1}:${swap4H ? cm.sets1 : cm.sets2}${gemsPart}`,
                         match: cm,
                         elos: Object.fromEntries(Object.values(map4H).map(p => [p.id, p.elo]))
                     });
@@ -6390,12 +6394,14 @@
                     }
                 }
 
-                const gemsPart = curM.gems ? ` (${curM.gems})` : "";
+                const swapPts = (Number(curM.sets2) || 0) > (Number(curM.sets1) || 0);
+                const gemsPts = formatGemsForOrder(curM.gems, !swapPts);
+                const gemsPart = gemsPts ? ` (${gemsPts})` : "";
                 ptsTimeline.push({
                     step: ptsTimeline.length,
                     label: `#${curM.index}`,
                     date: curM.date,
-                    title: `#${curM.index} (${formatDateSk(curM.date)} · ${curM.type}): ${curM.teamNameA} vs ${curM.teamNameB} ${curM.sets1}:${curM.sets2}${gemsPart}`,
+                    title: `#${curM.index} (${formatDateSk(curM.date)} · ${curM.type}): ${swapPts ? curM.teamNameB : curM.teamNameA} vs ${swapPts ? curM.teamNameA : curM.teamNameB} ${swapPts ? curM.sets2 : curM.sets1}:${swapPts ? curM.sets1 : curM.sets2}${gemsPart}`,
                     match: curM,
                     pts: snapPts
                 });
@@ -7801,19 +7807,24 @@
                     });
                 }
 
-                // Zápasové rekordy
+                // Zápasové rekordy (vždy orientované z pohľadu víťaza)
                 if (gemDiff > 0) {
+                    const isTeam1Dom = g.g1 >= g.g2;
+                    const domGems = formatGemsForOrder(m.gems, isTeam1Dom);
                     matchGemDiffList.push({
                         key: m.id,
-                        label: `#${m.index} ${g.g1 >= g.g2 ? m.teamNameA : m.teamNameB} (${m.gems})`,
+                        label: `#${m.index} ${isTeam1Dom ? m.teamNameA : m.teamNameB} (${domGems})`,
                         val: gemDiff,
                         match: m
                     });
                 }
                 if (totalGems > 0) {
+                    const isTeam2Win = s2 > s1 || (s1 === s2 && g.g2 > g.g1);
+                    const firstTeam = isTeam2Win ? m.teamNameB : m.teamNameA;
+                    const secondTeam = isTeam2Win ? m.teamNameA : m.teamNameB;
                     matchTotalGemsList.push({
                         key: m.id,
-                        label: `#${m.index} ${m.teamNameA} vs ${m.teamNameB}`,
+                        label: `#${m.index} ${firstTeam} vs ${secondTeam}`,
                         val: totalGems,
                         match: m
                     });
@@ -8391,8 +8402,11 @@
                 {
                     id: "steamroller", cat: 4, title: "Parný valec",
                     desc: steamrollerMatches.length > 0
-                        ? `Najvyšší rozdiel gemov v jednom zápase (${steamrollerMatches.map(m => '#' + m.index + ' ' + m.gems).join(', ')})`
+                        ? `Najvyšší rozdiel gemov v jednom zápase (${steamrollerMatches.map(m => '#' + m.index + ' ' + formatGemsForOrder(m.gems, m.gems1 >= m.gems2)).join(', ')})`
                         : "Najvyšší rozdiel gemov v jednom zápase",
+                    scoreSummary: steamrollerMatches.length > 0
+                        ? steamrollerMatches.map(m => formatGemsForOrder(m.gems, m.gems1 >= m.gems2)).join(', ')
+                        : "",
                     rules: "Najdominantnejšie víťazstvo podľa absolútneho rozdielu vyhratých a prehratých gemov v zápase.",
                     iconFile: "valec.png", faClass: "fa-solid fa-burst",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
@@ -8404,8 +8418,17 @@
                 {
                     id: "blood_sweat", cat: 4, title: "Krv, pot a slzy",
                     desc: marathonMatches.length > 0
-                        ? `Najdlhšia bitka podľa počtu gemov (${marathonMatches.map(m => '#' + m.index + ' ' + m.gems).join(', ')})`
+                        ? `Najdlhšia bitka podľa počtu gemov (${marathonMatches.map(m => {
+                            const isFirstWinner = (Number(m.sets1) || 0) > (Number(m.sets2) || 0) || ((Number(m.sets1) || 0) === (Number(m.sets2) || 0) && m.gems1 >= m.gems2);
+                            return '#' + m.index + ' ' + formatGemsForOrder(m.gems, isFirstWinner);
+                        }).join(', ')})`
                         : "Najdlhšia bitka podľa počtu gemov",
+                    scoreSummary: marathonMatches.length > 0
+                        ? marathonMatches.map(m => {
+                            const isFirstWinner = (Number(m.sets1) || 0) > (Number(m.sets2) || 0) || ((Number(m.sets1) || 0) === (Number(m.sets2) || 0) && m.gems1 >= m.gems2);
+                            return formatGemsForOrder(m.gems, isFirstWinner);
+                        }).join(', ')
+                        : "",
                     rules: "Zápas s najvyšším celkovým súčtom všetkých odohratých gemov oboch strán.",
                     iconFile: "krv_pot.png", faClass: "fa-solid fa-stopwatch",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
@@ -11728,7 +11751,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.25! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.26! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -12173,10 +12196,12 @@
                 },
                 steamroller: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
-                    return ["PARNÝ VALEC", `Rekordný debakel histórie (${a.valueText}) ${holders.length > 1 ? "majú" : "má"} na svedomí ${n}.`];
+                    const scorePart = a.scoreSummary ? `, ${a.scoreSummary}` : "";
+                    return ["PARNÝ VALEC", `Rekordný debakel histórie (${a.valueText}${scorePart}) ${holders.length > 1 ? "majú" : "má"} na svedomí ${n}.`];
                 },
                 blood_sweat: (holders, a) => {
-                    return ["KRV, POT A SLZY", `Najdlhšia bitka histórie priniesla až ${a.valueText}!`];
+                    const scorePart = a.scoreSummary ? ` (${a.scoreSummary})` : "";
+                    return ["KRV, POT A SLZY", `Najdlhšia bitka histórie priniesla až ${a.valueText}${scorePart}!`];
                 },
                 inseparable_pair: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
