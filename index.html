@@ -3120,7 +3120,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.26</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.27</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3151,7 +3151,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.26</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.27</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4276,6 +4276,7 @@
         let elo4HMatchesCount = 0;
         let elo2HLeaderSnaps = [];
         let elo4HLeaderSnaps = [];
+        let elo4HPairsLeaderSnaps = [];
         let elo2HTimelinePoints = [];
         let elo4HTimelinePoints = [];
 
@@ -5077,6 +5078,7 @@
             let last4HPairMatchDelta = null;
             elo4HMatchesCount = 0;
             elo4HLeaderSnaps = [];
+            elo4HPairsLeaderSnaps = [];
             elo4HTimelinePoints = [{
                 step: 0,
                 label: "Štart",
@@ -5235,6 +5237,7 @@
                         { id: pB2.id, name: pB2.name, before: rB2, after: pB2.elo }
                     ];
                     elo4HLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map4H) });
+                    elo4HPairsLeaderSnaps.push({ match: cm, leaderId: getCurrentEloLeaderId(map4HPairs) });
                     const swap4H = (Number(cm.sets2) || 0) > (Number(cm.sets1) || 0);
                     const gems4H = formatGemsForOrder(cm.gems, !swap4H);
                     const gemsPart = gems4H ? ` (${gems4H})` : "";
@@ -11551,6 +11554,108 @@
             return snaps;
         }
 
+        function buildExpiryLeaderChangeNewsItem(snaps) {
+            const wm = Number(state.config.windowMonths) || 0;
+            if (wm <= 0 || !snaps || snaps.length < 1) return null;
+
+            const lastSnap = snaps[snaps.length - 1];
+            const currentTop = computedPlayers.find(p => !p.isInactive && p.matches > 0);
+            if (!lastSnap || !lastSnap.leaderId || !lastSnap.match || !lastSnap.match.date || !currentTop) return null;
+            if (lastSnap.leaderId === currentTop.id) return null;
+
+            const today = getTodayMidnight();
+            const todayTime = today.getTime();
+            const lastMatchDt = parseIsoLocal(lastSnap.match.date);
+            if (!lastMatchDt || todayTime <= lastMatchDt.getTime()) return null;
+
+            const matches = computedMatches || [];
+            const precalc = matches.map(m => {
+                const expDt = addCalendarMonths(m.date, wm);
+                return { m, expTime: expDt ? expDt.getTime() : Infinity };
+            });
+
+            // Zozbierame presné dni po expirácii (expTime + 1 deň) medzi posledným zápasom a dneškom
+            const dayMs = 24 * 60 * 60 * 1000;
+            const checkTimesSet = new Set([todayTime]);
+            precalc.forEach(item => {
+                if (isFinite(item.expTime)) {
+                    const dropTime = item.expTime + dayMs;
+                    if (dropTime > lastMatchDt.getTime() && dropTime <= todayTime) {
+                        checkTimesSet.add(dropTime);
+                    }
+                }
+            });
+            const checkTimes = Array.from(checkTimesSet).sort((a, b) => a - b);
+
+            const computeLeaderAtTime = (ts) => {
+                const pts = {}, cnt = {};
+                state.players.forEach(p => { pts[p.id] = 0; cnt[p.id] = 0; });
+                precalc.forEach(item => {
+                    if (item.expTime >= ts) {
+                        const pm = item.m;
+                        pm.team1.forEach(id => {
+                            if (typeof pts[id] === "number") {
+                                pts[id] = Math.round((pts[id] + pm.ptsA) * 100) / 100;
+                                cnt[id]++;
+                            }
+                        });
+                        pm.team2.forEach(id => {
+                            if (typeof pts[id] === "number") {
+                                pts[id] = Math.round((pts[id] + pm.ptsB) * 100) / 100;
+                                cnt[id]++;
+                            }
+                        });
+                    }
+                });
+                let bestId = null, bestPts = -1, bestMatches = Infinity;
+                state.players.forEach(p => {
+                    const v = pts[p.id] || 0;
+                    const mc = cnt[p.id] || 0;
+                    if (mc === 0) return;
+                    if (v > bestPts || (v === bestPts && mc < bestMatches)) {
+                        bestPts = v; bestMatches = mc; bestId = p.id;
+                    }
+                });
+                return bestId;
+            };
+
+            let prevLeaderId = lastSnap.leaderId;
+            let switchTime = null;
+            let deposedLeaderId = null;
+
+            for (const ts of checkTimes) {
+                const lid = computeLeaderAtTime(ts);
+                if (lid && lid !== prevLeaderId) {
+                    if (lid === currentTop.id) {
+                        switchTime = ts;
+                        deposedLeaderId = prevLeaderId;
+                    }
+                    prevLeaderId = lid;
+                }
+            }
+
+            if (switchTime === null || !deposedLeaderId) {
+                // Fallback: líder sa zmenil expiráciou, ale presný zlom bol priamo k dnešku
+                switchTime = todayTime;
+                deposedLeaderId = lastSnap.leaderId;
+            }
+
+            const ageDays = Math.round((todayTime - switchTime) / dayMs);
+            if (ageDays < 0 || ageDays >= 30) return null;
+
+            const prevPlayer = state.players.find(p => p.id === deposedLeaderId);
+            if (!prevPlayer) return null;
+
+            const newName = currentTop.name;
+            const prevName = prevPlayer.name;
+            const seed = Math.floor(switchTime / dayMs) + weatherQuipSeed;
+            const expiryPool = [
+                { tag: "TRÓN BEZ BOJA", text: `Škandál v rebríčku! ${newName} zasadol na trón bez jediného úderu raketou – ${prevName} prišiel o prvé miesto, lebo mu vypršali staré body!` },
+                { tag: "ZRADNÝ KALENDÁR", text: `${prevName} padol z vrcholu priamo z gauča! Expirácia starých bodov mu zobrala korunu a novým lídrom TenisTAB sa potichu stáva ${newName}.` }
+            ];
+            return expiryPool[seed % expiryPool.length];
+        }
+
         function buildLeaderChangeNewsItem(snaps) {
             if (!snaps || snaps.length < 2) return null;
             const last = snaps[snaps.length - 1];
@@ -11738,6 +11843,90 @@
             };
         }
 
+        function buildEloPairsLeaderChangeNewsItem(snaps) {
+            if (!snaps || snaps.length < 2) return null;
+            const last = snaps[snaps.length - 1];
+            const prev = snaps[snaps.length - 2];
+            if (!last.match || !last.match.date) return null;
+            const matchAge = getMatchAgeDays(last.match.date);
+            if (matchAge < 0 || matchAge >= 30) return null;
+            if (!last.leaderId || !prev.leaderId || last.leaderId === prev.leaderId) return null;
+
+            const newPair = computedElo4HPairs.find(pr => pr.key === last.leaderId);
+            const prevPair = computedElo4HPairs.find(pr => pr.key === prev.leaderId);
+            if (!newPair || !prevPair) return null;
+
+            let reignStartIdx = snaps.length - 2;
+            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === prev.leaderId) {
+                reignStartIdx--;
+            }
+            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date
+                ? snaps[reignStartIdx].match.date
+                : last.match.date;
+            const startDays = parseIsoToUtcDays(startDate);
+            const endDays = parseIsoToUtcDays(last.match.date);
+            const reignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
+
+            const newName = newPair.name;
+            const prevName = prevPair.name;
+            const seed = (Number(last.match.index) || 0) + weatherQuipSeed + 11;
+
+            if (reignDays === 0) {
+                const blitzPool = [
+                    { tag: "BLESKOVÝ PREVRAT (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z čela ELO 4H Páry ešte v ten istý deň – na tróne sa nestihli ani ohriať!` },
+                    { tag: "EXPRESNÁ VÝMENA (4H PÁRY)", text: `Ani celý deň na vrchole tímového ELO 4H! Pár ${newName} bleskovo strieda dvojicu ${prevName} na poste deblovej jednotky.` }
+                ];
+                return blitzPool[seed % blitzPool.length];
+            }
+
+            if (reignDays < 7) {
+                const daysText = skCount(reignDays, "deň", "dni", "dní");
+                const shortPool = [
+                    { tag: "KRÁTKA VLÁDA (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z trónu ELO 4H Páry už po necelom týždni (${daysText})!` },
+                    { tag: "RÝCHLA VÝMENA (4H PÁRY)", text: `Pár ${prevName} vydržal na čele tímového ELO 4H len ${daysText} – od zápasu #${last.match.index} velia dvojice ${newName}!` }
+                ];
+                return shortPool[seed % shortPool.length];
+            }
+
+            const reignWeeks = Math.floor(reignDays / 7);
+            const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
+            const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
+            const coupPool = [
+                { tag: "PALÁCOVÝ PREVRAT (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z trónu ELO 4H Páry! Ich nepretržitá vláda trvala ${weeksText}.` },
+                { tag: "NOVÍ KRÁLI (4H PÁRY)", text: `Po ${weeksLocText} na vrchole tímového ELO 4H padá pár ${prevName} – korunu preberajú ${newName}!` }
+            ];
+            return coupPool[seed % coupPool.length];
+        }
+
+        function buildEloPairsCurrentLeaderReignNewsItem(snaps) {
+            if (!snaps || snaps.length < 1) return null;
+            const last = snaps[snaps.length - 1];
+            if (!last || !last.leaderId) return null;
+
+            const pairObj = computedElo4HPairs.find(pr => pr.key === last.leaderId);
+            if (!pairObj) return null;
+
+            let reignStartIdx = snaps.length - 1;
+            while (reignStartIdx > 0 && snaps[reignStartIdx - 1].leaderId === last.leaderId) {
+                reignStartIdx--;
+            }
+            const startDate = snaps[reignStartIdx].match && snaps[reignStartIdx].match.date;
+            if (!startDate) return null;
+            const startDays = parseIsoToUtcDays(startDate);
+            if (startDays === null) return null;
+            const reignDays = getTodayUtcDays() - startDays;
+            if (reignDays < 2) return null;
+
+            const durationText = reignDays >= 7
+                ? skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov")
+                : skCount(reignDays, "deň", "dni", "dní");
+
+            return {
+                tag: "VLÁDCOVIA ELO 4H PÁROV",
+                text: `Pár ${pairObj.name} nepretržite kraľuje tímovému ELO rebríčku štvorhry (4H Páry) už ${durationText}.`
+            };
+        }
+
         function buildNewsTickerItems() {
             const items = [];
             const add = (tag, text) => { if (text) items.push({ tag, text }); };
@@ -11751,7 +11940,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.26! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.27! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -11849,13 +12038,31 @@
                 });
             }
 
-            // 5. Horúce série / kríza v aktuálnom okne
-            activeRanked.forEach(p => {
+            // 5. Horúce série (jednotlivci aj pevné 4H tímy) / kríza v aktuálnom okne
+            activeRanked.forEach((p, idx) => {
                 if (p.curWinStreak >= 3) {
-                    add("HORÚCA FORMA", `${p.name} je na neudržanie – v aktuálnej lehote ťahá sériu ${p.curWinStreak} výhier v rade! Kto ho konečne zastaví?`);
+                    const winsTxt = skCount(p.curWinStreak, "výhru", "výhry", "výhier");
+                    const indWinPool = [
+                        { tag: "POZOR, HORÍ KURT!", text: `${p.name} je v tranze – ťahá už ${winsTxt} v rade! Súperi v šatni podozrievajú doping alebo nelegálne vypletenú raketu.` },
+                        { tag: "HĽADÁ SA PREMOŽITEĽ", text: `Kto konečne zastaví ${skName(p.name, "acc")}? Po ${p.curWinStreak} víťazstvách po sebe zvažuje liga vypísať na jeho skalp finančnú odmenu!` }
+                    ];
+                    const chosen = indWinPool[(p.curWinStreak + idx + weatherQuipSeed) % indWinPool.length];
+                    add(chosen.tag, chosen.text);
                 } else if (p.curLossStreak >= 3) {
                     add("KRÍZOVÝ ŠTÁB", `${p.name} prehral už ${skCount(p.curLossStreak, "zápas", "zápasy", "zápasov")} po sebe. Odborníci odporúčajú vymeniť výplet alebo aspoň ponožky.`);
                 }
+            });
+
+            // Tímová séria 3+ výhier v rade (pevné dvojice 4H)
+            (computedElo4HPairs || []).filter(pr => !pr.isInactive && pr.curWinStreak >= 3).forEach((pr, idx) => {
+                const winsTxt = skCount(pr.curWinStreak, "výhru", "výhry", "výhier");
+                const doublesTxt = skCount(pr.curWinStreak, "štvorhru", "štvorhry", "štvorhier");
+                const teamWinPool = [
+                    { tag: "POSTRACH ŠTVORHRY", text: `Dvojica ${pr.name} ničí všetko, čo im príde do cesty – v debli ťahajú už ${winsTxt} v rade! Ostatné páry zrazu záhadne bolia lakte.` },
+                    { tag: "NELEGÁLNA CHÉMIA", text: `${pr.name} vyhrali už ${doublesTxt} po sebe bez jedinej chybičky! V šatni sa šepká, že ich budú musieť rozdeliť dekrétom.` }
+                ];
+                const chosen = teamWinPool[(pr.curWinStreak + idx + weatherQuipSeed) % teamWinPool.length];
+                add(chosen.tag, chosen.text);
             });
 
             // 6. Hráčske štatistiky (zápasy, úspešnosť, gemy, 2H vs 4H špecialisti)
@@ -12284,18 +12491,22 @@
 
             newsLastSignature = fullSig;
             const leaderSnaps = buildWindowPointsTimelineForLeader();
-            const leaderChangeItem = buildLeaderChangeNewsItem(leaderSnaps);
+            const expiryLeaderChangeItem = buildExpiryLeaderChangeNewsItem(leaderSnaps);
+            const leaderChangeItem = expiryLeaderChangeItem || buildLeaderChangeNewsItem(leaderSnaps);
             const elo2HLeaderChangeItem = buildEloLeaderChangeNewsItem(elo2HLeaderSnaps, false);
             const elo4HLeaderChangeItem = buildEloLeaderChangeNewsItem(elo4HLeaderSnaps, true);
+            const elo4HPairsLeaderChangeItem = buildEloPairsLeaderChangeNewsItem(elo4HPairsLeaderSnaps);
             const currentLeaderReignItem = buildCurrentLeaderReignNewsItem(leaderSnaps);
             const elo2HReignItem = buildEloCurrentLeaderReignNewsItem(elo2HLeaderSnaps, false);
             const elo4HReignItem = buildEloCurrentLeaderReignNewsItem(elo4HLeaderSnaps, true);
+            const elo4HPairsReignItem = buildEloPairsCurrentLeaderReignNewsItem(elo4HPairsLeaderSnaps);
             const weatherItem = getWeatherNewsItem();
             const extraWeather = buildExtraWeatherNewsItems();
             const extraDynamicOther = [
                 ...extraWeather,
                 ...(elo2HReignItem ? [elo2HReignItem] : []),
-                ...(elo4HReignItem ? [elo4HReignItem] : [])
+                ...(elo4HReignItem ? [elo4HReignItem] : []),
+                ...(elo4HPairsReignItem ? [elo4HPairsReignItem] : [])
             ];
             const mergedOther = extraDynamicOther.length > 0
                 ? shuffleNewsArray([...cachedOtherNewsItems, ...extraDynamicOther])
@@ -12305,6 +12516,7 @@
                 ...(leaderChangeItem ? [leaderChangeItem] : []),
                 ...(elo2HLeaderChangeItem ? [elo2HLeaderChangeItem] : []),
                 ...(elo4HLeaderChangeItem ? [elo4HLeaderChangeItem] : []),
+                ...(elo4HPairsLeaderChangeItem ? [elo4HPairsLeaderChangeItem] : []),
                 ...cachedRecentNewsItems,
                 ...(weatherItem ? [weatherItem] : []),
                 ...(currentLeaderReignItem ? [currentLeaderReignItem] : []),
