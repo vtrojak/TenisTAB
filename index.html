@@ -3343,7 +3343,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.39</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.40</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3374,7 +3374,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.39</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.40</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4437,6 +4437,8 @@
 
     <script>
         const STORAGE_KEY = "TENISTAB_DB_V1";
+        const DB_SCHEMA_VERSION = 2;
+        const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
         const THEME_STORAGE_KEY = "TENISTAB_THEME_V1";
         const CUSTOM_THEME_STORAGE_KEY = "TENISTAB_CUSTOM_THEME_V1";
         const REMOTE_JSON_FILES = ["databaza.json", "data.json"];
@@ -4505,6 +4507,8 @@
         let initialSyncDone = false;
 
         let state = {
+            schemaVersion: DB_SCHEMA_VERSION,
+            databaseRevision: 0,
             config: {
                 windowMonths: 12,
                 K: 32,
@@ -4516,6 +4520,7 @@
             chartVisiblePlayers: {},
             updatedAt: 0
         };
+        let matchSaveLockUntil = 0;
 
         let formModes = {
             new: "2H",
@@ -4893,16 +4898,32 @@
             return `${y}-${m}-${day}`;
         }
 
+        function generateUniqueId(prefix = "id") {
+            const rand = Math.random().toString(36).slice(2, 7);
+            return `${prefix}_${Date.now()}_${rand}`;
+        }
+
+        function sanitizeHexColor(col, fallbackIdx = 0) {
+            const s = String(col || "").trim();
+            if (HEX_COLOR_RE.test(s)) return s;
+            return PLAYER_COLORS[Math.abs(Number(fallbackIdx) || 0) % PLAYER_COLORS.length];
+        }
+
         function parseIsoLocal(isoDate) {
-            const p = String(isoDate || "").split("-").map(Number);
-            if (p.length !== 3 || p.some(isNaN)) return null;
-            return new Date(p[0], p[1] - 1, p[2]);
+            const str = String(isoDate || "").trim();
+            const m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            if (!m) return null;
+            const y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+            if (y < 1900 || y > 2100 || mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+            const dt = new Date(y, mo - 1, d);
+            if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
+            return dt;
         }
 
         function addCalendarMonths(isoDate, months) {
-            const p = String(isoDate || "").split("-").map(Number);
-            if (p.length !== 3 || p.some(isNaN)) return null;
-            const origY = p[0], origM = p[1] - 1, origD = p[2];
+            const base = parseIsoLocal(isoDate);
+            if (!base) return null;
+            const origY = base.getFullYear(), origM = base.getMonth(), origD = base.getDate();
             const targetFirst = new Date(origY, origM + months, 1);
             const lastDay = new Date(targetFirst.getFullYear(), targetFirst.getMonth() + 1, 0).getDate();
             return new Date(targetFirst.getFullYear(), targetFirst.getMonth(), Math.min(origD, lastDay));
@@ -4993,8 +5014,205 @@
             cnt.style.color = len >= 150 ? "var(--draw)" : "var(--text-muted)";
         }
 
-        /* ==================== NORMALIZÁCIA A UKLADANIE STAVU ==================== */
+        /* ==================== VALIDÁCIA, NORMALIZÁCIA A UKLADANIE STAVU (v1.40) ==================== */
+        function validateDatabase(data) {
+            const errors = [];
+            const warnings = [];
+
+            if (!data || typeof data !== "object" || Array.isArray(data)) {
+                return { valid: false, errors: ["Súbor neobsahuje platný objekt databázy."], warnings, sanitized: null, stats: null };
+            }
+            if (!Array.isArray(data.players)) {
+                errors.push("Chýba pole hráčov (players).");
+            }
+            if (!Array.isArray(data.matches)) {
+                errors.push("Chýba pole zápasov (matches).");
+            }
+            if (errors.length > 0) {
+                return { valid: false, errors, warnings, sanitized: null, stats: null };
+            }
+
+            const playerIds = new Set();
+            const sanitizedPlayers = [];
+            data.players.forEach((rawP, idx) => {
+                const pos = idx + 1;
+                if (!rawP || typeof rawP !== "object" || Array.isArray(rawP)) {
+                    errors.push(`Hráč #${pos}: neplatný záznam.`);
+                    return;
+                }
+                const pid = String(rawP.id ?? "").trim();
+                const name = String(rawP.name ?? "").trim();
+                if (!pid) {
+                    errors.push(`Hráč #${pos}: chýba identifikátor (id).`);
+                    return;
+                }
+                if (playerIds.has(pid)) {
+                    errors.push(`Hráč #${pos} (${name || pid}): duplicitné ID „${pid}“.`);
+                    return;
+                }
+                if (!name) {
+                    errors.push(`Hráč #${pos} (ID „${pid}“): chýba meno hráča.`);
+                    return;
+                }
+                playerIds.add(pid);
+
+                const rawColor = rawP.color;
+                let color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
+                if (rawColor !== undefined && rawColor !== null && String(rawColor).trim() !== "") {
+                    if (HEX_COLOR_RE.test(String(rawColor).trim())) {
+                        color = String(rawColor).trim();
+                    } else {
+                        warnings.push(`Hráč „${name}“ mal neplatnú farbu – nahradená predvolenou.`);
+                    }
+                }
+
+                const cleanPlayer = { id: pid, name, color };
+                if (rawP.baseElo !== undefined && rawP.baseElo !== null && rawP.baseElo !== "") {
+                    const be = typeof rawP.baseElo === "boolean" ? NaN : Number(rawP.baseElo);
+                    if (!isFinite(be) || be < 100 || be > 4000) {
+                        errors.push(`Hráč „${name}“: neplatné počiatočné ELO (${rawP.baseElo}).`);
+                        return;
+                    }
+                    if (Math.round(be * 10) / 10 !== 1500.0) {
+                        cleanPlayer.baseElo = Math.round(be * 10) / 10;
+                    }
+                }
+                sanitizedPlayers.push(cleanPlayer);
+            });
+
+            const matchIds = new Set();
+            const sanitizedMatches = [];
+            data.matches.forEach((rawM, idx) => {
+                const pos = idx + 1;
+                if (!rawM || typeof rawM !== "object" || Array.isArray(rawM)) {
+                    errors.push(`Zápas #${pos}: neplatný záznam.`);
+                    return;
+                }
+
+                let mid = String(rawM.id ?? "").trim();
+                if (!mid) {
+                    mid = generateUniqueId("m");
+                    warnings.push(`Zápas #${pos}: doplnené chýbajúce ID.`);
+                } else if (matchIds.has(mid)) {
+                    errors.push(`Zápas #${pos}: duplicitné ID zápasu „${mid}“.`);
+                    return;
+                }
+                matchIds.add(mid);
+
+                const dateStr = String(rawM.date ?? "").trim();
+                if (!parseIsoLocal(dateStr)) {
+                    errors.push(`Zápas #${pos} (${mid}): neplatný dátum „${dateStr || "prázdny"}“.`);
+                    return;
+                }
+
+                if (!Array.isArray(rawM.team1) || !Array.isArray(rawM.team2)) {
+                    errors.push(`Zápas #${pos} (${dateStr}): chýbajú tímy (team1 / team2).`);
+                    return;
+                }
+                const t1 = rawM.team1.map(x => String(x ?? "").trim()).filter(Boolean);
+                const t2 = rawM.team2.map(x => String(x ?? "").trim()).filter(Boolean);
+
+                let mType = rawM.type;
+                if (mType !== undefined && mType !== null && mType !== "" && mType !== "2H" && mType !== "4H") {
+                    errors.push(`Zápas #${pos} (${dateStr}): neplatný typ zápasu „${mType}“.`);
+                    return;
+                }
+                if (!mType) {
+                    mType = (t1.length === 2 || t2.length === 2) ? "4H" : "2H";
+                }
+
+                const expectedSide = mType === "4H" ? 2 : 1;
+                if (t1.length !== expectedSide || t2.length !== expectedSide) {
+                    errors.push(`Zápas #${pos} (${dateStr}, ${mType}): nesprávny počet hráčov na strane (${t1.length} vs ${t2.length}).`);
+                    return;
+                }
+
+                const allMatchPlayers = [...t1, ...t2];
+                const missingPlayers = allMatchPlayers.filter(pid => !playerIds.has(pid));
+                if (missingPlayers.length > 0) {
+                    errors.push(`Zápas #${pos} (${dateStr}): odkazuje na neexistujúceho hráča (${missingPlayers.join(", ")}).`);
+                    return;
+                }
+                if (new Set(allMatchPlayers).size !== expectedSide * 2) {
+                    errors.push(`Zápas #${pos} (${dateStr}): rovnaký hráč je v zápase uvedený viackrát.`);
+                    return;
+                }
+
+                const s1Empty = rawM.sets1 === undefined || rawM.sets1 === null || rawM.sets1 === "" || typeof rawM.sets1 === "boolean";
+                const s2Empty = rawM.sets2 === undefined || rawM.sets2 === null || rawM.sets2 === "" || typeof rawM.sets2 === "boolean";
+                const s1 = s1Empty ? NaN : Number(rawM.sets1);
+                const s2 = s2Empty ? NaN : Number(rawM.sets2);
+                if (!Number.isInteger(s1) || !Number.isInteger(s2) || s1 < 0 || s2 < 0 || s1 > 99 || s2 > 99) {
+                    errors.push(`Zápas #${pos} (${dateStr}): neplatný výsledok na sety (${rawM.sets1}:${rawM.sets2}).`);
+                    return;
+                }
+                if (s1 === 0 && s2 === 0) {
+                    errors.push(`Zápas #${pos} (${dateStr}): výsledok setov nesmie byť 0:0.`);
+                    return;
+                }
+
+                const gems = rawM.gems === undefined || rawM.gems === null ? "" : String(rawM.gems).trim();
+                const note = rawM.note === undefined || rawM.note === null ? "" : String(rawM.note).trim().slice(0, 160);
+
+                sanitizedMatches.push({
+                    id: mid,
+                    date: dateStr,
+                    type: mType,
+                    team1: t1,
+                    team2: t2,
+                    sets1: s1,
+                    sets2: s2,
+                    gems,
+                    note
+                });
+            });
+
+            const rawCfg = (data.config && typeof data.config === "object") ? data.config : {};
+            const wmRaw = Number(rawCfg.windowMonths);
+            const kRaw = Number(rawCfg.K);
+            const dRaw = Number(rawCfg.D);
+            const sanitizedCfg = {
+                windowMonths: VALID_WINDOWS.includes(wmRaw) ? wmRaw : 12,
+                K: (isFinite(kRaw) && kRaw > 0 && kRaw <= 200) ? kRaw : 32,
+                D: (isFinite(dRaw) && dRaw >= 50 && dRaw <= 1000) ? dRaw : 200,
+                location: normalizeLocationConfig(rawCfg.location)
+            };
+
+            const revRaw = Number(data.databaseRevision);
+            const revision = (Number.isInteger(revRaw) && revRaw >= 0) ? revRaw : 0;
+            const updatedRaw = Number(data.updatedAt);
+            const updatedAt = (isFinite(updatedRaw) && updatedRaw >= 0) ? updatedRaw : 0;
+            const schemaRaw = Number(data.schemaVersion);
+            const schemaVersion = (Number.isInteger(schemaRaw) && schemaRaw >= 1) ? schemaRaw : 1;
+
+            return {
+                valid: errors.length === 0,
+                errors,
+                warnings,
+                sanitized: errors.length === 0 ? {
+                    schemaVersion: DB_SCHEMA_VERSION,
+                    databaseRevision: revision,
+                    config: sanitizedCfg,
+                    players: sanitizedPlayers,
+                    matches: sanitizedMatches,
+                    chartVisiblePlayers: (data.chartVisiblePlayers && typeof data.chartVisiblePlayers === "object") ? { ...data.chartVisiblePlayers } : null,
+                    updatedAt
+                } : null,
+                stats: {
+                    playersCount: sanitizedPlayers.length,
+                    matchesCount: sanitizedMatches.length,
+                    revision,
+                    updatedAt,
+                    schemaVersion
+                }
+            };
+        }
+
         function normalizeState() {
+            state.schemaVersion = DB_SCHEMA_VERSION;
+            const revNum = Number(state.databaseRevision);
+            state.databaseRevision = (Number.isInteger(revNum) && revNum >= 0) ? revNum : 0;
+
             if (!state.config || typeof state.config !== "object") {
                 state.config = { windowMonths: 12, K: 32, D: 200, location: { name: "", lat: null, lon: null } };
             }
@@ -5002,8 +5220,8 @@
             state.config.windowMonths = VALID_WINDOWS.includes(wm) ? wm : 12;
             const kVal = Number(state.config.K);
             const dVal = Number(state.config.D);
-            state.config.K = (isFinite(kVal) && kVal > 0) ? kVal : 32;
-            state.config.D = (isFinite(dVal) && dVal > 0) ? dVal : 200;
+            state.config.K = (isFinite(kVal) && kVal > 0 && kVal <= 200) ? kVal : 32;
+            state.config.D = (isFinite(dVal) && dVal >= 50 && dVal <= 1000) ? dVal : 200;
             state.config.location = normalizeLocationConfig(state.config.location);
 
             if (!Array.isArray(state.players)) state.players = [];
@@ -5012,30 +5230,59 @@
             if (!state.chartVisiblePlayers || typeof state.chartVisiblePlayers !== "object") {
                 state.chartVisiblePlayers = {};
             }
-            state.players.forEach((p, idx) => {
-                if (!p.color) p.color = PLAYER_COLORS[idx % PLAYER_COLORS.length];
-                if (typeof state.chartVisiblePlayers[p.id] === "undefined") {
-                    state.chartVisiblePlayers[p.id] = true;
-                }
-            });
 
-            // Normalizácia formátu zápasov
-            state.matches = state.matches.map((m, idx) => {
-                const t1 = Array.isArray(m.team1) ? m.team1.filter(Boolean) : [];
-                const t2 = Array.isArray(m.team2) ? m.team2.filter(Boolean) : [];
-                const inferredType = (m.type === "4H" || t1.length === 2 || t2.length === 2) ? "4H" : "2H";
-                return {
-                    id: m.id || ("m_" + (idx + 1)),
-                    date: m.date || getTodayIso(),
-                    type: inferredType,
-                    team1: t1,
-                    team2: t2,
-                    sets1: Number(m.sets1) || 0,
-                    sets2: Number(m.sets2) || 0,
-                    gems: String(m.gems || "").trim(),
-                    note: String(m.note || "").trim()
+            const seenPlayerIds = new Set();
+            const cleanPlayers = [];
+            state.players.forEach((p, idx) => {
+                if (!p || typeof p !== "object") return;
+                const pid = String(p.id ?? "").trim();
+                const name = String(p.name ?? "").trim();
+                if (!pid || !name || seenPlayerIds.has(pid)) return;
+                seenPlayerIds.add(pid);
+                const cleanP = {
+                    ...p,
+                    id: pid,
+                    name,
+                    color: sanitizeHexColor(p.color, idx)
                 };
+                if (typeof state.chartVisiblePlayers[pid] === "undefined") {
+                    state.chartVisiblePlayers[pid] = true;
+                }
+                cleanPlayers.push(cleanP);
             });
+            state.players = cleanPlayers;
+
+            // Normalizácia formátu zápasov s ochranou proti duplicitným ID a chybným hodnotám
+            const seenMatchIds = new Set();
+            state.matches = state.matches
+                .filter(m => m && typeof m === "object")
+                .map((m, idx) => {
+                    const t1 = Array.isArray(m.team1) ? m.team1.map(x => String(x ?? "").trim()).filter(Boolean) : [];
+                    const t2 = Array.isArray(m.team2) ? m.team2.map(x => String(x ?? "").trim()).filter(Boolean) : [];
+                    const inferredType = (m.type === "4H" || t1.length === 2 || t2.length === 2) ? "4H" : "2H";
+                    let mid = String(m.id ?? "").trim() || generateUniqueId("m");
+                    if (seenMatchIds.has(mid)) {
+                        mid = generateUniqueId("m");
+                    }
+                    seenMatchIds.add(mid);
+                    const validDate = parseIsoLocal(m.date) ? String(m.date).trim() : null;
+                    if (!validDate) {
+                        console.warn(`TenisTAB: Zápas #${idx + 1} (${mid}) mal neplatný dátum „${m.date}“, nahradený dnešným dátumom.`);
+                    }
+                    const s1Raw = Number(m.sets1);
+                    const s2Raw = Number(m.sets2);
+                    return {
+                        id: mid,
+                        date: validDate || getTodayIso(),
+                        type: inferredType,
+                        team1: t1,
+                        team2: t2,
+                        sets1: (Number.isInteger(s1Raw) && s1Raw >= 0 && s1Raw <= 99) ? s1Raw : 0,
+                        sets2: (Number.isInteger(s2Raw) && s2Raw >= 0 && s2Raw <= 99) ? s2Raw : 0,
+                        gems: String(m.gems || "").trim(),
+                        note: String(m.note || "").trim().slice(0, 160)
+                    };
+                });
         }
 
         function sortMatchesChronologically() {
@@ -5052,12 +5299,24 @@
         }
 
         function saveState(isDataChange = true) {
+            state.schemaVersion = DB_SCHEMA_VERSION;
             if (isDataChange) {
                 state.updatedAt = Date.now();
+                state.databaseRevision = (Number(state.databaseRevision) || 0) + 1;
                 setDbButtonSyncedState(false);
-                updateSyncBanner("local", `V prehliadači boli vykonané lokálne úpravy (${state.matches.length} zápasov). Pre návrat k oficiálnej verzii z GitHubu klikni na <strong>Načítať aktuálnu databázu</strong>.`);
             }
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                if (isDataChange) {
+                    updateSyncBanner("local", `Lokálne zmeny bezpečne uložené (${state.matches.length} zápasov · rev. #${state.databaseRevision}). Pre návrat k oficiálnej verzii z GitHubu klikni na <strong>Načítať aktuálnu databázu</strong>.`);
+                }
+                return true;
+            } catch (error) {
+                console.error("TenisTAB: Ukladanie databázy do localStorage zlyhalo:", error);
+                updateSyncBanner("error", `<strong>Zápis do pamäte prehliadača zlyhal!</strong> Dáta (${state.matches.length} zápasov) sú len dočasne v pamäti – skontroluj súkromný režim / voľné miesto a radšej si hneď stiahni zálohu <strong>databaza.json</strong>.`);
+                showToast("Pozor! Dáta sa nepodarilo uložiť do pamäte prehliadača. Stiahni si zálohu JSON!", true);
+                return false;
+            }
         }
 
         function setDbButtonSyncedState(isSynced) {
@@ -5079,6 +5338,14 @@
                 pill.style.borderColor = "rgba(110, 231, 183, 0.45)";
                 title.textContent = "Načítaná oficiálna databáza zo servera (databaza.json)";
                 title.style.color = "var(--win)";
+                desc.innerHTML = detailText;
+            } else if (mode === "error") {
+                pill.textContent = "Chyba uloženia!";
+                pill.style.background = "rgba(239, 68, 68, 0.24)";
+                pill.style.color = "#fecaca";
+                pill.style.borderColor = "rgba(248, 113, 113, 0.65)";
+                title.textContent = "Upozornenie: Nepodarilo sa uložiť do pamäte prehliadača";
+                title.style.color = "#fca5a5";
                 desc.innerHTML = detailText;
             } else if (mode === "local") {
                 pill.textContent = "Lokálna pamäť";
@@ -5124,10 +5391,17 @@
                     const response = await fetch(`./${fileName}?t=${Date.now()}`, { cache: "no-store" });
                     if (response.ok) {
                         const parsed = await response.json();
-                        if (parsed && Array.isArray(parsed.players) && Array.isArray(parsed.matches)) {
-                            remoteData = parsed;
+                        const check = validateDatabase(parsed);
+                        if (check.valid) {
+                            remoteData = check.sanitized;
                             loadedFileName = fileName;
                             break;
+                        } else {
+                            console.error(`TenisTAB: Vzdialený súbor ${fileName} neprešiel validáciou:`, check.errors);
+                            if (forceOverwrite) {
+                                showToast(`Súbor ${fileName} na serveri obsahuje chyby: ${check.errors[0]}`, true);
+                                return false;
+                            }
                         }
                     }
                 } catch (err) {
@@ -5146,15 +5420,19 @@
 
             const remoteMatchesCount = remoteData.matches.length;
             const localMatchesCount = (state.matches || []).length;
+            const remoteRev = Number(remoteData.databaseRevision) || 0;
+            const localRev = Number(state.databaseRevision) || 0;
             const remoteUpdated = Number(remoteData.updatedAt) || 0;
             const localUpdated = Number(state.updatedAt) || 0;
 
             let shouldApply = false;
             if (forceOverwrite) {
                 shouldApply = true;
+            } else if (remoteRev > 0 && localRev > 0) {
+                shouldApply = remoteRev > localRev || (remoteRev === localRev && remoteUpdated >= localUpdated);
             } else if (remoteUpdated > 0 && localUpdated > 0) {
                 shouldApply = remoteUpdated >= localUpdated;
-            } else if (remoteUpdated > 0 && localUpdated === 0) {
+            } else if ((remoteRev > 0 || remoteUpdated > 0) && localRev === 0 && localUpdated === 0) {
                 shouldApply = true;
             } else {
                 shouldApply = remoteMatchesCount >= localMatchesCount;
@@ -5165,6 +5443,8 @@
                 const preservedChartVis = (state && state.chartVisiblePlayers) ? { ...state.chartVisiblePlayers } : {};
                 const rCfg = remoteData.config || {};
                 state = {
+                    schemaVersion: DB_SCHEMA_VERSION,
+                    databaseRevision: remoteRev,
                     config: {
                         windowMonths: forceOverwrite
                             ? (VALID_WINDOWS.includes(Number(rCfg.windowMonths)) ? Number(rCfg.windowMonths) : 12)
@@ -5180,7 +5460,13 @@
                 };
                 normalizeState();
                 sortMatchesChronologically();
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                let cacheSaved = true;
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                } catch (err) {
+                    cacheSaved = false;
+                    console.error("TenisTAB: Nepodarilo sa uložiť synchronizovanú databázu do localStorage:", err);
+                }
                 recalculateAll();
                 populateSelects();
                 refreshAllViews();
@@ -5189,14 +5475,18 @@
 
                 setDbButtonSyncedState(true);
                 const syncTimeStr = remoteUpdated ? new Date(remoteUpdated).toLocaleString("sk-SK") : "bez časovej pečiatky";
-                updateSyncBanner("remote", `Úspešne načítané zo súboru <strong>${escapeHtml(loadedFileName)}</strong> (${state.matches.length} zápasov · verzia: ${escapeHtml(syncTimeStr)}).`);
+                const revBadge = remoteRev > 0 ? ` · rev. #${remoteRev}` : "";
+                const cacheWarn = cacheSaved ? "" : " <strong>(Pozor: lokálna pamäť prehliadača je zablokovaná.)</strong>";
+                updateSyncBanner("remote", `Úspešne načítané zo súboru <strong>${escapeHtml(loadedFileName)}</strong> (${state.matches.length} zápasov${revBadge} · verzia: ${escapeHtml(syncTimeStr)}).${cacheWarn}`);
                 if (forceOverwrite) {
                     showToast(`Oficiálna databáza (${state.matches.length} zápasov) bola načítaná!`);
                 }
                 return true;
             } else {
                 setDbButtonSyncedState(false);
-                updateSyncBanner("local", `V prehliadači sú novšie zmeny (${localMatchesCount} zápasov) než v <strong>${escapeHtml(loadedFileName)}</strong> (${remoteMatchesCount} zápasov). Pre návrat k oficiálnej verzii klikni na zelené tlačidlo v tabuľke.`);
+                const localRevTxt = localRev > 0 ? `, rev. #${localRev}` : "";
+                const remoteRevTxt = remoteRev > 0 ? `, rev. #${remoteRev}` : "";
+                updateSyncBanner("local", `V prehliadači sú novšie zmeny (${localMatchesCount} zápasov${localRevTxt}) než v <strong>${escapeHtml(loadedFileName)}</strong> (${remoteMatchesCount} zápasov${remoteRevTxt}). Pre návrat k oficiálnej verzii klikni na zelené tlačidlo v tabuľke.`);
                 return false;
             }
         }
@@ -6361,14 +6651,14 @@
                 return;
             }
 
-            const cleanId = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "") || ("hrac" + Date.now());
+            const cleanId = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "") || generateUniqueId("hrac");
             if (state.players.some(p => p.id === cleanId || p.name.toLowerCase() === name.toLowerCase())) {
                 showToast("Hráč s týmto menom už v tabuľke existuje!", true);
                 return;
             }
 
             const parsedElo = eloInput ? parseFloat(eloInput.value) : 1500;
-            const baseElo = (isFinite(parsedElo) && parsedElo > 0) ? Math.round(parsedElo * 10) / 10 : 1500.0;
+            const baseElo = (isFinite(parsedElo) && parsedElo >= 100 && parsedElo <= 4000) ? Math.round(parsedElo * 10) / 10 : 1500.0;
 
             const color = PLAYER_COLORS[state.players.length % PLAYER_COLORS.length];
             const newPl = { id: cleanId, name, color };
@@ -6377,11 +6667,13 @@
             nameInput.value = "";
             if (eloInput) eloInput.value = "1500";
 
-            saveState();
+            const savedOk = saveState();
             recalculateAll();
             populateSelects();
             refreshAllViews();
-            showToast(`Hráč ${name} bol pridaný (0.00 bodov · štart ${baseElo.toFixed(1)} ELO).`);
+            if (savedOk) {
+                showToast(`Hráč ${name} bol pridaný (0.00 bodov · štart ${baseElo.toFixed(1)} ELO).`);
+            }
         }
 
         /* ==================== FORMULÁRE ZÁPASOV (2H / 4H) ==================== */
@@ -6704,15 +6996,15 @@
                 : [document.getElementById(`${pref}-t2p1`).value];
 
             const reqCount = is4H ? 4 : 2;
-            if (!date) {
-                showToast("Zadaj dátum zápasu!", true);
+            if (!date || !parseIsoLocal(date)) {
+                showToast("Zadaj platný dátum zápasu!", true);
                 return null;
             }
             if (team1.some(x => !x) || team2.some(x => !x) || new Set([...team1, ...team2]).size < reqCount) {
                 showToast(`V ${is4H ? 'štvorhre' : 'dvojhre'} musia byť vybraní ${reqCount} rôzni hráči!`, true);
                 return null;
             }
-            if (isNaN(sets1) || isNaN(sets2) || sets1 < 0 || sets2 < 0 || (sets1 === 0 && sets2 === 0)) {
+            if (isNaN(sets1) || isNaN(sets2) || sets1 < 0 || sets2 < 0 || sets1 > 99 || sets2 > 99 || (sets1 === 0 && sets2 === 0)) {
                 showToast("Zadaj platný výsledok na sety (napr. 2:0, 1:1 alebo 1:0)!", true);
                 return null;
             }
@@ -6720,44 +7012,85 @@
             return { date, type, team1, team2, sets1, sets2, gems, note };
         }
 
+        function findDuplicateMatch(payload, excludeId = null) {
+            const normTeam = (arr) => [...arr].map(String).sort().join("|");
+            const pT1 = normTeam(payload.team1);
+            const pT2 = normTeam(payload.team2);
+            return state.matches.find(m => {
+                if (excludeId && m.id === excludeId) return false;
+                if (m.date !== payload.date || m.type !== payload.type) return false;
+                const mT1 = normTeam(m.team1);
+                const mT2 = normTeam(m.team2);
+                const sameOrder = (mT1 === pT1 && mT2 === pT2 && Number(m.sets1) === payload.sets1 && Number(m.sets2) === payload.sets2);
+                const swapOrder = (mT1 === pT2 && mT2 === pT1 && Number(m.sets1) === payload.sets2 && Number(m.sets2) === payload.sets1);
+                return sameOrder || swapOrder;
+            }) || null;
+        }
+
+        function confirmDuplicateMatchIfNeeded(payload, excludeId = null) {
+            const dup = findDuplicateMatch(payload, excludeId);
+            if (!dup) return true;
+            const getTeamLabel = (ids) => ids.map(pid => {
+                const pl = state.players.find(x => x.id === pid);
+                return pl ? pl.name : pid;
+            }).join(" / ");
+            const msg = `Rovnaký zápas už v histórii existuje:\n` +
+                `• Dátum: ${formatDateSk(payload.date)} (${payload.type})\n` +
+                `• ${getTeamLabel(payload.team1)} vs ${getTeamLabel(payload.team2)} (${payload.sets1}:${payload.sets2})\n\n` +
+                `Naozaj chceš zapísať druhý rovnaký zápas v tento istý deň?`;
+            return confirm(msg);
+        }
+
         function saveMatch() {
+            const now = Date.now();
+            if (now < matchSaveLockUntil) return;
             const payload = collectAndValidateMatch("new");
             if (!payload) return;
+            if (!confirmDuplicateMatchIfNeeded(payload)) return;
 
-            state.matches.push({ id: "m_" + Date.now(), ...payload });
+            matchSaveLockUntil = Date.now() + 700;
+            state.matches.push({ id: generateUniqueId("m"), ...payload });
             document.getElementById("match-gems").value = "";
             document.getElementById("match-note").value = "";
             updateNoteCounter("match-note", "match-note-count");
 
             sortMatchesChronologically();
-            saveState();
+            const savedOk = saveState();
             recalculateAll();
             populateSelects();
             refreshAllViews();
 
-            showToast(`${payload.type === "4H" ? "Štvorhra" : "Dvojhra"} bola zapísaná a tabuľka aktualizovaná!`);
+            if (savedOk) {
+                showToast(`${payload.type === "4H" ? "Štvorhra" : "Dvojhra"} bola zapísaná a tabuľka aktualizovaná!`);
+            }
             const firstTabBtn = document.querySelectorAll(".bottom-nav .nav-item")[0];
             switchTab("sec-table", firstTabBtn);
         }
 
         function addRetroactiveMatch() {
+            const now = Date.now();
+            if (now < matchSaveLockUntil) return;
             const payload = collectAndValidateMatch("hist");
             if (!payload) return;
+            if (!confirmDuplicateMatchIfNeeded(payload)) return;
 
-            const newId = "retro_" + Date.now();
+            matchSaveLockUntil = Date.now() + 700;
+            const newId = generateUniqueId("retro");
             state.matches.push({ id: newId, ...payload });
             document.getElementById("hist-gems").value = "";
             document.getElementById("hist-note").value = "";
             updateNoteCounter("hist-note", "hist-note-count");
 
             sortMatchesChronologically();
-            saveState();
+            const savedOk = saveState();
             recalculateAll();
             populateSelects();
             refreshAllViews();
 
-            const inserted = computedMatches.find(m => m.id === newId);
-            showToast(`Zápas zaradený na pozíciu #${inserted ? inserted.index : computedMatches.length} (${formatDateSk(payload.date)})!`);
+            if (savedOk) {
+                const inserted = computedMatches.find(m => m.id === newId);
+                showToast(`Zápas zaradený na pozíciu #${inserted ? inserted.index : computedMatches.length} (${formatDateSk(payload.date)})!`);
+            }
         }
 
         /* ==================== GRAF VÝVOJA BODOV & ELO 2H / 4H (v1.1) ==================== */
@@ -9389,14 +9722,17 @@
             const idx = state.matches.findIndex(x => x.id === id);
             if (idx === -1) return;
 
+            if (!confirmDuplicateMatchIfNeeded(payload, id)) return;
             state.matches[idx] = { id, ...payload };
             closeEditMatchModal();
             sortMatchesChronologically();
-            saveState();
+            const savedOk = saveState();
             recalculateAll();
             populateSelects();
             refreshAllViews();
-            showToast("Zápas bol upravený a tabuľka prepočítaná!");
+            if (savedOk) {
+                showToast("Zápas bol upravený a tabuľka prepočítaná!");
+            }
         }
 
         function moveMatchOrder(matchId, direction) {
@@ -9421,11 +9757,13 @@
         function deleteMatch(matchId) {
             if (!confirm("Naozaj chceš vymazať tento zápas? Tabuľka sa automaticky prepočíta.")) return;
             state.matches = state.matches.filter(m => m.id !== matchId);
-            saveState();
+            const savedOk = saveState();
             recalculateAll();
             populateSelects();
             refreshAllViews();
-            showToast("Zápas bol vymazaný a tabuľka prepočítaná.");
+            if (savedOk) {
+                showToast("Zápas bol vymazaný a tabuľka prepočítaná.");
+            }
         }
 
         let historyExpanded = false;
@@ -9559,6 +9897,8 @@
         function exportBackupJSON(customFilename = null) {
             if (!state.updatedAt) state.updatedAt = Date.now();
             const exportPayload = {
+                schemaVersion: DB_SCHEMA_VERSION,
+                databaseRevision: Number(state.databaseRevision) || 0,
                 config: state.config,
                 players: state.players,
                 matches: state.matches,
@@ -9582,36 +9922,68 @@
             reader.onload = e => {
                 try {
                     const imported = JSON.parse(e.target.result);
-                    if (imported && Array.isArray(imported.players) && Array.isArray(imported.matches)) {
-                        const preservedChartVis = (imported.chartVisiblePlayers && typeof imported.chartVisiblePlayers === "object")
-                            ? { ...imported.chartVisiblePlayers }
-                            : ((state && state.chartVisiblePlayers) ? { ...state.chartVisiblePlayers } : {});
-                        const iCfg = imported.config || {};
-                        state = {
-                            config: {
-                                windowMonths: VALID_WINDOWS.includes(Number(iCfg.windowMonths)) ? Number(iCfg.windowMonths) : 12,
-                                K: (Number(iCfg.K) > 0) ? Number(iCfg.K) : 32,
-                                D: (Number(iCfg.D) > 0) ? Number(iCfg.D) : 200,
-                                location: iCfg.location || { name: "", lat: null, lon: null }
-                            },
-                            players: imported.players,
-                            matches: imported.matches,
-                            chartVisiblePlayers: preservedChartVis,
-                            updatedAt: Date.now()
-                        };
-                        normalizeState();
-                        sortMatchesChronologically();
-                        saveState();
-                        recalculateAll();
-                        populateSelects();
-                        refreshAllViews();
-                        fetchHomeWeather(true);
+                    const check = validateDatabase(imported);
+                    if (!check.valid) {
+                        const previewErrors = check.errors.slice(0, 5).map(err => `• ${err}`).join("\n");
+                        const moreTxt = check.errors.length > 5 ? `\n... a ďalších ${check.errors.length - 5} chýb.` : "";
+                        alert(`Import bol zamietnutý – súbor „${file.name}“ obsahuje chyby a aktuálna databáza zostala nezmenená:\n\n${previewErrors}${moreTxt}`);
+                        showToast("Neplatný JSON súbor – import bol zrušený!", true);
+                        ev.target.value = "";
+                        return;
+                    }
+
+                    const st = check.stats;
+                    const curP = state.players.length;
+                    const curM = state.matches.length;
+                    const hasExisting = curP > 0 || curM > 0;
+                    if (hasExisting) {
+                        const revLine = st.revision > 0 ? ` · rev. #${st.revision}` : "";
+                        const dateLine = st.updatedAt > 0 ? ` (${new Date(st.updatedAt).toLocaleString("sk-SK")})` : "";
+                        const fewerWarn = st.matchesCount < curM
+                            ? `\n⚠️ POZOR: Importovaný súbor má MENEJ zápasov (${st.matchesCount}) než tvoja aktuálna databáza (${curM})!`
+                            : "";
+                        const warnSummary = check.warnings.length > 0
+                            ? `\nℹ️ Drobné automatické opravy (${check.warnings.length}): ${check.warnings[0]}`
+                            : "";
+                        const confirmMsg =
+                            `Naozaj chceš nahradiť aktuálnu databázu týmto súborom?\n\n` +
+                            `Súbor: ${file.name}\n` +
+                            `• Nová databáza: ${st.playersCount} hráčov, ${st.matchesCount} zápasov${revLine}${dateLine}\n` +
+                            `• Aktuálna databáza: ${curP} hráčov, ${curM} zápasov` +
+                            fewerWarn + warnSummary;
+                        if (!confirm(confirmMsg)) {
+                            showToast("Import bol zrušený – aktuálne dáta zostali zachované.");
+                            ev.target.value = "";
+                            return;
+                        }
+                    }
+
+                    const clean = check.sanitized;
+                    const preservedChartVis = clean.chartVisiblePlayers
+                        ? { ...clean.chartVisiblePlayers }
+                        : ((state && state.chartVisiblePlayers) ? { ...state.chartVisiblePlayers } : {});
+
+                    state = {
+                        schemaVersion: DB_SCHEMA_VERSION,
+                        databaseRevision: Math.max(Number(state.databaseRevision) || 0, Number(clean.databaseRevision) || 0),
+                        config: clean.config,
+                        players: clean.players,
+                        matches: clean.matches,
+                        chartVisiblePlayers: preservedChartVis,
+                        updatedAt: Date.now()
+                    };
+                    normalizeState();
+                    sortMatchesChronologically();
+                    const savedOk = saveState(true);
+                    recalculateAll();
+                    populateSelects();
+                    refreshAllViews();
+                    fetchHomeWeather(true);
+                    if (savedOk) {
                         showToast(`Databáza načítaná (${state.players.length} hráčov, ${state.matches.length} zápasov)!`);
-                    } else {
-                        showToast("Neplatný JSON súbor (chýbajú polia players / matches)!", true);
                     }
                 } catch (err) {
-                    showToast("Chyba pri čítaní JSON súboru!", true);
+                    showToast("Chyba pri čítaní JSON súboru (poškodený formát)!", true);
                 }
                 ev.target.value = "";
             };
@@ -9655,11 +10027,14 @@
 
         function resetToEmpty() {
             if (!confirm("Naozaj chceš vymazať celú lokálnu databázu (hráčov aj všetky zápasy) a vrátiť aplikáciu do čistého štartu?")) return;
-            localStorage.removeItem(STORAGE_KEY);
+            try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
             state = {
+                schemaVersion: DB_SCHEMA_VERSION,
+                databaseRevision: 0,
                 config: { windowMonths: 12, K: 32, D: 200, location: { name: "", lat: null, lon: null } },
                 players: [],
                 matches: [],
+                chartVisiblePlayers: {},
                 updatedAt: 0
             };
             tvCustomBgImage = null;
@@ -12988,7 +13363,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.39! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.40! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -13898,16 +14273,21 @@
             applySeasonTheme(getInitialThemeKey(), false, false);
             syncCustomThemeFormUI();
 
-            const raw = localStorage.getItem(STORAGE_KEY);
+            let raw = null;
+            try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) {}
             if (raw) {
                 try {
                     const parsed = JSON.parse(raw);
+                    state.schemaVersion = Number(parsed.schemaVersion) || DB_SCHEMA_VERSION;
+                    state.databaseRevision = Number(parsed.databaseRevision) || 0;
                     state.config = parsed.config || { windowMonths: 12, location: { name: "", lat: null, lon: null } };
                     state.players = Array.isArray(parsed.players) ? parsed.players : [];
                     state.matches = Array.isArray(parsed.matches) ? parsed.matches : [];
                     state.chartVisiblePlayers = parsed.chartVisiblePlayers || {};
                     state.updatedAt = Number(parsed.updatedAt) || 0;
-                } catch (e) {}
+                } catch (e) {
+                    console.error("TenisTAB: Poškodené lokálne dáta v localStorage:", e);
+                }
             }
 
             normalizeState();
