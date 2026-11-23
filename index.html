@@ -2795,7 +2795,6 @@
             border-top: 1px solid rgba(255, 255, 255, 0.55);
             border-bottom: 1px solid rgba(0, 0, 0, 0.14);
             overflow: hidden;
-            contain: layout paint;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -2834,9 +2833,17 @@
             flex-shrink: 0;
         }
 
+        .news-bar.is-paused .news-badge {
+            background: linear-gradient(135deg, #b45309 0%, #78350f 100%);
+        }
+
+        .news-bar.is-paused .news-badge:hover {
+            background: linear-gradient(135deg, #d97706 0%, #92400e 100%);
+        }
+
         .news-bar.is-paused .news-live-dot {
             animation: none;
-            opacity: 0.5;
+            opacity: 0.45;
         }
 
         @keyframes newsDotPulse {
@@ -2853,7 +2860,6 @@
             background: #ffffff;
             color: #111827;
             position: relative;
-            contain: layout paint;
             cursor: pointer;
         }
 
@@ -2883,6 +2889,8 @@
             align-items: center;
             width: max-content;
             will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             animation:
                 newsMarqueeIntro var(--news-intro-duration, 8s) linear 0.5s 1 backwards,
                 newsMarqueeScroll var(--news-duration, 90s) linear calc(0.5s + var(--news-intro-duration, 8s)) infinite;
@@ -3252,7 +3260,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.33</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.34</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3283,7 +3291,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.33</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.34</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4301,7 +4309,7 @@
                 <span class="news-live-dot"></span>
                 <span id="news-badge-label">NEWS</span>
             </button>
-            <div class="news-viewport" onclick="toggleNewsTickerPause()" title="Kliknutím pozastavíš alebo spustíš správy (na PC stačí prejsť myšou)">
+            <div class="news-viewport" id="news-viewport" role="button" tabindex="0" aria-pressed="false" onclick="toggleNewsTickerPause()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); toggleNewsTickerPause();}" title="Kliknutím pozastavíš alebo spustíš správy (na PC stačí prejsť myšou)">
                 <div class="news-track" id="news-ticker-track">
                     <div class="news-group" id="news-ticker-group-a"></div>
                     <div class="news-group" id="news-ticker-group-b" aria-hidden="true"></div>
@@ -8105,6 +8113,7 @@
             buildAchievements();
             renderAchievements();
             renderPlayerProfile();
+            renderNewsTicker(false);
         }
 
         function buildTop3Ranking(itemsArr, valFn, labelFn, fmtValFn, minThreshold = 1) {
@@ -8834,6 +8843,7 @@
                     iconFile: "dynamicke_duo.png", faClass: "fa-solid fa-handshake-simple",
                     theme: "ach-purple", accent: "#c084fc", isNegative: false,
                     valueText: rBestPairPts.holders.length > 0 ? `${formatPts(rBestPairPts.value)} b / hráč` : "—",
+                    pairNames: rBestPairPts.holders.map(x => x.name),
                     holders: bestPairPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.pts, pr => pr.name, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("dynamic_duo")
@@ -8885,6 +8895,8 @@
                     iconFile: "nerozlucna_dvojka.png", faClass: "fa-solid fa-link",
                     theme: "ach-purple", accent: "#c084fc", isNegative: false,
                     valueText: rFreqPair.holders.length > 0 ? `${skCount(rFreqPair.value, "spoločný štart", "spoločné štarty", "spoločných štartov")}` : "—",
+                    rawCount: rFreqPair.value,
+                    pairNames: rFreqPair.holders.map(x => x.name),
                     holders: freqPairPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.matches, pr => pr.name, v => `${v} záp.`, 1),
                     held: getHeldInfo("inseparable_pair")
@@ -9352,14 +9364,10 @@
             };
             tvCustomBgImage = null;
             setDbButtonSyncedState(false);
+            resetWeatherMemoryState(true);
             recalculateAll();
             populateSelects();
             refreshAllViews();
-            homeWeather = null;
-            localWeather = null;
-            isAwayFromHome = false;
-            homeWeatherFetchedAt = 0;
-            try { localStorage.removeItem(WEATHER_CACHE_KEY); } catch (e) {}
             updateSyncBanner("default", "Lokálna databáza bola vyčistená. Nahraj súbor <strong>databaza.json</strong> alebo pridaj prvých hráčov.");
             fetchHomeWeather(true);
             showToast("Lokálna databáza bola vymazaná (čistý štart).");
@@ -10933,13 +10941,14 @@
             exportCanvasImage(canvas, `TenisTAB_TV_Graf_${modeTag}_${getTodayIso()}`, format, renderTvChartCanvas);
         }
 
-        /* ==================== LOKALITA, POČASIE & NEWS BAR (v0.6) ==================== */
+        /* ==================== LOKALITA, POČASIE & NEWS BAR (v1.34) ==================== */
         const CADCA_DEFAULT_LAT = 49.4386;
         const CADCA_DEFAULT_LON = 18.7897;
         const WEATHER_CACHE_KEY = "TENISTAB_WEATHER_GEO_CACHE_V1";
         const WEATHER_CACHE_TTL_MS = 20 * 60 * 1000;
         const HOME_NEAR_KM = 15;
         const WEATHER_TEMP_DIFF_THRESHOLD = 3.5;
+        const WEATHER_FETCH_TIMEOUT_MS = 8000;
 
         let homeWeather = null;
         let localWeather = null;
@@ -10947,7 +10956,34 @@
         let isAwayFromHome = false;
         let homeWeatherFetchedAt = 0;
         let homeWeatherFailed = false;
+        let weatherFetchSeq = 0;
         let weatherQuipSeed = Math.floor(Math.random() * 1000);
+
+        function resetWeatherMemoryState(clearStorage = false) {
+            weatherFetchSeq++;
+            homeWeather = null;
+            localWeather = null;
+            localLocationName = "";
+            isAwayFromHome = false;
+            homeWeatherFetchedAt = 0;
+            homeWeatherFailed = false;
+            if (clearStorage) {
+                try { localStorage.removeItem(WEATHER_CACHE_KEY); } catch (e) {}
+            }
+        }
+
+        async function fetchWithTimeout(url, options = {}, timeoutMs = WEATHER_FETCH_TIMEOUT_MS) {
+            if (typeof AbortController === "undefined") {
+                return fetch(url, options);
+            }
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                return await fetch(url, { ...options, signal: controller.signal });
+            } finally {
+                clearTimeout(timer);
+            }
+        }
 
         let cachedNewsItems = [];
         let cachedRecentNewsItems = [];
@@ -11193,7 +11229,7 @@
             }
             try {
                 const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(clean)}&count=5&language=sk&format=json`;
-                const resp = await fetch(url, { cache: "no-store" });
+                const resp = await fetchWithTimeout(url, { cache: "no-store" });
                 if (resp.ok) {
                     const data = await resp.json();
                     if (data && Array.isArray(data.results) && data.results.length > 0) {
@@ -11219,11 +11255,7 @@
                 state.config.location = { name: "", lat: null, lon: null };
                 saveState();
                 syncLocationInputsUI();
-                homeWeather = null;
-                localWeather = null;
-                isAwayFromHome = false;
-                homeWeatherFetchedAt = 0;
-                try { localStorage.removeItem(WEATHER_CACHE_KEY); } catch (e) {}
+                resetWeatherMemoryState(true);
                 renderNewsTicker(true);
                 fetchHomeWeather(true);
                 showToast("Domovské mesto vymazané (použije sa geolokácia).");
@@ -11235,11 +11267,7 @@
             state.config.location = normalizeLocationConfig(resolved);
             saveState();
             syncLocationInputsUI();
-            homeWeather = null;
-            localWeather = null;
-            isAwayFromHome = false;
-            homeWeatherFetchedAt = 0;
-            try { localStorage.removeItem(WEATHER_CACHE_KEY); } catch (e) {}
+            resetWeatherMemoryState(true);
             renderNewsTicker(true);
             fetchHomeWeather(true);
 
@@ -11278,7 +11306,7 @@
         async function reverseGeocodeCity(lat, lon) {
             try {
                 const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&localityLanguage=sk`;
-                const resp = await fetch(url, { cache: "no-store" });
+                const resp = await fetchWithTimeout(url, { cache: "no-store" }, 6000);
                 if (!resp.ok) return "";
                 const j = await resp.json();
                 return (j.city || j.locality || j.principalSubdivision || "").trim();
@@ -11470,12 +11498,17 @@
 
         async function fetchHomeWeather(force = false) {
             if (!force && loadCachedHomeWeather()) {
+                homeWeatherFailed = false;
                 renderNewsTicker(false);
                 return;
             }
+            const reqSeq = ++weatherFetchSeq;
             const loc = getLocationContext();
+            const startLocSig = getWeatherLocSig();
             try {
                 const coords = await getBrowserCoords();
+                if (reqSeq !== weatherFetchSeq || getWeatherLocSig() !== startLocSig) return;
+
                 const hasHomeCoords = loc.hasCoords;
                 let away = false;
                 let cityName = "";
@@ -11496,6 +11529,7 @@
                 } else {
                     homeWeather = null;
                     localWeather = null;
+                    localLocationName = "";
                     isAwayFromHome = false;
                     homeWeatherFailed = false;
                     renderNewsTicker(false);
@@ -11503,12 +11537,14 @@
                 }
 
                 const [weatherResp, resolvedCity] = await Promise.all([
-                    fetch(apiUrl, { cache: "no-store" }),
+                    fetchWithTimeout(apiUrl, { cache: "no-store" }),
                     away ? reverseGeocodeCity(coords.lat, coords.lon) : Promise.resolve("")
                 ]);
+                if (reqSeq !== weatherFetchSeq || getWeatherLocSig() !== startLocSig) return;
 
                 if (!weatherResp.ok) throw new Error("HTTP " + weatherResp.status);
                 const json = await weatherResp.json();
+                if (reqSeq !== weatherFetchSeq || getWeatherLocSig() !== startLocSig) return;
 
                 let newLocal = null;
                 let newHome = null;
@@ -11534,7 +11570,7 @@
                     homeWeatherFailed = false;
                     try {
                         localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({
-                            locSig: getWeatherLocSig(),
+                            locSig: startLocSig,
                             fetchedAt: homeWeatherFetchedAt,
                             home: homeWeather,
                             local: localWeather,
@@ -11543,8 +11579,12 @@
                         }));
                     } catch (e) {}
                     renderNewsTicker(false);
+                } else {
+                    homeWeatherFailed = true;
+                    renderNewsTicker(false);
                 }
             } catch (err) {
+                if (reqSeq !== weatherFetchSeq) return;
                 homeWeatherFailed = true;
                 renderNewsTicker(false);
             }
@@ -12005,6 +12045,55 @@
             return result;
         }
 
+        function pickOfficialPointsLeaderId(statsById, refTimeMs = null) {
+            const inactiveCutoffMs = 365 * 24 * 60 * 60 * 1000;
+            let best = null;
+            state.players.forEach(p => {
+                const st = statsById[p.id];
+                if (!st || st.matches === 0) return;
+                const isInactive = (refTimeMs !== null && st.lastTime !== null)
+                    ? ((refTimeMs - st.lastTime) >= inactiveCutoffMs)
+                    : false;
+                const cand = {
+                    id: p.id,
+                    name: p.name,
+                    isInactive,
+                    points: st.points,
+                    matches: st.matches,
+                    wins: st.wins,
+                    pts2H: st.pts2H
+                };
+                if (!best) {
+                    best = cand;
+                    return;
+                }
+                if (cand.isInactive !== best.isInactive) {
+                    if (!cand.isInactive) best = cand;
+                    return;
+                }
+                if (cand.points !== best.points) {
+                    if (cand.points > best.points) best = cand;
+                    return;
+                }
+                if (cand.matches !== best.matches) {
+                    if (cand.matches < best.matches) best = cand;
+                    return;
+                }
+                if (cand.wins !== best.wins) {
+                    if (cand.wins > best.wins) best = cand;
+                    return;
+                }
+                if (cand.pts2H !== best.pts2H) {
+                    if (cand.pts2H > best.pts2H) best = cand;
+                    return;
+                }
+                if (cand.name.localeCompare(best.name, "sk") < 0) {
+                    best = cand;
+                }
+            });
+            return best ? best.id : null;
+        }
+
         function buildWindowPointsTimelineForLeader() {
             const wm = Number(state.config.windowMonths) || 0;
             const matches = computedMatches || [];
@@ -12019,37 +12108,39 @@
             for (let i = 0; i < precalc.length; i++) {
                 const cur = precalc[i];
                 const curTime = cur.dtTime;
-                const pts = {};
-                const cnt = {};
-                state.players.forEach(p => { pts[p.id] = 0; cnt[p.id] = 0; });
+                const statsById = {};
+                state.players.forEach(p => {
+                    statsById[p.id] = { points: 0, pts2H: 0, matches: 0, wins: 0, lastTime: null };
+                });
                 for (let j = 0; j <= i; j++) {
                     const prev = precalc[j];
+                    const pm = prev.m;
+                    [...pm.team1, ...pm.team2].forEach(id => {
+                        const st = statsById[id];
+                        if (st && (st.lastTime === null || prev.dtTime > st.lastTime)) st.lastTime = prev.dtTime;
+                    });
                     if (wm === 0 || prev.expTime >= curTime) {
-                        const pm = prev.m;
+                        const s1 = Number(pm.sets1) || 0;
+                        const s2 = Number(pm.sets2) || 0;
                         pm.team1.forEach(id => {
-                            if (typeof pts[id] === "number") {
-                                pts[id] = Math.round((pts[id] + pm.ptsA) * 100) / 100;
-                                cnt[id]++;
-                            }
+                            const st = statsById[id];
+                            if (!st) return;
+                            st.points = Math.round((st.points + pm.ptsA) * 100) / 100;
+                            if (pm.type === "2H") st.pts2H = Math.round((st.pts2H + pm.ptsA) * 100) / 100;
+                            st.matches++;
+                            if (s1 > s2) st.wins++;
                         });
                         pm.team2.forEach(id => {
-                            if (typeof pts[id] === "number") {
-                                pts[id] = Math.round((pts[id] + pm.ptsB) * 100) / 100;
-                                cnt[id]++;
-                            }
+                            const st = statsById[id];
+                            if (!st) return;
+                            st.points = Math.round((st.points + pm.ptsB) * 100) / 100;
+                            if (pm.type === "2H") st.pts2H = Math.round((st.pts2H + pm.ptsB) * 100) / 100;
+                            st.matches++;
+                            if (s2 > s1) st.wins++;
                         });
                     }
                 }
-                let bestId = null, bestPts = -1, bestMatches = Infinity;
-                state.players.forEach(p => {
-                    const v = pts[p.id] || 0;
-                    const mc = cnt[p.id] || 0;
-                    if (mc === 0) return;
-                    if (v > bestPts || (v === bestPts && mc < bestMatches)) {
-                        bestPts = v; bestMatches = mc; bestId = p.id;
-                    }
-                });
-                snaps.push({ match: cur.m, leaderId: bestId });
+                snaps.push({ match: cur.m, leaderId: pickOfficialPointsLeaderId(statsById, curTime) });
             }
             return snaps;
         }
@@ -12070,8 +12161,9 @@
 
             const matches = computedMatches || [];
             const precalc = matches.map(m => {
+                const dt = parseIsoLocal(m.date);
                 const expDt = addCalendarMonths(m.date, wm);
-                return { m, expTime: expDt ? expDt.getTime() : Infinity };
+                return { m, dtTime: dt ? dt.getTime() : 0, expTime: expDt ? expDt.getTime() : Infinity };
             });
 
             // Zozbierame presné dni po expirácii (expTime + 1 deň) medzi posledným zápasom a dneškom
@@ -12088,35 +12180,38 @@
             const checkTimes = Array.from(checkTimesSet).sort((a, b) => a - b);
 
             const computeLeaderAtTime = (ts) => {
-                const pts = {}, cnt = {};
-                state.players.forEach(p => { pts[p.id] = 0; cnt[p.id] = 0; });
+                const statsById = {};
+                state.players.forEach(p => {
+                    statsById[p.id] = { points: 0, pts2H: 0, matches: 0, wins: 0, lastTime: null };
+                });
                 precalc.forEach(item => {
+                    const pm = item.m;
+                    [...pm.team1, ...pm.team2].forEach(id => {
+                        const st = statsById[id];
+                        if (st && (st.lastTime === null || item.dtTime > st.lastTime)) st.lastTime = item.dtTime;
+                    });
                     if (item.expTime >= ts) {
-                        const pm = item.m;
+                        const s1 = Number(pm.sets1) || 0;
+                        const s2 = Number(pm.sets2) || 0;
                         pm.team1.forEach(id => {
-                            if (typeof pts[id] === "number") {
-                                pts[id] = Math.round((pts[id] + pm.ptsA) * 100) / 100;
-                                cnt[id]++;
-                            }
+                            const st = statsById[id];
+                            if (!st) return;
+                            st.points = Math.round((st.points + pm.ptsA) * 100) / 100;
+                            if (pm.type === "2H") st.pts2H = Math.round((st.pts2H + pm.ptsA) * 100) / 100;
+                            st.matches++;
+                            if (s1 > s2) st.wins++;
                         });
                         pm.team2.forEach(id => {
-                            if (typeof pts[id] === "number") {
-                                pts[id] = Math.round((pts[id] + pm.ptsB) * 100) / 100;
-                                cnt[id]++;
-                            }
+                            const st = statsById[id];
+                            if (!st) return;
+                            st.points = Math.round((st.points + pm.ptsB) * 100) / 100;
+                            if (pm.type === "2H") st.pts2H = Math.round((st.pts2H + pm.ptsB) * 100) / 100;
+                            st.matches++;
+                            if (s2 > s1) st.wins++;
                         });
                     }
                 });
-                let bestId = null, bestPts = -1, bestMatches = Infinity;
-                state.players.forEach(p => {
-                    const v = pts[p.id] || 0;
-                    const mc = cnt[p.id] || 0;
-                    if (mc === 0) return;
-                    if (v > bestPts || (v === bestPts && mc < bestMatches)) {
-                        bestPts = v; bestMatches = mc; bestId = p.id;
-                    }
-                });
-                return bestId;
+                return pickOfficialPointsLeaderId(statsById, ts);
             };
 
             let prevLeaderId = lastSnap.leaderId;
@@ -12135,9 +12230,7 @@
             }
 
             if (switchTime === null || !deposedLeaderId) {
-                // Fallback: líder sa zmenil expiráciou, ale presný zlom bol priamo k dnešku
-                switchTime = todayTime;
-                deposedLeaderId = lastSnap.leaderId;
+                return null;
             }
 
             const ageDays = Math.round((todayTime - switchTime) / dayMs);
@@ -12383,7 +12476,7 @@
                 const daysText = skCount(reignDays, "deň", "dni", "dní");
                 const shortPool = [
                     { tag: "KRÁTKA VLÁDA (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z trónu ELO 4H Páry už po necelom týždni (${daysText})!` },
-                    { tag: "RÝCHLA VÝMENA (4H PÁRY)", text: `Pár ${prevName} vydržal na čele tímového ELO 4H len ${daysText} – od zápasu #${last.match.index} velia dvojice ${newName}!` }
+                    { tag: "RÝCHLA VÝMENA (4H PÁRY)", text: `Pár ${prevName} vydržal na čele tímového ELO 4H len ${daysText} – od zápasu #${last.match.index} velí dvojica ${newName}!` }
                 ];
                 return shortPool[seed % shortPool.length];
             }
@@ -12440,7 +12533,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.33! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.34! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -12494,12 +12587,18 @@
             // 3. Líder, boj na čele, najtesnejší susedia a monopol
             if (activeRanked.length >= 1) {
                 const top = activeRanked[0];
-                add("NA TRÓNE", `Lídrom TenisTAB v ${wmTxt} je ${top.name} so ziskom ${skPts(top.points, "gen")} (2H: ${skNum(top.pts2H, 2)} b · 4H: ${skNum(top.pts4H, 2)} b).`);
+                const rank1Tied = activeRanked.filter(p => p.rank === 1);
+                if (rank1Tied.length > 1) {
+                    add("NA TRÓNE", `O čelo TenisTAB v ${wmTxt} sa delia ${skJoinNames(rank1Tied, "nom")} so ziskom ${skPts(top.points, "gen")}.`);
+                } else {
+                    add("NA TRÓNE", `Lídrom TenisTAB v ${wmTxt} je ${top.name} so ziskom ${skPts(top.points, "gen")} (2H: ${skNum(top.pts2H, 2)} b · 4H: ${skNum(top.pts4H, 2)} b).`);
+                }
             }
             if (activeRanked.length >= 2) {
                 const gap = Math.round((activeRanked[0].points - activeRanked[1].points) * 100) / 100;
                 if (gap === 0) {
-                    add("DRÁMA NA ČELE", `${activeRanked[0].name} a ${activeRanked[1].name} majú na čele tabuľky zhodne po ${skPts(activeRanked[0].points, "loc")} – boj o trón je úplne otvorený!`);
+                    const topPtsTied = activeRanked.filter(p => Math.abs(p.points - activeRanked[0].points) < 0.001);
+                    add("DRÁMA NA ČELE", `${skJoinNames(topPtsTied, "nom")} majú na čele tabuľky zhodne po ${skPts(activeRanked[0].points, "loc")} – boj o trón je úplne otvorený!`);
                 } else if (gap <= 1.5) {
                     add("DRÁMA NA ČELE", `${activeRanked[1].name} dýcha na chrbát lídrovi ${skName(activeRanked[0].name, "dat")} – delí ich už len ${skPts(gap, "nom")}!`);
                 } else {
@@ -12781,7 +12880,9 @@
                         const hibPool = [
                             { tag: "TENISOVÁ HIBERNÁCIA", text: `V lige sa neodohral žiaden zápas už ${skCount(lastLeagueAge, "deň", "dni", "dní")}! Rakety ${getLocationContext().inPlace} začínajú hrdzavieť a na loptičkách sa vraj objavila prvá vrstva machu.` },
                             { tag: "KONIEC SEZÓNY?", text: `Už ${skCount(lastLeagueAge, "deň", "dni", "dní")} bez jediného zápisu v tabuľke. Podľa neoverených správ sa celá partia preorientovala na gaučing a komentovanie tenisu z obývačky.` },
-                            { tag: "POPLACH V TABUĽKE", text: `Posledný zápas sa hral pred ${lastLeagueAge} dňami – body pomaly expirujú a systém zvažuje, že začne udeľovať mínusové body za lenivosť!` }
+                            { tag: "POPLACH V TABUĽKE", text: wm > 0
+                                ? `Posledný zápas sa hral pred ${lastLeagueAge} dňami – body pomaly expirujú a systém zvažuje, že začne udeľovať mínusové body za lenivosť!`
+                                : `Posledný zápas sa hral pred ${lastLeagueAge} dňami – rebríček zamrzol a systém zvažuje, že začne udeľovať mínusové body za lenivosť!` }
                         ];
                         const chosenHib = hibPool[Math.floor(Math.random() * hibPool.length)];
                         add(chosenHib.tag, chosenHib.text);
@@ -12898,8 +12999,11 @@
                         : `Spoločenský typ: ${n} si v debli zahral už ${withTxt}.`];
                 },
                 dynamic_duo: (holders, a) => {
-                    const n = skJoinNames(holders, "nom");
-                    return ["DYNAMICKÉ DUO", `Najúspešnejšia pevná dvojica 4H (${n}) nazbierala už ${a.valueText.replace(".", ",")}.`];
+                    const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["DYNAMICKÉ DUO", pNames.length > 1
+                        ? `Najúspešnejšie pevné dvojice 4H (${pNames.join(" a ")}) nazbierali zhodne po ${valTxt}.`
+                        : `Najúspešnejšia pevná dvojica 4H (${pNames[0]}) nazbierala už ${valTxt}.`];
                 },
                 steamroller: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
@@ -12911,8 +13015,12 @@
                     return ["KRV, POT A SLZY", `Najdlhšia bitka histórie priniesla až ${a.valueText}${scorePart}!`];
                 },
                 inseparable_pair: (holders, a) => {
-                    const n = skJoinNames(holders, "nom");
-                    return ["NEROZLUČNÁ DVOJKA", `Parťáci na kurte: ${n} spolu nastúpili už do ${a.valueText}!`];
+                    const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
+                    const cnt = Number(a.rawCount) || parseInt(a.valueText, 10) || 0;
+                    const genTxt = skCount(cnt, "spoločného štartu", "spoločných štartov", "spoločných štartov");
+                    return ["NEROZLUČNÁ DVOJKA", pNames.length > 1
+                        ? `Nerozlučné dvojice na kurte: ${pNames.join(" a ")} nastúpili zhodne do ${genTxt}!`
+                        : `Parťáci na kurte: ${pNames[0]} spolu nastúpili už do ${genTxt}!`];
                 }
             };
 
@@ -12926,7 +13034,7 @@
             // 9. O aplikácii & Tipy pre ovládanie (Tip / Vedeli ste?)
             add("O APLIKÁCII", "Aplikáciu TenisTAB vymyslel a dizajnoval Vlado Troják s pomocou AI Gemini v novembri 2026.");
             add("VEDELI STE?", "Nad tabuľkou si jedným klikom prepneš hlavný bodový rebríček (2H + 4H) na samostatné ELO rebríčky pre dvojhru (2H) alebo štvorhru (4H).");
-            add("TIP", "Chceš zmeniť vzhľad aplikácie? Stačí kliknúť na logo TT v ľavom hornom rohu a okamžite prepínaš medzi 8 farebnými motívmi!");
+            add("TIP", "Chceš zmeniť vzhľad aplikácie? Stačí kliknúť na logo TT v ľavom hornom rohu a okamžite prepínaš medzi 8 farebnými motívmi (+ vlastným štýlom z karty História)!");
             add("VEDELI STE?", "Aplikácia si automaticky mení predvolený farebný motív podľa ročného obdobia v kalendári (Jar, Leto, Jeseň, Zima) – ak si kliknutím na logo vyberieš vlastný, zapamätá si ho.");
             add("TIP", "Nestíhaš čítať správy v NEWS lište? Kliknutím na biely pás text pozastavíš (na PC stačí prejsť myšou) a kliknutím na červené tlačidlo NEWS poradie správ premiešaš.");
             add("VEDELI STE?", "Body v TenisTAB platia predvolene presne 1 rok – v tabuľke si však jedným klikom prepneš okno na 3, 6, 12, 18, 24, 36 mesiacov alebo All-time.");
@@ -12975,7 +13083,7 @@
 
             const locSig = getWeatherLocSig();
             const wm = Number(state.config.windowMonths) || 0;
-            const dataSig = `${state.updatedAt || 0}_${wm}_${locSig}_${computedMatches.length}_${computedPlayers.map(p => p.id + ":" + p.points).join("|")}_${computedMatches.map(m => (m.date || "") + ":" + m.type + ":" + (m.gems || "") + ":" + (m.note || "")).join("~")}`;
+            const dataSig = `${state.updatedAt || 0}_${wm}_${badgesScope}_${getEloK()}_${getEloD()}_${locSig}_${computedMatches.length}_${computedPlayers.map(p => p.id + ":" + p.points).join("|")}_${computedMatches.map(m => (m.date || "") + ":" + m.type + ":" + m.sets1 + "-" + m.sets2 + ":" + (m.gems || "") + ":" + (m.note || "")).join("~")}`;
             const weatherSig = `${homeWeatherFetchedAt}_${homeWeatherFailed ? 1 : 0}_${weatherQuipSeed}`;
             const fullSig = `${dataSig}__${weatherSig}`;
 
@@ -13009,7 +13117,7 @@
                 ...(elo4HPairsReignItem ? [elo4HPairsReignItem] : [])
             ];
             const mergedOther = extraDynamicOther.length > 0
-                ? shuffleNewsArray([...cachedOtherNewsItems, ...extraDynamicOther])
+                ? (forceReshuffle || dataChanged ? shuffleNewsArray([...cachedOtherNewsItems, ...extraDynamicOther]) : [...extraDynamicOther, ...cachedOtherNewsItems])
                 : cachedOtherNewsItems;
 
             cachedNewsItems = [
@@ -13030,21 +13138,25 @@
             groupA.innerHTML = html;
             groupB.innerHTML = html;
 
-            if (forceReshuffle) {
+            const shouldRestartAnim = forceReshuffle || !newsAnimationInitialized;
+            // Najprv zmeriame novú šírku a nastavíme CSS premenné, až potom reštartujeme animáciu (bez cuknutia)
+            updateNewsTickerSpeed(shouldRestartAnim);
+
+            if (shouldRestartAnim) {
                 track.style.animation = "none";
                 void track.offsetWidth;
                 track.style.animation = "";
             }
-
-            requestAnimationFrame(() => updateNewsTickerSpeed(forceReshuffle));
         }
 
         function toggleNewsTickerPause() {
             const bar = document.getElementById("news-bar");
             const label = document.getElementById("news-badge-label");
+            const vp = document.getElementById("news-viewport");
             if (!bar) return;
             const isPaused = bar.classList.toggle("is-paused");
-            if (label) label.textContent = isPaused ? "PAUZA" : "NEWS";
+            if (label) label.textContent = isPaused ? "PAUZA ❚❚" : "NEWS";
+            if (vp) vp.setAttribute("aria-pressed", isPaused ? "true" : "false");
             if (!isPaused) bar.classList.add("ignore-hover");
             else bar.classList.remove("ignore-hover");
         }
@@ -13052,9 +13164,11 @@
         function reshuffleNewsTicker() {
             const bar = document.getElementById("news-bar");
             const label = document.getElementById("news-badge-label");
+            const vp = document.getElementById("news-viewport");
             if (bar && bar.classList.contains("is-paused")) {
                 bar.classList.remove("is-paused");
                 if (label) label.textContent = "NEWS";
+                if (vp) vp.setAttribute("aria-pressed", "false");
             }
             if (bar) bar.classList.remove("ignore-hover");
             weatherQuipSeed++;
