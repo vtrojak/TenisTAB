@@ -3252,7 +3252,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.32</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.33</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3283,7 +3283,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.32</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.33</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -7954,17 +7954,22 @@
             `;
         }
 
-        /* ==================== ODZNAKY & ACHIEVEMENTY (v0.3) ==================== */
-        function skPlural(n, one, few, many) {
+        /* ==================== ODZNAKY & ACHIEVEMENTY (v1.33) ==================== */
+        function skPlural(n, one, few, many, decimalForm = null) {
             const absN = Math.abs(Number(n) || 0);
-            if (!Number.isInteger(absN)) return many;
+            if (!Number.isInteger(absN)) return decimalForm || many;
             if (absN === 1) return one;
             if (absN >= 2 && absN <= 4) return few;
             return many;
         }
 
-        function skCount(n, one, few, many) {
-            return `${n} ${skPlural(n, one, few, many)}`;
+        function skCount(n, one, few, many, decimalForm = null) {
+            return `${n} ${skPlural(n, one, few, many, decimalForm)}`;
+        }
+
+        function formatPtsWithUnit(val) {
+            const rounded = Math.round((Number(val) || 0) * 100) / 100;
+            return `${formatPts(rounded)} ${skPlural(rounded, "bod", "body", "bodov", "bodu")}`;
         }
 
         function handleAchIconError(imgEl) {
@@ -8023,6 +8028,12 @@
             Object.keys(achFlipTimers).forEach(k => {
                 clearTimeout(achFlipTimers[k]);
                 delete achFlipTimers[k];
+            });
+            document.querySelectorAll(".ach-card").forEach(el => {
+                if (el._flashTimer) {
+                    clearTimeout(el._flashTimer);
+                    el._flashTimer = null;
+                }
             });
         }
 
@@ -8137,12 +8148,16 @@
                 : computedMatches;
 
             const today = getTodayMidnight();
+            const HOT_HAND_MAX_INACTIVE_DAYS = 180;
+            const calcSniperVal = (p) => (p.gemsMatches >= 3
+                ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10
+                : -999);
 
             const pStatsMap = {};
             computedPlayers.forEach(p => {
                 pStatsMap[p.id] = {
                     id: p.id, name: p.name, color: p.color,
-                    matches: 0, wins: 0, draws: 0, losses: 0,
+                    matches: 0, gemsMatches: 0, wins: 0, draws: 0, losses: 0,
                     points: 0, pts2H: 0, pts4H: 0,
                     ptsWinter: 0, ptsSummer: 0,
                     gemsWon: 0, gemsLost: 0,
@@ -8153,7 +8168,7 @@
                     tbPlayed: 0, cleanSweeps: 0,
                     comebackWins: 0, marathonCount: 0, closeLosses: 0,
                     maxEloGain: 0, maxEloLoss2H: 0,
-                    lastDateObj: null, maxGapDays: 0,
+                    lastDateObj: null, lastDateIso: null, maxGapDays: 0,
                     partnersSet: new Set()
                 };
             });
@@ -8209,6 +8224,7 @@
                             if (gap > p.maxGapDays) p.maxGapDays = gap;
                         }
                         p.lastDateObj = mDateObj;
+                        p.lastDateIso = m.date;
                     });
                 }
 
@@ -8290,6 +8306,7 @@
                         if (isWinterSeason) p.ptsWinter = Math.round((p.ptsWinter + ptsEarned) * 100) / 100;
                         else if (isSummerSeason) p.ptsSummer = Math.round((p.ptsSummer + ptsEarned) * 100) / 100;
 
+                        if (totalGems > 0) p.gemsMatches++;
                         p.gemsWon += gW;
                         p.gemsLost += gL;
 
@@ -8397,11 +8414,14 @@
 
                 // Priebežné vyhodnotenie držiteľov po tomto zápase (pre výpočet "Drží od...")
                 const stepPlayers = Object.values(pStatsMap).filter(p => p.matches > 0);
+                const hotStepPlayers = mDateObj
+                    ? stepPlayers.filter(p => p.lastDateObj && diffDays(mDateObj, p.lastDateObj) <= HOT_HAND_MAX_INACTIVE_DAYS)
+                    : stepPlayers;
                 const stepPairs = Object.values(pairsMap);
                 const dIso = m.date;
 
                 updateOwnershipFor("unstoppable",     getLeaderIdsForMetric(stepPlayers, p => p.maxWinStreak, 1), dIso);
-                updateOwnershipFor("hot_hand",        getLeaderIdsForMetric(stepPlayers, p => p.curWinStreak, 1), dIso);
+                updateOwnershipFor("hot_hand",        getLeaderIdsForMetric(hotStepPlayers, p => p.curWinStreak, 1), dIso);
                 updateOwnershipFor("free_fall",       getLeaderIdsForMetric(stepPlayers, p => p.maxLossStreak, 1), dIso);
                 updateOwnershipFor("bulletproof",     getLeaderIdsForMetric(stepPlayers, p => p.maxUnbeatenStreak, 1), dIso);
 
@@ -8409,7 +8429,7 @@
                 updateOwnershipFor("bagel_receiver",  getLeaderIdsForMetric(stepPlayers, p => p.bagelsTaken, 1), dIso);
                 updateOwnershipFor("surgeon",         getLeaderIdsForMetric(stepPlayers, p => p.cleanSweeps, 1), dIso);
                 updateOwnershipFor("nerves_of_steel", getLeaderIdsForMetric(stepPlayers, p => p.tbPlayed, 1), dIso);
-                updateOwnershipFor("sniper",          getLeaderIdsForMetric(stepPlayers, p => p.matches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.matches) * 10) / 10 : -999, -99), dIso);
+                updateOwnershipFor("sniper",          getLeaderIdsForMetric(stepPlayers, calcSniperVal, 0.1), dIso);
                 updateOwnershipFor("phoenix",         getLeaderIdsForMetric(stepPlayers, p => p.comebackWins, 1), dIso);
                 updateOwnershipFor("marathoner",      getLeaderIdsForMetric(stepPlayers, p => p.marathonCount, 1), dIso);
                 updateOwnershipFor("unlucky",         getLeaderIdsForMetric(stepPlayers, p => p.closeLosses, 1), dIso);
@@ -8440,28 +8460,42 @@
             const activePlayers = Object.values(pStatsMap).filter(p => p.matches > 0).map(p => ({
                 ...p,
                 uniquePartnersCount: p.partnersSet.size,
-                avgGemDiff: p.matches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.matches) * 10) / 10 : null
+                avgGemDiff: p.gemsMatches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10 : null
             }));
+            const hotHandPool = activePlayers.filter(p => p.lastDateObj && diffDays(today, p.lastDateObj) <= HOT_HAND_MAX_INACTIVE_DAYS);
             const pairsList = Object.values(pairsMap);
 
             const getHeldInfo = (achId) => {
                 const map = ownershipSince[achId];
-                if (!map) return { sinceStr: "—", daysText: "" };
+                if (!map) return { sinceStr: "—", daysText: "", isShared: false };
                 const dates = Object.values(map).filter(Boolean).sort();
-                if (dates.length === 0) return { sinceStr: "—", daysText: "" };
-                // Najstarší nepretržitý dátum aktuálneho držiteľa
-                const sinceIso = dates[0];
+                if (dates.length === 0) return { sinceStr: "—", daysText: "", isShared: false };
+                // Pri viacerých držiteľoch berieme dátum posledného dorovnania rekordu (najnovší z nich)
+                const sinceIso = dates[dates.length - 1];
                 const dt = parseIsoLocal(sinceIso);
                 const days = dt ? Math.max(0, diffDays(today, dt)) : 0;
                 return {
                     sinceStr: formatDateSk(sinceIso),
-                    daysText: days === 0 ? "dnes" : skCount(days, "deň", "dni", "dní")
+                    daysText: days === 0 ? "dnes" : skCount(days, "deň", "dni", "dní"),
+                    isShared: dates.length > 1
                 };
             };
 
             // Výpočty rekordov
             const rWinStreak   = findTopHolders(activePlayers, p => p.maxWinStreak, 1);
-            const rHotHand     = findTopHolders(activePlayers, p => p.curWinStreak, 1);
+            const rHotHand     = findTopHolders(hotHandPool, p => p.curWinStreak, 1);
+            // Zosúladenie "Drží od..." pre Horúcu ruku po vyradení neaktívnych hráčov (>180 dní k dnešnému dňu)
+            (() => {
+                const curMap = ownershipSince["hot_hand"] || {};
+                const validIds = new Set(rHotHand.holders.map(p => p.id));
+                Object.keys(curMap).forEach(k => {
+                    if (!validIds.has(k)) delete curMap[k];
+                });
+                rHotHand.holders.forEach(p => {
+                    if (!curMap[p.id] && p.lastDateIso) curMap[p.id] = p.lastDateIso;
+                });
+                ownershipSince["hot_hand"] = curMap;
+            })();
             const rLossStreak  = findTopHolders(activePlayers, p => p.maxLossStreak, 1);
             const rUnbeaten    = findTopHolders(activePlayers, p => p.maxUnbeatenStreak, 1);
 
@@ -8469,7 +8503,7 @@
             const rBagelTake   = findTopHolders(activePlayers, p => p.bagelsTaken, 1);
             const rCleanSweeps = findTopHolders(activePlayers, p => p.cleanSweeps, 1);
             const rTbPlayed    = findTopHolders(activePlayers, p => p.tbPlayed, 1);
-            const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, -99);
+            const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, 0.1);
             const rPhoenix     = findTopHolders(activePlayers, p => p.comebackWins, 1);
             const rMarathoner  = findTopHolders(activePlayers, p => p.marathonCount, 1);
             const rUnlucky     = findTopHolders(activePlayers, p => p.closeLosses, 1);
@@ -8534,13 +8568,13 @@
                 },
                 {
                     id: "hot_hand", cat: 1, title: "Horúca ruka",
-                    desc: "Najdlhšia práve prebiehajúca víťazná séria",
-                    rules: "Patrí hráčovi s najdlhšou aktívnou sériou výhier, ktorá doteraz nebola prerušená.",
+                    desc: "Najdlhšia práve prebiehajúca víťazná séria (posledných 180 dní)",
+                    rules: "Patrí aktívnemu hráčovi (posledný zápas max. pred 180 dňami) s najdlhšou neprerušenou víťaznou sériou.",
                     iconFile: "ruka.png", faClass: "fa-solid fa-fire",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: `${skCount(rHotHand.value, "aktívna výhra", "aktívne výhry", "aktívnych výhier")}`,
                     holders: rHotHand.holders,
-                    top3: buildTop3Ranking(activePlayers, p => p.curWinStreak, pName, v => `${v} V`, 1),
+                    top3: buildTop3Ranking(hotHandPool, p => p.curWinStreak, pName, v => `${v} V`, 1),
                     held: getHeldInfo("hot_hand")
                 },
                 {
@@ -8613,13 +8647,13 @@
                 },
                 {
                     id: "sniper", cat: 2, title: "Sniper",
-                    desc: "Najlepšia priemerná gemová bilancia na zápas (min. 3 štarty)",
-                    rules: "Priemerný rozdiel (vyhraté mínus prehraté gemy) na 1 zápas; podmienkou sú min. 3 zápasy.",
+                    desc: "Najlepšia kladná priemerná gemová bilancia na zápas (min. 3 štarty)",
+                    rules: "Priemerný kladný rozdiel (vyhraté mínus prehraté gemy) na 1 zápas so zadanými gemami; podmienkou sú min. 3 takéto zápasy.",
                     iconFile: "sniper.png", faClass: "fa-solid fa-crosshairs",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
-                    valueText: `${rSniper.value >= 0 ? '+' : ''}${Number(rSniper.value).toFixed(1)} gemu / záp.`,
+                    valueText: `+${Number(rSniper.value).toFixed(1)} gemu / záp.`,
                     holders: rSniper.holders,
-                    top3: buildTop3Ranking(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, pName, v => `${v >= 0 ? '+' : ''}${Number(v).toFixed(1)}`, -99),
+                    top3: buildTop3Ranking(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, pName, v => `+${Number(v).toFixed(1)}`, 0.1),
                     held: getHeldInfo("sniper")
                 },
                 {
@@ -8663,7 +8697,7 @@
                     rules: "Súčet všetkých bodov z dvojhier (V=1, R=0.5) aj štvorhier (V=0.5, R=0.25) v zvolenom období.",
                     iconFile: "vrchol.png", faClass: "fa-solid fa-mountain",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
-                    valueText: `${formatPts(rPointsKing.value)} bodov`,
+                    valueText: formatPtsWithUnit(rPointsKing.value),
                     holders: rPointsKing.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.points, pName, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("points_king")
@@ -8674,7 +8708,7 @@
                     rules: "Počítajú sa výhradne body zo singlových zápasov 2H (výhra 1 b, remíza 0.5 b).",
                     iconFile: "kral_dvojhry.png", faClass: "fa-solid fa-crown",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
-                    valueText: `${formatPts(rSinglesKing.value)} bodov`,
+                    valueText: formatPtsWithUnit(rSinglesKing.value),
                     holders: rSinglesKing.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.pts2H, pName, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("singles_king")
@@ -8685,7 +8719,7 @@
                     rules: "Počítajú sa výhradne body z deblových zápasov 4H (výhra 0.5 b, remíza 0.25 b).",
                     iconFile: "kral_stvorhry.png", faClass: "fa-solid fa-crown",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
-                    valueText: `${formatPts(rDoublesKing.value)} bodov`,
+                    valueText: formatPtsWithUnit(rDoublesKing.value),
                     holders: rDoublesKing.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.pts4H, pName, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("doubles_king")
@@ -8696,7 +8730,7 @@
                     rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch november až apríl.",
                     iconFile: "zimny_vlk.png", faClass: "fa-solid fa-snowflake",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
-                    valueText: `${formatPts(rWinterWolf.value)} bodov`,
+                    valueText: formatPtsWithUnit(rWinterWolf.value),
                     holders: rWinterWolf.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.ptsWinter, pName, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("winter_wolf")
@@ -8707,7 +8741,7 @@
                     rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch máj až október.",
                     iconFile: "plazovy_chlapec.png", faClass: "fa-solid fa-sun",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
-                    valueText: `${formatPts(rBeachBoy.value)} bodov`,
+                    valueText: formatPtsWithUnit(rBeachBoy.value),
                     holders: rBeachBoy.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.ptsSummer, pName, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("beach_boy")
@@ -8940,9 +8974,12 @@
                             </div>
                         `).join("");
 
-                    const heldObj = ach.held || { sinceStr: "—", daysText: "" };
+                    const heldObj = ach.held || { sinceStr: "—", daysText: "", isShared: false };
+                    const heldVerb = heldObj.isShared
+                        ? "Delia sa od"
+                        : (ach.holders.length > 1 ? "Držia od" : "Drží od");
                     const heldFootHtml = ach.holders.length > 0 && heldObj.sinceStr !== "—"
-                        ? `<span>Drží od <strong>${escapeHtml(heldObj.sinceStr)}</strong> (${escapeHtml(heldObj.daysText)})</span>`
+                        ? `<span>${heldVerb} <strong>${escapeHtml(heldObj.sinceStr)}</strong> (${escapeHtml(heldObj.daysText)})</span>`
                         : `<span>Držiteľ: <strong>zatiaľ neobsadený</strong></span>`;
 
                     return `
@@ -8996,20 +9033,22 @@
                 });
             });
 
-            let bestPlayer = null;
+            let bestPlayers = [];
             let bestCount = 0;
             computedPlayers.forEach(p => {
                 const c = badgeCounts[p.id] || 0;
                 if (c > bestCount) {
                     bestCount = c;
-                    bestPlayer = p;
+                    bestPlayers = [p];
+                } else if (c === bestCount && c > 0) {
+                    bestPlayers.push(p);
                 }
             });
 
             const topEl = document.getElementById("ach-top-collector");
             const cntEl = document.getElementById("ach-top-collector-count");
-            if (topEl) topEl.textContent = bestPlayer ? bestPlayer.name : "—";
-            if (cntEl) cntEl.textContent = `${bestCount} pozitívnych odznakov`;
+            if (topEl) topEl.textContent = bestPlayers.length > 0 ? bestPlayers.map(p => p.name).join(", ") : "—";
+            if (cntEl) cntEl.textContent = skCount(bestCount, "pozitívny odznak", "pozitívne odznaky", "pozitívnych odznakov");
         }
 
         /* ==================== EDITÁCIA A HISTÓRIA ==================== */
@@ -12401,7 +12440,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.32! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.33! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -12765,7 +12804,7 @@
                 hot_hand: (holders, a) => {
                     const fresh = holders.filter(h => {
                         const cp = players.find(x => x.id === h.id);
-                        return cp && typeof cp.daysSinceLastMatch === "number" && cp.daysSinceLastMatch < 180;
+                        return cp && typeof cp.daysSinceLastMatch === "number" && cp.daysSinceLastMatch <= 180;
                     });
                     if (fresh.length === 0) return ["HORÚCA RUKA", ""];
                     const n = skJoinNames(fresh, "nom");
