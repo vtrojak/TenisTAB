@@ -1333,6 +1333,24 @@
             font-size: 0.76rem;
         }
 
+        .history-toggle-pill {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.16s ease, border-color 0.16s ease, transform 0.1s ease, box-shadow 0.16s ease;
+        }
+
+        .history-toggle-pill:hover {
+            background: rgba(255, 255, 255, 0.24);
+            border-color: var(--btn-accent);
+            box-shadow: 0 0 10px var(--btn-glow);
+        }
+
+        .history-toggle-pill:active {
+            transform: scale(0.96);
+        }
+
 
         .stat-tile-value {
             font-size: 1.08rem;
@@ -3120,7 +3138,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.27</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.28</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3151,7 +3169,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.27</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.28</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3745,10 +3763,10 @@
                         <span class="card-title-dot"></span>
                         História zápasov (<span id="history-count-label">0</span>)
                     </div>
-                    <span class="param-pill" id="history-shown-pill">Zobrazených: 0</span>
+                    <button type="button" class="param-pill history-toggle-pill" id="history-shown-pill" onclick="toggleHistoryExpanded()" aria-expanded="false">▼ Rozbaliť</button>
                 </div>
 
-                <div class="history-filters">
+                <div class="history-filters" id="history-filters-bar" style="display:none;">
                     <select id="history-sort-order" onchange="renderMatchHistory()">
                         <option value="desc">Od najnovšieho</option>
                         <option value="asc">Od najstaršieho (#1)</option>
@@ -8684,8 +8702,17 @@
             showToast("Zápas bol vymazaný a tabuľka prepočítaná.");
         }
 
+        let historyExpanded = false;
+
+        function toggleHistoryExpanded() {
+            historyExpanded = !historyExpanded;
+            renderMatchHistory();
+        }
+
         function renderMatchHistory() {
             const list = document.getElementById("history-list");
+            const filtersBar = document.getElementById("history-filters-bar");
+            const toggleBtn = document.getElementById("history-shown-pill");
             const filterPlayer = document.getElementById("history-filter-player").value || "all";
             const filterType = document.getElementById("history-filter-type").value || "all";
             const filterValidity = document.getElementById("history-filter-validity").value || "all";
@@ -8693,20 +8720,42 @@
 
             document.getElementById("history-count-label").textContent = computedMatches.length;
 
-            let filtered = computedMatches.filter(m => {
-                if (filterPlayer !== "all" && !m.team1.includes(filterPlayer) && !m.team2.includes(filterPlayer)) return false;
-                if (filterType !== "all" && m.type !== filterType) return false;
-                if (filterValidity === "active" && !m.isValid) return false;
-                if (filterValidity === "expired" && m.isValid) return false;
-                return true;
-            });
+            let filtered = [];
+            if (!historyExpanded) {
+                if (filtersBar) filtersBar.style.display = "none";
+                if (toggleBtn) {
+                    toggleBtn.textContent = "▼ Rozbaliť";
+                    toggleBtn.setAttribute("aria-expanded", "false");
+                    toggleBtn.title = "Rozbaliť celú históriu zápasov a filtre";
+                }
+                if (computedMatches.length > 0) {
+                    filtered = [computedMatches[computedMatches.length - 1]];
+                }
+                if (filtered.length === 0) {
+                    list.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem; padding:6px 2px;">Zatiaľ nie sú zapísané žiadne zápasy.</div>`;
+                    return;
+                }
+            } else {
+                if (filtersBar) filtersBar.style.display = "flex";
+                filtered = computedMatches.filter(m => {
+                    if (filterPlayer !== "all" && !m.team1.includes(filterPlayer) && !m.team2.includes(filterPlayer)) return false;
+                    if (filterType !== "all" && m.type !== filterType) return false;
+                    if (filterValidity === "active" && !m.isValid) return false;
+                    if (filterValidity === "expired" && m.isValid) return false;
+                    return true;
+                });
 
-            if (sortOrder === "desc") filtered = filtered.slice().reverse();
-            document.getElementById("history-shown-pill").textContent = `Zobrazených: ${filtered.length}`;
+                if (sortOrder === "desc") filtered = filtered.slice().reverse();
+                if (toggleBtn) {
+                    toggleBtn.textContent = `Zobrazených: ${filtered.length}`;
+                    toggleBtn.setAttribute("aria-expanded", "true");
+                    toggleBtn.title = "Zabaliť históriu (zobraziť len posledný zápas)";
+                }
 
-            if (filtered.length === 0) {
-                list.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem; padding:6px 2px;">Žiadne zápasy pre zvolený filter.</div>`;
-                return;
+                if (filtered.length === 0) {
+                    list.innerHTML = `<div style="color:var(--text-muted); font-size:0.84rem; padding:6px 2px;">Žiadne zápasy pre zvolený filter.</div>`;
+                    return;
+                }
             }
 
             const wm = Number(state.config.windowMonths) || 0;
@@ -11940,7 +11989,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.27! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.28! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
