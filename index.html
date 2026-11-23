@@ -3120,7 +3120,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.24</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.25</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3151,7 +3151,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.24</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.25</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -8275,7 +8275,7 @@
                     held: getHeldInfo("doubles_king")
                 },
                 {
-                    id: "winter_wolf", cat: 3, title: "Zimný vlk (Halový kráľ)",
+                    id: "winter_wolf", cat: 3, title: "Zimný vlk",
                     desc: "Najviac bodov v halovej sezóne (november – apríl)",
                     rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch november až apríl.",
                     iconFile: "zimny_vlk.png", faClass: "fa-solid fa-snowflake",
@@ -8286,7 +8286,7 @@
                     held: getHeldInfo("winter_wolf")
                 },
                 {
-                    id: "beach_boy", cat: 3, title: "Plážový chlapec (Antukový kráľ)",
+                    id: "beach_boy", cat: 3, title: "Plážový chlapec",
                     desc: "Najviac bodov vo vonkajšej sezóne (máj – október)",
                     rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch máj až október.",
                     iconFile: "plazovy_chlapec.png", faClass: "fa-solid fa-sun",
@@ -8441,7 +8441,7 @@
                     held: getHeldInfo("good_chemistry")
                 },
                 {
-                    id: "unbeatable_duo", cat: 4, title: "Neporaziteľné duo",
+                    id: "unbeatable_duo", cat: 4, title: "Dream Team",
                     desc: rUnbeatableDuo.holders.length > 0
                         ? `Najdlhšia víťazná šnúra pevnej dvojice (${rUnbeatableDuo.holders.map(x => x.name).join(", ")})`
                         : "Najdlhšia nepretržitá víťazná šnúra pevnej dvojice v 4H",
@@ -11728,7 +11728,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.24! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.25! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
