@@ -575,6 +575,60 @@
             color: rgba(185, 198, 195, 0.56) !important;
         }
 
+        /* Variant B: vnorený prepínač Hráči / Páry na aktívnej dlaždici ELO 4H */
+        .table-mode-btn-4h {
+            padding: 6px 6px;
+        }
+
+        .table-mode-btn-4h:not(.active) {
+            padding: 11px 8px;
+        }
+
+        .tmode-4h-switch {
+            display: none;
+            width: 100%;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            align-items: stretch;
+        }
+
+        .table-mode-btn-4h.active .tmode-4h-default {
+            display: none;
+        }
+
+        .table-mode-btn-4h.active .tmode-4h-switch {
+            display: grid;
+        }
+
+        .tmode-4h-opt {
+            border: 1px solid rgba(0, 0, 0, 0.22);
+            background: rgba(0, 0, 0, 0.12);
+            color: var(--tmode-active-text);
+            border-radius: 8px;
+            padding: 5px 4px;
+            font-size: 0.71rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            line-height: 1.1;
+            transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+            white-space: nowrap;
+        }
+
+        .tmode-4h-opt:hover {
+            background: rgba(0, 0, 0, 0.24);
+        }
+
+        .tmode-4h-opt.active {
+            background: #0b1320;
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.55);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+        }
+
         @media (max-width: 480px) {
             .table-mode-bar {
                 gap: 6px;
@@ -583,6 +637,24 @@
                 font-size: 0.72rem;
                 padding: 9px 4px;
                 gap: 4px;
+            }
+            .table-mode-btn-4h.active {
+                padding: 5px 4px;
+            }
+            .tmode-4h-opt {
+                font-size: 0.65rem;
+                padding: 5px 2px;
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .tmode-4h-opt-lbl {
+                display: none;
+            }
+            .tmode-4h-opt {
+                font-size: 0.78rem;
+                padding: 5px 2px;
             }
         }
 
@@ -2186,6 +2258,25 @@
             grid-template-columns: repeat(3, 1fr);
         }
 
+        .tv-modal-tabs.tv-grid-5 {
+            grid-template-columns: 1fr 1fr 0.92fr;
+            grid-template-rows: auto auto;
+            gap: 6px;
+        }
+
+        .tv-mode-btn-tall {
+            grid-column: 3;
+            grid-row: 1 / span 2;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            white-space: normal !important;
+            line-height: 1.22;
+            height: 100%;
+            padding: 8px 6px !important;
+        }
+
         .tv-modal-body {
             flex: 1 1 auto;
             min-height: 0;
@@ -3029,7 +3120,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.23</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.24</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3060,7 +3151,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.23</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.24</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3090,7 +3181,13 @@
             <div class="table-mode-bar" id="table-mode-bar">
                 <button type="button" id="tmode-btn-points" class="table-mode-btn active" onclick="setTableViewMode('points')">Body (2H + 4H)</button>
                 <button type="button" id="tmode-btn-elo2h" class="table-mode-btn" onclick="setTableViewMode('elo2h')">ELO Dvojhra (2H)</button>
-                <button type="button" id="tmode-btn-elo4h" class="table-mode-btn" onclick="setTableViewMode('elo4h')">ELO Štvorhra (4H)</button>
+                <div id="tmode-btn-elo4h" class="table-mode-btn table-mode-btn-4h" role="button" tabindex="0" onclick="setTableViewMode('elo4h')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); setTableViewMode('elo4h');}">
+                    <span class="tmode-4h-default">ELO Štvorhra (4H)</span>
+                    <span class="tmode-4h-switch" onclick="event.stopPropagation()">
+                        <button type="button" id="tmode-4h-sub-players" class="tmode-4h-opt active" onclick="setElo4HSubMode('players')" title="ELO 4H – Jednotlivci">👤<span class="tmode-4h-opt-lbl"> Hráči</span></button>
+                        <button type="button" id="tmode-4h-sub-pairs" class="tmode-4h-opt" onclick="setElo4HSubMode('pairs')" title="ELO 4H – Pevné dvojice (Páry)">👥<span class="tmode-4h-opt-lbl"> Páry</span></button>
+                    </span>
+                </div>
             </div>
 
             <!-- HLAVNÁ KARTA: PRIEBEŽNÁ TABUĽKA BODOV / ELO -->
@@ -3479,7 +3576,7 @@
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Tímy &amp; Zápasy</div>
-                    <div class="stat-tile-value">4</div>
+                    <div class="stat-tile-value">8</div>
                     <div class="stat-tile-sub">Kategória 4</div>
                 </div>
             </div>
@@ -3887,11 +3984,12 @@
                     </div>
                     <span class="chart-range-pill">1920 × 1080</span>
                 </div>
-                <div class="tv-modal-tabs">
+                <div class="tv-modal-tabs tv-grid-5">
                     <button type="button" id="tv-mode-points" class="preset-btn tv-mode-btn active" onclick="setTvMode('points')">Body</button>
                     <button type="button" id="tv-mode-elo2h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo2h')">ELO 2H</button>
                     <button type="button" id="tv-mode-elo4h" class="preset-btn tv-mode-btn" onclick="setTvMode('elo4h')">ELO 4H</button>
-                    <button type="button" id="tv-mode-last" class="preset-btn tv-mode-btn" onclick="setTvMode('last')">Posledný</button>
+                    <button type="button" id="tv-mode-elo4h_pairs" class="preset-btn tv-mode-btn" onclick="setTvMode('elo4h_pairs')">ELO 4H Páry</button>
+                    <button type="button" id="tv-mode-last" class="preset-btn tv-mode-btn tv-mode-btn-tall" onclick="setTvMode('last')">Posledný<br>zápas</button>
                 </div>
             </div>
             <div class="tv-modal-body">
@@ -4166,12 +4264,14 @@
         }
 
         let tableViewMode = "points"; // "points" | "elo2h" | "elo4h"
+        let elo4hSubMode = "players"; // "players" | "pairs"
 
         let computedPlayers = [];
         let computedMatches = [];
         let validMatchesCount = 0;
         let computedElo2H = [];
         let computedElo4H = [];
+        let computedElo4HPairs = [];
         let elo2HMatchesCount = 0;
         let elo4HMatchesCount = 0;
         let elo2HLeaderSnaps = [];
@@ -4968,9 +5068,11 @@
                 }
             });
 
-            // --- 2. ELO ŠTVORHRA (4H) – matematika 1:1 z ELO4MASTER ---
+            // --- 2. ELO ŠTVORHRA (4H) – jednotlivci (ELO4MASTER) + vlastné tímové ELO dvojíc ---
             const map4H = initEloMap();
+            const map4HPairs = {};
             let last4HMatchDelta = null;
+            let last4HPairMatchDelta = null;
             elo4HMatchesCount = 0;
             elo4HLeaderSnaps = [];
             elo4HTimelinePoints = [{
@@ -5037,6 +5139,85 @@
 
                 last4HMatchDelta = { t1: [pA1.id, pA2.id], dA: deltaA, t2: [pB1.id, pB2.id], dB: deltaB };
 
+                // Vlastné tímové ELO pre pevné dvojice (štart 1500.0)
+                const getOrInitPair = (pl1, pl2) => {
+                    const ordered = pl1.id < pl2.id ? [pl1, pl2] : [pl2, pl1];
+                    const key = `${ordered[0].id}__${ordered[1].id}`;
+                    if (!map4HPairs[key]) {
+                        map4HPairs[key] = {
+                            key,
+                            id: key,
+                            id1: ordered[0].id,
+                            id2: ordered[1].id,
+                            name: `${ordered[0].name} / ${ordered[1].name}`,
+                            color: ordered[0].color,
+                            color1: ordered[0].color,
+                            color2: ordered[1].color,
+                            elo: 1500.0,
+                            minElo: 1500.0,
+                            maxElo: 1500.0,
+                            lastDelta: 0,
+                            matches: 0,
+                            wins: 0,
+                            losses: 0,
+                            draws: 0,
+                            setsWon: 0,
+                            setsLost: 0,
+                            gemsWon: 0,
+                            gemsLost: 0,
+                            form: [],
+                            curWinStreak: 0,
+                            curLossStreak: 0,
+                            lastMatchDate: null,
+                            daysSinceLastMatch: null,
+                            isInactive: false
+                        };
+                    }
+                    return map4HPairs[key];
+                };
+
+                const pairA = getOrInitPair(pA1, pA2);
+                const pairB = getOrInitPair(pB1, pB2);
+                const rPairA = pairA.elo;
+                const rPairB = pairB.elo;
+                const ePairA = 1 / (1 + Math.pow(10, (rPairB - rPairA) / D));
+                const rawDeltaPairA = K * (sA - ePairA);
+                const newPairEloA = Math.round((rPairA + rawDeltaPairA) * 10) / 10;
+                const newPairEloB = Math.round((rPairB - rawDeltaPairA) * 10) / 10;
+                const appliedPairDeltaA = Math.round((newPairEloA - rPairA) * 10) / 10;
+                const appliedPairDeltaB = Math.round((newPairEloB - rPairB) * 10) / 10;
+
+                pairA.elo = newPairEloA;
+                pairB.elo = newPairEloB;
+                if (pairA.elo > pairA.maxElo) pairA.maxElo = pairA.elo;
+                if (pairA.elo < pairA.minElo) pairA.minElo = pairA.elo;
+                if (pairB.elo > pairB.maxElo) pairB.maxElo = pairB.elo;
+                if (pairB.elo < pairB.minElo) pairB.minElo = pairB.elo;
+
+                if (m.date) {
+                    if (!pairA.lastMatchDate || m.date > pairA.lastMatchDate) pairA.lastMatchDate = m.date;
+                    if (!pairB.lastMatchDate || m.date > pairB.lastMatchDate) pairB.lastMatchDate = m.date;
+                }
+
+                pairA.matches++; pairB.matches++;
+                pairA.setsWon += s1; pairA.setsLost += s2;
+                pairB.setsWon += s2; pairB.setsLost += s1;
+                pairA.gemsWon += g.g1; pairA.gemsLost += g.g2;
+                pairB.gemsWon += g.g2; pairB.gemsLost += g.g1;
+
+                if (s1 > s2) {
+                    pairA.wins++; pairA.form.push("W"); pairA.curWinStreak++; pairA.curLossStreak = 0;
+                    pairB.losses++; pairB.form.push("L"); pairB.curLossStreak++; pairB.curWinStreak = 0;
+                } else if (s2 > s1) {
+                    pairA.losses++; pairA.form.push("L"); pairA.curLossStreak++; pairA.curWinStreak = 0;
+                    pairB.wins++; pairB.form.push("W"); pairB.curWinStreak++; pairB.curLossStreak = 0;
+                } else {
+                    pairA.draws++; pairA.form.push("D"); pairA.curWinStreak = 0; pairA.curLossStreak = 0;
+                    pairB.draws++; pairB.form.push("D"); pairB.curWinStreak = 0; pairB.curLossStreak = 0;
+                }
+
+                last4HPairMatchDelta = { kA: pairA.key, dA: appliedPairDeltaA, kB: pairB.key, dB: appliedPairDeltaB };
+
                 const cm = cmById[m.id];
                 if (cm) {
                     cm.eloDeltaA = deltaA;
@@ -5076,8 +5257,9 @@
 
             Object.values(map2H).forEach(finalizeInactivity);
             Object.values(map4H).forEach(finalizeInactivity);
+            Object.values(map4HPairs).forEach(finalizeInactivity);
 
-            // Zobraziť len hráčov, ktorí v danej disciplíne odohrali aspoň 1 zápas
+            // Zobraziť len hráčov / dvojice, ktorí v danej disciplíne odohrali aspoň 1 zápas
             computedElo2H = Object.values(map2H)
                 .filter(p => p.matches > 0)
                 .sort((a, b) => (b.elo !== a.elo ? b.elo - a.elo : b.matches - a.matches))
@@ -5087,6 +5269,11 @@
                 .filter(p => p.matches > 0)
                 .sort((a, b) => (b.elo !== a.elo ? b.elo - a.elo : b.matches - a.matches))
                 .map((p, idx) => ({ ...p, rank: idx + 1 }));
+
+            computedElo4HPairs = Object.values(map4HPairs)
+                .filter(pr => pr.matches > 0)
+                .sort((a, b) => (b.elo !== a.elo ? b.elo - a.elo : b.matches - a.matches))
+                .map((pr, idx) => ({ ...pr, rank: idx + 1 }));
 
             if (last2HMatchDelta) {
                 const a = computedElo2H.find(p => p.id === last2HMatchDelta.idA);
@@ -5103,6 +5290,12 @@
                     const pl = computedElo4H.find(p => p.id === id);
                     if (pl) pl.lastDelta = last4HMatchDelta.dB;
                 });
+            }
+            if (last4HPairMatchDelta) {
+                const pA = computedElo4HPairs.find(pr => pr.key === last4HPairMatchDelta.kA);
+                const pB = computedElo4HPairs.find(pr => pr.key === last4HPairMatchDelta.kB);
+                if (pA) pA.lastDelta = last4HPairMatchDelta.dA;
+                if (pB) pB.lastDelta = last4HPairMatchDelta.dB;
             }
         }
 
@@ -5136,6 +5329,48 @@
             btnEl._sheenTimer = setTimeout(() => btnEl.classList.remove("btn-light-hit"), 440);
         }
 
+        function syncElo4HSubModeUI() {
+            const bPl = document.getElementById("tmode-4h-sub-players");
+            const bPr = document.getElementById("tmode-4h-sub-pairs");
+            if (bPl) bPl.classList.toggle("active", elo4hSubMode === "players");
+            if (bPr) bPr.classList.toggle("active", elo4hSubMode === "pairs");
+        }
+
+        function setElo4HSubMode(sub) {
+            elo4hSubMode = sub === "pairs" ? "pairs" : "players";
+            syncElo4HSubModeUI();
+            if (tableViewMode !== "elo4h") {
+                setTableViewMode("elo4h");
+                return;
+            }
+            tableSort = { key: "elo", dir: "desc" };
+            renderLeaderboard();
+            const tvMod = document.getElementById("tv-modal");
+            if (tvMod && tvMod.classList.contains("open")) renderTvCanvas();
+        }
+
+        function openPairH2H(id1, id2) {
+            const navBtn = document.querySelector('.bottom-nav .nav-item[data-tab="sec-h2h"]');
+            switchTab("sec-h2h", navBtn);
+            setH2HMode("teams");
+            const sA1 = document.getElementById("h2h-t1p1");
+            const sA2 = document.getElementById("h2h-t1p2");
+            const sB1 = document.getElementById("h2h-t2p1");
+            const sB2 = document.getElementById("h2h-t2p2");
+            if (sA1 && sA2) {
+                sA1.value = id1;
+                sA2.value = id2;
+            }
+            const others = computedPlayers.filter(p => p.id !== id1 && p.id !== id2);
+            if (sB1 && sB2 && others.length >= 2) {
+                if (sB1.value === id1 || sB1.value === id2 || sB2.value === id1 || sB2.value === id2 || sB1.value === sB2.value) {
+                    sB1.value = others[0].id;
+                    sB2.value = others[1].id;
+                }
+            }
+            renderH2H();
+        }
+
         function setTableViewMode(mode) {
             const validMode = (mode === "elo2h" || mode === "elo4h") ? mode : "points";
             tableViewMode = validMode;
@@ -5143,6 +5378,7 @@
             document.getElementById("tmode-btn-points").classList.toggle("active", tableViewMode === "points");
             document.getElementById("tmode-btn-elo2h").classList.toggle("active", tableViewMode === "elo2h");
             document.getElementById("tmode-btn-elo4h").classList.toggle("active", tableViewMode === "elo4h");
+            syncElo4HSubModeUI();
             triggerGreenBtnFlash(document.getElementById(`tmode-btn-${validMode}`));
 
             if (tableViewMode === "points") {
@@ -5347,31 +5583,36 @@
             const thead = document.querySelector("#leaderboard-table thead");
             const tbody = document.querySelector("#leaderboard-table tbody");
 
-            // Režim ELO Dvojhra (2H) alebo ELO Štvorhra (4H)
+            // Režim ELO Dvojhra (2H) alebo ELO Štvorhra (4H – Hráči / Páry)
             if (tableViewMode === "elo2h" || tableViewMode === "elo4h") {
                 const isDoubles = tableViewMode === "elo4h";
-                const srcList = isDoubles ? computedElo4H : computedElo2H;
+                const isPairs = isDoubles && elo4hSubMode === "pairs";
+                const srcList = isPairs ? computedElo4HPairs : (isDoubles ? computedElo4H : computedElo2H);
                 const mCount = isDoubles ? elo4HMatchesCount : elo2HMatchesCount;
 
                 if (windowBar) windowBar.style.display = "none";
                 if (titleEl) {
-                    titleEl.textContent = isDoubles
-                        ? `ELO tabuľka – Štvorhra 4H (${srcList.length} hráčov)`
-                        : `ELO tabuľka – Dvojhra 2H (${srcList.length} hráčov)`;
+                    titleEl.textContent = isPairs
+                        ? `ELO tabuľka – Štvorhra 4H · Dvojice (${srcList.length} párov)`
+                        : (isDoubles
+                            ? `ELO tabuľka – Štvorhra 4H (${srcList.length} hráčov)`
+                            : `ELO tabuľka – Dvojhra 2H (${srcList.length} hráčov)`);
                 }
                 if (rangePill) {
                     rangePill.textContent = `K=${getEloK()} · D=${getEloD()} · ${mCount} záp.`;
                 }
                 if (legendEl) {
-                    legendEl.innerHTML = isDoubles
-                        ? `<span>👥 <strong>ELO 4H:</strong> K=${getEloK()} · D=${getEloD()} · priemer dvojice · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 4H (1+ rok)</span>`
-                        : `<span>🎾 <strong>ELO 2H:</strong> K=${getEloK()} · D=${getEloD()} · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 2H (1+ rok)</span>`;
+                    legendEl.innerHTML = isPairs
+                        ? `<span>👥 <strong>Tímové ELO 4H:</strong> K=${getEloK()} · D=${getEloD()} · vlastné ELO pevnej dvojice · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny pár (1+ rok)</span>`
+                        : (isDoubles
+                            ? `<span>👥 <strong>ELO 4H:</strong> K=${getEloK()} · D=${getEloD()} · priemer dvojice · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 4H (1+ rok)</span>`
+                            : `<span>🎾 <strong>ELO 2H:</strong> K=${getEloK()} · D=${getEloD()} · štart 1500.0</span><span>🔥 3+ výhier v rade</span><span>❄️ 3+ prehier v rade</span><span>⚫ Neaktívny v 2H (1+ rok)</span>`);
                 }
 
                 thead.innerHTML = `
                     <tr>
                         <th class="sortable" data-sort-key="rank" onclick="setTableSort('rank')">Por.<span class="sort-arrow"></span></th>
-                        <th class="sortable" data-sort-key="name" onclick="setTableSort('name')">Meno<span class="sort-arrow"></span></th>
+                        <th class="sortable" data-sort-key="name" onclick="setTableSort('name')">${isPairs ? 'Dvojica' : 'Meno'}<span class="sort-arrow"></span></th>
                         <th class="text-right sortable" data-sort-key="elo" onclick="setTableSort('elo')">ELO<span class="sort-arrow"></span></th>
                         <th class="text-right sortable" data-sort-key="matches" onclick="setTableSort('matches')">Záp.<span class="sort-arrow"></span></th>
                         <th class="text-right sortable" data-sort-key="wins" onclick="setTableSort('wins')">V<span class="sort-arrow"></span></th>
@@ -5431,14 +5672,23 @@
 
                     const tr = document.createElement("tr");
                     if (p.isInactive) tr.className = "row-inactive";
-                    tr.title = `Kliknutím otvoríš detailný profil hráča ${p.name}`;
-                    tr.onclick = () => openPlayerDetail(p.id);
+                    if (isPairs) {
+                        tr.title = `Kliknutím otvoríš H2H pre dvojicu ${p.name}`;
+                        tr.onclick = () => openPairH2H(p.id1, p.id2);
+                    } else {
+                        tr.title = `Kliknutím otvoríš detailný profil hráča ${p.name}`;
+                        tr.onclick = () => openPlayerDetail(p.id);
+                    }
+
+                    const dotsHtml = isPairs
+                        ? `<span class="player-color-dot" style="width:7px; height:7px; border-radius:50%; background:${p.color1}; display:inline-block; flex-shrink:0;"></span><span class="player-color-dot" style="width:7px; height:7px; border-radius:50%; background:${p.color2}; display:inline-block; flex-shrink:0; margin-left:-2px;"></span>`
+                        : `<span class="player-color-dot" style="width:8px; height:8px; border-radius:50%; background:${p.color}; display:inline-block; flex-shrink:0;"></span>`;
 
                     tr.innerHTML = `
                         <td><span class="rank-badge ${rankClass}">${rank}.</span></td>
                         <td>
                             <div style="display:flex; align-items:center; gap:6px;">
-                                <span class="player-color-dot" style="width:8px; height:8px; border-radius:50%; background:${p.color}; display:inline-block; flex-shrink:0;"></span>
+                                ${dotsHtml}
                                 <strong>${escapeHtml(p.name)}</strong>${statusIconsHtml}
                             </div>
                         </td>
@@ -7682,26 +7932,51 @@
 
                 // Pevné dvojice a spoluhráči (4H)
                 if (m.type === "4H") {
-                    if (t1.length === 2) {
-                        t1[0].partnersSet.add(t1[1].id);
-                        t1[1].partnersSet.add(t1[0].id);
-                        const k1 = [t1[0].id, t1[1].id].sort().join("__");
-                        if (!pairsMap[k1]) {
-                            pairsMap[k1] = { key: k1, p1: t1[0], p2: t1[1], name: `${t1[0].name} / ${t1[1].name}`, matches: 0, pts: 0 };
+                    const isDramaSets = totalSets >= 3 && (!isThreeZero || totalGems >= 25);
+                    const t1WonTb = parsedSets.some(st => st.g1 === 7 && st.g2 === 6);
+                    const t2WonTb = parsedSets.some(st => st.g2 === 7 && st.g1 === 6);
+
+                    const updatePairStats = (teamArr, res, ptsEarned, wonTb) => {
+                        if (teamArr.length !== 2) return;
+                        teamArr[0].partnersSet.add(teamArr[1].id);
+                        teamArr[1].partnersSet.add(teamArr[0].id);
+                        const ordered = teamArr[0].id < teamArr[1].id ? [teamArr[0], teamArr[1]] : [teamArr[1], teamArr[0]];
+                        const k = `${ordered[0].id}__${ordered[1].id}`;
+                        if (!pairsMap[k]) {
+                            pairsMap[k] = {
+                                key: k,
+                                p1: ordered[0],
+                                p2: ordered[1],
+                                name: `${ordered[0].name} / ${ordered[1].name}`,
+                                matches: 0,
+                                wins: 0,
+                                draws: 0,
+                                losses: 0,
+                                pts: 0,
+                                curWinStreak: 0,
+                                maxWinStreak: 0,
+                                dramaWins: 0
+                            };
                         }
-                        pairsMap[k1].matches++;
-                        pairsMap[k1].pts = Math.round((pairsMap[k1].pts + m.ptsA) * 100) / 100;
-                    }
-                    if (t2.length === 2) {
-                        t2[0].partnersSet.add(t2[1].id);
-                        t2[1].partnersSet.add(t2[0].id);
-                        const k2 = [t2[0].id, t2[1].id].sort().join("__");
-                        if (!pairsMap[k2]) {
-                            pairsMap[k2] = { key: k2, p1: t2[0], p2: t2[1], name: `${t2[0].name} / ${t2[1].name}`, matches: 0, pts: 0 };
+                        const pr = pairsMap[k];
+                        pr.matches++;
+                        pr.pts = Math.round((pr.pts + ptsEarned) * 100) / 100;
+                        if (res === "W") {
+                            pr.wins++;
+                            pr.curWinStreak++;
+                            if (pr.curWinStreak > pr.maxWinStreak) pr.maxWinStreak = pr.curWinStreak;
+                            if (isDramaSets || wonTb) pr.dramaWins++;
+                        } else if (res === "L") {
+                            pr.losses++;
+                            pr.curWinStreak = 0;
+                        } else {
+                            pr.draws++;
+                            pr.curWinStreak = 0;
                         }
-                        pairsMap[k2].matches++;
-                        pairsMap[k2].pts = Math.round((pairsMap[k2].pts + m.ptsB) * 100) / 100;
-                    }
+                    };
+
+                    updatePairStats(t1, res1, m.ptsA, t1WonTb);
+                    updatePairStats(t2, res2, m.ptsB, t2WonTb);
                 }
 
                 // Priebežné vyhodnotenie držiteľov po tomto zápase (pre výpočet "Drží od...")
@@ -7738,6 +8013,10 @@
 
                 updateOwnershipFor("dynamic_duo",      getLeaderIdsForMetric(stepPairs, pr => pr.pts, 0.25), dIso);
                 updateOwnershipFor("inseparable_pair", getLeaderIdsForMetric(stepPairs, pr => pr.matches, 1), dIso);
+                updateOwnershipFor("good_chemistry",   getLeaderIdsForMetric(stepPairs, pr => pr.matches >= 3 ? Math.round((((pr.wins + 0.5 * pr.draws) / pr.matches) * 100) * 10) / 10 : -1, 0.1), dIso);
+                updateOwnershipFor("unbeatable_duo",   getLeaderIdsForMetric(stepPairs, pr => pr.maxWinStreak, 1), dIso);
+                updateOwnershipFor("dramatics",        getLeaderIdsForMetric(stepPairs, pr => pr.dramaWins, 1), dIso);
+                updateOwnershipFor("pat_mat",          getLeaderIdsForMetric(stepPairs, pr => pr.losses, 1), dIso);
                 updateOwnershipFor("steamroller",      steamrollerMatches.map(x => x.id), dIso);
                 updateOwnershipFor("blood_sweat",      marathonMatches.map(x => x.id), dIso);
             });
@@ -7792,8 +8071,13 @@
             const rSponsor     = findTopHolders(activePlayers, p => p.losses, 1);
             const rComeback    = findTopHolders(activePlayers, p => p.maxGapDays, 1);
 
-            const rBestPairPts = findTopHolders(pairsList, pr => pr.pts, 0.25);
-            const rFreqPair    = findTopHolders(pairsList, pr => pr.matches, 1);
+            const pairWinPctFn = pr => pr.matches >= 3 ? Math.round((((pr.wins + 0.5 * pr.draws) / pr.matches) * 100) * 10) / 10 : -1;
+            const rBestPairPts   = findTopHolders(pairsList, pr => pr.pts, 0.25);
+            const rFreqPair      = findTopHolders(pairsList, pr => pr.matches, 1);
+            const rGoodChemistry = findTopHolders(pairsList, pairWinPctFn, 0.1);
+            const rUnbeatableDuo = findTopHolders(pairsList, pr => pr.maxWinStreak, 1);
+            const rDramatics     = findTopHolders(pairsList, pr => pr.dramaWins, 1);
+            const rPatMat        = findTopHolders(pairsList, pr => pr.losses, 1);
 
             const collectPlayersByIds = (ids) => {
                 const res = [];
@@ -7804,8 +8088,12 @@
                 return res;
             };
 
-            const bestPairPlayers = collectPlayersByIds(rBestPairPts.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
-            const freqPairPlayers = collectPlayersByIds(rFreqPair.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const bestPairPlayers      = collectPlayersByIds(rBestPairPts.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const freqPairPlayers      = collectPlayersByIds(rFreqPair.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const goodChemPlayers      = collectPlayersByIds(rGoodChemistry.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const unbeatableDuoPlayers = collectPlayersByIds(rUnbeatableDuo.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const dramaticsPlayers     = collectPlayersByIds(rDramatics.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
+            const patMatPlayers        = collectPlayersByIds(rPatMat.holders.flatMap(pr => [pr.p1.id, pr.p2.id]));
             const steamrollerHolders = collectPlayersByIds(
                 steamrollerMatches.flatMap(m => (m.gems1 >= m.gems2 ? m.team1 : m.team2))
             );
@@ -8138,6 +8426,58 @@
                     holders: freqPairPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.matches, pr => pr.name, v => `${v} záp.`, 1),
                     held: getHeldInfo("inseparable_pair")
+                },
+                {
+                    id: "good_chemistry", cat: 4, title: "Dobrá chémia",
+                    desc: rGoodChemistry.holders.length > 0
+                        ? `Najvyššia úspešnosť pevnej dvojice v 4H (${rGoodChemistry.holders.map(x => x.name).join(", ")})`
+                        : "Najvyššia percentuálna úspešnosť pevnej dvojice v 4H (min. 3 zápasy)",
+                    rules: "Percentuálna úspešnosť pevnej dvojice v štvorhre (4H) pri min. 3 spoločne odohratých zápasoch.",
+                    iconFile: "chemia.png", faClass: "fa-solid fa-flask",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: rGoodChemistry.holders.length > 0 ? `${Number(rGoodChemistry.value).toFixed(1)}% úspešnosť` : "—",
+                    holders: goodChemPlayers,
+                    top3: buildTop3Ranking(pairsList, pairWinPctFn, pr => pr.name, v => `${Number(v).toFixed(1)}%`, 0.1),
+                    held: getHeldInfo("good_chemistry")
+                },
+                {
+                    id: "unbeatable_duo", cat: 4, title: "Neporaziteľné duo",
+                    desc: rUnbeatableDuo.holders.length > 0
+                        ? `Najdlhšia víťazná šnúra pevnej dvojice (${rUnbeatableDuo.holders.map(x => x.name).join(", ")})`
+                        : "Najdlhšia nepretržitá víťazná šnúra pevnej dvojice v 4H",
+                    rules: "Najvyšší počet po sebe idúcich výhier jednej pevnej dvojice v štvorhre (4H) bez prehry a remízy.",
+                    iconFile: "duo.png", faClass: "fa-solid fa-trophy",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: rUnbeatableDuo.holders.length > 0 ? `${skCount(rUnbeatableDuo.value, "výhra", "výhry", "výhier")} v rade` : "—",
+                    holders: unbeatableDuoPlayers,
+                    top3: buildTop3Ranking(pairsList, pr => pr.maxWinStreak, pr => pr.name, v => `${v} V`, 1),
+                    held: getHeldInfo("unbeatable_duo")
+                },
+                {
+                    id: "dramatics", cat: 4, title: "Dramatici",
+                    desc: rDramatics.holders.length > 0
+                        ? `Králi tesných 4H bitiek (${rDramatics.holders.map(x => x.name).join(", ")})`
+                        : "Pevná dvojica s najviac vyhratými drámami v 4H",
+                    rules: "Vyhraté 4H drámy pevnej dvojice – 3+ setové výhry (pri 3:0 min. 25 gemov) alebo výhry s tiebreakom 7:6.",
+                    iconFile: "drama.png", faClass: "fa-solid fa-masks-theater",
+                    theme: "ach-purple", accent: "#c084fc", isNegative: false,
+                    valueText: rDramatics.holders.length > 0 ? `${skCount(rDramatics.value, "vyhratá dráma", "vyhraté drámy", "vyhratých drám")}` : "—",
+                    holders: dramaticsPlayers,
+                    top3: buildTop3Ranking(pairsList, pr => pr.dramaWins, pr => pr.name, v => `${v}×`, 1),
+                    held: getHeldInfo("dramatics")
+                },
+                {
+                    id: "pat_mat", cat: 4, title: "Pat a Mat",
+                    desc: rPatMat.holders.length > 0
+                        ? `Najviac spoločných prehier v štvorhre (${rPatMat.holders.map(x => x.name).join(", ")})`
+                        : "Pevná dvojica s najvyšším počtom spoločných prehier v 4H",
+                    rules: "Negatívny klubový odznak pre pevnú dvojicu s najvyšším počtom spoločných prehier v štvorhre (4H).",
+                    iconFile: "patmat.png", faClass: "fa-solid fa-face-dizzy",
+                    theme: "ach-red", accent: "#f87171", isNegative: true,
+                    valueText: rPatMat.holders.length > 0 ? `${skCount(rPatMat.value, "spoločná prehra", "spoločné prehry", "spoločných prehier")}` : "—",
+                    holders: patMatPlayers,
+                    top3: buildTop3Ranking(pairsList, pr => pr.losses, pr => pr.name, v => `${v} P`, 1),
+                    held: getHeldInfo("pat_mat")
                 }
             ];
         }
@@ -8853,7 +9193,7 @@
         }
 
         function syncTvModeButtons() {
-            const modes = ["points", "elo2h", "elo4h", "last"];
+            const modes = ["points", "elo2h", "elo4h", "elo4h_pairs", "last"];
             modes.forEach(m => {
                 const btn = document.getElementById(`tv-mode-${m}`);
                 if (btn) btn.classList.toggle("active", tvMode === m);
@@ -8861,7 +9201,7 @@
         }
 
         function setTvMode(mode) {
-            tvMode = (mode === "elo2h" || mode === "elo4h" || mode === "last") ? mode : "points";
+            tvMode = (mode === "elo2h" || mode === "elo4h" || mode === "elo4h_pairs" || mode === "last") ? mode : "points";
             syncTvModeButtons();
             renderTvCanvas();
         }
@@ -8873,7 +9213,13 @@
 
         function openTvModal() {
             syncTvControlsUI();
-            tvMode = (tableViewMode === "elo2h" || tableViewMode === "elo4h") ? tableViewMode : "points";
+            if (tableViewMode === "elo4h") {
+                tvMode = elo4hSubMode === "pairs" ? "elo4h_pairs" : "elo4h";
+            } else if (tableViewMode === "elo2h") {
+                tvMode = "elo2h";
+            } else {
+                tvMode = "points";
+            }
             syncTvModeButtons();
             const mod = document.getElementById("tv-modal");
             mod.classList.add("open");
@@ -9280,8 +9626,9 @@
             drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg);
 
             const innerX = panelX + 36, innerW = panelW - 72, topY = panelY + 26, headerBarH = 66;
-            const isEloTv = (tvMode === "elo2h" || tvMode === "elo4h");
-            const isElo4H = tvMode === "elo4h";
+            const isEloTv = (tvMode === "elo2h" || tvMode === "elo4h" || tvMode === "elo4h_pairs");
+            const isElo4H = (tvMode === "elo4h" || tvMode === "elo4h_pairs");
+            const isEloPairs = tvMode === "elo4h_pairs";
             const wm = Number(state.config.windowMonths) || 0;
             const wmLabel = wm === 0 ? "ALL-TIME" : `${wm} MESIACOV`;
 
@@ -9303,10 +9650,12 @@
             ctx.fillStyle = "#ffffff";
             ctx.font = "800 29px sans-serif";
             ctx.textAlign = "left";
-            const tvHeadTitle = isEloTv
-                ? (isElo4H ? `TENISTAB | ELO ŠTVORHRA 4H (K=${getEloK()} · D=${getEloD()})` : `TENISTAB | ELO DVOJHRA 2H (K=${getEloK()} · D=${getEloD()})`)
-                : `TENISTAB | REBRÍČEK 2H + 4H (${wmLabel})`;
-            ctx.fillText(tvHeadTitle, innerX + 30, topY + 43);
+            const tvHeadTitle = isEloPairs
+                ? `TENISTAB | ELO ŠTVORHRA 4H – DVOJICE (K=${getEloK()} · D=${getEloD()})`
+                : (isEloTv
+                    ? (isElo4H ? `TENISTAB | ELO ŠTVORHRA 4H (K=${getEloK()} · D=${getEloD()})` : `TENISTAB | ELO DVOJHRA 2H (K=${getEloK()} · D=${getEloD()})`)
+                    : `TENISTAB | REBRÍČEK 2H + 4H (${wmLabel})`);
+            ctx.fillText(tvHeadTitle, innerX + 30, topY + 43, innerW - 430);
 
             ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
             ctx.font = "700 21px sans-serif";
@@ -9329,7 +9678,7 @@
 
                 const eCols = [
                     { label: "POR.",       x: innerX + 55,   align: "center" },
-                    { label: "MENO HRÁČA", x: innerX + 125,  align: "left"   },
+                    { label: isEloPairs ? "DVOJICA (TÍM)" : "MENO HRÁČA", x: innerX + 125,  align: "left"   },
                     { label: "ELO",        x: innerX + 545,  align: "center" },
                     { label: "ZÁP.",       x: innerX + 735,  align: "center" },
                     { label: "VÝHRY",      x: innerX + 880,  align: "center" },
@@ -9342,7 +9691,7 @@
                 ctx.font = "800 19px sans-serif";
                 eCols.forEach(c => { ctx.textAlign = c.align; ctx.fillText(c.label, c.x, headY + 31); });
 
-                const eRows = (isElo4H ? computedElo4H : computedElo2H).slice(0, 20);
+                const eRows = (isEloPairs ? computedElo4HPairs : (isElo4H ? computedElo4H : computedElo2H)).slice(0, 20);
                 const rowsStartY = headY + headH + 10;
                 const availableRowsH = (panelY + panelH - 22) - rowsStartY;
                 const totalRows = Math.max(eRows.length, 1);
@@ -9395,15 +9744,28 @@
                     ctx.fillText(`${p.rank}`, eCols[0].x, textY - 1);
 
                     const dotR = Math.max(5, Math.round(fontSize * 0.22));
-                    ctx.beginPath();
-                    ctx.arc(eCols[1].x + dotR, ry + rowH / 2, dotR, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color || "#ffffff";
-                    ctx.fill();
+                    let nameOffsetX = dotR * 2 + 12;
+                    if (isEloPairs && p.color1 && p.color2) {
+                        ctx.beginPath();
+                        ctx.arc(eCols[1].x + dotR, ry + rowH / 2, dotR, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color1;
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(eCols[1].x + dotR * 2.8, ry + rowH / 2, dotR, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color2;
+                        ctx.fill();
+                        nameOffsetX = Math.round(dotR * 4.4) + 10;
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(eCols[1].x + dotR, ry + rowH / 2, dotR, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color || "#ffffff";
+                        ctx.fill();
+                    }
 
                     ctx.font = `800 ${fontSize}px sans-serif`;
                     ctx.textAlign = "left";
                     ctx.fillStyle = p.isInactive ? "rgba(205, 215, 213, 0.62)" : "#ffffff";
-                    ctx.fillText(p.name.toUpperCase(), eCols[1].x + dotR * 2 + 12, textY, 290);
+                    ctx.fillText(p.name.toUpperCase(), eCols[1].x + nameOffsetX, textY, 325 - nameOffsetX);
 
                     ctx.textAlign = "center";
                     ctx.fillStyle = "#a5f3fc";
@@ -9655,7 +10017,9 @@
 
         function downloadTvGraphic(format = "png") {
             const canvas = document.getElementById("tvCanvas");
-            const suffix = tvMode === "last" ? "PoslednyZapas" : (tvMode === "elo2h" ? "ELO_2H" : (tvMode === "elo4h" ? "ELO_4H" : "Tabulka_Body"));
+            const suffix = tvMode === "last"
+                ? "PoslednyZapas"
+                : (tvMode === "elo2h" ? "ELO_2H" : (tvMode === "elo4h_pairs" ? "ELO_4H_Pary" : (tvMode === "elo4h" ? "ELO_4H" : "Tabulka_Body")));
             exportCanvasImage(canvas, `TenisTAB_TV_${suffix}_${getTodayIso()}`, format, renderTvCanvas);
         }
 
@@ -11364,7 +11728,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.23! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.24! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
