@@ -3361,6 +3361,19 @@
             border: none;
             display: block;
             margin-bottom: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        canvas#tvCanvas.can-pan,
+        canvas#tvChartCanvas.can-pan {
+            cursor: grab;
+            touch-action: none;
+        }
+
+        canvas#tvCanvas.is-panning,
+        canvas#tvChartCanvas.is-panning {
+            cursor: grabbing;
         }
 
         canvas#tvChartCanvas {
@@ -3370,6 +3383,17 @@
 
         canvas#tvChartCanvas.is-dragging {
             cursor: grabbing;
+        }
+
+        .tv-gesture-hint-bar {
+            padding: 5px 8px;
+            border-top: 1px solid rgba(186, 230, 253, 0.16);
+            background: rgba(4, 12, 22, 0.85);
+            font-size: 0.69rem;
+            color: var(--tennis-lime);
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
         }
 
         .tv-controls-grid {
@@ -4145,7 +4169,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.48</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.49</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4179,7 +4203,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.48</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.49</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -5086,15 +5110,44 @@
             <div class="tv-modal-body">
                 <div class="tv-canvas-frame">
                     <canvas id="tvCanvas" width="1920" height="1080"></canvas>
+                    <div id="tv-gesture-hint" class="tv-gesture-hint-bar" style="display:none;">
+                        ✋ Posúvaj fotku prstom/myšou · 🤏 2 prstami alebo kolieskom zmenši/zväčši
+                    </div>
+                </div>
+                <div class="tv-ctrl-section">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+                        <span style="font-size:0.74rem; font-weight:800; color:var(--text-main);">Pozadie TV grafiky (16:9)</span>
+                        <span id="tv-bg-theme-label" style="font-size:0.70rem; color:var(--tennis-lime); font-weight:700;">—</span>
+                    </div>
+                    <div class="report-bg-bar">
+                        <button type="button" id="tv-bg-btn-default" class="preset-btn report-bg-btn active" onclick="setTvBgMode('default')">🖼️ Predvolené</button>
+                        <button type="button" id="tv-bg-btn-theme" class="preset-btn report-bg-btn" onclick="setTvBgMode('theme')">🎨 Farebný motív</button>
+                        <button type="button" id="tv-bg-btn-custom" class="preset-btn report-bg-btn" onclick="setTvBgMode('custom')">📷 Vlastná fotka</button>
+                    </div>
+                    <div id="tv-photo-tools" class="report-photo-tools" style="display:none;">
+                        <div class="tv-ctrl-top" style="margin-bottom:0;">
+                            <span class="tv-ctrl-label">Veľkosť fotky (Zoom)</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvPhotoZoom(-5)">−</button>
+                                <span class="tv-pct-badge" id="tv-zoom-val" onclick="resetTvPhotoTransform()">100%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvPhotoZoom(5)">+</button>
+                            </div>
+                        </div>
+                        <input type="range" id="tv-zoom-slider" class="tv-range" min="35" max="350" step="1" value="100" oninput="setTvPhotoZoom(this.value)">
+                        <div class="report-photo-actions">
+                            <button type="button" id="btn-tv-fit-photo" class="chart-quick-btn" onclick="fitWholeTvPhoto()">↔️ Celá fotka (bez orezu)</button>
+                            <button type="button" id="btn-tv-reset-photo" class="chart-quick-btn" onclick="resetTvPhotoTransform()">↺ Vycentrovať (100%)</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="tv-controls-grid">
                     <div class="tv-ctrl-card">
                         <div class="tv-ctrl-top">
                             <span class="tv-ctrl-label">Blur pozadia</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-1)">−</button>
                                 <span class="tv-pct-badge" id="tv-blur-val" onclick="setTvBlur(50)">50%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(1)">+</button>
                             </div>
                         </div>
                         <input type="range" id="tv-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
@@ -5103,9 +5156,9 @@
                         <div class="tv-ctrl-top">
                             <span class="tv-ctrl-label">Priehľadnosť</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-1)">−</button>
                                 <span class="tv-pct-badge" id="tv-transp-val" onclick="setTvTransparency(40)">40%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(1)">+</button>
                             </div>
                         </div>
                         <input type="range" id="tv-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
@@ -5142,6 +5195,9 @@
             <div class="tv-modal-body">
                 <div class="tv-canvas-frame">
                     <canvas id="tvChartCanvas" width="1920" height="1080"></canvas>
+                    <div id="tv-chart-gesture-hint" class="tv-gesture-hint-bar" style="display:none;">
+                        ✋ Posúvaj fotku prstom/myšou · 🤏 2 prstami alebo kolieskom zmenši/zväčši
+                    </div>
                 </div>
                 <div class="chart-nav-bar" style="margin:0; flex-shrink:0;">
                     <button type="button" class="chart-nav-btn" id="tv-chart-first-btn" onclick="jumpTvChartWindow('start')">«</button>
@@ -5149,6 +5205,39 @@
                     <input type="range" id="tv-chart-slider" class="tv-range" min="0" max="0" step="1" value="0" oninput="setTvChartWindowStart(this.value)">
                     <button type="button" class="chart-nav-btn" id="tv-chart-next-btn" onclick="panTvChartWindow(1)">›</button>
                     <button type="button" class="chart-nav-btn" id="tv-chart-last-btn" onclick="jumpTvChartWindow('end')">»</button>
+                </div>
+                <div class="tv-ctrl-section">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+                        <span style="font-size:0.74rem; font-weight:800; color:var(--text-main);">Pozadie TV grafu (16:9)</span>
+                        <span id="tv-chart-bg-theme-label" style="font-size:0.70rem; color:var(--tennis-lime); font-weight:700;">—</span>
+                    </div>
+                    <div class="report-bg-bar">
+                        <button type="button" id="tv-chart-bg-btn-default" class="preset-btn report-bg-btn active" onclick="setTvBgMode('default')">🖼️ Predvolené</button>
+                        <button type="button" id="tv-chart-bg-btn-theme" class="preset-btn report-bg-btn" onclick="setTvBgMode('theme')">🎨 Farebný motív</button>
+                        <button type="button" id="tv-chart-bg-btn-custom" class="preset-btn report-bg-btn" onclick="setTvBgMode('custom')">📷 Vlastná fotka</button>
+                    </div>
+                    <div id="tv-chart-photo-tools" class="report-photo-tools" style="display:none;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; flex-wrap:wrap;">
+                            <span class="tv-ctrl-label">Ťahanie na náhľade ovláda:</span>
+                            <div class="h2h-pill-group">
+                                <button type="button" id="tv-chart-drag-photo" class="preset-btn active" style="padding:4px 9px; font-size:0.70rem;" onclick="setTvChartDragTarget('photo')">📷 Fotku</button>
+                                <button type="button" id="tv-chart-drag-chart" class="preset-btn" style="padding:4px 9px; font-size:0.70rem;" onclick="setTvChartDragTarget('chart')">📈 Graf</button>
+                            </div>
+                        </div>
+                        <div class="tv-ctrl-top" style="margin-bottom:0;">
+                            <span class="tv-ctrl-label">Veľkosť fotky (Zoom)</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvPhotoZoom(-5)">−</button>
+                                <span class="tv-pct-badge" id="tv-chart-zoom-val" onclick="resetTvPhotoTransform()">100%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvPhotoZoom(5)">+</button>
+                            </div>
+                        </div>
+                        <input type="range" id="tv-chart-zoom-slider" class="tv-range" min="35" max="350" step="1" value="100" oninput="setTvPhotoZoom(this.value)">
+                        <div class="report-photo-actions">
+                            <button type="button" id="btn-tv-chart-fit-photo" class="chart-quick-btn" onclick="fitWholeTvPhoto()">↔️ Celá fotka (bez orezu)</button>
+                            <button type="button" id="btn-tv-chart-reset-photo" class="chart-quick-btn" onclick="resetTvPhotoTransform()">↺ Vycentrovať (100%)</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="tv-ctrl-section">
                     <div class="chart-mode-row" style="margin-bottom:0;">
@@ -5169,9 +5258,9 @@
                         <div class="tv-ctrl-top">
                             <span class="tv-ctrl-label">Blur pozadia</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-1)">−</button>
                                 <span class="tv-pct-badge" id="tv-chart-blur-val" onclick="setTvBlur(50)">50%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(1)">+</button>
                             </div>
                         </div>
                         <input type="range" id="tv-chart-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
@@ -5180,9 +5269,9 @@
                         <div class="tv-ctrl-top">
                             <span class="tv-ctrl-label">Priehľadnosť</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-1)">−</button>
                                 <span class="tv-pct-badge" id="tv-chart-transp-val" onclick="setTvTransparency(40)">40%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(1)">+</button>
                             </div>
                         </div>
                         <input type="range" id="tv-chart-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
@@ -5238,9 +5327,9 @@
                         <div class="tv-ctrl-top" style="margin-bottom:0;">
                             <span class="tv-ctrl-label">Veľkosť fotky (Zoom)</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepReportPhotoZoom(-10)">−</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportPhotoZoom(-5)">−</button>
                                 <span class="tv-pct-badge" id="report-zoom-val" onclick="resetReportPhotoTransform()">100%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepReportPhotoZoom(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportPhotoZoom(5)">+</button>
                             </div>
                         </div>
                         <input type="range" id="report-zoom-slider" class="tv-range" min="35" max="350" step="1" value="100" oninput="setReportPhotoZoom(this.value)">
@@ -5282,9 +5371,9 @@
                         <div class="tv-ctrl-top">
                             <span class="tv-ctrl-label">Blur pod kartou</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepReportBlur(-10)">−</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportBlur(-1)">−</button>
                                 <span class="tv-pct-badge" id="report-blur-val" onclick="setReportBlur(35)">35%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepReportBlur(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportBlur(1)">+</button>
                             </div>
                         </div>
                         <input type="range" id="report-blur-slider" class="tv-range" min="0" max="100" step="1" value="35" oninput="setReportBlur(this.value)">
@@ -5293,9 +5382,9 @@
                         <div class="tv-ctrl-top">
                             <span class="tv-ctrl-label">Priehľadnosť</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepReportTransparency(-10)">−</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportTransparency(-1)">−</button>
                                 <span class="tv-pct-badge" id="report-transp-val" onclick="setReportTransparency(40)">40%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepReportTransparency(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportTransparency(1)">+</button>
                             </div>
                         </div>
                         <input type="range" id="report-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setReportTransparency(this.value)">
@@ -5821,9 +5910,15 @@
 
             if (persist) saveThemePreference(theme.key);
             const tvMod = document.getElementById("tv-modal");
-            if (tvMod && tvMod.classList.contains("open")) renderTvCanvas();
+            if (tvMod && tvMod.classList.contains("open")) {
+                syncTvBgButtonsUI();
+                renderTvCanvas();
+            }
             const tvChartMod = document.getElementById("tv-chart-modal");
-            if (tvChartMod && tvChartMod.classList.contains("open")) renderTvChartCanvas();
+            if (tvChartMod && tvChartMod.classList.contains("open")) {
+                syncTvBgButtonsUI();
+                renderTvChartCanvas();
+            }
             const repMod = document.getElementById("match-report-modal");
             if (repMod && repMod.classList.contains("open")) {
                 syncReportBgButtonsUI();
@@ -11989,6 +12084,9 @@
                 updatedAt: 0
             };
             tvCustomBgImage = null;
+            reportCustomBgImage = null;
+            resetTvPhotoTransform(false);
+            resetReportPhotoTransform(false);
             setDbButtonSyncedState(false);
             resetWeatherMemoryState(true);
             recalculateAll();
@@ -12033,16 +12131,192 @@
             showToast("Obnovené základné ELO parametre (K=32, D=200).");
         }
 
-        /* ==================== TV GRAFIKA & TV GRAF FULLHD (v0.5) ==================== */
+        /* ==================== TV GRAFIKA & TV GRAF FULLHD (v1.49 – 16:9 Pan/Zoom) ==================== */
         const TV_SETTINGS_KEY = "TENISTAB_TV_CFG_V1";
-        let tvMode = "points"; // "points" | "elo2h" | "elo4h" | "last"
+        const TV_CANVAS_W = 1920;
+        const TV_CANVAS_H = 1080;
+        let tvMode = "points"; // "points" | "elo2h" | "elo4h" | "elo4h_pairs" | "last"
         let tvBlurPct = 50;
         let tvTransparencyPct = 40;
+        let tvBgMode = "default"; // "default" | "theme" | "custom"
+        let tvPhotoTransform = { zoom: 1, panX: 0, panY: 0 };
+        let tvChartDragTarget = "photo"; // "photo" | "chart"
         let tvRenderRaf = null;
         let tvBgImage = null;
         let tvBgLoaded = false;
         let tvBgPromise = null;
         let tvCustomBgImage = null;
+
+        function getTvCustomImage() {
+            if (typeof reportCustomBgImage !== "undefined" && reportCustomBgImage && reportCustomBgImage.naturalWidth > 0) {
+                return reportCustomBgImage;
+            }
+            if (tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) return tvCustomBgImage;
+            return null;
+        }
+
+        function getEffectiveTvBgMode() {
+            if (tvBgMode === "theme") return "theme";
+            if (tvBgMode === "custom" && getTvCustomImage()) return "custom";
+            return "default";
+        }
+
+        function getTvPhotoMetrics(img, W = TV_CANVAS_W, H = TV_CANVAS_H) {
+            const imgW = img.naturalWidth;
+            const imgH = img.naturalHeight;
+            const coverScale = Math.max(W / imgW, H / imgH);
+            const containScale = Math.min(W / imgW, H / imgH);
+            const zoom = Math.max(0.35, Math.min(3.5, Number(tvPhotoTransform.zoom) || 1));
+            const actualScale = coverScale * zoom;
+            const drawW = imgW * actualScale;
+            const drawH = imgH * actualScale;
+
+            const maxPanX = Math.abs(drawW - W) / 2;
+            const maxPanY = Math.abs(drawH - H) / 2;
+            const panX = Math.max(-maxPanX, Math.min(maxPanX, Number(tvPhotoTransform.panX) || 0));
+            const panY = Math.max(-maxPanY, Math.min(maxPanY, Number(tvPhotoTransform.panY) || 0));
+            tvPhotoTransform.zoom = zoom;
+            tvPhotoTransform.panX = panX;
+            tvPhotoTransform.panY = panY;
+
+            return {
+                imgW, imgH, coverScale, containScale, zoom, drawW, drawH,
+                drawX: (W - drawW) / 2 + panX,
+                drawY: (H - drawH) / 2 + panY
+            };
+        }
+
+        function syncTvPhotoControlsUI() {
+            const eff = getEffectiveTvBgMode();
+            const isCustom = eff === "custom";
+            const pct = Math.round((Number(tvPhotoTransform.zoom) || 1) * 100);
+
+            const tvTools = document.getElementById("tv-photo-tools");
+            const tvHint = document.getElementById("tv-gesture-hint");
+            const tvCanvasEl = document.getElementById("tvCanvas");
+            if (tvTools) tvTools.style.display = isCustom ? "flex" : "none";
+            if (tvHint) tvHint.style.display = isCustom ? "block" : "none";
+            if (tvCanvasEl) tvCanvasEl.classList.toggle("can-pan", isCustom);
+
+            const tcTools = document.getElementById("tv-chart-photo-tools");
+            const tcHint = document.getElementById("tv-chart-gesture-hint");
+            const tcCanvasEl = document.getElementById("tvChartCanvas");
+            const tcPhotoDrag = isCustom && tvChartDragTarget === "photo";
+            if (tcTools) tcTools.style.display = isCustom ? "flex" : "none";
+            if (tcHint) {
+                tcHint.style.display = isCustom ? "block" : "none";
+                tcHint.textContent = tcPhotoDrag
+                    ? "✋ Posúvaj fotku prstom/myšou · 🤏 2 prstami alebo kolieskom zmenši/zväčši"
+                    : "📈 Ťahaním alebo kolieskom posúvaš časové okno grafu (prepni na 📷 Fotku pre posun pozadia)";
+            }
+            if (tcCanvasEl) tcCanvasEl.classList.toggle("can-pan", tcPhotoDrag);
+
+            const bDragPhoto = document.getElementById("tv-chart-drag-photo");
+            const bDragChart = document.getElementById("tv-chart-drag-chart");
+            if (bDragPhoto) bDragPhoto.classList.toggle("active", tvChartDragTarget === "photo");
+            if (bDragChart) bDragChart.classList.toggle("active", tvChartDragTarget === "chart");
+
+            [
+                ["tv-zoom-slider", "tv-zoom-val"],
+                ["tv-chart-zoom-slider", "tv-chart-zoom-val"]
+            ].forEach(([sId, vId]) => {
+                const sEl = document.getElementById(sId);
+                const vEl = document.getElementById(vId);
+                if (sEl) sEl.value = pct;
+                if (vEl) vEl.textContent = `${pct}%`;
+            });
+        }
+
+        function syncTvBgButtonsUI() {
+            const eff = getEffectiveTvBgMode();
+            const activeTheme = SEASON_THEMES[currentSeasonThemeIndex] || SEASON_THEMES[0];
+            let labelTxt;
+            if (eff === "theme") {
+                labelTxt = `Aktívny motív: ${activeTheme.label}`;
+            } else if (eff === "custom") {
+                const im = getTvCustomImage();
+                labelTxt = im ? `Vlastná fotka (${im.naturalWidth}×${im.naturalHeight})` : "Vlastná fotografia";
+            } else {
+                labelTxt = tvBgLoaded ? "Predvolené (TV.jpeg)" : `Predvolené (${activeTheme.label})`;
+            }
+
+            ["tv", "tv-chart"].forEach(prefix => {
+                const bDef = document.getElementById(`${prefix}-bg-btn-default`);
+                const bThm = document.getElementById(`${prefix}-bg-btn-theme`);
+                const bCus = document.getElementById(`${prefix}-bg-btn-custom`);
+                const lbl = document.getElementById(`${prefix}-bg-theme-label`);
+                if (bDef) bDef.classList.toggle("active", eff === "default");
+                if (bThm) bThm.classList.toggle("active", eff === "theme");
+                if (bCus) bCus.classList.toggle("active", eff === "custom");
+                if (lbl) lbl.textContent = labelTxt;
+            });
+            syncTvPhotoControlsUI();
+        }
+
+        function setTvBgMode(mode) {
+            if (mode === "custom") {
+                if (!getTvCustomImage()) {
+                    triggerCustomTvBgPicker();
+                    return;
+                }
+                tvBgMode = "custom";
+                tvChartDragTarget = "photo";
+            } else if (mode === "theme") {
+                tvBgMode = "theme";
+                saveTvSettings();
+            } else {
+                tvBgMode = "default";
+                saveTvSettings();
+            }
+            syncTvBgButtonsUI();
+            scheduleTvRender();
+        }
+
+        function setTvChartDragTarget(target) {
+            tvChartDragTarget = target === "chart" ? "chart" : "photo";
+            syncTvPhotoControlsUI();
+        }
+
+        function setTvPhotoZoom(pctVal, anchorCanvasX = TV_CANVAS_W / 2, anchorCanvasY = TV_CANVAS_H / 2) {
+            const img = getTvCustomImage();
+            const clampedPct = Math.max(35, Math.min(350, Math.round(Number(pctVal) || 100)));
+            const newZoom = clampedPct / 100;
+            if (img) {
+                const oldM = getTvPhotoMetrics(img, TV_CANVAS_W, TV_CANVAS_H);
+                const ratio = newZoom / oldM.zoom;
+                const cx = TV_CANVAS_W / 2;
+                const cy = TV_CANVAS_H / 2;
+                tvPhotoTransform.panX = (anchorCanvasX - cx) * (1 - ratio) + oldM.panX * ratio;
+                tvPhotoTransform.panY = (anchorCanvasY - cy) * (1 - ratio) + oldM.panY * ratio;
+                tvPhotoTransform.zoom = newZoom;
+                getTvPhotoMetrics(img, TV_CANVAS_W, TV_CANVAS_H);
+            } else {
+                tvPhotoTransform.zoom = newZoom;
+            }
+            syncTvPhotoControlsUI();
+            scheduleTvRender();
+        }
+
+        function stepTvPhotoZoom(deltaPct) {
+            const curPct = Math.round((Number(tvPhotoTransform.zoom) || 1) * 100);
+            setTvPhotoZoom(curPct + deltaPct);
+        }
+
+        function fitWholeTvPhoto() {
+            const img = getTvCustomImage();
+            if (!img) return;
+            const m = getTvPhotoMetrics(img, TV_CANVAS_W, TV_CANVAS_H);
+            const fitZoom = Math.max(0.35, Math.min(1, m.containScale / m.coverScale));
+            tvPhotoTransform = { zoom: fitZoom, panX: 0, panY: 0 };
+            syncTvPhotoControlsUI();
+            scheduleTvRender();
+        }
+
+        function resetTvPhotoTransform(redraw = true) {
+            tvPhotoTransform = { zoom: 1, panX: 0, panY: 0 };
+            syncTvPhotoControlsUI();
+            if (redraw) scheduleTvRender();
+        }
 
         function triggerCustomTvBgPicker() {
             const inp = document.getElementById("tv-custom-bg-input");
@@ -12084,8 +12358,12 @@
                         loadedParts++;
                         if (loadedParts < 2) return;
                         reportBgMode = "custom";
+                        tvBgMode = "custom";
+                        tvChartDragTarget = "photo";
                         resetReportPhotoTransform(false);
+                        resetTvPhotoTransform(false);
                         syncReportBgButtonsUI();
+                        syncTvBgButtonsUI();
                         scheduleTvRender();
                         showToast("Vlastná fotka bola vložená (môžeš ju posúvať aj zmenšovať)!");
                     };
@@ -12123,6 +12401,9 @@
                     if (typeof parsed.transparencyPct === "number" && !isNaN(parsed.transparencyPct)) {
                         tvTransparencyPct = Math.max(0, Math.min(100, Math.round(parsed.transparencyPct)));
                     }
+                    if (parsed.tvBgMode === "theme" || parsed.tvBgMode === "default") {
+                        tvBgMode = parsed.tvBgMode;
+                    }
                     if (parsed.reportBgMode === "theme" || parsed.reportBgMode === "default") {
                         reportBgMode = parsed.reportBgMode;
                     }
@@ -12138,6 +12419,7 @@
                 }
             } catch (e) {}
             syncTvControlsUI();
+            syncTvBgButtonsUI();
             syncReportBgButtonsUI();
         }
 
@@ -12146,6 +12428,7 @@
                 localStorage.setItem(TV_SETTINGS_KEY, JSON.stringify({
                     blurPct: tvBlurPct,
                     transparencyPct: tvTransparencyPct,
+                    tvBgMode: tvBgMode === "theme" ? "theme" : "default",
                     reportBgMode: reportBgMode === "theme" ? "theme" : "default",
                     reportBlurPct,
                     reportTransparencyPct,
@@ -12310,21 +12593,36 @@
         }
 
         function drawTvBackgroundLayer(targetCtx, W, H, forceFallbackBg = false, bgModeOverride = null) {
-            if (bgModeOverride === "theme") {
+            const effMode = bgModeOverride !== null ? bgModeOverride : getEffectiveTvBgMode();
+            if (effMode === "theme") {
                 drawThemeFallbackBackground(targetCtx, W, H);
                 return;
             }
-            const allowCustom = bgModeOverride === null || bgModeOverride === "custom";
-            if (allowCustom && tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) {
-                const imgW = tvCustomBgImage.naturalWidth;
-                const imgH = tvCustomBgImage.naturalHeight;
-                const scale = Math.max(W / imgW, H / imgH);
-                const drawW = imgW * scale;
-                const drawH = imgH * scale;
-                targetCtx.drawImage(tvCustomBgImage, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
-                const vig = targetCtx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.25, W / 2, H / 2, Math.max(W, H) * 0.72);
-                vig.addColorStop(0, "rgba(0, 18, 15, 0.08)");
-                vig.addColorStop(1, "rgba(0, 12, 10, 0.42)");
+            const customImg = effMode === "custom" ? getTvCustomImage() : null;
+            if (customImg) {
+                const m = getTvPhotoMetrics(customImg, W, H);
+                if (m.drawW < W - 0.5 || m.drawH < H - 0.5) {
+                    const bgW = m.imgW * m.coverScale;
+                    const bgH = m.imgH * m.coverScale;
+                    targetCtx.save();
+                    targetCtx.filter = "blur(28px)";
+                    targetCtx.drawImage(customImg, (W - bgW) / 2 - 28, (H - bgH) / 2 - 28, bgW + 56, bgH + 56);
+                    targetCtx.filter = "none";
+                    targetCtx.fillStyle = "rgba(4, 12, 22, 0.36)";
+                    targetCtx.fillRect(0, 0, W, H);
+                    targetCtx.restore();
+                }
+                targetCtx.drawImage(customImg, m.drawX, m.drawY, m.drawW, m.drawH);
+                if (m.drawW < W - 0.5 || m.drawH < H - 0.5) {
+                    targetCtx.save();
+                    targetCtx.strokeStyle = "rgba(255, 255, 255, 0.24)";
+                    targetCtx.lineWidth = 2;
+                    targetCtx.strokeRect(m.drawX + 1, m.drawY + 1, Math.max(0, m.drawW - 2), Math.max(0, m.drawH - 2));
+                    targetCtx.restore();
+                }
+                const vig = targetCtx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.28, W / 2, H / 2, Math.max(W, H) * 0.74);
+                vig.addColorStop(0, "rgba(0, 18, 15, 0.04)");
+                vig.addColorStop(1, "rgba(0, 12, 10, 0.32)");
                 targetCtx.fillStyle = vig;
                 targetCtx.fillRect(0, 0, W, H);
                 return;
@@ -12407,6 +12705,7 @@
 
         function openTvModal() {
             syncTvControlsUI();
+            syncTvBgButtonsUI();
             if (tableViewMode === "elo4h") {
                 tvMode = elo4hSubMode === "pairs" ? "elo4h_pairs" : "elo4h";
             } else if (tableViewMode === "elo2h") {
@@ -12423,9 +12722,129 @@
             renderTvCanvas();
             ensureTvBackgroundLoaded(() => {
                 if (mod.classList.contains("open")) {
+                    syncTvBgButtonsUI();
                     renderTvCanvas();
                 }
             });
+        }
+
+        function setupTvCanvasEvents() {
+            const canvas = document.getElementById("tvCanvas");
+            if (!canvas || canvas.dataset.panZoomBound === "1") return;
+            canvas.dataset.panZoomBound = "1";
+
+            let isMouseDragging = false;
+            let dragStartClientX = 0, dragStartClientY = 0;
+            let dragStartPanX = 0, dragStartPanY = 0;
+
+            let touchMode = null; // "pan" | "pinch"
+            let pinchStartDist = 0, pinchStartZoom = 1;
+            let pinchStartPanX = 0, pinchStartPanY = 0;
+            let pinchStartMidX = 0, pinchStartMidY = 0;
+
+            const clientToCanvas = (clientX, clientY) => {
+                const rect = canvas.getBoundingClientRect();
+                const sx = TV_CANVAS_W / Math.max(1, rect.width);
+                const sy = TV_CANVAS_H / Math.max(1, rect.height);
+                return { x: (clientX - rect.left) * sx, y: (clientY - rect.top) * sy, sx, sy };
+            };
+
+            canvas.addEventListener("mousedown", e => {
+                if (e.button !== 0 || getEffectiveTvBgMode() !== "custom") return;
+                e.preventDefault();
+                isMouseDragging = true;
+                canvas.classList.add("is-panning");
+                dragStartClientX = e.clientX;
+                dragStartClientY = e.clientY;
+                dragStartPanX = tvPhotoTransform.panX;
+                dragStartPanY = tvPhotoTransform.panY;
+            });
+
+            window.addEventListener("mousemove", e => {
+                if (!isMouseDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const sx = TV_CANVAS_W / Math.max(1, rect.width);
+                const sy = TV_CANVAS_H / Math.max(1, rect.height);
+                tvPhotoTransform.panX = dragStartPanX + (e.clientX - dragStartClientX) * sx;
+                tvPhotoTransform.panY = dragStartPanY + (e.clientY - dragStartClientY) * sy;
+                scheduleTvRender();
+            });
+
+            window.addEventListener("mouseup", () => {
+                if (!isMouseDragging) return;
+                isMouseDragging = false;
+                canvas.classList.remove("is-panning");
+            });
+
+            canvas.addEventListener("wheel", e => {
+                if (getEffectiveTvBgMode() !== "custom") return;
+                e.preventDefault();
+                const pt = clientToCanvas(e.clientX, e.clientY);
+                const step = e.deltaY < 0 ? 8 : -8;
+                const curPct = Math.round((Number(tvPhotoTransform.zoom) || 1) * 100);
+                setTvPhotoZoom(curPct + step, pt.x, pt.y);
+            }, { passive: false });
+
+            canvas.addEventListener("touchstart", e => {
+                if (getEffectiveTvBgMode() !== "custom") return;
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    touchMode = "pan";
+                    dragStartClientX = e.touches[0].clientX;
+                    dragStartClientY = e.touches[0].clientY;
+                    dragStartPanX = tvPhotoTransform.panX;
+                    dragStartPanY = tvPhotoTransform.panY;
+                } else if (e.touches.length >= 2) {
+                    e.preventDefault();
+                    touchMode = "pinch";
+                    const t0 = e.touches[0], t1 = e.touches[1];
+                    pinchStartDist = Math.max(10, Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY));
+                    pinchStartZoom = Number(tvPhotoTransform.zoom) || 1;
+                    pinchStartPanX = Number(tvPhotoTransform.panX) || 0;
+                    pinchStartPanY = Number(tvPhotoTransform.panY) || 0;
+                    const mid = clientToCanvas((t0.clientX + t1.clientX) / 2, (t0.clientY + t1.clientY) / 2);
+                    pinchStartMidX = mid.x;
+                    pinchStartMidY = mid.y;
+                }
+            }, { passive: false });
+
+            canvas.addEventListener("touchmove", e => {
+                if (getEffectiveTvBgMode() !== "custom" || !touchMode) return;
+                if (touchMode === "pan" && e.touches.length === 1) {
+                    e.preventDefault();
+                    const rect = canvas.getBoundingClientRect();
+                    const sx = TV_CANVAS_W / Math.max(1, rect.width);
+                    const sy = TV_CANVAS_H / Math.max(1, rect.height);
+                    tvPhotoTransform.panX = dragStartPanX + (e.touches[0].clientX - dragStartClientX) * sx;
+                    tvPhotoTransform.panY = dragStartPanY + (e.touches[0].clientY - dragStartClientY) * sy;
+                    scheduleTvRender();
+                } else if (e.touches.length >= 2) {
+                    e.preventDefault();
+                    const t0 = e.touches[0], t1 = e.touches[1];
+                    const dist = Math.max(10, Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY));
+                    const newZoom = Math.max(0.35, Math.min(3.5, pinchStartZoom * (dist / pinchStartDist)));
+                    const ratio = newZoom / pinchStartZoom;
+                    const curMid = clientToCanvas((t0.clientX + t1.clientX) / 2, (t0.clientY + t1.clientY) / 2);
+                    const cx = TV_CANVAS_W / 2, cy = TV_CANVAS_H / 2;
+                    tvPhotoTransform.zoom = newZoom;
+                    tvPhotoTransform.panX = (curMid.x - cx) - (pinchStartMidX - cx - pinchStartPanX) * ratio;
+                    tvPhotoTransform.panY = (curMid.y - cy) - (pinchStartMidY - cy - pinchStartPanY) * ratio;
+                    syncTvPhotoControlsUI();
+                    scheduleTvRender();
+                }
+            }, { passive: false });
+
+            canvas.addEventListener("touchend", e => {
+                if (e.touches.length === 0) {
+                    touchMode = null;
+                } else if (e.touches.length === 1 && getEffectiveTvBgMode() === "custom") {
+                    touchMode = "pan";
+                    dragStartClientX = e.touches[0].clientX;
+                    dragStartClientY = e.touches[0].clientY;
+                    dragStartPanX = tvPhotoTransform.panX;
+                    dragStartPanY = tvPhotoTransform.panY;
+                }
+            }, { passive: true });
         }
 
         function closeTvModal() {
@@ -13332,6 +13751,7 @@
         function openTvChartModal() {
             ensureChartHasVisiblePlayer();
             syncTvControlsUI();
+            syncTvBgButtonsUI();
             syncChartMetricUI();
             syncTvChartModeButtons();
             if (tvChartWindowStart === null) {
@@ -13346,6 +13766,7 @@
             renderTvChartCanvas();
             ensureTvBackgroundLoaded(() => {
                 if (mod.classList.contains("open")) {
+                    syncTvBgButtonsUI();
                     renderTvChartCanvas();
                 }
             });
@@ -13358,33 +13779,77 @@
 
         function setupTvChartCanvasEvents() {
             const canvas = document.getElementById("tvChartCanvas");
-            if (!canvas) return;
-            let isMouseDown = false, dragStartX = 0, dragStartWindow = 0;
-            let touchStartX = 0, touchStartY = 0, touchStartWindow = 0, touchIsHorizontal = null;
+            if (!canvas || canvas.dataset.tvChartBound === "1") return;
+            canvas.dataset.tvChartBound = "1";
+
+            let activeDragKind = null; // "chart" | "photo"
+            let dragStartX = 0, dragStartY = 0;
+            let dragStartWindow = 0;
+            let dragStartPanX = 0, dragStartPanY = 0;
+
+            let touchMode = null; // "chart" | "photo-pan" | "photo-pinch"
+            let touchIsHorizontal = null;
+            let pinchStartDist = 0, pinchStartZoom = 1;
+            let pinchStartPanX = 0, pinchStartPanY = 0;
+            let pinchStartMidX = 0, pinchStartMidY = 0;
+
+            const isPhotoMode = () => getEffectiveTvBgMode() === "custom" && tvChartDragTarget === "photo";
+            const clientToCanvas = (clientX, clientY) => {
+                const rect = canvas.getBoundingClientRect();
+                const sx = TV_CANVAS_W / Math.max(1, rect.width);
+                const sy = TV_CANVAS_H / Math.max(1, rect.height);
+                return { x: (clientX - rect.left) * sx, y: (clientY - rect.top) * sy, sx, sy };
+            };
 
             canvas.addEventListener("mousedown", e => {
                 if (e.button !== 0) return;
-                isMouseDown = true;
                 dragStartX = e.clientX;
-                dragStartWindow = getChartWindowBounds(tvChartWindowStart).start;
-                canvas.classList.add("is-dragging");
+                dragStartY = e.clientY;
+                if (isPhotoMode()) {
+                    e.preventDefault();
+                    activeDragKind = "photo";
+                    dragStartPanX = tvPhotoTransform.panX;
+                    dragStartPanY = tvPhotoTransform.panY;
+                    canvas.classList.add("is-panning");
+                } else {
+                    activeDragKind = "chart";
+                    dragStartWindow = getChartWindowBounds(tvChartWindowStart).start;
+                    canvas.classList.add("is-dragging");
+                }
             });
 
             window.addEventListener("mousemove", e => {
-                if (!isMouseDown) return;
-                const dx = e.clientX - dragStartX;
+                if (!activeDragKind) return;
                 const rect = canvas.getBoundingClientRect();
-                const pxPerStep = Math.max(24, (rect.width * 0.68) / Math.max(1, CHART_WINDOW_SIZE - 1));
-                setTvChartWindowStart(dragStartWindow + Math.round(-dx / pxPerStep));
+                if (activeDragKind === "photo") {
+                    const sx = TV_CANVAS_W / Math.max(1, rect.width);
+                    const sy = TV_CANVAS_H / Math.max(1, rect.height);
+                    tvPhotoTransform.panX = dragStartPanX + (e.clientX - dragStartX) * sx;
+                    tvPhotoTransform.panY = dragStartPanY + (e.clientY - dragStartY) * sy;
+                    scheduleTvRender();
+                } else {
+                    const dx = e.clientX - dragStartX;
+                    const pxPerStep = Math.max(24, (rect.width * 0.68) / Math.max(1, CHART_WINDOW_SIZE - 1));
+                    setTvChartWindowStart(dragStartWindow + Math.round(-dx / pxPerStep));
+                }
             });
 
             window.addEventListener("mouseup", () => {
-                if (!isMouseDown) return;
-                isMouseDown = false;
+                if (!activeDragKind) return;
+                activeDragKind = null;
                 canvas.classList.remove("is-dragging");
+                canvas.classList.remove("is-panning");
             });
 
             canvas.addEventListener("wheel", e => {
+                if (isPhotoMode()) {
+                    e.preventDefault();
+                    const pt = clientToCanvas(e.clientX, e.clientY);
+                    const step = e.deltaY < 0 ? 8 : -8;
+                    const curPct = Math.round((Number(tvPhotoTransform.zoom) || 1) * 100);
+                    setTvPhotoZoom(curPct + step, pt.x, pt.y);
+                    return;
+                }
                 const bounds = getChartWindowBounds(tvChartWindowStart);
                 if (bounds.maxStart <= 0) return;
                 const rawDelta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
@@ -13395,28 +13860,85 @@
 
             canvas.addEventListener("touchstart", e => {
                 if (!e.touches[0]) return;
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                touchStartWindow = getChartWindowBounds(tvChartWindowStart).start;
-                touchIsHorizontal = null;
-            }, { passive: true });
-
-            canvas.addEventListener("touchmove", e => {
-                if (!e.touches[0]) return;
-                const dx = e.touches[0].clientX - touchStartX;
-                const dy = e.touches[0].clientY - touchStartY;
-                if (touchIsHorizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
-                    touchIsHorizontal = Math.abs(dx) > Math.abs(dy);
-                }
-                if (touchIsHorizontal) {
-                    e.preventDefault();
-                    const rect = canvas.getBoundingClientRect();
-                    const pxPerStep = Math.max(22, (rect.width * 0.68) / Math.max(1, CHART_WINDOW_SIZE - 1));
-                    setTvChartWindowStart(touchStartWindow + Math.round(-dx / pxPerStep));
+                if (isPhotoMode()) {
+                    if (e.touches.length === 1) {
+                        e.preventDefault();
+                        touchMode = "photo-pan";
+                        dragStartX = e.touches[0].clientX;
+                        dragStartY = e.touches[0].clientY;
+                        dragStartPanX = tvPhotoTransform.panX;
+                        dragStartPanY = tvPhotoTransform.panY;
+                    } else if (e.touches.length >= 2) {
+                        e.preventDefault();
+                        touchMode = "photo-pinch";
+                        const t0 = e.touches[0], t1 = e.touches[1];
+                        pinchStartDist = Math.max(10, Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY));
+                        pinchStartZoom = Number(tvPhotoTransform.zoom) || 1;
+                        pinchStartPanX = Number(tvPhotoTransform.panX) || 0;
+                        pinchStartPanY = Number(tvPhotoTransform.panY) || 0;
+                        const mid = clientToCanvas((t0.clientX + t1.clientX) / 2, (t0.clientY + t1.clientY) / 2);
+                        pinchStartMidX = mid.x;
+                        pinchStartMidY = mid.y;
+                    }
+                } else {
+                    touchMode = "chart";
+                    dragStartX = e.touches[0].clientX;
+                    dragStartY = e.touches[0].clientY;
+                    dragStartWindow = getChartWindowBounds(tvChartWindowStart).start;
+                    touchIsHorizontal = null;
                 }
             }, { passive: false });
 
-            canvas.addEventListener("touchend", () => { touchIsHorizontal = null; }, { passive: true });
+            canvas.addEventListener("touchmove", e => {
+                if (!e.touches[0] || !touchMode) return;
+                const rect = canvas.getBoundingClientRect();
+                if (touchMode === "photo-pan" && e.touches.length === 1) {
+                    e.preventDefault();
+                    const sx = TV_CANVAS_W / Math.max(1, rect.width);
+                    const sy = TV_CANVAS_H / Math.max(1, rect.height);
+                    tvPhotoTransform.panX = dragStartPanX + (e.touches[0].clientX - dragStartX) * sx;
+                    tvPhotoTransform.panY = dragStartPanY + (e.touches[0].clientY - dragStartY) * sy;
+                    scheduleTvRender();
+                } else if (touchMode === "photo-pinch" || (isPhotoMode() && e.touches.length >= 2)) {
+                    e.preventDefault();
+                    const t0 = e.touches[0], t1 = e.touches[1];
+                    if (!t1) return;
+                    const dist = Math.max(10, Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY));
+                    const newZoom = Math.max(0.35, Math.min(3.5, pinchStartZoom * (dist / pinchStartDist)));
+                    const ratio = newZoom / pinchStartZoom;
+                    const curMid = clientToCanvas((t0.clientX + t1.clientX) / 2, (t0.clientY + t1.clientY) / 2);
+                    const cx = TV_CANVAS_W / 2, cy = TV_CANVAS_H / 2;
+                    tvPhotoTransform.zoom = newZoom;
+                    tvPhotoTransform.panX = (curMid.x - cx) - (pinchStartMidX - cx - pinchStartPanX) * ratio;
+                    tvPhotoTransform.panY = (curMid.y - cy) - (pinchStartMidY - cy - pinchStartPanY) * ratio;
+                    syncTvPhotoControlsUI();
+                    scheduleTvRender();
+                } else if (touchMode === "chart") {
+                    const dx = e.touches[0].clientX - dragStartX;
+                    const dy = e.touches[0].clientY - dragStartY;
+                    if (touchIsHorizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
+                        touchIsHorizontal = Math.abs(dx) > Math.abs(dy);
+                    }
+                    if (touchIsHorizontal) {
+                        e.preventDefault();
+                        const pxPerStep = Math.max(22, (rect.width * 0.68) / Math.max(1, CHART_WINDOW_SIZE - 1));
+                        setTvChartWindowStart(dragStartWindow + Math.round(-dx / pxPerStep));
+                    }
+                }
+            }, { passive: false });
+
+            canvas.addEventListener("touchend", e => {
+                if (e.touches.length === 0) {
+                    touchMode = null;
+                    touchIsHorizontal = null;
+                } else if (e.touches.length === 1 && isPhotoMode()) {
+                    touchMode = "photo-pan";
+                    dragStartX = e.touches[0].clientX;
+                    dragStartY = e.touches[0].clientY;
+                    dragStartPanX = tvPhotoTransform.panX;
+                    dragStartPanY = tvPhotoTransform.panY;
+                }
+            }, { passive: true });
         }
 
         function renderTvChartCanvas(targetCanvas = null, forceFallbackBg = false) {
@@ -14660,7 +15182,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.48${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.49${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -16590,7 +17112,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.48! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.49! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17430,6 +17952,18 @@
                 ["#btn-report-dl-png", "Stiahnuť PNG report", "Exportuje kompletný PNG obrázok posledného zápasu s upravenými riadkami poznámky, počasia a NEWS.", ""],
                 ["#report-bg-btn-default", "Predvolené pozadie", "Použije predvolený obrázok pozadia TV.jpeg (ak nie je dostupný, použije aktívny motív).", ""],
                 ["#report-bg-btn-theme", "Pozadie: Aktuálny farebný motív", "Použije ako pozadie PNG reportu aktuálne zvolený farebný gradient aplikácie (vrátane vlastného motívu).", ""],
+                ["#tv-bg-btn-default", "Pozadie TV: Predvolené", "Použije predvolený obrázok TV.jpeg (alebo aktuálny farebný motív).", ""],
+                ["#tv-bg-btn-theme", "Pozadie TV: Farebný motív", "Použije gradient aktuálne zvoleného farebného motívu aplikácie.", ""],
+                ["#tv-bg-btn-custom", "Pozadie TV: Vlastná fotka (16:9)", "Použije vlastnú fotografiu – priamo na náhľade ju môžeš posúvať aj zmenšovať/zväčšovať.", ""],
+                ["#btn-tv-fit-photo", "Celá fotka do 16:9", "Zmenší fotku tak, aby sa do formátu 16:9 zmestila celá bez odrezania okrajov.", ""],
+                ["#btn-tv-reset-photo", "Vycentrovať na 100 %", "Vráti fotku na stred a mierku 100 % (vyplnenie celého 16:9 plátna).", ""],
+                ["#tv-chart-bg-btn-default", "Pozadie grafu: Predvolené", "Použije predvolený obrázok TV.jpeg (alebo aktuálny farebný motív).", ""],
+                ["#tv-chart-bg-btn-theme", "Pozadie grafu: Farebný motív", "Použije gradient aktuálne zvoleného farebného motívu aplikácie.", ""],
+                ["#tv-chart-bg-btn-custom", "Pozadie grafu: Vlastná fotka (16:9)", "Použije vlastnú fotografiu – priamo na náhľade ju môžeš posúvať aj zmenšovať/zväčšovať.", ""],
+                ["#tv-chart-drag-photo", "Ovládanie náhľadu: Fotka", "Ťahaním a kolieskom/2 prstami na náhľade posúvaš a zväčšuješ fotku na pozadí.", ""],
+                ["#tv-chart-drag-chart", "Ovládanie náhľadu: Graf", "Ťahaním a kolieskom na náhľade posúvaš časové okno grafu.", ""],
+                ["#btn-tv-chart-fit-photo", "Celá fotka do 16:9", "Zmenší fotku tak, aby sa do formátu 16:9 zmestila celá bez odrezania okrajov.", ""],
+                ["#btn-tv-chart-reset-photo", "Vycentrovať na 100 %", "Vráti fotku na stred a mierku 100 % (vyplnenie celého 16:9 plátna).", ""],
                 ["#report-bg-btn-custom", "Pozadie: Vlastná fotka (9:16)", "Použije vlastnú fotografiu bez 16:9 orezu. Priamo na náhľade ju môžeš posúvať aj zmenšovať/zväčšovať.", ""],
                 ["#btn-report-fit-photo", "Zobraziť celú fotku", "Zmenší fotku tak, aby sa do formátu 9:16 zmestila celá bez odrezania okrajov (ideálne pre fotky na šírku).", ""],
                 ["#btn-report-reset-photo", "Vycentrovať na 100 %", "Vráti fotku na stred a mierku 100 % (vyplnenie celého 9:16 plátna).", ""],
@@ -17561,6 +18095,7 @@
             setMatchFormType("new", "2H");
             refreshAllViews();
             setupChartCanvasEvents();
+            setupTvCanvasEvents();
             setupTvChartCanvasEvents();
             setupMatchReportCanvasEvents();
             loadTvSettings();
