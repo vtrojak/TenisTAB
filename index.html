@@ -4109,7 +4109,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.461</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.47</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4143,7 +4143,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.461</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.47</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -9819,12 +9819,22 @@
             return `${formatPts(rounded)} ${skPlural(rounded, "bod", "body", "bodov", "bodu")}`;
         }
 
+        const ACH_ICON_LEGACY_FALLBACKS = {
+            "terminator.png": "zelezny_muz.png"
+        };
+
         function handleAchIconError(imgEl) {
             const file = imgEl.getAttribute("data-icon-file");
             const nextIdx = (parseInt(imgEl.getAttribute("data-dir-idx") || "0", 10)) + 1;
             if (file && nextIdx < ACHIEVEMENT_ICON_DIRS.length) {
                 imgEl.setAttribute("data-dir-idx", String(nextIdx));
                 imgEl.src = ACHIEVEMENT_ICON_DIRS[nextIdx] + file;
+            } else if (file && ACH_ICON_LEGACY_FALLBACKS[file] && imgEl.getAttribute("data-legacy-tried") !== "1") {
+                const legacyFile = ACH_ICON_LEGACY_FALLBACKS[file];
+                imgEl.setAttribute("data-legacy-tried", "1");
+                imgEl.setAttribute("data-icon-file", legacyFile);
+                imgEl.setAttribute("data-dir-idx", "0");
+                imgEl.src = ACHIEVEMENT_ICON_DIRS[0] + legacyFile;
             } else {
                 imgEl.onerror = null;
                 imgEl.style.display = "none";
@@ -10289,7 +10299,7 @@
                 updateOwnershipFor("beach_boy",       getLeaderIdsForMetric(stepPlayers, p => p.ptsSummer, 0.25), dIso);
                 updateOwnershipFor("giant_killer",    getLeaderIdsForMetric(stepPlayers, p => p.maxEloGain, 0.1), dIso);
                 updateOwnershipFor("janosik",         getLeaderIdsForMetric(stepPlayers, p => p.maxEloLoss2H, 0.1), dIso);
-                updateOwnershipFor("iron_man",        getLeaderIdsForMetric(stepPlayers, p => p.matches, 1), dIso);
+                updateOwnershipFor("terminator",      getLeaderIdsForMetric(stepPlayers, p => p.matches, 1), dIso);
                 updateOwnershipFor("diplomat",        getLeaderIdsForMetric(stepPlayers, p => p.draws, 1), dIso);
                 updateOwnershipFor("chameleon",       getLeaderIdsForMetric(stepPlayers, p => p.partnersSet.size, 1), dIso);
                 updateOwnershipFor("sponsor",         getLeaderIdsForMetric(stepPlayers, p => p.losses, 1), dIso);
@@ -10433,7 +10443,7 @@
             const rBetonar      = betonar12M.result;
             const rGiantKiller = findTopHolders(activePlayers, p => p.maxEloGain, 0.1);
             const rJanosik     = findTopHolders(activePlayers, p => p.maxEloLoss2H, 0.1);
-            const rIronMan     = findTopHolders(activePlayers, p => p.matches, 1);
+            const rTerminator  = findTopHolders(activePlayers, p => p.matches, 1);
             const rDiplomat    = findTopHolders(activePlayers, p => p.draws, 1);
             const rChameleon   = findTopHolders(activePlayers, p => p.uniquePartnersCount, 1);
             const rSponsor     = findTopHolders(activePlayers, p => p.losses, 1);
@@ -10709,15 +10719,15 @@
                     held: getHeldInfo("janosik")
                 },
                 {
-                    id: "iron_man", cat: 3, title: "Železný muž kurtu",
+                    id: "terminator", cat: 3, title: "Terminátor",
                     desc: "Najviac odohratých zápasov celkovo (2H + 4H)",
                     rules: "Celkový počet absolvovaných dvojhier aj štvorhier vo zvolenom rozsahu.",
-                    iconFile: "zelezny_muz.png", faClass: "fa-solid fa-robot",
+                    iconFile: "terminator.png", faClass: "fa-solid fa-robot",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
-                    valueText: `${skCount(rIronMan.value, "zápas", "zápasy", "zápasov")}`,
-                    holders: rIronMan.holders,
+                    valueText: `${skCount(rTerminator.value, "zápas", "zápasy", "zápasov")}`,
+                    holders: rTerminator.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.matches, pName, v => `${v} záp.`, 1),
-                    held: getHeldInfo("iron_man")
+                    held: getHeldInfo("terminator")
                 },
                 {
                     id: "diplomat", cat: 3, title: "Diplomat",
@@ -14294,7 +14304,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.461${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.47${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -16092,7 +16102,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.461! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.47! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -16525,11 +16535,11 @@
                         ? `Najväčší jednorazový zisk ELO v jednom zápase (${a.valueText.replace(".", ",")}) si delia ${n}.`
                         : `Lovcom obrov je ${n} – v jednom zápase ulovil rekordných ${a.valueText.replace(".", ",")}!`];
                 },
-                iron_man: (holders, a) => {
+                terminator: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
-                    return ["ŽELEZNÝ MUŽ", holders.length > 1
-                        ? `${n} majú na konte najviac štartov v klube (${a.valueText}) – na kurte majú trvalý pobyt.`
-                        : `${n} má na konte najviac štartov v klube (${a.valueText}) – na kurte má trvalý pobyt.`];
+                    return ["TERMINÁTOR", holders.length > 1
+                        ? `Titul Terminátor (${a.valueText}) si delia ${n} – na kurte majú trvalý pobyt.`
+                        : `Terminátorom kurtu je ${n} (${a.valueText}) – na kurte má trvalý pobyt.`];
                 },
                 diplomat: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
