@@ -2646,11 +2646,31 @@
 
         .ach-face-front {
             display: flex;
-            gap: 13px;
-            align-items: flex-start;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
             opacity: 1;
             visibility: visible;
             transform: scale(1);
+        }
+
+        .ach-front-top {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .ach-front-foot {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px 8px;
+            padding-top: 9px;
+            border-top: 1px solid var(--ach-pill-border);
+            position: relative;
+            z-index: 2;
         }
 
         .ach-card.is-flipped .ach-face-front {
@@ -2680,8 +2700,8 @@
         }
 
         .ach-crest {
-            width: 78px;
-            height: 78px;
+            width: 112px;
+            height: 112px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -2699,31 +2719,34 @@
             background: transparent;
             user-select: none;
             -webkit-user-drag: none;
+            pointer-events: none;
+            transform: scale(1.16);
+            transform-origin: center center;
             filter: drop-shadow(0 5px 10px rgba(15, 23, 42, 0.28));
             transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
         }
 
         .ach-card:hover .ach-icon-img {
-            transform: scale(1.06);
+            transform: scale(1.22);
             filter: drop-shadow(0 7px 14px rgba(15, 23, 42, 0.36));
         }
 
         .ach-fallback-hex {
-            width: 68px;
-            height: 68px;
+            width: 96px;
+            height: 96px;
             align-items: center;
             justify-content: center;
             filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.28));
         }
 
         .hex-outer {
-            width: 64px;
-            height: 64px;
+            width: 92px;
+            height: 92px;
             clip-path: polygon(50% 3%, 93% 26%, 93% 74%, 50% 97%, 7% 74%, 7% 26%);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2.5px;
+            padding: 3px;
         }
 
         .hex-inner {
@@ -2737,7 +2760,7 @@
         }
 
         .hex-inner i {
-            font-size: 1.45rem;
+            font-size: 2.1rem;
             line-height: 1;
             display: inline-block;
         }
@@ -2746,63 +2769,63 @@
             flex: 1;
             min-width: 0;
             position: relative;
-            z-index: 1;
-        }
-
-        .ach-title-row {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 6px;
+            z-index: 2;
+            padding-right: 22px;
         }
 
         .ach-title {
-            font-size: 0.90rem;
+            font-size: 0.96rem;
             font-weight: 800;
             color: #0f172a;
-            line-height: 1.28;
+            line-height: 1.26;
         }
 
         .ach-info-dot {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 3;
             flex-shrink: 0;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             font-weight: 800;
             color: var(--ach-front-accent);
             background: var(--ach-pill-bg);
             border: 1px solid var(--ach-pill-border);
-            margin-top: 1px;
         }
 
         .ach-desc {
-            font-size: 0.73rem;
+            font-size: 0.76rem;
             color: #334155;
-            margin-top: 2px;
-            line-height: 1.32;
+            margin-top: 4px;
+            line-height: 1.36;
         }
 
         .ach-record-pill {
-            display: inline-block;
-            margin-top: 7px;
-            font-size: 0.72rem;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 0;
+            font-size: 0.74rem;
             font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 6px;
+            padding: 3px 9px;
+            border-radius: 7px;
             background: var(--ach-pill-bg);
             border: 1px solid var(--ach-pill-border);
             color: var(--ach-front-accent);
+            white-space: nowrap;
         }
 
         .ach-holders {
             display: flex;
             flex-wrap: wrap;
+            align-items: center;
             gap: 5px;
-            margin-top: 7px;
+            margin-top: 0;
         }
 
         .ach-holder-chip {
@@ -2988,12 +3011,13 @@
         }
 
         .profile-mini-badge-img {
-            width: 22px;
-            height: 22px;
+            width: 26px;
+            height: 26px;
             object-fit: contain;
             background: transparent;
             flex-shrink: 0;
             display: block;
+            transform: scale(1.16);
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
         }
 
@@ -3002,8 +3026,18 @@
                 grid-template-columns: 1fr;
             }
             .ach-crest {
-                width: 72px;
-                height: 72px;
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 370px) {
+            .ach-crest {
+                width: 102px;
+                height: 102px;
+            }
+            .ach-front-top {
+                gap: 10px;
             }
         }
 
@@ -4169,7 +4203,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.5</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.51</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4203,7 +4237,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.5</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.51</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -10032,7 +10066,7 @@
             const safeTitle = escapeHtml(title);
             const safeFile = escapeHtml(iconFile);
             return `
-                <img class="ach-icon-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${safeFile}" alt="${safeTitle}" width="80" height="80" loading="lazy" decoding="async" data-icon-file="${safeFile}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                <img class="ach-icon-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${safeFile}" alt="${safeTitle}" width="120" height="120" loading="lazy" decoding="async" data-icon-file="${safeFile}" data-dir-idx="0" onerror="handleAchIconError(this)">
                 <div class="ach-fallback-hex" data-fallback-display="flex" style="display:none;">
                     <div class="hex-outer" style="background: ${pal.border};">
                         <div class="hex-inner" style="background: linear-gradient(145deg, ${pal.bg1}, ${pal.bg2});">
@@ -11254,15 +11288,17 @@
                              onclick="toggleAchievementCard(this.dataset.achId)"
                              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); toggleAchievementCard(this.dataset.achId);}">
                             <div class="ach-face ach-face-front">
-                                <div class="ach-crest">
-                                    ${getAchievementIconHtml(ach.iconFile, ach.title, ach.faClass, ach.theme)}
-                                </div>
-                                <div class="ach-body">
-                                    <div class="ach-title-row">
-                                        <div class="ach-title">${escapeHtml(ach.title)}</div>
-                                        <span class="ach-info-dot" title="Kliknutím zobrazíš pravidlá a poradie Top 3">i</span>
+                                <span class="ach-info-dot" title="Kliknutím zobrazíš pravidlá a poradie Top 3">i</span>
+                                <div class="ach-front-top">
+                                    <div class="ach-crest">
+                                        ${getAchievementIconHtml(ach.iconFile, ach.title, ach.faClass, ach.theme)}
                                     </div>
-                                    <div class="ach-desc">${escapeHtml(ach.desc)}</div>
+                                    <div class="ach-body">
+                                        <div class="ach-title">${escapeHtml(ach.title)}</div>
+                                        <div class="ach-desc">${escapeHtml(ach.desc)}</div>
+                                    </div>
+                                </div>
+                                <div class="ach-front-foot">
                                     <div class="ach-record-pill">
                                         Rekord: ${ach.holders.length > 0 ? ach.valueText : "—"}
                                     </div>
@@ -15330,7 +15366,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.5${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.51${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17260,7 +17296,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.5! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.51! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
