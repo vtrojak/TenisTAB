@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 22,
+  "databaseRevision": 38,
   "config": {
     "windowMonths": 12,
     "K": 32,
@@ -15,32 +15,32 @@
     {
       "id": "vlado",
       "name": "Vlado",
-      "color": "#f97316"
+      "color": "#ccff00"
     },
     {
       "id": "tibor",
       "name": "Tibor",
-      "color": "#c084fc"
+      "color": "#00d9ad"
     },
     {
       "id": "belo",
       "name": "Belo",
-      "color": "#facc15"
+      "color": "#2483ff"
     },
     {
       "id": "martin",
       "name": "Martin",
-      "color": "#2dd4bf"
+      "color": "#9700ab"
     },
     {
       "id": "adam",
       "name": "Adam",
-      "color": "#fb7185"
+      "color": "#ff8400"
     },
     {
       "id": "uher",
       "name": "Uher",
-      "color": "#60a5fa"
+      "color": "#9e1651"
     },
     {
       "id": "igor",
@@ -50,27 +50,27 @@
     {
       "id": "matus",
       "name": "Matúš",
-      "color": "#fbbf24"
+      "color": "#858511"
     },
     {
       "id": "tono",
       "name": "Toňo",
-      "color": "#38bdf8"
+      "color": "#119c31"
     },
     {
       "id": "cicero",
       "name": "Cicero",
-      "color": "#34d399"
+      "color": "#ff14b1"
     },
     {
       "id": "peto",
       "name": "Peťo",
-      "color": "#a3e635"
+      "color": "#ebde2f"
     },
     {
       "id": "majo",
       "name": "Majo",
-      "color": "#f43f5e"
+      "color": "#d60000"
     }
   ],
   "matches": [
@@ -1377,6 +1377,6 @@
       "surface": "tvrdy"
     }
   ],
-  "updatedAt": 1795508419882,
-  "exportedAtIso": "2026-11-24T08:21:11.130Z"
+  "updatedAt": 1795510361813,
+  "exportedAtIso": "2026-11-24T08:53:08.829Z"
 }
