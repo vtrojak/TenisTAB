@@ -1,6 +1,10 @@
 {
+  "schemaVersion": 2,
+  "databaseRevision": 22,
   "config": {
     "windowMonths": 12,
+    "K": 32,
+    "D": 200,
     "location": {
       "name": "Čadca",
       "lat": 49.4386,
@@ -1027,7 +1031,8 @@
       "sets1": 3,
       "sets2": 0,
       "gems": "6:2 7:6 6:3",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_062",
@@ -1042,7 +1047,8 @@
       "sets1": 1,
       "sets2": 2,
       "gems": "6:4 4:6 3:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_064",
@@ -1057,7 +1063,8 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "3:6 3:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_063",
@@ -1072,7 +1079,8 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "3:6 2:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_065",
@@ -1087,7 +1095,8 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:4 6:2",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_066",
@@ -1102,7 +1111,8 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:5 6:4",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_067",
@@ -1117,7 +1127,8 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:2 6:4",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_068",
@@ -1132,7 +1143,8 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "3:6 2:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_069",
@@ -1147,7 +1159,8 @@
       "sets1": 1,
       "sets2": 2,
       "gems": "5:6 6:2 5:7",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_070",
@@ -1162,7 +1175,8 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:3 6:5",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_071",
@@ -1177,7 +1191,8 @@
       "sets1": 2,
       "sets2": 1,
       "gems": "6:4 6:3 3:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_072",
@@ -1192,7 +1207,8 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:5 6:3",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_074",
@@ -1207,7 +1223,8 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "4:6 2:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_073",
@@ -1222,7 +1239,8 @@
       "sets1": 1,
       "sets2": 1,
       "gems": "4:6 6:5",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_075",
@@ -1237,7 +1255,8 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "3:6 3:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_076",
@@ -1252,7 +1271,8 @@
       "sets1": 1,
       "sets2": 2,
       "gems": "6:5 5:6 3:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_077",
@@ -1267,7 +1287,8 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:3 6:3",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_078",
@@ -1282,7 +1303,8 @@
       "sets1": 2,
       "sets2": 1,
       "gems": "6:2 5:7 6:3",
-      "note": ""
+      "note": "",
+      "surface": "antuka"
     },
     {
       "id": "m_079",
@@ -1299,7 +1321,8 @@
       "sets1": 3,
       "sets2": 0,
       "gems": "6:3 6:4 7:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_080",
@@ -1314,7 +1337,8 @@
       "sets1": 0,
       "sets2": 3,
       "gems": "2:6 4:6 4:6",
-      "note": ""
+      "note": "",
+      "surface": "tvrdy"
     },
     {
       "id": "m_081",
@@ -1331,7 +1355,8 @@
       "sets1": 0,
       "sets2": 3,
       "gems": "2:6 2:6 1:6",
-      "note": ""
+      "note": "",
+      "surface": "antuka"
     },
     {
       "id": "m_082",
@@ -1348,9 +1373,10 @@
       "sets1": 1,
       "sets2": 1,
       "gems": "7:5 4:6",
-      "note": "Tretí set sa za stavu 4:1 pre Vlada s Tiborom nedohral. Definitívne tak platí remízový výsledok."
+      "note": "Tretí set sa za stavu 4:1 pre Vlada s Tiborom nedohral. Definitívne tak platí remízový výsledok.",
+      "surface": "tvrdy"
     }
   ],
-  "updatedAt": 1795358679497,
-  "exportedAtIso": "2026-11-22T14:44:42.092Z"
+  "updatedAt": 1795508419882,
+  "exportedAtIso": "2026-11-24T08:21:11.130Z"
 }
