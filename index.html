@@ -797,39 +797,117 @@
             min-width: 0;
         }
 
-        .report-item-tag {
-            display: inline-block;
-            font-size: 0.65rem;
-            font-weight: 900;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            padding: 2px 7px;
-            border-radius: 5px;
+        .report-tag-input {
+            width: 100%;
+            max-width: 100%;
+            padding: 4px 8px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
             background: #dc2626;
             color: #ffffff;
-            margin-bottom: 4px;
+            font-size: 0.68rem;
+            font-weight: 900;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+            outline: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
         }
 
-        .report-item-row.kind-note .report-item-tag {
+        .report-tag-input::placeholder {
+            color: rgba(255, 255, 255, 0.72);
+            font-weight: 700;
+        }
+
+        .report-tag-input:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+            filter: brightness(1.06);
+        }
+
+        .report-item-row.kind-note .report-tag-input {
             background: #bef264;
             color: #052e16;
+            border-color: rgba(5, 46, 22, 0.28);
         }
 
-        .report-item-row.kind-weather .report-item-tag {
+        .report-item-row.kind-note .report-tag-input::placeholder {
+            color: rgba(5, 46, 22, 0.58);
+        }
+
+        .report-item-row.kind-weather .report-tag-input {
             background: #38bdf8;
             color: #042033;
+            border-color: rgba(4, 32, 51, 0.28);
         }
 
-        .report-item-row.kind-leader .report-item-tag {
+        .report-item-row.kind-weather .report-tag-input::placeholder {
+            color: rgba(4, 32, 51, 0.58);
+        }
+
+        .report-item-row.kind-leader .report-tag-input {
             background: #facc15;
             color: #2b1803;
+            border-color: rgba(43, 24, 3, 0.28);
         }
 
-        .report-item-text {
-            font-size: 0.78rem;
+        .report-item-row.kind-leader .report-tag-input::placeholder {
+            color: rgba(43, 24, 3, 0.58);
+        }
+
+        .report-text-input {
+            width: 100%;
+            min-height: 44px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(186, 230, 253, 0.22);
+            background: rgba(2, 10, 20, 0.58);
             color: #f1f5f9;
-            line-height: 1.38;
-            word-break: break-word;
+            font-size: 0.78rem;
+            font-weight: 500;
+            line-height: 1.4;
+            resize: vertical;
+            outline: none;
+            overflow-y: hidden;
+            transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+        }
+
+        .report-text-input::placeholder {
+            color: rgba(203, 213, 225, 0.56);
+        }
+
+        .report-text-input:focus {
+            border-color: var(--btn-accent);
+            box-shadow: 0 0 0 2px var(--btn-glow);
+            background: rgba(2, 10, 20, 0.82);
+        }
+
+        .report-item-hint {
+            margin-top: 4px;
+            font-size: 0.67rem;
+            color: var(--text-muted);
+            opacity: 0.82;
+        }
+
+        .report-bg-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .report-bg-btn {
+            padding: 7px 6px !important;
+            font-size: 0.72rem !important;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 440px) {
+            .report-bg-btn {
+                font-size: 0.68rem !important;
+                padding: 6px 4px !important;
+            }
         }
 
         .report-remove-btn {
@@ -1454,6 +1532,304 @@
             border: 1px solid rgba(148, 163, 184, 0.32);
             color: rgba(203, 213, 225, 0.72);
         }
+        /* POVRCH KURTU – ŠTÍTKY & PREPÍNAČ (v1.45) */
+        .surface-picker-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .surface-pick-btn {
+            flex: 1 1 auto;
+            min-width: 72px;
+            padding: 7px 8px;
+            border-radius: 9px;
+            background: var(--btn-3d-muted);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: var(--btn-3d-shadow-muted);
+            transition: transform 0.1s ease, background 0.16s ease, border-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+        }
+
+        .surface-pick-btn:hover {
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-border);
+            color: #ffffff;
+        }
+
+        .surface-pick-btn:active {
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
+        }
+
+        .surface-pick-btn.active {
+            background: var(--btn-3d-bg);
+            border-color: var(--btn-accent);
+            color: var(--btn-accent);
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 11px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .surface-pick-btn.active[data-surface="antuka"] {
+            background: linear-gradient(180deg, #c2410c 0%, #9a3412 100%);
+            border-color: #fdba74;
+            color: #fff7ed;
+            box-shadow: 0 2px 0 #5c1905, 0 0 12px rgba(249, 115, 22, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .surface-pick-btn.active[data-surface="tvrdy"] {
+            background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+            border-color: #7dd3fc;
+            color: #f0f9ff;
+            box-shadow: 0 2px 0 #082f49, 0 0 12px rgba(56, 189, 248, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .surface-pick-btn.active[data-surface="koberec"] {
+            background: linear-gradient(180deg, #9333ea 0%, #6b21a8 100%);
+            border-color: #d8b4fe;
+            color: #faf5ff;
+            box-shadow: 0 2px 0 #3b0764, 0 0 12px rgba(192, 132, 252, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .surface-pick-btn.active[data-surface="umela_trava"] {
+            background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+            border-color: #86efac;
+            color: #f0fdf4;
+            box-shadow: 0 2px 0 #052e16, 0 0 12px rgba(74, 222, 128, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .surface-pick-btn.active[data-surface="ine"] {
+            background: linear-gradient(180deg, #475569 0%, #334155 100%);
+            border-color: #cbd5e1;
+            color: #f8fafc;
+            box-shadow: 0 2px 0 #0f172a, 0 0 10px rgba(203, 213, 225, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+        }
+
+        .surface-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 1px 6px;
+            border-radius: 5px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+        }
+
+        .surface-badge.surf-antuka {
+            background: rgba(234, 88, 12, 0.22);
+            border: 1px solid rgba(251, 146, 60, 0.55);
+            color: #fdba74;
+        }
+
+        .surface-badge.surf-tvrdy {
+            background: rgba(14, 165, 233, 0.22);
+            border: 1px solid rgba(125, 211, 252, 0.55);
+            color: #7dd3fc;
+        }
+
+        .surface-badge.surf-koberec {
+            background: rgba(168, 85, 247, 0.22);
+            border: 1px solid rgba(216, 180, 254, 0.55);
+            color: #e9d5ff;
+        }
+
+        .surface-badge.surf-umela_trava {
+            background: rgba(34, 197, 94, 0.22);
+            border: 1px solid rgba(110, 231, 183, 0.55);
+            color: #86efac;
+        }
+
+        .surface-badge.surf-ine {
+            background: rgba(148, 163, 184, 0.20);
+            border: 1px solid rgba(203, 213, 225, 0.45);
+            color: #e2e8f0;
+        }
+
+        .surface-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .surface-stat-tile {
+            background: rgba(8, 18, 30, 0.72);
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 9px 10px;
+            text-align: left;
+        }
+
+        /* ROČNÁ KRONIKA (v1.45) */
+        .chron-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .chron-kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .chron-month-chart {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 5px;
+            align-items: end;
+            height: 150px;
+            padding: 14px 6px 4px;
+            background: rgba(6, 16, 28, 0.68);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .chron-month-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            min-width: 0;
+            gap: 4px;
+        }
+
+        .chron-month-val {
+            font-size: 0.64rem;
+            font-weight: 800;
+            color: var(--tennis-lime);
+            line-height: 1;
+            min-height: 11px;
+        }
+
+        .chron-month-val.is-zero {
+            color: rgba(226, 238, 248, 0.28);
+            font-weight: 600;
+        }
+
+        .chron-bar-stack {
+            width: 100%;
+            max-width: 26px;
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column-reverse;
+            border-radius: 5px 5px 3px 3px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.06);
+            min-height: 4px;
+        }
+
+        .chron-bar-2h {
+            width: 100%;
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+        }
+
+        .chron-bar-4h {
+            width: 100%;
+            background: linear-gradient(180deg, #d8b4fe 0%, #9333ea 100%);
+        }
+
+        .chron-month-lbl {
+            font-size: 0.63rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .chron-awards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .chron-awards-grid {
+                grid-template-columns: 1fr;
+            }
+            .chron-month-chart {
+                gap: 3px;
+                height: 136px;
+                padding: 12px 4px 4px;
+            }
+            .chron-month-lbl {
+                font-size: 0.56rem;
+            }
+        }
+
+        .chron-award-card {
+            background: rgba(8, 18, 30, 0.78);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 11px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .chron-award-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            color: var(--tennis-lime);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chron-award-main {
+            font-size: 0.94rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.28;
+        }
+
+        .chron-award-sub {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            line-height: 1.38;
+        }
+
+        .chron-surf-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 9px;
+        }
+
+        .chron-surf-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .chron-surf-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            flex-wrap: wrap;
+        }
+
+        .chron-surf-bar-bg {
+            height: 9px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+        }
+
+        .chron-surf-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
 
         /* FORMS & INPUTS */
         .form-group {
@@ -3733,7 +4109,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.44</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.45</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -3767,7 +4143,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.44</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.45</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3989,6 +4365,19 @@
                 <div class="form-group">
                     <label for="match-gems">Výsledok na gemy (voliteľné · automaticky doplní sety)</label>
                     <input type="text" id="match-gems" placeholder="napr. 6:3 6:4 alebo 6:5 4:6" oninput="autoCalcSetsFromGems('match-gems', 'sets-t1', 'sets-t2', true)">
+                </div>
+
+                <div class="form-group">
+                    <label>Povrch kurtu (voliteľné · pre štatistiky)</label>
+                    <input type="hidden" id="match-surface" value="">
+                    <div class="surface-picker-bar" id="match-surface-bar">
+                        <button type="button" class="surface-pick-btn active" data-surface="" onclick="setMatchSurface('new', '')">—</button>
+                        <button type="button" class="surface-pick-btn" data-surface="antuka" onclick="setMatchSurface('new', 'antuka')">Antuka</button>
+                        <button type="button" class="surface-pick-btn" data-surface="tvrdy" onclick="setMatchSurface('new', 'tvrdy')">Tvrdý</button>
+                        <button type="button" class="surface-pick-btn" data-surface="koberec" onclick="setMatchSurface('new', 'koberec')">Koberec</button>
+                        <button type="button" class="surface-pick-btn" data-surface="umela_trava" onclick="setMatchSurface('new', 'umela_trava')">Umelá tráva</button>
+                        <button type="button" class="surface-pick-btn" data-surface="ine" onclick="setMatchSurface('new', 'ine')">Iné</button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -4263,8 +4652,14 @@
             </div>
         </section>
 
-        <!-- ==================== SEKCIA 5: HISTÓRIA ZÁPASOV ==================== -->
+        <!-- ==================== SEKCIA 5: HISTÓRIA ZÁPASOV & ROČNÁ KRONIKA ==================== -->
         <section id="sec-history" class="section">
+            <!-- PREPÍNAČ: ZÁPASY | ROČNÁ KRONIKA -->
+            <div class="table-mode-bar cols-2" id="history-view-bar">
+                <button type="button" id="hist-view-matches" class="table-mode-btn active" onclick="setHistoryViewMode('matches')">Zápasy</button>
+                <button type="button" id="hist-view-chronicle" class="table-mode-btn" onclick="setHistoryViewMode('chronicle')">Ročná kronika</button>
+            </div>
+
             <!-- CHRONOLOGICKÝ ZOZNAM ZÁPASOV -->
             <div class="card" id="history-matches-card">
                 <div class="card-header">
@@ -4296,9 +4691,33 @@
                         <option value="active">Len platné v okne</option>
                         <option value="expired">Len expirované</option>
                     </select>
+                    <select id="history-filter-surface" onchange="renderMatchHistory()">
+                        <option value="all">Všetky povrchy</option>
+                        <option value="antuka">Antuka</option>
+                        <option value="tvrdy">Tvrdý</option>
+                        <option value="koberec">Koberec</option>
+                        <option value="umela_trava">Umelá tráva</option>
+                        <option value="ine">Iné</option>
+                        <option value="none">Bez zadaného povrchu</option>
+                    </select>
                 </div>
 
                 <div id="history-list"></div>
+            </div>
+
+            <!-- ROČNÁ KRONIKA (ŠTATISTIKY SEZÓNY) -->
+            <div id="history-chronicle-wrap" style="display:none;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                            <span>Ročná kronika klubu</span>
+                        </div>
+                        <span class="param-pill lime" id="chronicle-year-pill">—</span>
+                    </div>
+                    <div class="window-bar" id="chronicle-year-bar" style="margin-bottom:0;"></div>
+                </div>
+                <div id="chronicle-content"></div>
             </div>
         </section>
     </main>
@@ -4578,6 +4997,19 @@
             </div>
 
             <div class="form-group">
+                <label>Povrch kurtu (voliteľné)</label>
+                <input type="hidden" id="edit-surface" value="">
+                <div class="surface-picker-bar" id="edit-surface-bar">
+                    <button type="button" class="surface-pick-btn active" data-surface="" onclick="setMatchSurface('edit', '')">—</button>
+                    <button type="button" class="surface-pick-btn" data-surface="antuka" onclick="setMatchSurface('edit', 'antuka')">Antuka</button>
+                    <button type="button" class="surface-pick-btn" data-surface="tvrdy" onclick="setMatchSurface('edit', 'tvrdy')">Tvrdý</button>
+                    <button type="button" class="surface-pick-btn" data-surface="koberec" onclick="setMatchSurface('edit', 'koberec')">Koberec</button>
+                    <button type="button" class="surface-pick-btn" data-surface="umela_trava" onclick="setMatchSurface('edit', 'umela_trava')">Umelá tráva</button>
+                    <button type="button" class="surface-pick-btn" data-surface="ine" onclick="setMatchSurface('edit', 'ine')">Iné</button>
+                </div>
+            </div>
+
+            <div class="form-group">
                 <label for="edit-note" class="note-label-row">
                     <span>Poznámka k zápasu (max 160 znakov)</span>
                     <span class="note-counter" id="edit-note-count">0 / 160</span>
@@ -4753,12 +5185,27 @@
                 </div>
 
                 <div class="tv-ctrl-section">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+                        <span style="font-size:0.74rem; font-weight:800; color:var(--text-main);">Pozadie PNG reportu</span>
+                        <span id="report-bg-theme-label" style="font-size:0.70rem; color:var(--tennis-lime); font-weight:700;">—</span>
+                    </div>
+                    <div class="report-bg-bar">
+                        <button type="button" id="report-bg-btn-default" class="preset-btn report-bg-btn active" onclick="setReportBgMode('default')">🖼️ Predvolené</button>
+                        <button type="button" id="report-bg-btn-theme" class="preset-btn report-bg-btn" onclick="setReportBgMode('theme')">🎨 Farebný motív</button>
+                        <button type="button" id="report-bg-btn-custom" class="preset-btn report-bg-btn" onclick="setReportBgMode('custom')">📷 Vlastná fotka</button>
+                    </div>
+                </div>
+
+                <div class="tv-ctrl-section">
                     <div class="report-list-head">
                         <div style="font-size:0.78rem; font-weight:800; color:var(--text-main);">
                             Riadky v reporte (<span id="report-items-count">0</span>)
                             <span id="report-weather-status" class="report-weather-status" style="margin-left:6px;"></span>
                         </div>
                         <button type="button" id="btn-report-restore-all" class="chart-quick-btn" onclick="restoreAllMatchReportItems()" style="display:none; color:var(--tennis-lime); border-color:rgba(190,242,100,0.45);">Obnoviť všetko</button>
+                    </div>
+                    <div style="font-size:0.71rem; color:var(--text-muted); line-height:1.35;">
+                        Titulok aj text každého riadku môžeš priamo prepísať – PNG náhľad sa aktualizuje okamžite. Zbytočné riadky zmaž cez <strong style="color:#fca5a5;">×</strong>.
                     </div>
                     <div id="report-items-list" class="report-items-list"></div>
                 </div>
@@ -4850,6 +5297,52 @@
         const REMOTE_JSON_FILES = ["databaza.json", "data.json"];
         const ACHIEVEMENT_ICON_DIRS = ["./", "./icons/", "./ikony/", "./badges/", "./img/", "./images/", "./achievements/"];
         const VALID_WINDOWS = [3, 6, 12, 18, 24, 36, 0];
+        const COURT_SURFACES = [
+            { key: "antuka",      label: "Antuka",      color: "#f97316", barGrad: "linear-gradient(90deg, #ea580c, #fb923c)" },
+            { key: "tvrdy",       label: "Tvrdý",       color: "#38bdf8", barGrad: "linear-gradient(90deg, #0284c7, #38bdf8)" },
+            { key: "koberec",     label: "Koberec",     color: "#c084fc", barGrad: "linear-gradient(90deg, #9333ea, #d8b4fe)" },
+            { key: "umela_trava", label: "Umelá tráva", color: "#4ade80", barGrad: "linear-gradient(90deg, #16a34a, #4ade80)" },
+            { key: "ine",         label: "Iné",         color: "#cbd5e1", barGrad: "linear-gradient(90deg, #64748b, #cbd5e1)" }
+        ];
+        const COURT_SURFACE_MAP = Object.fromEntries(COURT_SURFACES.map(s => [s.key, s]));
+
+        function normalizeSurfaceValue(raw) {
+            const s = String(raw ?? "").trim();
+            if (!s) return "";
+            if (COURT_SURFACE_MAP[s]) return s;
+            const norm = s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[\s\-]+/g, "_");
+            if (COURT_SURFACE_MAP[norm]) return norm;
+            if (norm === "clay") return "antuka";
+            if (norm === "hard" || norm === "tvrdy_povrch") return "tvrdy";
+            if (norm === "carpet") return "koberec";
+            if (norm === "artificial_grass" || norm === "trava") return "umela_trava";
+            if (norm === "other" || norm === "iny") return "ine";
+            return "";
+        }
+
+        function getSurfaceMeta(raw) {
+            const key = normalizeSurfaceValue(raw);
+            return key ? COURT_SURFACE_MAP[key] : null;
+        }
+
+        function renderSurfaceBadgeHtml(raw) {
+            const meta = getSurfaceMeta(raw);
+            if (!meta) return "";
+            return `<span class="surface-badge surf-${meta.key}">${escapeHtml(meta.label)}</span>`;
+        }
+
+        function setMatchSurface(scope, surfaceKey) {
+            const val = normalizeSurfaceValue(surfaceKey);
+            const pref = scope === "edit" ? "edit" : "match";
+            const hiddenEl = document.getElementById(`${pref}-surface`);
+            if (hiddenEl) hiddenEl.value = val;
+            const bar = document.getElementById(`${pref}-surface-bar`);
+            if (bar) {
+                bar.querySelectorAll(".surface-pick-btn").forEach(btn => {
+                    btn.classList.toggle("active", (btn.getAttribute("data-surface") || "") === val);
+                });
+            }
+        }
 
         const SEASON_THEMES = [
             {
@@ -5265,7 +5758,10 @@
             const tvChartMod = document.getElementById("tv-chart-modal");
             if (tvChartMod && tvChartMod.classList.contains("open")) renderTvChartCanvas();
             const repMod = document.getElementById("match-report-modal");
-            if (repMod && repMod.classList.contains("open")) renderMatchReportCanvas();
+            if (repMod && repMod.classList.contains("open")) {
+                syncReportBgButtonsUI();
+                renderMatchReportCanvas();
+            }
             if (showNotification) {
                 if (theme.isCustom) {
                     showToast(`Motív: <i class="fa-regular fa-user" style="margin:0 4px 0 2px;"></i>${escapeHtml(theme.label)}`, false, true);
@@ -5572,8 +6068,13 @@
 
                 const gems = rawM.gems === undefined || rawM.gems === null ? "" : String(rawM.gems).trim();
                 const note = rawM.note === undefined || rawM.note === null ? "" : String(rawM.note).trim().slice(0, 160);
+                const rawSurf = rawM.surface === undefined || rawM.surface === null ? "" : String(rawM.surface).trim();
+                const surface = normalizeSurfaceValue(rawSurf);
+                if (rawSurf && !surface) {
+                    warnings.push(`Zápas #${pos} (${dateStr}): neznámy povrch „${rawSurf}“ – vynechaný.`);
+                }
 
-                sanitizedMatches.push({
+                const cleanMatchObj = {
                     id: mid,
                     date: dateStr,
                     type: mType,
@@ -5583,7 +6084,9 @@
                     sets2: s2,
                     gems,
                     note
-                });
+                };
+                if (surface) cleanMatchObj.surface = surface;
+                sanitizedMatches.push(cleanMatchObj);
             });
 
             const rawCfg = (data.config && typeof data.config === "object") ? data.config : {};
@@ -5690,7 +6193,8 @@
                     }
                     const s1Raw = Number(m.sets1);
                     const s2Raw = Number(m.sets2);
-                    return {
+                    const surface = normalizeSurfaceValue(m.surface);
+                    const normMatch = {
                         id: mid,
                         date: validDate || getTodayIso(),
                         type: inferredType,
@@ -5701,6 +6205,8 @@
                         gems: String(m.gems || "").trim(),
                         note: String(m.note || "").trim().slice(0, 160)
                     };
+                    if (surface) normMatch.surface = surface;
+                    return normMatch;
                 });
         }
 
@@ -6769,7 +7275,9 @@
             }).join("");
 
             const typeTxt = lastM.type === "4H" ? "Štvorhra 4H" : "Dvojhra 2H";
-            lmLabel.innerHTML = `Posledný zápas (#${lastM.index} · ${typeTxt}) · ${formatDateSk(lastM.date)} <span class="lm-report-pill"><i class="fa-regular fa-image"></i> PNG</span>`;
+            const lastSurfMeta = getSurfaceMeta(lastM.surface);
+            const surfSuffix = lastSurfMeta ? ` · ${escapeHtml(lastSurfMeta.label)}` : "";
+            lmLabel.innerHTML = `Posledný zápas (#${lastM.index} · ${typeTxt}${surfSuffix}) · ${formatDateSk(lastM.date)} <span class="lm-report-pill"><i class="fa-regular fa-image"></i> PNG</span>`;
             lmBoard.innerHTML = `
                 <div class="lm-scoreboard ${isDraw ? 'is-draw' : ''}" style="grid-template-columns: ${gridCols};">
                     <div class="lm-cell lm-cell-team ${topTeamCls}" title="${escapeHtml(topTeam)}">${escapeHtml(topTeam)}</div>
@@ -7110,11 +7618,13 @@
             syncEloParamInputsUI();
             renderPlayersManager();
             modal.classList.add("open");
+            syncModalBodyScrollLock();
         }
 
         function closeSettingsModal() {
             const modal = document.getElementById("settings-modal");
             if (modal) modal.classList.remove("open");
+            syncModalBodyScrollLock();
         }
 
         function setSettingsTab(tab) {
@@ -7676,6 +8186,8 @@
             const sets2 = parseInt(document.getElementById(scope === "new" ? "sets-t2" : `${scope}-sets2`).value, 10);
             const gems = document.getElementById(`${pref}-gems`).value.trim();
             const note = (document.getElementById(`${pref}-note`).value || "").trim().slice(0, 160);
+            const surfEl = document.getElementById(`${pref}-surface`);
+            const surface = normalizeSurfaceValue(surfEl ? surfEl.value : "");
 
             const team1 = is4H
                 ? [document.getElementById(`${pref}-t1p1`).value, document.getElementById(`${pref}-t1p2`).value]
@@ -7698,7 +8210,9 @@
                 return null;
             }
 
-            return { date, type, team1, team2, sets1, sets2, gems, note };
+            const out = { date, type, team1, team2, sets1, sets2, gems, note };
+            if (surface) out.surface = surface;
+            return out;
         }
 
         function findDuplicateMatch(payload, excludeId = null) {
@@ -7741,6 +8255,7 @@
             state.matches.push({ id: generateUniqueId("m"), ...payload });
             document.getElementById("match-gems").value = "";
             document.getElementById("match-note").value = "";
+            setMatchSurface("new", "");
             updateNoteCounter("match-note", "match-note-count");
 
             sortMatchesChronologically();
@@ -8451,7 +8966,10 @@
         function openPlayerMatchesInHistory(playerId, typeFilter = "all", scopeMode = null) {
             const navBtn = document.querySelector('.bottom-nav .nav-item[data-tab="sec-history"]');
             switchTab("sec-history", navBtn);
+            setHistoryViewMode("matches");
             historyExpanded = true;
+            const surfSel = document.getElementById("history-filter-surface");
+            if (surfSel) surfSel.value = "all";
 
             const wm = Number(state.config.windowMonths) || 0;
             const playerSel = document.getElementById("history-filter-player");
@@ -8575,6 +9093,7 @@
                                     <div class="match-meta">
                                         <span>#${m.index} · ${formatDateSk(m.date)}</span>
                                         <span class="type-badge type-${m.type}">${m.type}</span>
+                                        ${renderSurfaceBadgeHtml(m.surface)}
                                         ${valTag}
                                     </div>
                                     <div class="match-title">
@@ -8704,7 +9223,7 @@
                         return `
                             <div class="match-card ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" style="margin-top:8px; padding:9px 11px;">
                                 <div style="min-width:0; flex:1;">
-                                    <div class="match-meta">Zápas #${m.index} · ${formatDateSk(m.date)} <span class="type-badge type-4H">4H</span></div>
+                                    <div class="match-meta"><span>Zápas #${m.index} · ${formatDateSk(m.date)}</span> <span class="type-badge type-4H">4H</span> ${renderSurfaceBadgeHtml(m.surface)}</div>
                                     <div class="match-title">${escapeHtml(teamTitleA)} vs ${escapeHtml(teamTitleB)} <span class="match-score-pill">${sA}:${sB}</span> <span class="match-gems">${gemsFormatted ? '(' + escapeHtml(gemsFormatted) + ')' : ''}</span></div>
                                 </div>
                                 <div style="text-align:right; font-size:0.77rem; font-weight:800; color:${col}; white-space:nowrap;">
@@ -9118,6 +9637,7 @@
                                         <span class="profile-res-pill profile-res-${res}">${resLbl}</span>
                                         <span>#${m.index} · ${formatDateSk(m.date)}</span>
                                         <span class="type-badge type-${m.type}">${m.type}</span>
+                                        ${renderSurfaceBadgeHtml(m.surface)}
                                         ${valTag}
                                     </div>
                                     <div class="match-title">
@@ -9214,6 +9734,44 @@
                         <div style="font-size:0.74rem; color:var(--text-muted); margin-top:3px;">${e4Str}</div>
                     </div>
                 </div>`;
+                })()}
+
+                ${(() => {
+                    const surfStats = {};
+                    let taggedCount = 0;
+                    playerMatches.forEach(pm => {
+                        const sKey = normalizeSurfaceValue(pm.m.surface);
+                        if (!sKey) return;
+                        taggedCount++;
+                        if (!surfStats[sKey]) surfStats[sKey] = { m: 0, w: 0, d: 0, l: 0, pts: 0 };
+                        const rec = surfStats[sKey];
+                        rec.m++;
+                        rec.pts = Math.round((rec.pts + pm.earned) * 100) / 100;
+                        if (pm.res === "W") rec.w++;
+                        else if (pm.res === "L") rec.l++;
+                        else rec.d++;
+                    });
+                    if (taggedCount === 0) return "";
+                    const cards = COURT_SURFACES.filter(s => surfStats[s.key]).map(s => {
+                        const r = surfStats[s.key];
+                        const pct = r.m > 0 ? (((r.w + 0.5 * r.d) / r.m) * 100).toFixed(1) : "0.0";
+                        return `
+                            <div class="surface-stat-tile" style="border-color:${s.color}55;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; margin-bottom:4px;">
+                                    ${renderSurfaceBadgeHtml(s.key)}
+                                    <span style="font-size:0.72rem; font-weight:800; color:${s.color};">${pct}%</span>
+                                </div>
+                                <div style="font-size:0.84rem; font-weight:800;">${r.m} záp. · ${formatPts(r.pts)} b</div>
+                                <div style="font-size:0.71rem; color:var(--text-muted); margin-top:2px;">${r.w}V - ${r.d}R - ${r.l}P</div>
+                            </div>
+                        `;
+                    }).join("");
+                    return `
+                        <div class="profile-section-title">
+                            <span>🏟️ Bilancia podľa povrchu (${taggedCount} záp.)</span>
+                        </div>
+                        <div class="surface-stats-grid">${cards}</div>
+                    `;
                 })()}
 
                 ${profileMatchesHtml}
@@ -10365,6 +10923,7 @@
             document.getElementById("edit-sets1").value = m.sets1;
             document.getElementById("edit-sets2").value = m.sets2;
             document.getElementById("edit-gems").value = m.gems || "";
+            setMatchSurface("edit", m.surface || "");
             document.getElementById("edit-note").value = m.note || "";
             updateNoteCounter("edit-note", "edit-note-count");
 
@@ -10443,6 +11002,8 @@
             const filterPlayer = document.getElementById("history-filter-player").value || "all";
             const filterType = document.getElementById("history-filter-type").value || "all";
             const filterValidity = document.getElementById("history-filter-validity").value || "all";
+            const surfFilterEl = document.getElementById("history-filter-surface");
+            const filterSurface = surfFilterEl ? (surfFilterEl.value || "all") : "all";
             const sortOrder = document.getElementById("history-sort-order").value || "desc";
 
             document.getElementById("history-count-label").textContent = computedMatches.length;
@@ -10469,6 +11030,14 @@
                     if (filterType !== "all" && m.type !== filterType) return false;
                     if (filterValidity === "active" && !m.isValid) return false;
                     if (filterValidity === "expired" && m.isValid) return false;
+                    if (filterSurface !== "all") {
+                        const mSurf = normalizeSurfaceValue(m.surface);
+                        if (filterSurface === "none") {
+                            if (mSurf) return false;
+                        } else if (mSurf !== filterSurface) {
+                            return false;
+                        }
+                    }
                     return true;
                 });
 
@@ -10518,6 +11087,7 @@
                             <div class="match-meta">
                                 <span>#${m.index} · ${formatDateSk(m.date)}</span>
                                 <span class="type-badge type-${m.type}">${m.type}</span>
+                                ${renderSurfaceBadgeHtml(m.surface)}
                                 ${validityHtml}
                             </div>
                             <div class="match-title">
@@ -10539,6 +11109,556 @@
                     </div>
                 `;
             }).join("");
+        }
+
+
+        /* ==================== ROČNÁ KRONIKA / ŠTATISTIKY SEZÓNY (v1.45) ==================== */
+        let historyViewMode = "matches"; // "matches" | "chronicle"
+        let selectedChronicleYear = null;
+        const SK_MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "Máj", "Jún", "Júl", "Aug", "Sep", "Okt", "Nov", "Dec"];
+        const SK_MONTHS_FULL = ["Január", "Február", "Marec", "Apríl", "Máj", "Jún", "Júl", "August", "September", "Október", "November", "December"];
+
+        function setHistoryViewMode(mode) {
+            historyViewMode = mode === "chronicle" ? "chronicle" : "matches";
+            const bM = document.getElementById("hist-view-matches");
+            const bC = document.getElementById("hist-view-chronicle");
+            const cardM = document.getElementById("history-matches-card");
+            const wrapC = document.getElementById("history-chronicle-wrap");
+            if (bM) bM.classList.toggle("active", historyViewMode === "matches");
+            if (bC) bC.classList.toggle("active", historyViewMode === "chronicle");
+            triggerGreenBtnFlash(historyViewMode === "chronicle" ? bC : bM);
+            if (cardM) cardM.style.display = historyViewMode === "matches" ? "block" : "none";
+            if (wrapC) wrapC.style.display = historyViewMode === "chronicle" ? "block" : "none";
+            if (historyViewMode === "chronicle") {
+                renderAnnualChronicle();
+            }
+        }
+
+        function setChronicleYear(yearStr) {
+            selectedChronicleYear = String(yearStr);
+            renderAnnualChronicle();
+        }
+
+        function renderAnnualChronicle() {
+            const yearBar = document.getElementById("chronicle-year-bar");
+            const yearPill = document.getElementById("chronicle-year-pill");
+            const contentEl = document.getElementById("chronicle-content");
+            if (!yearBar || !contentEl) return;
+
+            if (computedMatches.length === 0) {
+                if (yearPill) yearPill.textContent = "—";
+                yearBar.innerHTML = "";
+                contentEl.innerHTML = `<div class="card"><div style="color:var(--text-muted); font-size:0.84rem;">Zatiaľ nie sú zapísané žiadne zápasy pre vytvorenie ročnej kroniky.</div></div>`;
+                return;
+            }
+
+            // Zoznam rokov v databáze
+            const yearCounts = {};
+            computedMatches.forEach(m => {
+                const y = String(m.date || "").slice(0, 4);
+                if (/^\d{4}$/.test(y)) {
+                    yearCounts[y] = (yearCounts[y] || 0) + 1;
+                }
+            });
+            const years = Object.keys(yearCounts).sort((a, b) => Number(b) - Number(a));
+            if (years.length === 0) return;
+
+            if (!selectedChronicleYear || !yearCounts[selectedChronicleYear]) {
+                selectedChronicleYear = years[0];
+            }
+
+            const yr = selectedChronicleYear;
+            if (yearPill) yearPill.textContent = `Sezóna ${yr} · ${yearCounts[yr]} záp.`;
+
+            yearBar.innerHTML = years.map(y => `
+                <button type="button" class="preset-btn ${y === yr ? 'active' : ''}" onclick="setChronicleYear('${y}')">
+                    ${y} <span style="opacity:0.78; font-weight:600;">(${yearCounts[y]})</span>
+                </button>
+            `).join("");
+
+            const yearMatches = computedMatches.filter(m => String(m.date || "").slice(0, 4) === yr);
+
+            // Mesačná aktivita + globálne KPI + hráčske/párové/povrchové štatistiky
+            const monthly = Array.from({ length: 12 }, () => ({ m2H: 0, m4H: 0, total: 0 }));
+            let total2H = 0, total4H = 0, totalSets = 0, totalGems = 0, totalTiebreaks = 0, totalBagels = 0;
+
+            const playerYearStats = {};
+            const ensureP = (pid) => {
+                if (!playerYearStats[pid]) {
+                    const plObj = computedPlayers.find(x => x.id === pid) || state.players.find(x => x.id === pid);
+                    playerYearStats[pid] = {
+                        id: pid,
+                        name: plObj ? plObj.name : pid,
+                        color: plObj && plObj.color ? plObj.color : "#94a3b8",
+                        points: 0, pts2H: 0, pts4H: 0,
+                        matches: 0, m2H: 0, m4H: 0,
+                        wins: 0, draws: 0, losses: 0,
+                        setsWon: 0, setsLost: 0,
+                        gemsWon: 0, gemsLost: 0,
+                        elo2Start: null, elo2End: null, elo2Matches: 0,
+                        elo4Start: null, elo4End: null, elo4Matches: 0
+                    };
+                }
+                return playerYearStats[pid];
+            };
+
+            const pairsMap = {};
+            const surfaceCounts = {};
+            COURT_SURFACES.forEach(s => { surfaceCounts[s.key] = { total: 0, m2H: 0, m4H: 0 }; });
+            let surfaceUntagged = 0;
+
+            let closestMatch = null;
+            let closestScoreTuple = null;
+
+            yearMatches.forEach(m => {
+                const moIdx = parseInt(String(m.date || "").slice(5, 7), 10) - 1;
+                if (moIdx >= 0 && moIdx < 12) {
+                    monthly[moIdx].total++;
+                    if (m.type === "4H") monthly[moIdx].m4H++;
+                    else monthly[moIdx].m2H++;
+                }
+
+                if (m.type === "4H") total4H++; else total2H++;
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                totalSets += s1 + s2;
+
+                const parsedSets = parseSetsFromGemsString(m.gems);
+                let g1 = 0, g2 = 0, tbCount = 0;
+                parsedSets.forEach(st => {
+                    g1 += st.g1; g2 += st.g2;
+                    if ((st.g1 === 7 && st.g2 === 6) || (st.g1 === 6 && st.g2 === 7)) tbCount++;
+                    if ((st.g1 === 6 && st.g2 === 0) || (st.g1 === 0 && st.g2 === 6)) totalBagels++;
+                });
+                totalGems += g1 + g2;
+                totalTiebreaks += tbCount;
+
+                // Povrch kurtu
+                const sKey = normalizeSurfaceValue(m.surface);
+                if (sKey && surfaceCounts[sKey]) {
+                    surfaceCounts[sKey].total++;
+                    if (m.type === "4H") surfaceCounts[sKey].m4H++;
+                    else surfaceCounts[sKey].m2H++;
+                } else {
+                    surfaceUntagged++;
+                }
+
+                // Hráčske štatistiky roka
+                const res1 = m.outcome === "A" ? "W" : (m.outcome === "B" ? "L" : "D");
+                const res2 = m.outcome === "B" ? "W" : (m.outcome === "A" ? "L" : "D");
+
+                const applySide = (teamIds, ptsEarned, resChar, sw, sl, gw, gl) => {
+                    teamIds.forEach(pid => {
+                        const r = ensureP(pid);
+                        r.matches++;
+                        r.points = Math.round((r.points + ptsEarned) * 100) / 100;
+                        if (m.type === "4H") {
+                            r.m4H++;
+                            r.pts4H = Math.round((r.pts4H + ptsEarned) * 100) / 100;
+                        } else {
+                            r.m2H++;
+                            r.pts2H = Math.round((r.pts2H + ptsEarned) * 100) / 100;
+                        }
+                        if (resChar === "W") r.wins++;
+                        else if (resChar === "L") r.losses++;
+                        else r.draws++;
+                        r.setsWon += sw; r.setsLost += sl;
+                        r.gemsWon += gw; r.gemsLost += gl;
+                    });
+                };
+
+                applySide(m.team1, m.ptsA, res1, s1, s2, g1, g2);
+                applySide(m.team2, m.ptsB, res2, s2, s1, g2, g1);
+
+                // Ročný vývoj ELO (presný rozdiel first.before -> last.after v danom roku)
+                const allEloEntries = [...(m.eloTeam1 || []), ...(m.eloTeam2 || [])];
+                allEloEntries.forEach(ent => {
+                    const r = ensureP(ent.id);
+                    if (m.type === "4H") {
+                        if (r.elo4Start === null) r.elo4Start = ent.before;
+                        r.elo4End = ent.after;
+                        r.elo4Matches++;
+                    } else {
+                        if (r.elo2Start === null) r.elo2Start = ent.before;
+                        r.elo2End = ent.after;
+                        r.elo2Matches++;
+                    }
+                });
+
+                // Najčastejšia dvojica (4H)
+                if (m.type === "4H") {
+                    const trackPair = (ids, resChar) => {
+                        if (!Array.isArray(ids) || ids.length !== 2) return;
+                        const sortedIds = [...ids].sort();
+                        const key = sortedIds.join("__");
+                        if (!pairsMap[key]) {
+                            const p1 = ensureP(sortedIds[0]);
+                            const p2 = ensureP(sortedIds[1]);
+                            pairsMap[key] = { key, id1: sortedIds[0], id2: sortedIds[1], name: `${p1.name} / ${p2.name}`, matches: 0, wins: 0, draws: 0, losses: 0 };
+                        }
+                        pairsMap[key].matches++;
+                        if (resChar === "W") pairsMap[key].wins++;
+                        else if (resChar === "L") pairsMap[key].losses++;
+                        else pairsMap[key].draws++;
+                    };
+                    trackPair(m.team1, res1);
+                    trackPair(m.team2, res2);
+                }
+
+                // Najvyrovnanejší duel roka
+                const hasGems = (g1 + g2) > 0;
+                const setDiff = Math.abs(s1 - s2);
+                const gemDiff = hasGems ? Math.abs(g1 - g2) : 999;
+                const totalG = g1 + g2;
+                const tuple = [
+                    hasGems ? 1 : 0,       // preferovať zápasy s presnými gemami
+                    -setDiff,              // najmenší rozdiel setov (remíza 1:1 alebo 2:1)
+                    -gemDiff,              // najmenší rozdiel gemov (0, 1, 2...)
+                    tbCount,               // viac tiebreakov
+                    totalG,                // dlhšia bitka (viac gemov)
+                    s1 + s2                // viac setov
+                ];
+                if (!closestScoreTuple) {
+                    closestScoreTuple = tuple;
+                    closestMatch = { m, g1, g2, tbCount };
+                } else {
+                    for (let k = 0; k < tuple.length; k++) {
+                        if (tuple[k] !== closestScoreTuple[k]) {
+                            if (tuple[k] > closestScoreTuple[k]) {
+                                closestScoreTuple = tuple;
+                                closestMatch = { m, g1, g2, tbCount };
+                            }
+                            break;
+                        }
+                    }
+                }
+            });
+
+            const activePlayersList = Object.values(playerYearStats).map(r => ({
+                ...r,
+                elo2Delta: (r.elo2Start !== null && r.elo2End !== null) ? Math.round((r.elo2End - r.elo2Start) * 10) / 10 : null,
+                elo4Delta: (r.elo4Start !== null && r.elo4End !== null) ? Math.round((r.elo4End - r.elo4Start) * 10) / 10 : null
+            })).sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                if (a.matches !== b.matches) return a.matches - b.matches;
+                if (b.wins !== a.wins) return b.wins - a.wins;
+                if (b.pts2H !== a.pts2H) return b.pts2H - a.pts2H;
+                return a.name.localeCompare(b.name, "sk");
+            });
+
+            // Priradenie poradia v ročnej tabuľke (s delenými miestami)
+            let lastKey = null, lastRank = 1;
+            const rankedYearPlayers = activePlayersList.map((p, idx) => {
+                const tieKey = `${p.points.toFixed(2)}|${p.matches}|${p.wins}|${p.pts2H.toFixed(2)}`;
+                const rank = tieKey === lastKey ? lastRank : (idx + 1);
+                lastKey = tieKey;
+                lastRank = rank;
+                return { ...p, rank };
+            });
+
+            // Najaktívnejší mesiac
+            let peakMonthIdx = -1, peakMonthVal = 0;
+            monthly.forEach((mo, idx) => {
+                if (mo.total > peakMonthVal) {
+                    peakMonthVal = mo.total;
+                    peakMonthIdx = idx;
+                }
+            });
+            const peakMonthTxt = peakMonthIdx >= 0 ? SK_MONTHS_FULL[peakMonthIdx] : "—";
+            const peakMonthSub = peakMonthIdx >= 0 ? `${peakMonthVal} záp. (${monthly[peakMonthIdx].m2H}× 2H · ${monthly[peakMonthIdx].m4H}× 4H)` : "Bez dát";
+
+            // Ocenenia roka
+            // 1. Kráľ bodov roka
+            const maxPts = rankedYearPlayers.length > 0 ? rankedYearPlayers[0].points : 0;
+            const ptsKings = rankedYearPlayers.filter(p => p.points === maxPts && maxPts > 0);
+            const ptsKingMain = ptsKings.length > 0
+                ? ptsKings.map(p => `<span class="profile-quick-link" style="color:${p.color};" data-player-id="${escapeHtml(p.id)}" onclick="openPlayerDetail(this.dataset.playerId)">${escapeHtml(p.name)}</span>`).join(", ")
+                : "—";
+            const ptsKingSub = ptsKings.length > 0
+                ? `${formatPts(maxPts)} b` + (ptsKings.length === 1 ? ` (${formatPts(ptsKings[0].pts2H)} b 2H · ${formatPts(ptsKings[0].pts4H)} b 4H · ${ptsKings[0].wins}V-${ptsKings[0].draws}R-${ptsKings[0].losses}P)` : ` (delené 1. miesto)`)
+                : "Žiadne body v tomto roku";
+
+            // 2. Skokan roka v ELO 2H
+            const elo2Candidates = rankedYearPlayers.filter(p => p.elo2Delta !== null && p.elo2Delta > 0)
+                .sort((a, b) => b.elo2Delta - a.elo2Delta || b.elo2Matches - a.elo2Matches);
+            const topElo2 = elo2Candidates[0] || null;
+            const elo2Main = topElo2
+                ? `<span class="profile-quick-link" style="color:${topElo2.color};" data-player-id="${escapeHtml(topElo2.id)}" onclick="openPlayerDetail(this.dataset.playerId)">${escapeHtml(topElo2.name)}</span> <span style="color:var(--win);">+${topElo2.elo2Delta.toFixed(1)}</span>`
+                : "—";
+            const elo2Sub = topElo2
+                ? `${topElo2.elo2Start.toFixed(1)} → ${topElo2.elo2End.toFixed(1)} ELO (${topElo2.elo2Matches}× 2H v roku ${yr})`
+                : (total2H === 0 ? "V tomto roku sa nehrala žiadna dvojhra (2H)" : "Nikto neskončil rok v pluse ELO 2H");
+
+            // 3. Skokan roka v ELO 4H
+            const elo4Candidates = rankedYearPlayers.filter(p => p.elo4Delta !== null && p.elo4Delta > 0)
+                .sort((a, b) => b.elo4Delta - a.elo4Delta || b.elo4Matches - a.elo4Matches);
+            const topElo4 = elo4Candidates[0] || null;
+            const elo4Main = topElo4
+                ? `<span class="profile-quick-link" style="color:${topElo4.color};" data-player-id="${escapeHtml(topElo4.id)}" onclick="openPlayerDetail(this.dataset.playerId)">${escapeHtml(topElo4.name)}</span> <span style="color:var(--win);">+${topElo4.elo4Delta.toFixed(1)}</span>`
+                : "—";
+            const elo4Sub = topElo4
+                ? `${topElo4.elo4Start.toFixed(1)} → ${topElo4.elo4End.toFixed(1)} ELO (${topElo4.elo4Matches}× 4H v roku ${yr})`
+                : (total4H === 0 ? "V tomto roku sa nehrala žiadna štvorhra (4H)" : "Nikto neskončil rok v pluse ELO 4H");
+
+            // 4. Najaktívnejší hráč roka
+            const maxMatches = rankedYearPlayers.reduce((mx, p) => Math.max(mx, p.matches), 0);
+            const activeKings = rankedYearPlayers.filter(p => p.matches === maxMatches && maxMatches > 0);
+            const activeMain = activeKings.length > 0
+                ? activeKings.map(p => `<span class="profile-quick-link" style="color:${p.color};" data-player-id="${escapeHtml(p.id)}" onclick="openPlayerDetail(this.dataset.playerId)">${escapeHtml(p.name)}</span>`).join(", ")
+                : "—";
+            const activeSub = activeKings.length > 0
+                ? `${maxMatches} zápasov` + (activeKings.length === 1 ? ` (${activeKings[0].m2H}× 2H · ${activeKings[0].m4H}× 4H)` : ` (delené 1. miesto)`)
+                : "—";
+
+            // 5. Najčastejšia dvojica (4H)
+            const pairsSorted = Object.values(pairsMap).sort((a, b) => b.matches - a.matches || b.wins - a.wins || a.name.localeCompare(b.name, "sk"));
+            const topPair = pairsSorted[0] || null;
+            const topPairPct = topPair && topPair.matches > 0 ? (((topPair.wins + 0.5 * topPair.draws) / topPair.matches) * 100).toFixed(1) : "0.0";
+            const topPairMain = topPair
+                ? `<span class="profile-quick-link" onclick="openPairH2H('${escapeHtml(topPair.id1)}', '${escapeHtml(topPair.id2)}')">${escapeHtml(topPair.name)}</span>`
+                : "—";
+            const topPairSub = topPair
+                ? `${topPair.matches} spoločných 4H · bilancia ${topPair.wins}V-${topPair.draws}R-${topPair.losses}P (${topPairPct}%)`
+                : "V tomto roku sa nehrali štvorhry (4H)";
+
+            // 6. Najvyrovnanejší duel roka
+            let closestMain = "—", closestSub = "—";
+            if (closestMatch && closestMatch.m) {
+                const cm = closestMatch.m;
+                const swapC = (Number(cm.sets2) || 0) > (Number(cm.sets1) || 0);
+                const tA = swapC ? cm.teamNameB : cm.teamNameA;
+                const tB = swapC ? cm.teamNameA : cm.teamNameB;
+                const sA = swapC ? cm.sets2 : cm.sets1;
+                const sB = swapC ? cm.sets1 : cm.sets2;
+                const gTxt = formatGemsForOrder(cm.gems, !swapC);
+                closestMain = `${escapeHtml(tA)} vs ${escapeHtml(tB)} (${sA}:${sB})`;
+                closestSub = `${formatDateSk(cm.date)} · ${cm.type}` + (gTxt ? ` · gemy ${escapeHtml(gTxt)}` : "") + (closestMatch.tbCount > 0 ? ` · ${closestMatch.tbCount}× TB` : "");
+            }
+
+            // Mesačný graf (HTML stĺpce)
+            const maxMonthBar = Math.max(1, peakMonthVal);
+            const monthColsHtml = monthly.map((mo, idx) => {
+                const totalPx = mo.total > 0 ? Math.max(8, Math.round((mo.total / maxMonthBar) * 92)) : 4;
+                const h2 = mo.total > 0 ? Math.round((mo.m2H / mo.total) * totalPx) : 0;
+                const h4 = mo.total > 0 ? Math.max(0, totalPx - h2) : 0;
+                const tip = `${SK_MONTHS_FULL[idx]} ${yr}: ${mo.total} záp. (${mo.m2H}× 2H · ${mo.m4H}× 4H)`;
+                return `
+                    <div class="chron-month-col" title="${escapeHtml(tip)}">
+                        <div class="chron-month-val ${mo.total === 0 ? 'is-zero' : ''}">${mo.total > 0 ? mo.total : '0'}</div>
+                        <div class="chron-bar-stack" style="height:${totalPx}px;">
+                            ${h2 > 0 ? `<div class="chron-bar-2h" style="height:${h2}px;"></div>` : ''}
+                            ${h4 > 0 ? `<div class="chron-bar-4h" style="height:${h4}px;"></div>` : ''}
+                        </div>
+                        <div class="chron-month-lbl">${SK_MONTHS_SHORT[idx]}</div>
+                    </div>
+                `;
+            }).join("");
+
+            // Tabuľka hráčov roka
+            const fmtEloCell = (val) => {
+                if (val === null) return `<span style="color:var(--text-muted);">—</span>`;
+                if (val > 0) return `<span style="color:var(--win); font-weight:800;">+${val.toFixed(1)}</span>`;
+                if (val < 0) return `<span style="color:var(--loss); font-weight:700;">${val.toFixed(1)}</span>`;
+                return `<span style="color:var(--text-muted);">0.0</span>`;
+            };
+
+            const rankCountsYr = {};
+            rankedYearPlayers.forEach(p => { rankCountsYr[p.rank] = (rankCountsYr[p.rank] || 0) + 1; });
+
+            const yearTableRowsHtml = rankedYearPlayers.map(p => {
+                const winPct = p.matches > 0 ? (((p.wins + 0.5 * p.draws) / p.matches) * 100).toFixed(1) + "%" : "—";
+                let rCls = "";
+                if (p.rank === 1) rCls = "rank-1";
+                else if (p.rank === 2) rCls = "rank-2";
+                else if (p.rank === 3) rCls = "rank-3";
+                const rLbl = rankCountsYr[p.rank] > 1 ? `${p.rank}.=` : `${p.rank}.`;
+                return `
+                    <tr onclick="openPlayerDetail('${escapeHtml(p.id)}')" title="Kliknutím otvoríš detailný profil hráča ${escapeHtml(p.name)}">
+                        <td><span class="rank-badge ${rCls}">${rLbl}</span></td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:6px;">
+                                <span class="player-color-dot" style="width:8px; height:8px; border-radius:50%; background:${p.color}; display:inline-block; flex-shrink:0;"></span>
+                                <strong>${escapeHtml(p.name)}</strong>
+                            </div>
+                        </td>
+                        <td class="text-right"><span class="elo-pill">${formatPts(p.points)}</span></td>
+                        <td class="text-right"><span class="sub-pts">${formatPts(p.pts2H)}</span></td>
+                        <td class="text-right"><span class="sub-pts">${formatPts(p.pts4H)}</span></td>
+                        <td class="text-right">${p.matches}</td>
+                        <td class="text-right">${p.wins}-${p.draws}-${p.losses}</td>
+                        <td class="text-right" style="font-weight:700;">${winPct}</td>
+                        <td class="text-right">${fmtEloCell(p.elo2Delta)}</td>
+                        <td class="text-right">${fmtEloCell(p.elo4Delta)}</td>
+                    </tr>
+                `;
+            }).join("");
+
+            // Povrchy kurtov v roku
+            const taggedSurfacesTotal = yearMatches.length - surfaceUntagged;
+            let surfacesCardHtml = "";
+            if (taggedSurfacesTotal > 0) {
+                const rowsSurf = COURT_SURFACES
+                    .filter(s => surfaceCounts[s.key].total > 0)
+                    .sort((a, b) => surfaceCounts[b.key].total - surfaceCounts[a.key].total)
+                    .map(s => {
+                        const c = surfaceCounts[s.key];
+                        const pct = Math.round((c.total / taggedSurfacesTotal) * 1000) / 10;
+                        return `
+                            <div class="chron-surf-row">
+                                <div class="chron-surf-head">
+                                    <div>${renderSurfaceBadgeHtml(s.key)}</div>
+                                    <div style="color:var(--text-muted); font-size:0.74rem;">
+                                        <strong style="color:#ffffff;">${c.total} záp.</strong> (${pct.toFixed(1)}%) · ${c.m2H}× 2H · ${c.m4H}× 4H
+                                    </div>
+                                </div>
+                                <div class="chron-surf-bar-bg">
+                                    <div class="chron-surf-bar-fill" style="width:${pct}%; background:${s.barGrad};"></div>
+                                </div>
+                            </div>
+                        `;
+                    }).join("");
+
+                const untaggedHint = surfaceUntagged > 0
+                    ? `<div style="margin-top:8px; font-size:0.71rem; color:var(--text-muted);">+ ${surfaceUntagged} zápasov bez zadaného povrchu (nezapočítané do % podielu).</div>`
+                    : "";
+
+                surfacesCardHtml = `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-title-dot" style="background: #fb923c;"></span>
+                                Povrchy kurtov v roku ${yr} (${taggedSurfacesTotal} označených)
+                            </div>
+                        </div>
+                        ${rowsSurf}
+                        ${untaggedHint}
+                    </div>
+                `;
+            } else {
+                surfacesCardHtml = `
+                    <div class="card" style="padding:12px 14px;">
+                        <div style="font-size:0.78rem; color:var(--text-muted); line-height:1.45;">
+                            🏟️ <strong style="color:#ffffff;">Povrchy kurtov (${yr}):</strong> V tomto roku zatiaľ nie je pri zápasoch evidovaný povrch kurtu. Pri nových zápasoch (napr. od sezóny 2027) zvoľ <em>Antuka / Tvrdý / Koberec / Umelá tráva / Iné</em> a štatistiky povrchov sa tu zobrazia automaticky.
+                        </div>
+                    </div>
+                `;
+            }
+
+            contentEl.innerHTML = `
+                <!-- KPI PREHĽAD ROKA -->
+                <div class="chron-kpi-grid">
+                    <div class="stat-tile">
+                        <div class="stat-tile-label">Zápasy v roku ${yr}</div>
+                        <div class="stat-tile-value" style="color:var(--tennis-lime);">${yearMatches.length}</div>
+                        <div class="stat-tile-sub">${total2H}× 2H · ${total4H}× 4H</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="stat-tile-label">Aktívni hráči</div>
+                        <div class="stat-tile-value" style="color:#a5f3fc;">${rankedYearPlayers.length}</div>
+                        <div class="stat-tile-sub">z ${state.players.length} v databáze</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="stat-tile-label">Sety &amp; Gemy</div>
+                        <div class="stat-tile-value">${totalSets} s.</div>
+                        <div class="stat-tile-sub">${totalGems > 0 ? totalGems + ' gemov' : 'bez gemov'}${totalTiebreaks > 0 ? ' · ' + totalTiebreaks + '× TB' : ''}${totalBagels > 0 ? ' · ' + totalBagels + '× 6:0' : ''}</div>
+                    </div>
+                    <div class="stat-tile">
+                        <div class="stat-tile-label">Najaktívnejší mesiac</div>
+                        <div class="stat-tile-value" style="color:var(--draw);">${peakMonthTxt}</div>
+                        <div class="stat-tile-sub">${peakMonthSub}</div>
+                    </div>
+                </div>
+
+                <!-- MESAČNÁ AKTIVITA KLUBU -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-title-dot" style="background: var(--blue-accent);"></span>
+                            Mesačná aktivita klubu (${yr})
+                        </div>
+                        <div style="display:flex; gap:10px; font-size:0.70rem; color:var(--text-muted); font-weight:700;">
+                            <span><span style="display:inline-block; width:8px; height:8px; border-radius:2px; background:#38bdf8; margin-right:4px;"></span>2H (${total2H})</span>
+                            <span><span style="display:inline-block; width:8px; height:8px; border-radius:2px; background:#c084fc; margin-right:4px;"></span>4H (${total4H})</span>
+                        </div>
+                    </div>
+                    <div class="chron-month-chart">${monthColsHtml}</div>
+                </div>
+
+                <!-- OCENENIA A NAJVÄČŠIE MOMENTY ROKA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-title-dot" style="background: #facc15;"></span>
+                            Ocenenia a highlighty sezóny ${yr}
+                        </div>
+                    </div>
+                    <div class="chron-awards-grid">
+                        <div class="chron-award-card" style="border-color:rgba(250,204,21,0.42);">
+                            <div class="chron-award-label" style="color:#fde047;">🏆 Kráľ bodov roka</div>
+                            <div class="chron-award-main">${ptsKingMain}</div>
+                            <div class="chron-award-sub">${ptsKingSub}</div>
+                        </div>
+                        <div class="chron-award-card" style="border-color:rgba(110,231,183,0.40);">
+                            <div class="chron-award-label" style="color:var(--win);">📈 Skokan roka – ELO 2H</div>
+                            <div class="chron-award-main">${elo2Main}</div>
+                            <div class="chron-award-sub">${elo2Sub}</div>
+                        </div>
+                        <div class="chron-award-card" style="border-color:rgba(216,180,254,0.40);">
+                            <div class="chron-award-label" style="color:#e9d5ff;">🚀 Skokan roka – ELO 4H</div>
+                            <div class="chron-award-main">${elo4Main}</div>
+                            <div class="chron-award-sub">${elo4Sub}</div>
+                        </div>
+                        <div class="chron-award-card" style="border-color:rgba(125,211,252,0.40);">
+                            <div class="chron-award-label" style="color:var(--blue-accent);">⚡ Najaktívnejší hráč</div>
+                            <div class="chron-award-main">${activeMain}</div>
+                            <div class="chron-award-sub">${activeSub}</div>
+                        </div>
+                        <div class="chron-award-card" style="border-color:rgba(190,242,100,0.40);">
+                            <div class="chron-award-label" style="color:var(--tennis-lime);">🤝 Najčastejšia dvojica (4H)</div>
+                            <div class="chron-award-main">${topPairMain}</div>
+                            <div class="chron-award-sub">${topPairSub}</div>
+                        </div>
+                        <div class="chron-award-card" style="border-color:rgba(251,146,60,0.42);">
+                            <div class="chron-award-label" style="color:#fdba74;">🔥 Najvyrovnanejší duel</div>
+                            <div class="chron-award-main">${closestMain}</div>
+                            <div class="chron-award-sub">${closestSub}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROČNÁ TABUĽKA HRÁČOV -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-title-dot"></span>
+                            Ročná bilancia hráčov (${yr})
+                        </div>
+                        <span style="font-size:0.72rem; color:var(--text-muted);">Body získané v kalendárnom roku ${yr}</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="elo-table">
+                            <thead>
+                                <tr>
+                                    <th>Por.</th>
+                                    <th>Meno</th>
+                                    <th class="text-right">Body</th>
+                                    <th class="text-right">2H</th>
+                                    <th class="text-right">4H</th>
+                                    <th class="text-right">Záp.</th>
+                                    <th class="text-right">V-R-P</th>
+                                    <th class="text-right">Úsp. %</th>
+                                    <th class="text-right">Δ ELO 2H</th>
+                                    <th class="text-right">Δ ELO 4H</th>
+                                </tr>
+                            </thead>
+                            <tbody>${yearTableRowsHtml}</tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- POVRCHY KURTOV V ROKU -->
+                ${surfacesCardHtml}
+            `;
         }
 
         /* ==================== IMPORT / EXPORT / RESET ==================== */
@@ -10783,8 +11903,10 @@
                     const cropped = new Image();
                     cropped.onload = () => {
                         tvCustomBgImage = cropped;
+                        reportBgMode = "custom";
+                        syncReportBgButtonsUI();
                         scheduleTvRender();
-                        showToast("Vlastné pozadie (1920×1080) bolo vložené!");
+                        showToast("Vlastné pozadie bolo vložené!");
                     };
                     cropped.src = off.toDataURL("image/jpeg", 0.92);
                 };
@@ -10807,16 +11929,21 @@
                     if (typeof parsed.transparencyPct === "number" && !isNaN(parsed.transparencyPct)) {
                         tvTransparencyPct = Math.max(0, Math.min(100, Math.round(parsed.transparencyPct)));
                     }
+                    if (parsed.reportBgMode === "theme" || parsed.reportBgMode === "default") {
+                        reportBgMode = parsed.reportBgMode;
+                    }
                 }
             } catch (e) {}
             syncTvControlsUI();
+            syncReportBgButtonsUI();
         }
 
         function saveTvSettings() {
             try {
                 localStorage.setItem(TV_SETTINGS_KEY, JSON.stringify({
                     blurPct: tvBlurPct,
-                    transparencyPct: tvTransparencyPct
+                    transparencyPct: tvTransparencyPct,
+                    reportBgMode: reportBgMode === "theme" ? "theme" : "default"
                 }));
             } catch (e) {}
         }
@@ -10962,22 +12089,27 @@
             targetCtx.strokeStyle = "rgba(255, 255, 255, 0.14)";
             targetCtx.lineWidth = 3;
             targetCtx.beginPath();
-            targetCtx.moveTo(144, H * 0.68); targetCtx.lineTo(W - 144, H * 0.68);
-            targetCtx.moveTo(288, H * 0.28); targetCtx.lineTo(84, H * 0.93);
-            targetCtx.moveTo(W - 288, H * 0.28); targetCtx.lineTo(W - 84, H * 0.93);
+            targetCtx.moveTo(W * 0.075, H * 0.68); targetCtx.lineTo(W * 0.925, H * 0.68);
+            targetCtx.moveTo(W * 0.15, H * 0.28); targetCtx.lineTo(W * 0.044, H * 0.93);
+            targetCtx.moveTo(W * 0.85, H * 0.28); targetCtx.lineTo(W * 0.956, H * 0.93);
             targetCtx.moveTo(W / 2, H * 0.28); targetCtx.lineTo(W / 2, H * 0.68);
             targetCtx.stroke();
             targetCtx.restore();
 
-            const radGrad = targetCtx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, W * 0.72);
+            const radGrad = targetCtx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.25, W / 2, H / 2, Math.max(W, H) * 0.72);
             radGrad.addColorStop(0, "rgba(0, 0, 0, 0.0)");
             radGrad.addColorStop(1, "rgba(4, 10, 18, 0.34)");
             targetCtx.fillStyle = radGrad;
             targetCtx.fillRect(0, 0, W, H);
         }
 
-        function drawTvBackgroundLayer(targetCtx, W, H, forceFallbackBg = false) {
-            if (tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) {
+        function drawTvBackgroundLayer(targetCtx, W, H, forceFallbackBg = false, bgModeOverride = null) {
+            if (bgModeOverride === "theme") {
+                drawThemeFallbackBackground(targetCtx, W, H);
+                return;
+            }
+            const allowCustom = bgModeOverride === null || bgModeOverride === "custom";
+            if (allowCustom && tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) {
                 const imgW = tvCustomBgImage.naturalWidth;
                 const imgH = tvCustomBgImage.naturalHeight;
                 const scale = Math.max(W / imgW, H / imgH);
@@ -10999,7 +12131,7 @@
                 const drawH = imgH * scale;
                 targetCtx.drawImage(tvBgImage, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
 
-                const vig = targetCtx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, W * 0.72);
+                const vig = targetCtx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.25, W / 2, H / 2, Math.max(W, H) * 0.72);
                 vig.addColorStop(0, "rgba(0, 18, 15, 0.08)");
                 vig.addColorStop(1, "rgba(0, 12, 10, 0.45)");
                 targetCtx.fillStyle = vig;
@@ -11009,7 +12141,7 @@
             }
         }
 
-        function drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg) {
+        function drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg, bgModeOverride = null) {
             const blurPx = Math.round((tvBlurPct / 100) * 28 * 10) / 10;
             const opacityFactor = Math.max(0, Math.min(1, 1 - tvTransparencyPct / 100));
 
@@ -11018,7 +12150,7 @@
             ctx.clip();
             if (blurPx > 0) {
                 ctx.filter = `blur(${blurPx}px)`;
-                drawTvBackgroundLayer(ctx, W, H, forceFallbackBg);
+                drawTvBackgroundLayer(ctx, W, H, forceFallbackBg, bgModeOverride);
                 ctx.filter = "none";
             }
             if (opacityFactor > 0.001) {
@@ -11163,7 +12295,9 @@
             ctx.fillStyle = "#ffffff";
             ctx.font = "800 28px sans-serif";
             ctx.textAlign = "left";
-            ctx.fillText(`TENISTAB  ·  ${isDoubles ? "ŠTVORHRA 4H" : "DVOJHRA 2H"} #${m.index}`, pillX + pillW + 22, topY + 44);
+            const tvSurfMeta = getSurfaceMeta(m.surface);
+            const tvSurfTxt = tvSurfMeta ? `  ·  ${tvSurfMeta.label.toUpperCase()}` : "";
+            ctx.fillText(`TENISTAB  ·  ${isDoubles ? "ŠTVORHRA 4H" : "DVOJHRA 2H"} #${m.index}${tvSurfTxt}`, pillX + pillW + 22, topY + 44);
 
             ctx.fillStyle = "rgba(226, 238, 248, 0.90)";
             ctx.font = "700 23px sans-serif";
@@ -12317,10 +13451,58 @@
                 : (chartMetric === "elo4h" ? "ELO_4H" : (chartModeMonths === 0 ? "Body_AllTime" : `Body_${chartModeMonths}M`));
             exportCanvasImage(canvas, `TenisTAB_TV_Graf_${modeTag}_${getTodayIso()}`, format, renderTvChartCanvas);
         }
-        /* ==================== REPORT POSLEDNÉHO ZÁPASU – PNG (v1.44) ==================== */
+        /* ==================== REPORT POSLEDNÉHO ZÁPASU – PNG (v1.441) ==================== */
         let matchReportMatchId = null;
         let matchReportItems = [];
+        let reportBgMode = "default"; // "default" | "theme" | "custom"
+        let reportEditRenderRaf = null;
         const matchReportWeatherCache = {};
+
+        function getEffectiveReportBgMode() {
+            if (reportBgMode === "theme") return "theme";
+            if (reportBgMode === "custom" && tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) return "custom";
+            return "default";
+        }
+
+        function syncReportBgButtonsUI() {
+            const eff = getEffectiveReportBgMode();
+            const bDef = document.getElementById("report-bg-btn-default");
+            const bThm = document.getElementById("report-bg-btn-theme");
+            const bCus = document.getElementById("report-bg-btn-custom");
+            if (bDef) bDef.classList.toggle("active", eff === "default");
+            if (bThm) bThm.classList.toggle("active", eff === "theme");
+            if (bCus) bCus.classList.toggle("active", eff === "custom");
+
+            const lbl = document.getElementById("report-bg-theme-label");
+            if (lbl) {
+                const activeTheme = SEASON_THEMES[currentSeasonThemeIndex] || SEASON_THEMES[0];
+                if (eff === "theme") {
+                    lbl.textContent = `Aktívny motív: ${activeTheme.label}`;
+                } else if (eff === "custom") {
+                    lbl.textContent = "Vlastná fotografia";
+                } else {
+                    lbl.textContent = tvBgLoaded ? "Predvolené (TV.jpeg)" : `Predvolené (${activeTheme.label})`;
+                }
+            }
+        }
+
+        function setReportBgMode(mode) {
+            if (mode === "custom") {
+                if (!tvCustomBgImage || !tvCustomBgImage.naturalWidth) {
+                    triggerCustomTvBgPicker();
+                    return;
+                }
+                reportBgMode = "custom";
+            } else if (mode === "theme") {
+                reportBgMode = "theme";
+                saveTvSettings();
+            } else {
+                reportBgMode = "default";
+                saveTvSettings();
+            }
+            syncReportBgButtonsUI();
+            renderMatchReportCanvas();
+        }
 
         function detectLeaderCoupAtExactMatch(snaps, matchId) {
             if (!Array.isArray(snaps) || snaps.length < 2) return null;
@@ -12431,10 +13613,16 @@
                 items.push({ id: id || `rep_${seq++}`, kind, tag: cleanTag, text: cleanText, removed: false });
             };
 
-            // 1. Poznámka k zápasu
-            if (m.note && String(m.note).trim()) {
-                pushUnique("note", "note", "POZNÁMKA Z KURTU", String(m.note).trim());
-            }
+            // 1. Poznámka k zápasu – vždy prítomná na 1. mieste (predvyplnená z m.note alebo pripravená na doplnenie)
+            const existingNote = (m && m.note) ? String(m.note).trim() : "";
+            items.push({
+                id: "note",
+                kind: "note",
+                tag: "POZNÁMKA Z KURTU",
+                text: existingNote,
+                removed: false,
+                isNoteSlot: true
+            });
 
             // 2. Zmeny na čele tabuľky ako dôsledok tohto zápasu
             buildLeaderChangesForMatch(m).forEach((lc, idx) => {
@@ -12554,35 +13742,104 @@
             return null;
         }
 
-        function renderMatchReportItemsList() {
-            const listEl = document.getElementById("report-items-list");
+        function autoSizeReportTextarea(el) {
+            if (!el) return;
+            el.style.height = "auto";
+            el.style.height = Math.max(44, el.scrollHeight) + "px";
+        }
+
+        function updateMatchReportCountUI() {
             const cntEl = document.getElementById("report-items-count");
             const restoreBtn = document.getElementById("btn-report-restore-all");
-            if (!listEl) return;
-
-            const activeItems = matchReportItems.filter(it => !it.removed);
-            const removedCount = matchReportItems.length - activeItems.length;
-
-            if (cntEl) cntEl.textContent = activeItems.length;
+            const printableCount = matchReportItems.filter(it => !it.removed && String(it.text || "").trim().length > 0).length;
+            const removedCount = matchReportItems.filter(it => it.removed).length;
+            if (cntEl) cntEl.textContent = printableCount;
             if (restoreBtn) {
                 restoreBtn.style.display = removedCount > 0 ? "inline-flex" : "none";
                 restoreBtn.textContent = `Obnoviť všetko (+${removedCount})`;
             }
+        }
+
+        function scheduleReportCanvasRedraw() {
+            if (reportEditRenderRaf) return;
+            reportEditRenderRaf = requestAnimationFrame(() => {
+                reportEditRenderRaf = null;
+                renderMatchReportCanvas();
+            });
+        }
+
+        function onEditMatchReportItem(itemId, field, value, textareaEl = null) {
+            const item = matchReportItems.find(it => it.id === itemId);
+            if (!item) return;
+            if (field === "tag") {
+                item.tag = String(value || "").slice(0, 56);
+            } else {
+                item.text = String(value || "");
+                if (textareaEl) autoSizeReportTextarea(textareaEl);
+            }
+            updateMatchReportCountUI();
+            scheduleReportCanvasRedraw();
+        }
+
+        function buildReportItemRowHtml(it) {
+            const placeholderTxt = it.isNoteSlot
+                ? "Doplň poznámku k zápasu (ak ostane prázdna, na PNG sa nezobrazí)..."
+                : "Text správy v reporte (ak ostane prázdny, riadok sa na PNG nezobrazí)...";
+            const emptyNoteHint = (it.isNoteSlot && !String(it.text || "").trim())
+                ? `<div class="report-item-hint">Zápas zatiaľ nemá uloženú poznámku – môžeš ju dopísať priamo sem pre PNG.</div>`
+                : "";
+            return `
+                <div class="report-item-row kind-${escapeHtml(it.kind)}" data-row-rep-id="${escapeHtml(it.id)}">
+                    <div class="report-item-body">
+                        <input type="text" class="report-tag-input" maxlength="56" value="${escapeHtml(it.tag)}" placeholder="TITULOK (VOLITEĽNÉ)" data-rep-id="${escapeHtml(it.id)}" oninput="onEditMatchReportItem(this.dataset.repId, 'tag', this.value)" aria-label="Titulok riadku">
+                        <textarea class="report-text-input" rows="2" placeholder="${escapeHtml(placeholderTxt)}" data-rep-id="${escapeHtml(it.id)}" oninput="onEditMatchReportItem(this.dataset.repId, 'text', this.value, this)" aria-label="Text riadku">${escapeHtml(it.text)}</textarea>
+                        ${emptyNoteHint}
+                    </div>
+                    <button type="button" class="report-remove-btn" data-rep-id="${escapeHtml(it.id)}" onclick="removeMatchReportItem(this.dataset.repId)" title="Odstrániť tento riadok z PNG reportu" aria-label="Odstrániť riadok">×</button>
+                </div>
+            `;
+        }
+
+        function renderMatchReportItemsList() {
+            const listEl = document.getElementById("report-items-list");
+            if (!listEl) return;
+
+            const activeItems = matchReportItems.filter(it => !it.removed);
+            updateMatchReportCountUI();
 
             if (activeItems.length === 0) {
                 listEl.innerHTML = `<div style="color:var(--text-muted); font-size:0.78rem; padding:4px 2px;">Všetky doplnkové riadky boli zrušené – PNG bude obsahovať len grafiku výsledku posledného zápasu.</div>`;
                 return;
             }
 
-            listEl.innerHTML = activeItems.map(it => `
-                <div class="report-item-row kind-${escapeHtml(it.kind)}">
-                    <div class="report-item-body">
-                        <div class="report-item-tag">${escapeHtml(it.tag)}</div>
-                        <div class="report-item-text">${escapeHtml(it.text)}</div>
-                    </div>
-                    <button type="button" class="report-remove-btn" data-rep-id="${escapeHtml(it.id)}" onclick="removeMatchReportItem(this.dataset.repId)" title="Odstrániť tento riadok z PNG reportu" aria-label="Odstrániť riadok">×</button>
-                </div>
-            `).join("");
+            listEl.innerHTML = activeItems.map(buildReportItemRowHtml).join("");
+            listEl.querySelectorAll(".report-text-input").forEach(autoSizeReportTextarea);
+        }
+
+        function insertReportItemRowIntoDom(item, insertAtIdx) {
+            const listEl = document.getElementById("report-items-list");
+            if (!listEl) return;
+            if (listEl.querySelector(`[data-row-rep-id="${CSS.escape(item.id)}"]`)) return;
+
+            const existingRows = listEl.querySelectorAll(".report-item-row");
+            if (existingRows.length === 0) {
+                renderMatchReportItemsList();
+                return;
+            }
+            const tmp = document.createElement("div");
+            tmp.innerHTML = buildReportItemRowHtml(item).trim();
+            const newRow = tmp.firstElementChild;
+            if (!newRow) return;
+
+            let domPos = 0;
+            for (let i = 0; i < insertAtIdx && i < matchReportItems.length; i++) {
+                if (!matchReportItems[i].removed) domPos++;
+            }
+            const refNode = existingRows[domPos] || null;
+            listEl.insertBefore(newRow, refNode);
+            const ta = newRow.querySelector(".report-text-input");
+            if (ta) autoSizeReportTextarea(ta);
+            updateMatchReportCountUI();
         }
 
         function removeMatchReportItem(itemId) {
@@ -12600,9 +13857,8 @@
         }
 
         function wrapCanvasTextLines(ctx, text, maxWidth) {
-            const words = String(text || "").split(/\s+/).filter(Boolean);
+            const paragraphs = String(text || "").split(/\r?\n/);
             const lines = [];
-            let current = "";
 
             const pushChunked = (word) => {
                 let chunk = "";
@@ -12618,20 +13874,28 @@
                 return chunk;
             };
 
-            words.forEach(word => {
-                const candidate = current ? `${current} ${word}` : word;
-                if (ctx.measureText(candidate).width <= maxWidth) {
-                    current = candidate;
-                } else {
-                    if (current) lines.push(current);
-                    if (ctx.measureText(word).width > maxWidth) {
-                        current = pushChunked(word);
-                    } else {
-                        current = word;
-                    }
+            paragraphs.forEach(para => {
+                const words = para.split(/[ \t]+/).filter(Boolean);
+                if (words.length === 0) {
+                    lines.push("");
+                    return;
                 }
+                let current = "";
+                words.forEach(word => {
+                    const candidate = current ? `${current} ${word}` : word;
+                    if (ctx.measureText(candidate).width <= maxWidth) {
+                        current = candidate;
+                    } else {
+                        if (current) lines.push(current);
+                        if (ctx.measureText(word).width > maxWidth) {
+                            current = pushChunked(word);
+                        } else {
+                            current = word;
+                        }
+                    }
+                });
+                if (current) lines.push(current);
             });
-            if (current) lines.push(current);
             return lines.length > 0 ? lines : [""];
         }
 
@@ -12640,7 +13904,8 @@
             if (!canvas || computedMatches.length === 0) return;
 
             const m = computedMatches[computedMatches.length - 1];
-            const activeItems = matchReportItems.filter(it => !it.removed);
+            const activeItems = matchReportItems.filter(it => !it.removed && String(it.text || "").trim().length > 0);
+            const effBgMode = getEffectiveReportBgMode();
 
             const W = 1080;
             const panelMarginX = 36;
@@ -12673,9 +13938,11 @@
 
             const measuredItems = activeItems.map(it => {
                 measCtx.font = "600 23px sans-serif";
-                const wrapped = wrapCanvasTextLines(measCtx, it.text, textMaxW);
-                const cardH = 16 + 30 + 10 + wrapped.length * lineH + 16;
-                return { ...it, lines: wrapped, cardH };
+                const cleanTag = String(it.tag || "").trim().toUpperCase();
+                const wrapped = wrapCanvasTextLines(measCtx, String(it.text || "").trim(), textMaxW);
+                const tagBlockH = cleanTag ? (30 + 10) : 0;
+                const cardH = 16 + tagBlockH + wrapped.length * lineH + 16;
+                return { ...it, cleanTag, lines: wrapped, cardH };
             });
 
             // Vertikálne bloky vnútri skleneného panelu
@@ -12703,11 +13970,11 @@
 
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, W, H);
-            drawTvBackgroundLayer(ctx, W, H, forceFallbackBg);
+            drawTvBackgroundLayer(ctx, W, H, forceFallbackBg, effBgMode);
 
             const panelX = panelMarginX;
             const panelY = Math.round((H - panelH) / 2);
-            drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, 26, forceFallbackBg);
+            drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, 26, forceFallbackBg, effBgMode);
 
             // 2. Horný nadpis posledného zápasu (1:1 ako na karte Tabuľka)
             let curY = panelY + topPad;
@@ -12715,7 +13982,9 @@
             ctx.fillStyle = "rgba(226, 238, 248, 0.88)";
             ctx.font = "800 22px sans-serif";
             ctx.textAlign = "center";
-            ctx.fillText(`POSLEDNÝ ZÁPAS (#${m.index} · ${typeTxt}) · ${formatDateSk(m.date)}`, W / 2, curY + 22);
+            const repSurfMeta = getSurfaceMeta(m.surface);
+            const repSurfTxt = repSurfMeta ? ` · ${repSurfMeta.label.toUpperCase()}` : "";
+            ctx.fillText(`POSLEDNÝ ZÁPAS (#${m.index} · ${typeTxt}${repSurfTxt}) · ${formatDateSk(m.date)}`, W / 2, curY + 22);
             curY += labelH + 14;
 
             // 3. TV Glass-Neon Scoreboard (1:1 kópia z karty Tabuľka)
@@ -12892,25 +14161,29 @@
                     ctx.fillRect(innerX, cy, 6, ch);
                     ctx.restore();
 
-                    // Štítok (TAG)
+                    // Štítok (TAG) – vykreslí sa, ak nie je prázdny
                     const tx = innerX + cardAccentOffset + cardPadX - 4;
                     const ty = cy + 16;
-                    ctx.font = "900 17px sans-serif";
-                    const tagW = Math.min(innerW - 60, ctx.measureText(it.tag).width + 24);
-                    ctx.save();
-                    drawRoundedRectPath(ctx, tx, ty, tagW, 28, 7);
-                    ctx.fillStyle = pal.pillBg;
-                    ctx.fill();
-                    ctx.fillStyle = pal.pillTxt;
-                    ctx.textAlign = "left";
-                    ctx.fillText(it.tag, tx + 12, ty + 20, tagW - 20);
-                    ctx.restore();
+                    let textTopY = ty;
+                    if (it.cleanTag) {
+                        ctx.font = "900 17px sans-serif";
+                        const tagW = Math.min(innerW - 60, ctx.measureText(it.cleanTag).width + 24);
+                        ctx.save();
+                        drawRoundedRectPath(ctx, tx, ty, tagW, 28, 7);
+                        ctx.fillStyle = pal.pillBg;
+                        ctx.fill();
+                        ctx.fillStyle = pal.pillTxt;
+                        ctx.textAlign = "left";
+                        ctx.fillText(it.cleanTag, tx + 12, ty + 20, tagW - 20);
+                        ctx.restore();
+                        textTopY = ty + 28 + 10;
+                    }
 
                     // Zalamovaný text riadku
                     ctx.fillStyle = "#f8fafc";
                     ctx.font = "600 23px sans-serif";
                     ctx.textAlign = "left";
-                    let lineY = ty + 28 + 10 + 22;
+                    let lineY = textTopY + 22;
                     it.lines.forEach(ln => {
                         ctx.fillText(ln, tx, lineY);
                         lineY += lineH;
@@ -12929,7 +14202,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.44${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.45${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -12947,11 +14220,16 @@
             matchReportItems = buildMatchReportItems(lastM);
 
             syncTvControlsUI();
+            syncReportBgButtonsUI();
             renderMatchReportItemsList();
             modal.classList.add("open");
+            syncModalBodyScrollLock();
             renderMatchReportCanvas();
             ensureTvBackgroundLoaded(() => {
-                if (modal.classList.contains("open")) renderMatchReportCanvas();
+                if (modal.classList.contains("open")) {
+                    syncReportBgButtonsUI();
+                    renderMatchReportCanvas();
+                }
             });
 
             // Asynchrónne dotiahnutie počasia pre presný deň zápasu (aj spätne)
@@ -12966,15 +14244,16 @@
                     const existingIdx = matchReportItems.findIndex(it => it.id === "weather");
                     if (existingIdx === -1) {
                         const insertAt = matchReportItems.length > 0 && matchReportItems[0].id === "note" ? 1 : 0;
-                        matchReportItems.splice(insertAt, 0, {
+                        const wItem = {
                             id: "weather",
                             kind: "weather",
                             tag: wRes.tag,
                             text: wRes.text,
                             removed: false
-                        });
+                        };
+                        matchReportItems.splice(insertAt, 0, wItem);
+                        insertReportItemRowIntoDom(wItem, insertAt);
                     }
-                    renderMatchReportItemsList();
                     renderMatchReportCanvas();
                 } else {
                     if (wStatus) {
@@ -12989,6 +14268,7 @@
         function closeMatchReportModal() {
             const modal = document.getElementById("match-report-modal");
             if (modal) modal.classList.remove("open");
+            syncModalBodyScrollLock();
         }
 
         function downloadMatchReportGraphic() {
@@ -14720,7 +16000,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.44! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.45! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -15464,6 +16744,9 @@
             renderPlayerProfile();
             renderAchievements();
             renderMatchHistory();
+            if (historyViewMode === "chronicle") {
+                renderAnnualChronicle();
+            }
             const setMod = document.getElementById("settings-modal");
             if (setMod && setMod.classList.contains("open") && activeSettingsTab === "players") {
                 renderPlayersManager();
@@ -15521,6 +16804,10 @@
                 ["#history-filter-player", "Filter podľa hráča", "Zobrazí iba zápasy, v ktorých nastúpil vybraný tenista.", ""],
                 ["#history-filter-type", "Filter podľa disciplíny", "Zobrazí len dvojhry (2H), len štvorhry (4H) alebo všetky zápasy.", ""],
                 ["#history-filter-validity", "Filter platnosti bodov", "Odfiltruje platné zápasy v aktuálnom okne alebo už expirované zápasy.", ""],
+                ["#history-filter-surface", "Filter podľa povrchu kurtu", "Vyfiltruje zápasy podľa zaznamenaného povrchu (Antuka, Tvrdý, Koberec, Umelá tráva, Iné) alebo bez povrchu.", ""],
+                ["#hist-view-matches", "Archív zápasov", "Zobrazí chronologický zoznam všetkých zápasov s filtrami, úpravou a mazaním.", ""],
+                ["#hist-view-chronicle", "Ročná kronika", "Zobrazí kompletnú bilanciu zvoleného kalendárneho roka: mesačnú aktivitu, ocenenia, skokana ELO, tabuľku roka a povrchy.", ""],
+                ["#match-surface-bar .surface-pick-btn", "Povrch kurtu (voliteľné)", "Zaznamená povrch kurtu do databaza.json pre štatistiky v profile hráča, Histórii aj Ročnej kronike.", "Pre bez povrchu ponechaj označené —."],
                 ["#cfg-home-city, #welcome-home-city", "Domovské mesto / okres", "Mesto sa uloží do databaza.json a slúži na predpoveď počasia a regionálne hlášky v NEWS.", "Zadaj okresné mesto (napr. Čadca, Žilina)."],
                 ["#btn-save-home-city", "Uložiť domovské mesto", "Vyhľadá súradnice zadaného mesta, uloží ich do databázy a aktualizuje počasie v NEWS.", ""],
                 ["#wmode-btn-home", "Režim: Len domovské mesto", "Predvolený režim šetrný k súkromiu – aplikácia vôbec nežiada GPS polohu a zobrazuje len počasie pre domovské mesto.", ""],
@@ -15536,7 +16823,10 @@
                 ["#tv-blur-slider, #tv-chart-blur-slider, #report-blur-slider", "Rozmazanie pozadia (Blur)", "Plynulo nastavuje mieru rozmazania obrázka priamo pod skleneným panelom (0 – 100 %).", ""],
                 ["#tv-transp-slider, #tv-chart-transp-slider, #report-transp-slider", "Priehľadnosť panelu", "Nastavuje priehľadnosť tmavého skla pod grafikou (0 % nepriehľadné – 100 % čisté pozadie).", ""],
                 ["#btn-tv-dl-png, #btn-tv-chart-dl-png", "Export FullHD PNG", "Stiahne televíznu grafiku v rozlíšení 1920×1080 px pripravenú na zdieľanie.", ""],
-                ["#btn-report-dl-png", "Stiahnuť PNG report", "Exportuje kompletný PNG obrázok posledného zápasu s vybranými riadkami poznámky, počasia a NEWS.", ""],
+                ["#btn-report-dl-png", "Stiahnuť PNG report", "Exportuje kompletný PNG obrázok posledného zápasu s upravenými riadkami poznámky, počasia a NEWS.", ""],
+                ["#report-bg-btn-default", "Predvolené pozadie", "Použije predvolený obrázok pozadia TV.jpeg (ak nie je dostupný, použije aktívny motív).", ""],
+                ["#report-bg-btn-theme", "Pozadie: Aktuálny farebný motív", "Použije ako pozadie PNG reportu aktuálne zvolený farebný gradient aplikácie (vrátane vlastného motívu).", ""],
+                ["#report-bg-btn-custom", "Pozadie: Vlastná fotka", "Použije vlastnú fotografiu z galérie (ak ešte nie je nahraná, otvorí výber súboru).", ""],
                 ["#btn-tv-custom-bg, #btn-tv-chart-custom-bg, #btn-report-custom-bg", "Vlastné pozadie", "Vyber vlastnú fotku z galérie – aplikácia ju automaticky prispôsobí ako podklad pod grafiku.", "Zostane aktívne aj po GitHub Sync (predvolené TV.jpeg vráti obnovenie stránky alebo Čistý štart)."],
                 ["#tv-chart-metric-points", "TV Graf – Body", "Zobrazí v televíznom grafe vývoj bodov (2H + 4H).", ""],
                 ["#tv-chart-metric-elo2h", "TV Graf – ELO 2H", "Zobrazí v televíznom grafe vývoj ELO dvojhry (2H).", ""],
@@ -15668,7 +16958,7 @@
             initGlobalPcTooltips();
 
             document.addEventListener("click", e => {
-                const btn = e.target.closest(".btn-primary, .btn-secondary, .preset-btn, .tv-btn, .settings-gear-btn, .icon-btn, .icon-btn-alt, .chart-nav-btn, .tv-step-btn, .nav-item, .player-chip");
+                const btn = e.target.closest(".btn-primary, .btn-secondary, .preset-btn, .surface-pick-btn, .tv-btn, .settings-gear-btn, .icon-btn, .icon-btn-alt, .chart-nav-btn, .tv-step-btn, .nav-item, .player-chip");
                 if (btn) triggerThemedBtnSheen(btn);
             });
 
