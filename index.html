@@ -4169,7 +4169,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.49</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.5</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4203,7 +4203,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.49</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.5</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4640,7 +4640,7 @@
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Jednotlivci</div>
-                    <div class="stat-tile-value">26</div>
+                    <div class="stat-tile-value">28</div>
                     <div class="stat-tile-sub">Kategórie 1 – 3</div>
                 </div>
                 <div class="stat-tile">
@@ -5990,6 +5990,21 @@
             const targetFirst = new Date(origY, origM - months, 1);
             const lastDay = new Date(targetFirst.getFullYear(), targetFirst.getMonth() + 1, 0).getDate();
             return new Date(targetFirst.getFullYear(), targetFirst.getMonth(), Math.min(origD, lastDay));
+        }
+
+        function addCalendarMonths(dateObj, months) {
+            const origY = dateObj.getFullYear(), origM = dateObj.getMonth(), origD = dateObj.getDate();
+            const targetFirst = new Date(origY, origM + months, 1);
+            const lastDay = new Date(targetFirst.getFullYear(), targetFirst.getMonth() + 1, 0).getDate();
+            return new Date(targetFirst.getFullYear(), targetFirst.getMonth(), Math.min(origD, lastDay));
+        }
+
+        function dateToIsoLocal(dateObj) {
+            if (!(dateObj instanceof Date)) return "";
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+            const d = String(dateObj.getDate()).padStart(2, "0");
+            return `${y}-${m}-${d}`;
         }
 
         // Posledný platný deň zápasu (vrátane) – Možnosť B:
@@ -10603,6 +10618,117 @@
             const betonar12M = computeRollingSurface12M("tvrdy", "betonar");
             const rRolandGarros = rg12M.result;
             const rBetonar      = betonar12M.result;
+
+            // Výpočet odznakov Nostalgia (expirované body za posledných 6 mes.) a Obhajca (obhajované body najbližších 6 mes.)
+            const expBadgeWm = wm > 0 ? wm : 12;
+            const computeSixMonthExpiryBadges = () => {
+                const todayMs = today.getTime();
+                const allRecs = computedMatches.map(m => {
+                    const dt = parseIsoLocal(m.date);
+                    const validUntil = getMatchValidUntilDate(m.date, expBadgeWm);
+                    const dropDt = validUntil
+                        ? new Date(validUntil.getFullYear(), validUntil.getMonth(), validUntil.getDate() + 1)
+                        : null;
+                    return {
+                        m,
+                        dtMs: dt ? dt.getTime() : 0,
+                        expMs: validUntil ? validUntil.getTime() : -Infinity,
+                        dropDt,
+                        dropMs: dropDt ? dropDt.getTime() : Infinity
+                    };
+                });
+
+                const evalAtDate = (refDate) => {
+                    const refMs = refDate.getTime();
+                    const past6StartMs = subtractCalendarMonths(refDate, 6).getTime();
+                    const next6EndMs = addCalendarMonths(refDate, 6).getTime();
+
+                    const mapNost = {};
+                    const mapObh = {};
+                    computedPlayers.forEach(p => {
+                        mapNost[p.id] = { id: p.id, name: p.name, color: p.color, pts: 0, lastEventIso: null };
+                        mapObh[p.id]  = { id: p.id, name: p.name, color: p.color, pts: 0, lastEventIso: null };
+                    });
+
+                    allRecs.forEach(rec => {
+                        if (rec.dtMs > refMs) return;
+                        const pm = rec.m;
+                        const isExpiredPast6 = rec.expMs < refMs && rec.expMs >= past6StartMs;
+                        const isDefendingNext6 = rec.expMs >= refMs && rec.expMs < next6EndMs;
+                        if (!isExpiredPast6 && !isDefendingNext6) return;
+
+                        const addPts = (targetMap, teamIds, ptsVal, evIso) => {
+                            if (ptsVal <= 0) return;
+                            teamIds.forEach(pid => {
+                                if (targetMap[pid]) {
+                                    targetMap[pid].pts = Math.round((targetMap[pid].pts + ptsVal) * 100) / 100;
+                                    if (!targetMap[pid].lastEventIso || evIso > targetMap[pid].lastEventIso) {
+                                        targetMap[pid].lastEventIso = evIso;
+                                    }
+                                }
+                            });
+                        };
+
+                        if (isExpiredPast6) {
+                            const dropIso = rec.dropDt ? dateToIsoLocal(rec.dropDt) : pm.date;
+                            addPts(mapNost, pm.team1, pm.ptsA, dropIso);
+                            addPts(mapNost, pm.team2, pm.ptsB, dropIso);
+                        }
+                        if (isDefendingNext6) {
+                            addPts(mapObh, pm.team1, pm.ptsA, pm.date);
+                            addPts(mapObh, pm.team2, pm.ptsB, pm.date);
+                        }
+                    });
+
+                    return {
+                        nostPool: Object.values(mapNost).filter(x => x.pts > 0),
+                        obhPool: Object.values(mapObh).filter(x => x.pts > 0)
+                    };
+                };
+
+                // Zbierame chronologické míľniky (dátumy zápasov + dátumy expirácií + dnešok) pre presné "Drží od..."
+                const eventDatesMap = new Map();
+                const pushEventDate = (dtObj) => {
+                    if (!dtObj || dtObj.getTime() > todayMs) return;
+                    const iso = dateToIsoLocal(dtObj);
+                    if (iso && !eventDatesMap.has(iso)) eventDatesMap.set(iso, dtObj);
+                };
+                allRecs.forEach(rec => {
+                    const mDt = parseIsoLocal(rec.m.date);
+                    pushEventDate(mDt);
+                    if (rec.dropDt) {
+                        pushEventDate(rec.dropDt);
+                        const dropPlus6 = addCalendarMonths(rec.dropDt, 6);
+                        pushEventDate(dropPlus6);
+                        const dropMinus6 = subtractCalendarMonths(rec.dropDt, 6);
+                        pushEventDate(dropMinus6);
+                    }
+                });
+                pushEventDate(today);
+
+                const sortedEventIsos = Array.from(eventDatesMap.keys()).sort();
+                sortedEventIsos.forEach(iso => {
+                    const snap = evalAtDate(eventDatesMap.get(iso));
+                    updateOwnershipFor("nostalgia", getLeaderIdsForMetric(snap.nostPool, x => x.pts, 0.25), iso);
+                    updateOwnershipFor("obhajca",   getLeaderIdsForMetric(snap.obhPool,  x => x.pts, 0.25), iso);
+                });
+
+                const nowSnap = evalAtDate(today);
+                return {
+                    nostalgia: {
+                        result: findTopHolders(nowSnap.nostPool, x => x.pts, 0.25),
+                        top3: buildTop3Ranking(nowSnap.nostPool, x => x.pts, p => p.name, v => `${formatPts(v)} b`, 0.25)
+                    },
+                    obhajca: {
+                        result: findTopHolders(nowSnap.obhPool, x => x.pts, 0.25),
+                        top3: buildTop3Ranking(nowSnap.obhPool, x => x.pts, p => p.name, v => `${formatPts(v)} b`, 0.25)
+                    }
+                };
+            };
+
+            const sixMonthExpStats = computeSixMonthExpiryBadges();
+            const rNostalgia = sixMonthExpStats.nostalgia.result;
+            const rObhajca   = sixMonthExpStats.obhajca.result;
             const rGiantKiller = findTopHolders(activePlayers, p => p.maxEloGain, 0.1);
             const rJanosik     = findTopHolders(activePlayers, p => p.maxEloLoss2H, 0.1);
             const rTerminator  = findTopHolders(activePlayers, p => p.matches, 1);
@@ -10934,6 +11060,28 @@
                     holders: rComeback.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.maxGapDays, pName, v => `${v} d.`, 1),
                     held: getHeldInfo("comeback")
+                },
+                {
+                    id: "nostalgia", cat: 3, title: "Nostalgia",
+                    desc: "Najviac expirovaných bodov za posledných 6 mesiacov",
+                    rules: `Súčet bodov (2H + 4H), ktoré hráčovi vypršali v posledných 6 mesiacoch pri ${expBadgeWm}-mesačnej platnosti bodov.`,
+                    iconFile: "nostalgia.png", faClass: "fa-solid fa-hourglass-end",
+                    theme: "ach-red", accent: "#f87171", isNegative: true,
+                    valueText: `${formatPts(rNostalgia.value)} b`,
+                    holders: rNostalgia.holders,
+                    top3: sixMonthExpStats.nostalgia.top3,
+                    held: getHeldInfo("nostalgia")
+                },
+                {
+                    id: "obhajca", cat: 3, title: "Obhajca",
+                    desc: "Najviac obhajovaných bodov v najbližších 6 mesiacoch",
+                    rules: `Súčet aktuálne platných bodov (2H + 4H), ktoré hráčovi vypršia v najbližších 6 mesiacoch pri ${expBadgeWm}-mesačnej platnosti bodov.`,
+                    iconFile: "obhajca.png", faClass: "fa-solid fa-shield",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${formatPts(rObhajca.value)} b`,
+                    holders: rObhajca.holders,
+                    top3: sixMonthExpStats.obhajca.top3,
+                    held: getHeldInfo("obhajca")
                 },
 
                 // KATEGÓRIA 4: Tímové odznaky a zápasové rekordy (4)
@@ -15182,7 +15330,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.49${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.5${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17112,7 +17260,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.49! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.5! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17659,6 +17807,21 @@
                     return ["NAJDLHŠÍ COMEBACK", holders.length > 1
                         ? `Najdlhšiu prestávku pred návratom na kurt (${a.valueText}) zvládli ${n}.`
                         : `Rekordný návrat na kurt po pauze ${a.valueText} si pripísal ${n}!`];
+                },
+                nostalgia: (holders, a) => {
+                    const nDat = skJoinNames(holders, "dat");
+                    const nNom = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["NOSTALGIA", holders.length > 1
+                        ? `Odznak Nostalgia si delia ${nNom} – za posledných 6 mesiacov im z tabuľky vypršalo zhodne ${valTxt}.`
+                        : `Odznak Nostalgia patrí ${nDat} – za posledných 6 mesiacov mu z tabuľky v tichosti vypršalo ${valTxt}!`];
+                },
+                obhajca: (holders, a) => {
+                    const nNom = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["OBHAJCA", holders.length > 1
+                        ? `Najväčší tlak v najbližších 6 mesiacoch čaká na ${skJoinNames(holders, "acc")} – každý obhajuje ${valTxt}!`
+                        : `Obhajcom sezóny je ${nNom} – v najbližších 6 mesiacoch má v hre až ${valTxt}, ktoré musí obhájiť!`];
                 },
                 steamroller: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
