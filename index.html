@@ -114,12 +114,69 @@
         }
 
         .brand {
+            order: 1;
             display: flex;
             align-items: center;
             gap: 11px;
             cursor: pointer;
             user-select: none;
             transition: opacity 0.15s ease;
+        }
+
+        .settings-gear-btn {
+            order: 2;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--btn-3d-bg);
+            color: #ffffff;
+            border: 1.5px solid var(--btn-border);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.98rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            box-shadow: var(--btn-3d-shadow-sm);
+            transition: transform 0.12s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .settings-gear-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 18%,
+                rgba(255, 255, 255, 0.52) 50%,
+                rgba(255, 255, 255, 0) 82%
+            );
+            transform: translateX(-140%) skewX(-20deg);
+            pointer-events: none;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .settings-gear-btn i {
+            transition: transform 0.28s ease;
+        }
+
+        .settings-gear-btn:hover {
+            background: var(--btn-3d-hover);
+            border-color: var(--btn-accent);
+            box-shadow: 0 2px 0 var(--btn-edge), 0 0 12px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+        }
+
+        .settings-gear-btn:hover i {
+            transform: rotate(42deg);
+        }
+
+        .settings-gear-btn:active {
+            transform: translateY(2px);
+            box-shadow: var(--btn-3d-active-shadow);
         }
 
         .brand:hover .brand-title { opacity: 0.95; }
@@ -192,7 +249,27 @@
                 inset 0 1px 2px rgba(255, 255, 255, 0.70);
         }
 
-        /* VLASTNÝ GRAFICKÝ ŠTÝL (v1.32) */
+        /* VLASTNÝ GRAFICKÝ MOTÍV (v1.44) */
+        .custom-theme-tip-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 9px 11px;
+            margin-bottom: 12px;
+            border-radius: 11px;
+            background: rgba(190, 242, 100, 0.12);
+            border: 1px solid rgba(190, 242, 100, 0.42);
+            color: #f8fafc;
+            font-size: 0.75rem;
+            line-height: 1.42;
+        }
+
+        .custom-theme-tip-box i {
+            color: var(--tennis-lime);
+            font-size: 0.92rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
         .custom-theme-preview {
             width: 100%;
             height: 46px;
@@ -273,10 +350,27 @@
         }
 
         .header-badges {
+            order: 3;
             display: flex;
             align-items: center;
             gap: 6px;
             flex-wrap: wrap;
+        }
+
+        @media (max-width: 679px) {
+            .header-badges {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 680px) {
+            .header-badges {
+                order: 2;
+                margin-left: auto;
+            }
+            .settings-gear-btn {
+                order: 3;
+            }
         }
 
         .param-pill {
@@ -608,6 +702,172 @@
             color: var(--text-muted);
         }
 
+        #last-match-banner.lm-banner-clickable {
+            cursor: pointer;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+        }
+
+        #last-match-banner.lm-banner-clickable:hover {
+            border-color: rgba(190, 242, 100, 0.68);
+            box-shadow: var(--shadow), 0 0 18px rgba(190, 242, 100, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.28);
+        }
+
+        #last-match-banner.lm-banner-clickable:active {
+            transform: scale(0.992);
+        }
+
+        .lm-report-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 7px;
+            padding: 1px 7px;
+            border-radius: 999px;
+            background: rgba(190, 242, 100, 0.16);
+            border: 1px solid rgba(190, 242, 100, 0.44);
+            color: var(--tennis-lime);
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            vertical-align: middle;
+        }
+
+        /* REPORT POSLEDNÉHO ZÁPASU MODAL (v1.44) */
+        .report-canvas-frame {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(4, 12, 22, 0.78);
+            padding: 8px;
+        }
+
+        canvas#reportCanvas {
+            width: auto;
+            max-width: 100%;
+            max-height: 52vh;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+        }
+
+        .report-list-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .report-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .report-item-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 9px 11px;
+            border-radius: 11px;
+            background: rgba(6, 16, 28, 0.82);
+            border: 1px solid rgba(186, 230, 253, 0.22);
+            border-left: 3.5px solid #dc2626;
+        }
+
+        .report-item-row.kind-note {
+            border-left-color: var(--tennis-lime);
+            background: rgba(190, 242, 100, 0.08);
+        }
+
+        .report-item-row.kind-weather {
+            border-left-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .report-item-row.kind-leader {
+            border-left-color: #facc15;
+            background: rgba(250, 204, 21, 0.09);
+        }
+
+        .report-item-body {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .report-item-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 5px;
+            background: #dc2626;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .report-item-row.kind-note .report-item-tag {
+            background: #bef264;
+            color: #052e16;
+        }
+
+        .report-item-row.kind-weather .report-item-tag {
+            background: #38bdf8;
+            color: #042033;
+        }
+
+        .report-item-row.kind-leader .report-item-tag {
+            background: #facc15;
+            color: #2b1803;
+        }
+
+        .report-item-text {
+            font-size: 0.78rem;
+            color: #f1f5f9;
+            line-height: 1.38;
+            word-break: break-word;
+        }
+
+        .report-remove-btn {
+            flex: 0 0 auto;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.45);
+            background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 900;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(185, 28, 28, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            transition: transform 0.12s ease, background 0.15s ease, box-shadow 0.15s ease;
+            margin-top: 1px;
+        }
+
+        .report-remove-btn:hover {
+            background: linear-gradient(180deg, #f87171 0%, #dc2626 100%);
+            transform: scale(1.08);
+            box-shadow: 0 3px 10px rgba(239, 68, 68, 0.65);
+        }
+
+        .report-remove-btn:active {
+            transform: scale(0.92);
+        }
+
+        .report-weather-status {
+            font-size: 0.72rem;
+            color: var(--blue-accent);
+            font-weight: 600;
+        }
+
 
         /* PREPÍNAČ REŽIMU TABUĽKY (BODY / ELO 2H / ELO 4H) */
         .table-mode-bar {
@@ -615,6 +875,136 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
             margin-bottom: 12px;
+        }
+
+        .table-mode-bar.cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        /* SPRÁVA HRÁČOV & NASTAVENIA MODAL (v1.43) */
+        .settings-panel {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .settings-panel.active {
+            display: flex;
+        }
+
+        .settings-section-card {
+            background: rgba(8, 20, 32, 0.68);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 13px;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.14);
+        }
+
+        .settings-section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(186, 230, 253, 0.18);
+            flex-wrap: wrap;
+        }
+
+        .player-mgr-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .player-mgr-row {
+            background: rgba(6, 16, 28, 0.78);
+            border: 1px solid rgba(186, 230, 253, 0.22);
+            border-radius: 12px;
+            padding: 10px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .player-mgr-row.is-dirty {
+            border-color: rgba(190, 242, 100, 0.72);
+            box-shadow: 0 0 12px rgba(190, 242, 100, 0.18);
+        }
+
+        .player-mgr-grid {
+            display: grid;
+            grid-template-columns: 44px minmax(0, 1fr) 92px auto;
+            gap: 8px;
+            align-items: end;
+        }
+
+        .player-mgr-color {
+            width: 44px;
+            height: 38px;
+            padding: 2px;
+            border-radius: 9px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.30);
+        }
+
+        .player-mgr-row input[type="text"],
+        .player-mgr-row input[type="number"] {
+            height: 38px;
+            padding: 7px 9px;
+            font-size: 0.84rem;
+        }
+
+        .player-mgr-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .player-mgr-save-btn {
+            height: 38px;
+            padding: 0 11px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .player-mgr-del-btn {
+            height: 38px;
+            width: 36px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-mgr-del-btn:disabled {
+            opacity: 0.32;
+            cursor: not-allowed;
+        }
+
+        .player-mgr-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.71rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 540px) {
+            .player-mgr-grid {
+                grid-template-columns: 42px minmax(0, 1fr) 82px;
+            }
+            .player-mgr-actions {
+                grid-column: 1 / -1;
+                justify-content: flex-end;
+            }
+            .player-mgr-save-btn {
+                flex: 1;
+            }
         }
 
         .table-mode-btn {
@@ -3343,11 +3733,14 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.42</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.44</span>
                 </div>
             </div>
+            <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
+                <i class="fa-solid fa-gear"></i>
+            </button>
             <div class="header-badges">
-                <span class="param-pill lime" id="header-window-pill">Lehota: 12 mes.</span>
+                <span class="param-pill lime" id="header-window-pill">Int.: 12 mes.</span>
                 <span class="param-pill" id="header-matches-pill">0 / 0 záp.</span>
                 <button type="button" class="tv-btn" onclick="openTvModal()" title="Vygenerovať televíznu grafiku tabuľky (FullHD)">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -3374,7 +3767,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.42</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.44</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -3389,12 +3782,12 @@
                         <input type="text" id="welcome-home-city" placeholder="Zadaj mesto alebo okres (nie obec/dedinu), napr. Čadca, Žilina...">
                         <button type="button" class="btn btn-secondary" onclick="saveHomeLocationFromInput('welcome-home-city')">Uložiť mesto</button>
                     </div>
-                    <div id="welcome-location-status" class="loc-status-hint">Uloží sa priamo do <strong>databaza.json</strong>. Režim polohy (Len domovské / Auto / Aktuálna poloha) si nastavíš v sekcii História.</div>
+                    <div id="welcome-location-status" class="loc-status-hint">Uloží sa priamo do <strong>databaza.json</strong>. Režim polohy (Len domovské / Auto / Aktuálna poloha) si nastavíš v Nastaveniach (<i class="fa-solid fa-gear"></i>).</div>
                 </div>
             </div>
 
-            <!-- POSLEDNÝ ODOHRATÝ ZÁPAS (TV GLASS-NEON SCOREBOARD) -->
-            <div class="stat-tile" id="last-match-banner" style="margin-bottom: 14px; padding: 12px 14px;">
+            <!-- POSLEDNÝ ODOHRATÝ ZÁPAS (TV GLASS-NEON SCOREBOARD · KLIKNUTÍM PNG REPORT) -->
+            <div class="stat-tile" id="last-match-banner" role="button" tabindex="0" onclick="openMatchReportModal()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); openMatchReportModal();}" style="margin-bottom: 14px; padding: 12px 14px;">
                 <div class="stat-tile-label" id="last-match-label">Posledný zápas</div>
                 <div id="last-match-board" class="lm-board-wrap"></div>
                 <div class="stat-tile-sub" id="last-match-meta" style="margin-top: 8px;">—</div>
@@ -3493,16 +3886,49 @@
 
         <!-- ==================== SEKCIA 2: NOVÝ ZÁPAS ==================== -->
         <section id="sec-match" class="section">
+            <!-- PREPÍNAČ TYPU ZÁPASU (2H / 4H) -->
+            <div class="table-mode-bar cols-2" id="match-type-bar">
+                <button type="button" id="match-type-2H" class="table-mode-btn active" onclick="setMatchFormType('new', '2H')">Dvojhra (2H)</button>
+                <button type="button" id="match-type-4H" class="table-mode-btn" onclick="setMatchFormType('new', '4H')">Štvorhra (4H)</button>
+            </div>
+
+            <!-- MATCHMAKER PRE ŠTVORHRU (4H) PODĽA ELO 4H – HORE PRI 4H -->
+            <div class="card" id="matchmaker-card" style="display:none;">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        Matchmaker (4H) – Rozdelí hráčov do dvojíc podľa ELO
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Vyber 4 hráčov na kurte</span>
+                </div>
+                <div class="grid-4" style="margin-bottom: 10px;">
+                    <div>
+                        <label for="mm-p1">Hráč 1</label>
+                        <select id="mm-p1" onchange="renderMatchmaker()"></select>
+                    </div>
+                    <div>
+                        <label for="mm-p2">Hráč 2</label>
+                        <select id="mm-p2" onchange="renderMatchmaker()"></select>
+                    </div>
+                    <div>
+                        <label for="mm-p3">Hráč 3</label>
+                        <select id="mm-p3" onchange="renderMatchmaker()"></select>
+                    </div>
+                    <div>
+                        <label for="mm-p4">Hráč 4</label>
+                        <select id="mm-p4" onchange="renderMatchmaker()"></select>
+                    </div>
+                </div>
+                <div id="matchmaker-results"></div>
+            </div>
+
             <div class="card" id="new-match-form-card">
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-title-dot"></span>
-                        Zápis nového zápasu
+                        <span id="new-match-card-title">Zápis zápasu (Dvojhra 2H)</span>
                     </div>
-                    <div style="display:flex; gap:6px;">
-                        <button type="button" id="match-type-2H" class="preset-btn active" style="padding:5px 12px; font-size:0.75rem;" onclick="setMatchFormType('new', '2H')">Dvojhra (2H)</button>
-                        <button type="button" id="match-type-4H" class="preset-btn" style="padding:5px 12px; font-size:0.75rem;" onclick="setMatchFormType('new', '4H')">Štvorhra (4H)</button>
-                    </div>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Aj spätne podľa dátumu</span>
                 </div>
 
                 <div class="form-group">
@@ -3598,35 +4024,6 @@
                 <button class="btn btn-primary" id="btn-save-match" onclick="saveMatch()">Zapísať zápas a aktualizovať tabuľku</button>
             </div>
 
-            <!-- MATCHMAKER PRE ŠTVORHRU (4H) PODĽA ELO 4H -->
-            <div class="card" id="matchmaker-card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
-                        Matchmaker (4H) – Rozdelí hráčov do dvojíc podľa ELO
-                    </div>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">Vyber 4 hráčov na kurte</span>
-                </div>
-                <div class="grid-4" style="margin-bottom: 10px;">
-                    <div>
-                        <label for="mm-p1">Hráč 1</label>
-                        <select id="mm-p1" onchange="renderMatchmaker()"></select>
-                    </div>
-                    <div>
-                        <label for="mm-p2">Hráč 2</label>
-                        <select id="mm-p2" onchange="renderMatchmaker()"></select>
-                    </div>
-                    <div>
-                        <label for="mm-p3">Hráč 3</label>
-                        <select id="mm-p3" onchange="renderMatchmaker()"></select>
-                    </div>
-                    <div>
-                        <label for="mm-p4">Hráč 4</label>
-                        <select id="mm-p4" onchange="renderMatchmaker()"></select>
-                    </div>
-                </div>
-                <div id="matchmaker-results"></div>
-            </div>
         </section>
 
 
@@ -3866,166 +4263,22 @@
             </div>
         </section>
 
-        <!-- ==================== SEKCIA 5: HISTÓRIA & SPRÁVA DATABÁZY ==================== -->
+        <!-- ==================== SEKCIA 5: HISTÓRIA ZÁPASOV ==================== -->
         <section id="sec-history" class="section">
-
-            <!-- KARTA 1: INFO O GITHUB SYNC -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
-                        Synchronizácia databázy &amp; GitHub Sync
-                    </div>
-                    <span class="param-pill lime" id="sync-status-pill">Čistý štart</span>
-                </div>
-                <div class="mode-box">
-                    <div id="sync-status-title" style="font-weight: 700; font-size: 0.88rem; margin-bottom: 4px; color: var(--tennis-lime);">Automatická synchronizácia (databaza.json)</div>
-                    <div id="sync-status-desc" style="font-size: 0.78rem; color: var(--text-muted);">Pri načítaní stránky aplikácia automaticky hľadá súbor <strong>databaza.json</strong> v rovnakom priečinku na GitHube. Tlačidlo v karte Tabuľka kedykoľvek obnoví oficiálne dáta.</div>
-                </div>
-            </div>
-
-            <!-- KARTA 1B: VLASTNÝ GRAFICKÝ ŠTÝL -->
-            <div class="card" id="custom-theme-card">
-                <div class="card-header" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none; cursor: pointer;" onclick="toggleCustomThemePanel()" id="custom-theme-header">
-                    <div class="card-title">
-                        <span class="card-title-dot" style="background: var(--blue-accent);"></span>
-                        <span><i class="fa-regular fa-user" style="margin-right: 6px; color: var(--tennis-lime);"></i>Vlastný grafický štýl</span>
-                    </div>
-                    <button type="button" class="param-pill history-toggle-pill" id="custom-theme-toggle-pill" onclick="event.stopPropagation(); toggleCustomThemePanel();" aria-expanded="false">▼ Rozbaliť</button>
-                </div>
-
-                <div id="custom-theme-body" style="display:none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
-                    <div class="custom-theme-preview" id="custom-theme-preview-bar">
-                        <span class="custom-theme-preview-badge">
-                            <i class="fa-regular fa-user"></i>
-                            <span id="custom-theme-preview-name">Vlast.</span>
-                        </span>
-                        <span style="font-size: 0.70rem; font-weight: 800; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.65);">Náhľad 135° gradientu</span>
-                    </div>
-
-                    <div class="grid-3" style="margin-bottom: 12px;">
-                        <div class="color-picker-tile">
-                            <label for="custom-color-1">Farba 1</label>
-                            <input type="color" id="custom-color-1" class="color-picker-input" value="#0f766e" oninput="updateCustomThemePreview()">
-                            <div class="color-picker-hex" id="custom-color-1-hex">#0F766E</div>
-                        </div>
-                        <div class="color-picker-tile">
-                            <label for="custom-color-2">Farba 2</label>
-                            <input type="color" id="custom-color-2" class="color-picker-input" value="#0ea5e9" oninput="updateCustomThemePreview()">
-                            <div class="color-picker-hex" id="custom-color-2-hex">#0EA5E9</div>
-                        </div>
-                        <div class="color-picker-tile">
-                            <label for="custom-color-3">Farba 3</label>
-                            <input type="color" id="custom-color-3" class="color-picker-input" value="#1e1b4b" oninput="updateCustomThemePreview()">
-                            <div class="color-picker-hex" id="custom-color-3-hex">#1E1B4B</div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="custom-theme-name" class="note-label-row">
-                            <span>Názov štýlu (max 6 znakov · ikona <i class="fa-regular fa-user"></i>)</span>
-                            <span class="note-counter" id="custom-theme-name-count">0 / 6</span>
-                        </label>
-                        <input type="text" id="custom-theme-name" maxlength="6" placeholder="napr. Môj, Klub..." oninput="updateCustomThemePreview()">
-                    </div>
-
-                    <button type="button" class="btn btn-primary" id="btn-save-custom-theme" onclick="saveCustomTheme()">
-                        <i class="fa-regular fa-user"></i> Uložiť a aktivovať vlastný štýl
-                    </button>
-                    <div id="custom-theme-status" class="loc-status-hint" style="margin-top: 8px;">
-                        Po uložení sa zaradí ako 9. motív pri kliknutí na tlačidlo <strong>TT</strong> a zostane uložený natrvalo v prehliadači.
-                    </div>
-                </div>
-            </div>
-
-            <!-- KARTA 2: DODATOČNE VLOŽIŤ HISTORICKÝ ZÁPAS -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-dot"></span>
-                        Dodatočne vložiť zápas do histórie
-                    </div>
-                    <div style="display:flex; gap:6px;">
-                        <button type="button" id="hist-type-2H" class="preset-btn active" style="padding:4px 10px; font-size:0.73rem;" onclick="setMatchFormType('hist', '2H')">Dvojhra (2H)</button>
-                        <button type="button" id="hist-type-4H" class="preset-btn" style="padding:4px 10px; font-size:0.73rem;" onclick="setMatchFormType('hist', '4H')">Štvorhra (4H)</button>
-                    </div>
-                </div>
-
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label for="hist-date">Dátum zápasu</label>
-                        <input type="date" id="hist-date">
-                    </div>
-                    <div class="form-group">
-                        <label for="hist-gems">Gemy (auto doplní sety)</label>
-                        <input type="text" id="hist-gems" placeholder="napr. 6:4 6:3" oninput="autoCalcSetsFromGems('hist-gems', 'hist-sets1', 'hist-sets2', false)">
-                    </div>
-                </div>
-
-                <div class="team-select-box" style="margin-bottom:8px;">
-                    <div class="team-select-title" style="color:var(--clay-light);" id="hist-team1-label">Hráč A (Strana 1)</div>
-                    <div class="grid-2">
-                        <div>
-                            <label for="hist-t1p1" id="hist-t1p1-lbl">Hráč A</label>
-                            <select id="hist-t1p1"></select>
-                        </div>
-                        <div id="hist-t1p2-wrap" style="display:none;">
-                            <label for="hist-t1p2">Hráč A2</label>
-                            <select id="hist-t1p2"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="team-select-box" style="margin-bottom:12px;">
-                    <div class="team-select-title" style="color:var(--blue-accent);" id="hist-team2-label">Hráč B (Strana 2)</div>
-                    <div class="grid-2">
-                        <div>
-                            <label for="hist-t2p1" id="hist-t2p1-lbl">Hráč B</label>
-                            <select id="hist-t2p1"></select>
-                        </div>
-                        <div id="hist-t2p2-wrap" style="display:none;">
-                            <label for="hist-t2p2">Hráč B2</label>
-                            <select id="hist-t2p2"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Výsledok na sety</label>
-                    <div class="grid-2">
-                        <div>
-                            <label for="hist-sets1" style="font-size:0.7rem;">Sety Strana A</label>
-                            <input type="number" id="hist-sets1" value="2" min="0" max="9">
-                        </div>
-                        <div>
-                            <label for="hist-sets2" style="font-size:0.7rem;">Sety Strana B</label>
-                            <input type="number" id="hist-sets2" value="0" min="0" max="9">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="hist-note" class="note-label-row">
-                        <span>Poznámka (voliteľné · max 160 znakov)</span>
-                        <span class="note-counter" id="hist-note-count">0 / 160</span>
-                    </label>
-                    <input type="text" id="hist-note" maxlength="160" placeholder="Voliteľná poznámka k zápasu..." oninput="updateNoteCounter('hist-note', 'hist-note-count')">
-                </div>
-
-                <button class="btn btn-primary" onclick="addRetroactiveMatch()">+ Vložiť zápas do histórie a prepočítať</button>
-            </div>
-
-            <!-- KARTA 3: CHRONOLOGICKÝ ZOZNAM ZÁPASOV -->
+            <!-- CHRONOLOGICKÝ ZOZNAM ZÁPASOV -->
             <div class="card" id="history-matches-card">
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-title-dot"></span>
                         História zápasov (<span id="history-count-label">0</span>)
                     </div>
-                    <button type="button" class="param-pill history-toggle-pill" id="history-shown-pill" onclick="toggleHistoryExpanded()" aria-expanded="false">▼ Rozbaliť</button>
+                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <button type="button" class="param-pill lime history-toggle-pill" id="btn-history-add-past" onclick="openNewMatchForPastDate()">+ Starší zápas</button>
+                        <button type="button" class="param-pill history-toggle-pill" id="history-shown-pill" onclick="toggleHistoryExpanded()" aria-expanded="true">Zobrazených: 0</button>
+                    </div>
                 </div>
 
-                <div class="history-filters" id="history-filters-bar" style="display:none;">
+                <div class="history-filters" id="history-filters-bar" style="display:flex;">
                     <select id="history-sort-order" onchange="renderMatchHistory()">
                         <option value="desc">Od najnovšieho</option>
                         <option value="asc">Od najstaršieho (#1)</option>
@@ -4047,130 +4300,215 @@
 
                 <div id="history-list"></div>
             </div>
+        </section>
+    </main>
 
-            <!-- KARTA 4: IMPORT / EXPORT & ZÁLOHA DATABÁZY -->
-            <div class="card">
-                <div class="card-header">
+    <!-- MODAL: NASTAVENIA, SPRÁVA HRÁČOV & DÁTA (v1.43) -->
+    <div class="modal-backdrop" id="settings-modal" onclick="if(event.target===this) closeSettingsModal()">
+        <div class="modal-box tv-modal-box">
+            <div class="tv-modal-head">
+                <div class="tv-modal-head-top">
                     <div class="card-title">
-                        <span class="card-title-dot"></span>
-                        Domovské mesto, Import / Export &amp; Záloha
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        <span><i class="fa-solid fa-gear" style="margin-right:6px; color:var(--tennis-lime);"></i>Nastavenia &amp; Dáta</span>
                     </div>
+                    <button type="button" class="icon-btn" onclick="closeSettingsModal()">Zavrieť ✕</button>
                 </div>
-
-                <div class="form-group" style="margin-bottom: 14px; padding: 12px; border-radius: 12px; background: rgba(6, 18, 28, 0.56); border: 1px solid rgba(186, 230, 253, 0.24);">
-                    <label for="cfg-home-city" style="color: var(--tennis-lime); font-weight: 700;">Domovské mesto / okres pre počasie a NEWS (mesto alebo okres)</label>
-                    <div class="loc-input-row">
-                        <input type="text" id="cfg-home-city" placeholder="napr. Čadca, Žilina, Trenčín, Praha...">
-                        <button type="button" id="btn-save-home-city" class="btn btn-secondary" onclick="saveHomeLocationFromInput('cfg-home-city')">Uložiť mesto</button>
-                    </div>
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.12);">
-                        <div style="font-size: 0.72rem; font-weight: 700; color: var(--blue-accent); margin-bottom: 6px;">Režim polohy pre počasie (uložené len v tomto zariadení):</div>
-                        <div class="grid-3" id="weather-loc-mode-bar">
-                            <button type="button" id="wmode-btn-home" class="preset-btn active" style="padding: 7px 6px; font-size: 0.72rem;" onclick="setWeatherLocMode('home')">🏠 Len domovské</button>
-                            <button type="button" id="wmode-btn-auto" class="preset-btn" style="padding: 7px 6px; font-size: 0.72rem;" onclick="setWeatherLocMode('auto')">📡 Auto (+ mimo)</button>
-                            <button type="button" id="wmode-btn-gps" class="preset-btn" style="padding: 7px 6px; font-size: 0.72rem;" onclick="setWeatherLocMode('gps')">📍 Aktuálna poloha</button>
-                        </div>
-                    </div>
-                    <div id="cfg-location-status" class="loc-status-hint">Režim: Len domovské mesto – aplikácia nevyžaduje GPS polohu.</div>
+                <div class="tv-modal-tabs cols-3">
+                    <button type="button" id="settings-tab-btn-general" class="preset-btn tv-mode-btn active" onclick="setSettingsTab('general')">Nastavenia</button>
+                    <button type="button" id="settings-tab-btn-players" class="preset-btn tv-mode-btn" onclick="setSettingsTab('players')">Hráči</button>
+                    <button type="button" id="settings-tab-btn-data" class="preset-btn tv-mode-btn" onclick="setSettingsTab('data')">Dáta &amp; Záloha</button>
                 </div>
+            </div>
 
-                <!-- PARAMETRE ELO VÝPOČTU (K / D) -->
-                <div class="form-group" style="margin-bottom: 14px; padding: 12px; border-radius: 12px; background: rgba(6, 18, 28, 0.56); border: 1px solid rgba(125, 211, 252, 0.28);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
-                        <span style="color: var(--blue-accent); font-size:0.78rem; font-weight:800;">Parametre výpočtu ELO (2H aj 4H)</span>
-                        <button type="button" id="btn-reset-elo-params" class="chart-quick-btn" onclick="resetEloParamsDefault()">Obnoviť K=32 · D=200</button>
-                    </div>
-                    <div class="grid-2">
-                        <div>
-                            <label for="cfg-k">Koeficient K (základ 32)</label>
-                            <input type="number" id="cfg-k" value="32" min="1" max="200" step="1" onchange="updateEloParams()">
-                        </div>
-                        <div>
-                            <label for="cfg-d">Faktor D (základ 200)</label>
-                            <input type="number" id="cfg-d" value="200" min="50" max="1000" step="10" onchange="updateEloParams()">
-                        </div>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 10px;">
-                    <div class="ctx-btn-wrap">
-                        <button class="btn btn-primary" onclick="exportBackupJSON('databaza.json')">Stiahnuť databaza.json (pre GitHub)</button>
-                        <div class="ctx-popover" role="tooltip">
-                            <div class="ctx-popover-head">
-                                <span><i class="fa-solid fa-cloud-arrow-up"></i> Hlavná databáza pre GitHub</span>
-                                <span class="ctx-popover-badge">JSON</span>
+            <div class="tv-modal-body">
+                <!-- ZÁLOŽKA 1: NASTAVENIA (VLASTNÝ ŠTÝL, LOKALITA/POČASIE, ELO K/D) -->
+                <div id="settings-panel-general" class="settings-panel active">
+                    <!-- VLASTNÝ GRAFICKÝ MOTÍV -->
+                    <div class="settings-section-card" id="custom-theme-card">
+                        <div class="settings-section-head" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none; cursor: pointer;" onclick="toggleCustomThemePanel()" id="custom-theme-header">
+                            <div class="card-title" style="font-size:0.9rem;">
+                                <span class="card-title-dot" style="background: var(--blue-accent);"></span>
+                                <span><i class="fa-regular fa-user" style="margin-right: 6px; color: var(--tennis-lime);"></i>Vlastný grafický motív</span>
                             </div>
-                            <div class="ctx-popover-desc">Exportuje kompletnú históriu všetkých dvojhier, štvorhier a hráčov pod presným názvom <strong>databaza.json</strong>.</div>
-                            <div class="ctx-popover-tip">Nahraj tento súbor na GitHub do rovnakého priečinka vedľa index.html, aby sa nové výsledky automaticky načítali všetkým.</div>
+                            <button type="button" class="param-pill history-toggle-pill" id="custom-theme-toggle-pill" onclick="event.stopPropagation(); toggleCustomThemePanel();" aria-expanded="false">▼ Rozbaliť</button>
+                        </div>
+
+                        <div id="custom-theme-body" style="display:none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);">
+                            <div class="custom-theme-tip-box">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <div>
+                                    <strong style="color:var(--tennis-lime);">Rýchle prepínanie motívu:</strong> Všetky grafické motívy (8 predvolených + tvoj vlastný) môžeš kedykoľvek jedným kliknutím prepínať priamo cez <strong>logo aplikácie TT</strong> v ľavom hornom rohu.
+                                </div>
+                            </div>
+
+                            <div class="custom-theme-preview" id="custom-theme-preview-bar">
+                                <span class="custom-theme-preview-badge">
+                                    <i class="fa-regular fa-user"></i>
+                                    <span id="custom-theme-preview-name">Vlast.</span>
+                                </span>
+                                <span style="font-size: 0.70rem; font-weight: 800; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.65);">Náhľad 135° gradientu</span>
+                            </div>
+
+                            <div class="grid-3" style="margin-bottom: 12px;">
+                                <div class="color-picker-tile">
+                                    <label for="custom-color-1">Farba 1</label>
+                                    <input type="color" id="custom-color-1" class="color-picker-input" value="#0f766e" oninput="updateCustomThemePreview()">
+                                    <div class="color-picker-hex" id="custom-color-1-hex">#0F766E</div>
+                                </div>
+                                <div class="color-picker-tile">
+                                    <label for="custom-color-2">Farba 2</label>
+                                    <input type="color" id="custom-color-2" class="color-picker-input" value="#0ea5e9" oninput="updateCustomThemePreview()">
+                                    <div class="color-picker-hex" id="custom-color-2-hex">#0EA5E9</div>
+                                </div>
+                                <div class="color-picker-tile">
+                                    <label for="custom-color-3">Farba 3</label>
+                                    <input type="color" id="custom-color-3" class="color-picker-input" value="#1e1b4b" oninput="updateCustomThemePreview()">
+                                    <div class="color-picker-hex" id="custom-color-3-hex">#1E1B4B</div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="custom-theme-name" class="note-label-row">
+                                    <span>Názov motívu (max 6 znakov · ikona <i class="fa-regular fa-user"></i>)</span>
+                                    <span class="note-counter" id="custom-theme-name-count">0 / 6</span>
+                                </label>
+                                <input type="text" id="custom-theme-name" maxlength="6" placeholder="napr. Môj, Klub..." oninput="updateCustomThemePreview()">
+                            </div>
+
+                            <button type="button" class="btn btn-primary" id="btn-save-custom-theme" onclick="saveCustomTheme()">
+                                <i class="fa-regular fa-user"></i> Uložiť a aktivovať vlastný motív
+                            </button>
+                            <div id="custom-theme-status" class="loc-status-hint" style="margin-top: 8px;">
+                                Po uložení sa zaradí ako 9. motív pri kliknutí na logo aplikácie <strong>TT</strong> a zostane uložený natrvalo v prehliadači.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DOMOVSKÉ MESTO & REŽIM POLOHY -->
+                    <div class="settings-section-card">
+                        <label for="cfg-home-city" style="color: var(--tennis-lime); font-weight: 700;">Domovské mesto / okres pre počasie a NEWS (mesto alebo okres)</label>
+                        <div class="loc-input-row">
+                            <input type="text" id="cfg-home-city" placeholder="napr. Čadca, Žilina, Trenčín, Praha...">
+                            <button type="button" id="btn-save-home-city" class="btn btn-secondary" onclick="saveHomeLocationFromInput('cfg-home-city')">Uložiť mesto</button>
+                        </div>
+                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.12);">
+                            <div style="font-size: 0.72rem; font-weight: 700; color: var(--blue-accent); margin-bottom: 6px;">Režim polohy pre počasie (uložené len v tomto zariadení):</div>
+                            <div class="grid-3" id="weather-loc-mode-bar">
+                                <button type="button" id="wmode-btn-home" class="preset-btn active" style="padding: 7px 6px; font-size: 0.72rem;" onclick="setWeatherLocMode('home')">🏠 Len domovské</button>
+                                <button type="button" id="wmode-btn-auto" class="preset-btn" style="padding: 7px 6px; font-size: 0.72rem;" onclick="setWeatherLocMode('auto')">📡 Auto (+ mimo)</button>
+                                <button type="button" id="wmode-btn-gps" class="preset-btn" style="padding: 7px 6px; font-size: 0.72rem;" onclick="setWeatherLocMode('gps')">📍 Aktuálna poloha</button>
+                            </div>
+                        </div>
+                        <div id="cfg-location-status" class="loc-status-hint">Režim: Len domovské mesto – aplikácia nevyžaduje GPS polohu.</div>
+                    </div>
+
+                    <!-- PARAMETRE ELO VÝPOČTU (K / D) -->
+                    <div class="settings-section-card" style="border-color: rgba(125, 211, 252, 0.30);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                            <span style="color: var(--blue-accent); font-size:0.80rem; font-weight:800;">Parametre výpočtu ELO (2H aj 4H)</span>
+                            <button type="button" id="btn-reset-elo-params" class="chart-quick-btn" onclick="resetEloParamsDefault()">Obnoviť K=32 · D=200</button>
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <label for="cfg-k">Koeficient K (základ 32)</label>
+                                <input type="number" id="cfg-k" value="32" min="1" max="200" step="1" onchange="updateEloParams()">
+                            </div>
+                            <div>
+                                <label for="cfg-d">Faktor D (základ 200)</label>
+                                <input type="number" id="cfg-d" value="200" min="50" max="1000" step="10" onchange="updateEloParams()">
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid-2" style="margin-bottom: 10px;">
-                    <div class="ctx-btn-wrap">
-                        <button class="btn btn-secondary" onclick="exportBackupJSON()">Stiahnuť JSON s dátumom</button>
-                        <div class="ctx-popover" role="tooltip">
-                            <div class="ctx-popover-head">
-                                <span><i class="fa-solid fa-file-shield"></i> Archívna lokálna záloha</span>
-                                <span class="ctx-popover-badge">JSON</span>
+                <!-- ZÁLOŽKA 2: SPRÁVA HRÁČOV -->
+                <div id="settings-panel-players" class="settings-panel">
+                    <div class="settings-section-card">
+                        <div class="settings-section-head">
+                            <div class="card-title" style="font-size:0.9rem;">
+                                <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                                Správa hráčov (<span id="players-mgr-count">0</span>)
                             </div>
-                            <div class="ctx-popover-desc">Uloží kompletnú kópiu databázy do PC s aktuálnym dátumom v názve súboru.</div>
-                            <div class="ctx-popover-tip">Ideálne na priebežné zálohovanie pred väčšími úpravami.</div>
+                            <button type="button" id="btn-players-save-all" class="chart-quick-btn" onclick="saveAllPlayerEdits()" style="color:var(--tennis-lime); border-color:rgba(190,242,100,0.45);">Uložiť všetky zmeny</button>
                         </div>
-                    </div>
-                    <div class="ctx-btn-wrap">
-                        <button class="btn btn-secondary" onclick="document.getElementById('import-json-input').click()">Načítať JSON zo súboru</button>
-                        <div class="ctx-popover" role="tooltip">
-                            <div class="ctx-popover-head">
-                                <span><i class="fa-solid fa-folder-open"></i> Obnova zo súboru JSON</span>
-                                <span class="ctx-popover-badge">Import JSON</span>
-                            </div>
-                            <div class="ctx-popover-desc">Načíta uložený súbor <strong>.json</strong> a okamžite prepočíta tabuľku pre aktuálnu časovú lehotu.</div>
-                            <div class="ctx-popover-tip">Pozor: Prepíše aktuálne dáta uložené v pamäti prehliadača.</div>
+                        <div style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.42;">
+                            Uprav meno, farbu krivky v grafe alebo štartovacie ELO (100–4000). Všetky zmeny sa ihneď prepočítajú a uložia aj pri exporte <strong>databaza.json</strong>. Zmazať možno len hráča bez odohratého zápasu.
                         </div>
-                    </div>
-                    <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="importBackupJSON(event)">
-                </div>
-
-                <div class="grid-2" style="margin-bottom: 10px;">
-                    <div class="ctx-btn-wrap">
-                        <button class="btn btn-secondary" onclick="syncFromRemoteJSON(true)">↻ Načítať z GitHubu</button>
-                        <div class="ctx-popover" role="tooltip">
-                            <div class="ctx-popover-head">
-                                <span><i class="fa-solid fa-rotate"></i> Manuálny GitHub Sync</span>
-                                <span class="ctx-popover-badge">Remote JSON</span>
-                            </div>
-                            <div class="ctx-popover-desc">Okamžite stiahne oficiálny súbor <strong>databaza.json</strong> zo servera a prepíše lokálne úpravy.</div>
-                            <div class="ctx-popover-tip">Rovnakú funkciu má aj veľké zelené tlačidlo na karte Tabuľka.</div>
-                        </div>
-                    </div>
-                    <div class="ctx-btn-wrap">
-                        <button class="btn btn-secondary" onclick="exportTableCSV()">Export tabuľky (CSV)</button>
-                        <div class="ctx-popover" role="tooltip">
-                            <div class="ctx-popover-head">
-                                <span><i class="fa-solid fa-file-csv"></i> Export rebríčka pre Excel</span>
-                                <span class="ctx-popover-badge">CSV</span>
-                            </div>
-                            <div class="ctx-popover-desc">Vygeneruje aktuálnu tabuľku pre zvolenú časovú lehotu vo formáte <strong>.csv</strong> (UTF-8 s BOM).</div>
-                            <div class="ctx-popover-tip">Slovenská diakritika sa v MS Excel zobrazí správne.</div>
-                        </div>
+                        <div id="players-mgr-list" class="player-mgr-list"></div>
                     </div>
                 </div>
 
-                <div class="ctx-btn-wrap">
-                    <button class="btn btn-danger" onclick="resetToEmpty()">Vymazať lokálnu databázu (Čistý štart)</button>
-                    <div class="ctx-popover" role="tooltip">
-                        <div class="ctx-popover-head">
-                            <span><i class="fa-solid fa-triangle-exclamation"></i> Vyčistenie lokálnej databázy</span>
-                            <span class="ctx-popover-badge" style="color:#fca5a5; border-color:rgba(252,165,165,0.4); background:rgba(252,165,165,0.15);">Čistý štart</span>
+                <!-- ZÁLOŽKA 3: DÁTA, GITHUB SYNC & ZÁLOHA -->
+                <div id="settings-panel-data" class="settings-panel">
+                    <div class="settings-section-card">
+                        <div class="settings-section-head">
+                            <div class="card-title" style="font-size:0.9rem;">
+                                <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                                Synchronizácia databázy &amp; GitHub Sync
+                            </div>
+                            <span class="param-pill lime" id="sync-status-pill">Čistý štart</span>
                         </div>
-                        <div class="ctx-popover-desc">Vymaže lokálne uložených hráčov aj všetky zápasy v prehliadači.</div>
-                        <div class="ctx-popover-tip">Odporúčame najprv stiahnuť zálohu JSON.</div>
+                        <div class="mode-box">
+                            <div id="sync-status-title" style="font-weight: 700; font-size: 0.86rem; margin-bottom: 4px; color: var(--tennis-lime);">Automatická synchronizácia (databaza.json)</div>
+                            <div id="sync-status-desc" style="font-size: 0.76rem; color: var(--text-muted);">Pri načítaní stránky aplikácia automaticky hľadá súbor <strong>databaza.json</strong> v rovnakom priečinku na GitHube. Tlačidlo v karte Tabuľka kedykoľvek obnoví oficiálne dáta.</div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section-card">
+                        <div class="settings-section-head">
+                            <div class="card-title" style="font-size:0.9rem;">
+                                <span class="card-title-dot"></span>
+                                Import / Export &amp; Záloha databázy
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 10px;">
+                            <button type="button" class="btn btn-primary" id="btn-export-github-json"
+                                data-ctx-title="Hlavná databáza pre GitHub (JSON)"
+                                data-ctx-desc="Exportuje kompletnú históriu všetkých dvojhier, štvorhier, úprav hráčov a nastavení pod presným názvom databaza.json."
+                                data-ctx-tip="Nahraj tento súbor na GitHub vedľa index.html, aby sa zmeny automaticky načítali všetkým."
+                                onclick="exportBackupJSON('databaza.json')">Stiahnuť databaza.json (pre GitHub)</button>
+                        </div>
+
+                        <div class="grid-2" style="margin-bottom: 10px;">
+                            <button type="button" class="btn btn-secondary" id="btn-export-dated-json"
+                                data-ctx-title="Archívna lokálna záloha (JSON)"
+                                data-ctx-desc="Uloží kompletnú kópiu databázy do PC alebo mobilu s dnešným dátumom v názve súboru."
+                                onclick="exportBackupJSON()">Stiahnuť JSON s dátumom</button>
+                            <button type="button" class="btn btn-secondary" id="btn-import-json"
+                                data-ctx-title="Obnova zo súboru JSON"
+                                data-ctx-desc="Načíta uložený súbor .json, overí jeho integritu a okamžite prepočíta tabuľku."
+                                data-ctx-tip="Prepíše aktuálne dáta uložené v pamäti prehliadača."
+                                onclick="document.getElementById('import-json-input').click()">Načítať JSON zo súboru</button>
+                            <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="importBackupJSON(event)">
+                        </div>
+
+                        <div class="grid-2" style="margin-bottom: 10px;">
+                            <button type="button" class="btn btn-secondary" id="btn-manual-github-sync"
+                                data-ctx-title="Manuálny GitHub Sync"
+                                data-ctx-desc="Okamžite stiahne oficiálny súbor databaza.json zo servera a prepíše lokálne úpravy."
+                                onclick="syncFromRemoteJSON(true)">↻ Načítať z GitHubu</button>
+                            <button type="button" class="btn btn-secondary" id="btn-export-csv"
+                                data-ctx-title="Export rebríčka pre Excel (CSV)"
+                                data-ctx-desc="Vygeneruje aktuálnu tabuľku pre zvolený interval vo formáte .csv (UTF-8 s BOM)."
+                                onclick="exportTableCSV()">Export tabuľky (CSV)</button>
+                        </div>
+
+                        <button type="button" class="btn btn-danger" id="btn-reset-db"
+                            data-ctx-title="Vyčistenie lokálnej databázy"
+                            data-ctx-desc="Vymaže lokálne uložených hráčov aj všetky zápasy v prehliadači (Čistý štart)."
+                            data-ctx-tip="Odporúčame najprv stiahnuť zálohu JSON."
+                            onclick="resetToEmpty()">Vymazať lokálnu databázu (Čistý štart)</button>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+
+            <div class="tv-modal-foot">
+                <button type="button" class="btn btn-secondary" onclick="closeSettingsModal()">Zavrieť</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL PRE EDITÁCIU ZÁPASU -->
     <div class="modal-backdrop" id="edit-match-modal" onclick="if(event.target===this) closeEditMatchModal()">
@@ -4393,6 +4731,74 @@
         </div>
     </div>
 
+    <!-- MODAL: REPORT POSLEDNÉHO ZÁPASU (PNG) (v1.44) -->
+    <div class="modal-backdrop" id="match-report-modal" onclick="if(event.target===this) closeMatchReportModal()">
+        <div class="modal-box tv-modal-box">
+            <div class="tv-modal-head">
+                <div class="tv-modal-head-top">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                        <span>Report posledného zápasu (PNG)</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="chart-range-pill" id="report-dim-pill">1080 × 900</span>
+                        <button type="button" class="icon-btn" onclick="closeMatchReportModal()">Zavrieť ✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tv-modal-body">
+                <div class="tv-canvas-frame report-canvas-frame">
+                    <canvas id="reportCanvas" width="1080" height="900"></canvas>
+                </div>
+
+                <div class="tv-ctrl-section">
+                    <div class="report-list-head">
+                        <div style="font-size:0.78rem; font-weight:800; color:var(--text-main);">
+                            Riadky v reporte (<span id="report-items-count">0</span>)
+                            <span id="report-weather-status" class="report-weather-status" style="margin-left:6px;"></span>
+                        </div>
+                        <button type="button" id="btn-report-restore-all" class="chart-quick-btn" onclick="restoreAllMatchReportItems()" style="display:none; color:var(--tennis-lime); border-color:rgba(190,242,100,0.45);">Obnoviť všetko</button>
+                    </div>
+                    <div id="report-items-list" class="report-items-list"></div>
+                </div>
+
+                <div class="tv-controls-grid">
+                    <div class="tv-ctrl-card">
+                        <div class="tv-ctrl-top">
+                            <span class="tv-ctrl-label">Blur pozadia</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
+                                <span class="tv-pct-badge" id="report-blur-val" onclick="setTvBlur(50)">50%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
+                            </div>
+                        </div>
+                        <input type="range" id="report-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
+                    </div>
+                    <div class="tv-ctrl-card">
+                        <div class="tv-ctrl-top">
+                            <span class="tv-ctrl-label">Priehľadnosť</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
+                                <span class="tv-pct-badge" id="report-transp-val" onclick="setTvTransparency(40)">40%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                            </div>
+                        </div>
+                        <input type="range" id="report-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tv-modal-foot">
+                <div class="grid-3">
+                    <button type="button" id="btn-report-dl-png" class="btn btn-primary" onclick="downloadMatchReportGraphic()">Stiahnuť PNG</button>
+                    <button type="button" id="btn-report-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
+                    <button type="button" id="btn-report-close" class="btn btn-secondary" onclick="closeMatchReportModal()">Zavrieť</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- SPODNÁ LIŠTA: NEWS BAR + NAVIGÁCIA (v1.1) -->
     <div class="bottom-dock">
         <div class="news-bar" id="news-bar" aria-label="Tenisové správy, počasie a štatistiky">
@@ -4524,7 +4930,6 @@
 
         let formModes = {
             new: "2H",
-            hist: "2H",
             edit: "2H"
         };
 
@@ -4736,7 +5141,7 @@
                 c3El.value = existing.colors[2];
                 nameEl.value = existing.customName || existing.label || "";
                 if (statusEl) {
-                    statusEl.innerHTML = `Uložený vlastný štýl: <strong style="color:var(--tennis-lime);"><i class="fa-regular fa-user"></i> ${escapeHtml(existing.label)}</strong> (${existing.colors.join(" → ").toUpperCase()}) · dostupný ako 9. motív na tlačidle <strong>TT</strong>.`;
+                    statusEl.innerHTML = `Uložený vlastný motív: <strong style="color:var(--tennis-lime);"><i class="fa-regular fa-user"></i> ${escapeHtml(existing.label)}</strong> (${existing.colors.join(" → ").toUpperCase()}) · dostupný ako 9. motív na logu <strong>TT</strong>.`;
                 }
             }
             updateCustomThemePreview();
@@ -4859,6 +5264,8 @@
             if (tvMod && tvMod.classList.contains("open")) renderTvCanvas();
             const tvChartMod = document.getElementById("tv-chart-modal");
             if (tvChartMod && tvChartMod.classList.contains("open")) renderTvChartCanvas();
+            const repMod = document.getElementById("match-report-modal");
+            if (repMod && repMod.classList.contains("open")) renderMatchReportCanvas();
             if (showNotification) {
                 if (theme.isCustom) {
                     showToast(`Motív: <i class="fa-regular fa-user" style="margin:0 4px 0 2px;"></i>${escapeHtml(theme.label)}`, false, true);
@@ -4918,15 +5325,6 @@
             const dt = new Date(y, mo - 1, d);
             if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
             return dt;
-        }
-
-        function addCalendarMonths(isoDate, months) {
-            const base = parseIsoLocal(isoDate);
-            if (!base) return null;
-            const origY = base.getFullYear(), origM = base.getMonth(), origD = base.getDate();
-            const targetFirst = new Date(origY, origM + months, 1);
-            const lastDay = new Date(targetFirst.getFullYear(), targetFirst.getMonth() + 1, 0).getDate();
-            return new Date(targetFirst.getFullYear(), targetFirst.getMonth(), Math.min(origD, lastDay));
         }
 
         function subtractCalendarMonths(dateObj, months) {
@@ -5702,7 +6100,7 @@
             const headerMatPill = document.getElementById("header-matches-pill");
             const rangePill = document.getElementById("window-range-pill");
             if (headerWinPill) {
-                headerWinPill.textContent = wm === 0 ? "Lehota: All-time" : `Lehota: ${wm} mes.`;
+                headerWinPill.textContent = wm === 0 ? "Int.: All-time" : `Int.: ${wm} mes.`;
             }
             if (headerMatPill) {
                 headerMatPill.textContent = `${validMatchesCount} / ${computedMatches.length} záp.`;
@@ -6315,17 +6713,20 @@
         }
 
         function renderLastMatchBanner() {
+            const lmBanner = document.getElementById("last-match-banner");
             const lmLabel = document.getElementById("last-match-label");
             const lmBoard = document.getElementById("last-match-board");
             const lmMeta = document.getElementById("last-match-meta");
 
             if (computedMatches.length === 0) {
+                if (lmBanner) lmBanner.classList.remove("lm-banner-clickable");
                 lmLabel.textContent = "Posledný zápas";
                 lmBoard.classList.remove("many-sets");
                 lmBoard.innerHTML = `<div class="lm-empty-state">Zatiaľ žiadny odohratý zápas</div>`;
                 lmMeta.textContent = "Pridaj prvý zápas v sekcii Nový zápas alebo načítaj databaza.json";
                 return;
             }
+            if (lmBanner) lmBanner.classList.add("lm-banner-clickable");
 
             const lastM = computedMatches[computedMatches.length - 1];
             const s1 = Number(lastM.sets1) || 0;
@@ -6368,7 +6769,7 @@
             }).join("");
 
             const typeTxt = lastM.type === "4H" ? "Štvorhra 4H" : "Dvojhra 2H";
-            lmLabel.textContent = `Posledný zápas (#${lastM.index} · ${typeTxt}) · ${formatDateSk(lastM.date)}`;
+            lmLabel.innerHTML = `Posledný zápas (#${lastM.index} · ${typeTxt}) · ${formatDateSk(lastM.date)} <span class="lm-report-pill"><i class="fa-regular fa-image"></i> PNG</span>`;
             lmBoard.innerHTML = `
                 <div class="lm-scoreboard ${isDraw ? 'is-draw' : ''}" style="grid-template-columns: ${gridCols};">
                     <div class="lm-cell lm-cell-team ${topTeamCls}" title="${escapeHtml(topTeam)}">${escapeHtml(topTeam)}</div>
@@ -6697,14 +7098,267 @@
             }
         }
 
+        let activeSettingsTab = "general";
+
+        function openSettingsModal(tabName = null) {
+            const modal = document.getElementById("settings-modal");
+            if (!modal) return;
+            if (tabName) activeSettingsTab = tabName;
+            setSettingsTab(activeSettingsTab);
+            syncCustomThemeFormUI();
+            syncLocationInputsUI();
+            syncEloParamInputsUI();
+            renderPlayersManager();
+            modal.classList.add("open");
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById("settings-modal");
+            if (modal) modal.classList.remove("open");
+        }
+
+        function setSettingsTab(tab) {
+            activeSettingsTab = (tab === "players" || tab === "data") ? tab : "general";
+            ["general", "players", "data"].forEach(k => {
+                const btn = document.getElementById(`settings-tab-btn-${k}`);
+                const panel = document.getElementById(`settings-panel-${k}`);
+                if (btn) btn.classList.toggle("active", activeSettingsTab === k);
+                if (panel) panel.classList.toggle("active", activeSettingsTab === k);
+            });
+            if (activeSettingsTab === "players") renderPlayersManager();
+        }
+
+        function getPlayerTotalMatchesBreakdown(playerId) {
+            let m2H = 0, m4H = 0;
+            state.matches.forEach(m => {
+                const played = (Array.isArray(m.team1) && m.team1.includes(playerId)) ||
+                               (Array.isArray(m.team2) && m.team2.includes(playerId));
+                if (!played) return;
+                if (m.type === "4H") m4H++;
+                else m2H++;
+            });
+            return { total: m2H + m4H, m2H, m4H };
+        }
+
+        function markPlayerMgrRowDirty(rowEl) {
+            if (!rowEl) return;
+            const pid = rowEl.dataset.playerId;
+            const p = state.players.find(x => x.id === pid);
+            if (!p) return;
+            const colEl = rowEl.querySelector(".pm-color-in");
+            const nameEl = rowEl.querySelector(".pm-name-in");
+            const eloEl = rowEl.querySelector(".pm-elo-in");
+            const origColor = sanitizeHexColor(p.color, 0).toLowerCase();
+            const origName = p.name;
+            const origElo = getPlayerBaseElo(p);
+            const curColor = (colEl ? colEl.value : origColor).toLowerCase();
+            const curName = nameEl ? nameEl.value.trim() : origName;
+            const curElo = eloEl ? parseFloat(eloEl.value) : origElo;
+            const changed = curColor !== origColor || curName !== origName || (isFinite(curElo) && Math.round(curElo * 10) / 10 !== origElo);
+            rowEl.classList.toggle("is-dirty", changed);
+        }
+
+        function renderPlayersManager() {
+            const listEl = document.getElementById("players-mgr-list");
+            const cntEl = document.getElementById("players-mgr-count");
+            if (!listEl) return;
+            if (cntEl) cntEl.textContent = state.players.length;
+
+            if (state.players.length === 0) {
+                listEl.innerHTML = `<div style="color:var(--text-muted); font-size:0.82rem; padding:8px 2px;">Zatiaľ nie sú pridaní žiadni hráči. Pridaj ich na karte Tabuľka alebo načítaj databaza.json.</div>`;
+                return;
+            }
+
+            const sorted = [...state.players].sort((a, b) => a.name.localeCompare(b.name, "sk"));
+            listEl.innerHTML = sorted.map((p, idx) => {
+                const br = getPlayerTotalMatchesBreakdown(p.id);
+                const col = sanitizeHexColor(p.color, idx);
+                const baseElo = getPlayerBaseElo(p);
+                const canDelete = br.total === 0;
+                const matchesInfo = br.total === 0
+                    ? `<span style="color:var(--tennis-lime);">0 zápasov · možno zmazať</span>`
+                    : `${br.total} záp. (${br.m2H}× 2H · ${br.m4H}× 4H)`;
+                return `
+                    <div class="player-mgr-row" data-player-id="${escapeHtml(p.id)}">
+                        <div class="player-mgr-grid">
+                            <div>
+                                <label style="font-size:0.66rem; margin-bottom:3px;">Farba</label>
+                                <input type="color" class="player-mgr-color pm-color-in" value="${escapeHtml(col)}" oninput="markPlayerMgrRowDirty(this.closest('.player-mgr-row'))">
+                            </div>
+                            <div>
+                                <label style="font-size:0.66rem; margin-bottom:3px;">Meno hráča</label>
+                                <input type="text" class="pm-name-in" value="${escapeHtml(p.name)}" maxlength="40" oninput="markPlayerMgrRowDirty(this.closest('.player-mgr-row'))" onkeydown="if(event.key==='Enter') saveSinglePlayerEdit(this.closest('.player-mgr-row').dataset.playerId)">
+                            </div>
+                            <div>
+                                <label style="font-size:0.66rem; margin-bottom:3px;">Štart ELO</label>
+                                <input type="number" class="pm-elo-in" value="${baseElo.toFixed(1)}" step="0.1" min="100" max="4000" oninput="markPlayerMgrRowDirty(this.closest('.player-mgr-row'))" onkeydown="if(event.key==='Enter') saveSinglePlayerEdit(this.closest('.player-mgr-row').dataset.playerId)">
+                            </div>
+                            <div class="player-mgr-actions">
+                                <button type="button" class="icon-btn-alt player-mgr-save-btn" data-player-id="${escapeHtml(p.id)}" onclick="saveSinglePlayerEdit(this.dataset.playerId)" title="Uložiť zmeny hráča">Uložiť</button>
+                                <button type="button" class="icon-btn player-mgr-del-btn" data-player-id="${escapeHtml(p.id)}" onclick="deleteUnusedPlayer(this.dataset.playerId)" ${canDelete ? '' : 'disabled'} title="${canDelete ? 'Zmazať hráča (nemá žiadne zápasy)' : 'Hráč má odohraté zápasy – nemožno zmazať'}">✕</button>
+                            </div>
+                        </div>
+                        <div class="player-mgr-meta">
+                            <span>${matchesInfo}</span>
+                            <span style="opacity:0.72;">ID: ${escapeHtml(p.id)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function saveSinglePlayerEdit(playerId) {
+            const row = document.querySelector(`.player-mgr-row[data-player-id="${CSS.escape(playerId)}"]`);
+            const player = state.players.find(x => x.id === playerId);
+            if (!row || !player) return;
+
+            const newName = (row.querySelector(".pm-name-in").value || "").trim();
+            const newColor = (row.querySelector(".pm-color-in").value || "").trim();
+            const newEloRaw = parseFloat(row.querySelector(".pm-elo-in").value);
+
+            if (!newName) {
+                showToast("Meno hráča nemôže byť prázdne!", true);
+                return;
+            }
+            if (state.players.some(other => other.id !== playerId && other.name.toLowerCase() === newName.toLowerCase())) {
+                showToast(`Hráč s menom „${newName}“ už existuje!`, true);
+                return;
+            }
+            if (!HEX_COLOR_RE.test(newColor)) {
+                showToast("Neplatný formát farby!", true);
+                return;
+            }
+            if (!isFinite(newEloRaw) || newEloRaw < 100 || newEloRaw > 4000) {
+                showToast("Štartovacie ELO musí byť medzi 100 a 4000!", true);
+                return;
+            }
+
+            const newElo = Math.round(newEloRaw * 10) / 10;
+            const prevElo = getPlayerBaseElo(player);
+            const prevColor = sanitizeHexColor(player.color, 0).toLowerCase();
+            if (player.name === newName && prevColor === newColor.toLowerCase() && prevElo === newElo) {
+                row.classList.remove("is-dirty");
+                showToast("Žiadne zmeny na uloženie.");
+                return;
+            }
+
+            player.name = newName;
+            player.color = newColor;
+            if (newElo === 1500.0) {
+                delete player.baseElo;
+            } else {
+                player.baseElo = newElo;
+            }
+
+            const savedOk = saveState(true);
+            recalculateAll();
+            populateSelects();
+            refreshAllViews();
+            renderPlayersManager();
+            if (savedOk) {
+                showToast(`Hráč ${newName} bol upravený (uloží sa aj do databaza.json).`);
+            }
+        }
+
+        function saveAllPlayerEdits() {
+            const rows = Array.from(document.querySelectorAll("#players-mgr-list .player-mgr-row"));
+            if (rows.length === 0) return;
+
+            const updates = [];
+            const seenNames = new Set();
+            for (const row of rows) {
+                const pid = row.dataset.playerId;
+                const player = state.players.find(x => x.id === pid);
+                if (!player) continue;
+
+                const newName = (row.querySelector(".pm-name-in").value || "").trim();
+                const newColor = (row.querySelector(".pm-color-in").value || "").trim();
+                const newEloRaw = parseFloat(row.querySelector(".pm-elo-in").value);
+
+                if (!newName) {
+                    showToast(`Meno hráča (${player.name}) nemôže byť prázdne!`, true);
+                    return;
+                }
+                const lowName = newName.toLowerCase();
+                if (seenNames.has(lowName)) {
+                    showToast(`Duplicitné meno „${newName}“ – každý hráč musí mať jedinečné meno!`, true);
+                    return;
+                }
+                seenNames.add(lowName);
+
+                if (!HEX_COLOR_RE.test(newColor)) {
+                    showToast(`Neplatná farba pre hráča ${newName}!`, true);
+                    return;
+                }
+                if (!isFinite(newEloRaw) || newEloRaw < 100 || newEloRaw > 4000) {
+                    showToast(`Štartovacie ELO pre ${newName} musí byť medzi 100 a 4000!`, true);
+                    return;
+                }
+                const newElo = Math.round(newEloRaw * 10) / 10;
+                const changed = player.name !== newName ||
+                    sanitizeHexColor(player.color, 0).toLowerCase() !== newColor.toLowerCase() ||
+                    getPlayerBaseElo(player) !== newElo;
+                if (changed) {
+                    updates.push({ player, newName, newColor, newElo });
+                }
+            }
+
+            if (updates.length === 0) {
+                showToast("Žiadne neuložené zmeny u hráčov.");
+                return;
+            }
+
+            updates.forEach(({ player, newName, newColor, newElo }) => {
+                player.name = newName;
+                player.color = newColor;
+                if (newElo === 1500.0) delete player.baseElo;
+                else player.baseElo = newElo;
+            });
+
+            const savedOk = saveState(true);
+            recalculateAll();
+            populateSelects();
+            refreshAllViews();
+            renderPlayersManager();
+            if (savedOk) {
+                showToast(`Uložené zmeny pre ${updates.length} ${updates.length === 1 ? 'hráča' : 'hráčov'} (zahrnuté v databaza.json).`);
+            }
+        }
+
+        function deleteUnusedPlayer(playerId) {
+            const player = state.players.find(x => x.id === playerId);
+            if (!player) return;
+            const br = getPlayerTotalMatchesBreakdown(playerId);
+            if (br.total > 0) {
+                showToast(`Hráča ${player.name} nemožno zmazať – má v histórii ${br.total} zápasov.`, true);
+                return;
+            }
+            if (!confirm(`Naozaj chceš natrvalo zmazať hráča „${player.name}“ z databázy?`)) return;
+
+            state.players = state.players.filter(x => x.id !== playerId);
+            if (state.chartVisiblePlayers && Object.prototype.hasOwnProperty.call(state.chartVisiblePlayers, playerId)) {
+                delete state.chartVisiblePlayers[playerId];
+            }
+            const savedOk = saveState(true);
+            recalculateAll();
+            populateSelects();
+            refreshAllViews();
+            renderPlayersManager();
+            if (savedOk) {
+                showToast(`Hráč ${player.name} bol vymazaný z databázy.`);
+            }
+        }
+
         /* ==================== FORMULÁRE ZÁPASOV (2H / 4H) ==================== */
         function setMatchFormType(scope, type) {
             const is4H = type === "4H";
             formModes[scope] = is4H ? "4H" : "2H";
 
             const prefixBtn = scope === "new" ? "match" : scope;
-            document.getElementById(`${prefixBtn}-type-2H`).classList.toggle("active", !is4H);
-            document.getElementById(`${prefixBtn}-type-4H`).classList.toggle("active", is4H);
+            const b2 = document.getElementById(`${prefixBtn}-type-2H`);
+            const b4 = document.getElementById(`${prefixBtn}-type-4H`);
+            if (b2) b2.classList.toggle("active", !is4H);
+            if (b4) b4.classList.toggle("active", is4H);
 
             document.getElementById(`${scope}-t1p2-wrap`).style.display = is4H ? "block" : "none";
             document.getElementById(`${scope}-t2p2-wrap`).style.display = is4H ? "block" : "none";
@@ -6715,13 +7369,29 @@
             document.getElementById(`${scope}-t2p1-lbl`).textContent = is4H ? "Hráč B1" : "Hráč B";
 
             if (scope === "new") {
+                const mmCard = document.getElementById("matchmaker-card");
+                if (mmCard) mmCard.style.display = is4H ? "block" : "none";
+                const formTitle = document.getElementById("new-match-card-title");
+                if (formTitle) formTitle.textContent = is4H ? "Zápis zápasu (Štvorhra 4H)" : "Zápis zápasu (Dvojhra 2H)";
+                triggerGreenBtnFlash(is4H ? b4 : b2);
                 ensureUniqueSelects(["match-t1p1", "match-t1p2", "match-t2p1", "match-t2p2"], is4H ? 4 : 2);
                 updateMatchPreview();
-            } else if (scope === "hist") {
-                ensureUniqueSelects(["hist-t1p1", "hist-t1p2", "hist-t2p1", "hist-t2p2"], is4H ? 4 : 2);
             } else if (scope === "edit") {
                 ensureUniqueSelects(["edit-t1p1", "edit-t1p2", "edit-t2p1", "edit-t2p2"], is4H ? 4 : 2);
             }
+        }
+
+        function openNewMatchForPastDate() {
+            const navBtn = document.querySelector('.bottom-nav .nav-item[data-tab="sec-match"]');
+            switchTab("sec-match", navBtn);
+            setTimeout(() => {
+                const dateEl = document.getElementById("match-date");
+                if (dateEl) {
+                    dateEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                    dateEl.focus();
+                }
+            }, 80);
+            showToast("Vyber pôvodný dátum zápasu – zaradí sa automaticky chronologicky.");
         }
 
         function ensureUniqueSelects(selectIds, neededCount) {
@@ -6749,7 +7419,6 @@
         function populateSelects() {
             const ids = [
                 "match-t1p1", "match-t1p2", "match-t2p1", "match-t2p2",
-                "hist-t1p1", "hist-t1p2", "hist-t2p1", "hist-t2p2",
                 "edit-t1p1", "edit-t1p2", "edit-t2p1", "edit-t2p2",
                 "h2h-p1", "h2h-p2", "h2h-t1p1", "h2h-t1p2", "h2h-t2p1", "h2h-t2p2",
                 "mm-p1", "mm-p2", "mm-p3", "mm-p4",
@@ -6776,7 +7445,6 @@
             });
 
             ensureUniqueSelects(["match-t1p1", "match-t1p2", "match-t2p1", "match-t2p2"], formModes.new === "4H" ? 4 : 2);
-            ensureUniqueSelects(["hist-t1p1", "hist-t1p2", "hist-t2p1", "hist-t2p2"], formModes.hist === "4H" ? 4 : 2);
             ensureUniqueSelects(["h2h-t1p1", "h2h-t1p2", "h2h-t2p1", "h2h-t2p2"], 4);
             ensureUniqueSelects(["mm-p1", "mm-p2", "mm-p3", "mm-p4"], 4);
 
@@ -6977,10 +7645,10 @@
                         </div>
                         <button type="button" class="preset-btn mm-apply-btn"
                             data-ctx-title="Preniesť dvojice do zápisu"
-                            data-ctx-desc="Prepne formulár hore na Štvorhru (4H) a doplní tieto dve dvojice bez prepísania zadaných setov."
+                            data-ctx-desc="Doplní tieto dve dvojice do formulára štvorhry (4H) nižšie bez prepísania zadaných setov."
                             data-a1="${escapeHtml(c.a1.id)}" data-a2="${escapeHtml(c.a2.id)}" data-b1="${escapeHtml(c.b1.id)}" data-b2="${escapeHtml(c.b2.id)}"
                             onclick="applyMatchmakerCombo(this.dataset.a1, this.dataset.a2, this.dataset.b1, this.dataset.b2)">
-                            Použiť v zápise ↑
+                            Použiť v zápise ↓
                         </button>
                     </div>
                 `;
@@ -7086,32 +7754,6 @@
             }
             const firstTabBtn = document.querySelectorAll(".bottom-nav .nav-item")[0];
             switchTab("sec-table", firstTabBtn);
-        }
-
-        function addRetroactiveMatch() {
-            const now = Date.now();
-            if (now < matchSaveLockUntil) return;
-            const payload = collectAndValidateMatch("hist");
-            if (!payload) return;
-            if (!confirmDuplicateMatchIfNeeded(payload)) return;
-
-            matchSaveLockUntil = Date.now() + 700;
-            const newId = generateUniqueId("retro");
-            state.matches.push({ id: newId, ...payload });
-            document.getElementById("hist-gems").value = "";
-            document.getElementById("hist-note").value = "";
-            updateNoteCounter("hist-note", "hist-note-count");
-
-            sortMatchesChronologically();
-            const savedOk = saveState();
-            recalculateAll();
-            populateSelects();
-            refreshAllViews();
-
-            if (savedOk) {
-                const inserted = computedMatches.find(m => m.id === newId);
-                showToast(`Zápas zaradený na pozíciu #${inserted ? inserted.index : computedMatches.length} (${formatDateSk(payload.date)})!`);
-            }
         }
 
         /* ==================== GRAF VÝVOJA BODOV & ELO 2H / 4H (v1.1) ==================== */
@@ -9787,7 +10429,7 @@
             }
         }
 
-        let historyExpanded = false;
+        let historyExpanded = true;
 
         function toggleHistoryExpanded() {
             historyExpanded = !historyExpanded;
@@ -10184,7 +10826,9 @@
                 ["tv-blur-slider", "tv-blur-val", tvBlurPct],
                 ["tv-transp-slider", "tv-transp-val", tvTransparencyPct],
                 ["tv-chart-blur-slider", "tv-chart-blur-val", tvBlurPct],
-                ["tv-chart-transp-slider", "tv-chart-transp-val", tvTransparencyPct]
+                ["tv-chart-transp-slider", "tv-chart-transp-val", tvTransparencyPct],
+                ["report-blur-slider", "report-blur-val", tvBlurPct],
+                ["report-transp-slider", "report-transp-val", tvTransparencyPct]
             ];
             pairs.forEach(([sId, vId, val]) => {
                 const sEl = document.getElementById(sId);
@@ -10202,6 +10846,8 @@
                 if (m1 && m1.classList.contains("open")) renderTvCanvas();
                 const m2 = document.getElementById("tv-chart-modal");
                 if (m2 && m2.classList.contains("open")) renderTvChartCanvas();
+                const m3 = document.getElementById("match-report-modal");
+                if (m3 && m3.classList.contains("open")) renderMatchReportCanvas();
             });
         }
 
@@ -10332,8 +10978,13 @@
 
         function drawTvBackgroundLayer(targetCtx, W, H, forceFallbackBg = false) {
             if (tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) {
-                targetCtx.drawImage(tvCustomBgImage, 0, 0, W, H);
-                const vig = targetCtx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, W * 0.72);
+                const imgW = tvCustomBgImage.naturalWidth;
+                const imgH = tvCustomBgImage.naturalHeight;
+                const scale = Math.max(W / imgW, H / imgH);
+                const drawW = imgW * scale;
+                const drawH = imgH * scale;
+                targetCtx.drawImage(tvCustomBgImage, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
+                const vig = targetCtx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.25, W / 2, H / 2, Math.max(W, H) * 0.72);
                 vig.addColorStop(0, "rgba(0, 18, 15, 0.08)");
                 vig.addColorStop(1, "rgba(0, 12, 10, 0.42)");
                 targetCtx.fillStyle = vig;
@@ -10704,8 +11355,8 @@
                 nx += colorsArr.length * 20 + 8;
 
                 // Dva štítky vpravo hore: Body + ELO delta
-                const ptsBadgeStr = `+${formatPts(ptsVal)} B${isDoubles ? "/H" : ""}`;
-                const ptsBadgeW = isDoubles ? 148 : 126;
+                const ptsBadgeStr = `+${formatPts(ptsVal)} B`;
+                const ptsBadgeW = 126;
                 const eloBadgeW = hasElo ? 146 : 0;
                 const badgeGap = hasElo ? 8 : 0;
                 const badgeH = 36;
@@ -11207,7 +11858,7 @@
             const fallbackExport = () => {
                 try {
                     const off = document.createElement("canvas");
-                    off.width = 1920; off.height = 1080;
+                    off.width = canvas.width || 1920; off.height = canvas.height || 1080;
                     fallbackRenderFn(off, true);
                     off.toBlob(blob => {
                         if (blob) {
@@ -11224,7 +11875,7 @@
                 canvas.toBlob(blob => {
                     if (blob) {
                         triggerBlobDownload(blob, filename);
-                        showToast(`FullHD ${ext.toUpperCase()} grafika bola stiahnutá!`);
+                        showToast(`${ext.toUpperCase()} grafika (${canvas.width}×${canvas.height}) bola stiahnutá!`);
                     } else {
                         fallbackExport();
                     }
@@ -11666,6 +12317,688 @@
                 : (chartMetric === "elo4h" ? "ELO_4H" : (chartModeMonths === 0 ? "Body_AllTime" : `Body_${chartModeMonths}M`));
             exportCanvasImage(canvas, `TenisTAB_TV_Graf_${modeTag}_${getTodayIso()}`, format, renderTvChartCanvas);
         }
+        /* ==================== REPORT POSLEDNÉHO ZÁPASU – PNG (v1.44) ==================== */
+        let matchReportMatchId = null;
+        let matchReportItems = [];
+        const matchReportWeatherCache = {};
+
+        function detectLeaderCoupAtExactMatch(snaps, matchId) {
+            if (!Array.isArray(snaps) || snaps.length < 2) return null;
+            const idx = snaps.findIndex(s => s && s.match && s.match.id === matchId);
+            if (idx <= 0) return null;
+
+            const curSnap = snaps[idx];
+            const prevSnap = snaps[idx - 1];
+            const curLeaderId = curSnap.leaderId;
+            const prevLeaderId = prevSnap.leaderId;
+            if (!curLeaderId || !prevLeaderId || curLeaderId === prevLeaderId) return null;
+
+            let prevStartIdx = idx - 1;
+            while (prevStartIdx > 0 && snaps[prevStartIdx - 1] && snaps[prevStartIdx - 1].leaderId === prevLeaderId) {
+                prevStartIdx--;
+            }
+            const startDate = (snaps[prevStartIdx] && snaps[prevStartIdx].match && snaps[prevStartIdx].match.date) || curSnap.match.date;
+            const startDays = parseIsoToUtcDays(startDate);
+            const endDays = parseIsoToUtcDays(curSnap.match.date);
+            const prevReignDays = (startDays !== null && endDays !== null) ? Math.max(0, endDays - startDays) : 0;
+
+            return { coupSnap: curSnap, curLeaderId, prevLeaderId, prevReignDays };
+        }
+
+        function buildLeaderChangesForMatch(m) {
+            const out = [];
+            if (!m) return out;
+
+            // 1) Bodová tabuľka (2H + 4H) v aktuálne zvolenom intervale
+            const ptsSnaps = buildWindowPointsTimelineForLeader();
+            const ptsCoup = detectLeaderCoupAtExactMatch(ptsSnaps, m.id);
+            if (ptsCoup) {
+                const newP = state.players.find(p => p.id === ptsCoup.curLeaderId);
+                const prevP = state.players.find(p => p.id === ptsCoup.prevLeaderId);
+                if (newP && prevP) {
+                    const days = ptsCoup.prevReignDays;
+                    if (days === 0) {
+                        out.push({ tag: "BLESKOVÝ PREVRAT NA ČELE", text: `${newP.name} zosadil ${skName(prevP.name, "acc")} z prvého miesta tabuľky ešte v ten istý deň – na tróne sa nestihol ani ohriať!` });
+                    } else if (days < 7) {
+                        out.push({ tag: "ZMENA LÍDRA TABUĽKY", text: `${newP.name} zosadil z trónu ${skName(prevP.name, "acc")} už po ${skCount(days, "dni", "dňoch", "dňoch")} – od zápasu #${m.index} vedie tabuľku!` });
+                    } else {
+                        const w = Math.floor(days / 7);
+                        const wTxt = skCount(w, "týždeň", "týždne", "týždňov");
+                        out.push({ tag: "PALÁCOVÝ PREVRAT NA ČELE", text: `${newP.name} zosadil z trónu tabuľky ${skName(prevP.name, "acc")}! Jeho nepretržitá vláda na prvom mieste trvala ${wTxt}.` });
+                    }
+                }
+            }
+
+            // 2) ELO Dvojhra (2H)
+            if (m.type === "2H") {
+                const c2 = detectLeaderCoupAtExactMatch(elo2HLeaderSnaps, m.id);
+                if (c2) {
+                    const newP = state.players.find(p => p.id === c2.curLeaderId);
+                    const prevP = state.players.find(p => p.id === c2.prevLeaderId);
+                    if (newP && prevP) {
+                        const days = c2.prevReignDays;
+                        const spanTxt = days === 0
+                            ? "ešte v ten istý deň"
+                            : (days < 7 ? `po ${skCount(days, "dni", "dňoch", "dňoch")}` : `po ${skCount(Math.floor(days / 7), "týždni", "týždňoch", "týždňoch")}`);
+                        out.push({ tag: "NOVÝ LÍDER ELO 2H", text: `${newP.name} zosadil ${skName(prevP.name, "acc")} z čela ELO rebríčka dvojhry (2H) ${spanTxt} a stáva sa singlovou jednotkou!` });
+                    }
+                }
+            }
+
+            // 3) ELO Štvorhra (4H – Hráči) a ELO 4H Páry
+            if (m.type === "4H") {
+                const c4 = detectLeaderCoupAtExactMatch(elo4HLeaderSnaps, m.id);
+                if (c4) {
+                    const newP = state.players.find(p => p.id === c4.curLeaderId);
+                    const prevP = state.players.find(p => p.id === c4.prevLeaderId);
+                    if (newP && prevP) {
+                        const days = c4.prevReignDays;
+                        const spanTxt = days === 0
+                            ? "ešte v ten istý deň"
+                            : (days < 7 ? `po ${skCount(days, "dni", "dňoch", "dňoch")}` : `po ${skCount(Math.floor(days / 7), "týždni", "týždňoch", "týždňoch")}`);
+                        out.push({ tag: "NOVÝ LÍDER ELO 4H", text: `${newP.name} zosadil ${skName(prevP.name, "acc")} z čela deblového ELO rebríčka (4H) ${spanTxt}!` });
+                    }
+                }
+
+                const cp = detectLeaderCoupAtExactMatch(elo4HPairsLeaderSnaps, m.id);
+                if (cp) {
+                    const newPr = computedElo4HPairs.find(pr => pr.key === cp.curLeaderId);
+                    const prevPr = computedElo4HPairs.find(pr => pr.key === cp.prevLeaderId);
+                    if (newPr && prevPr) {
+                        const days = cp.prevReignDays;
+                        const spanTxt = days === 0
+                            ? "ešte v ten istý deň"
+                            : (days < 7 ? `po ${skCount(days, "dni", "dňoch", "dňoch")}` : `po ${skCount(Math.floor(days / 7), "týždni", "týždňoch", "týždňoch")}`);
+                        out.push({ tag: "NOVÍ KRÁLI ELO 4H PÁRY", text: `Dvojica ${newPr.name} zosadila pár ${prevPr.name} z čela tímového ELO 4H ${spanTxt}!` });
+                    }
+                }
+            }
+
+            return out;
+        }
+
+        function buildMatchReportItems(m) {
+            const items = [];
+            let seq = 1;
+            const seen = new Set();
+            const pushUnique = (id, kind, tag, text) => {
+                const cleanText = String(text || "").trim();
+                const cleanTag = String(tag || "").trim();
+                if (!cleanText) return;
+                const sig = `${cleanTag}|${cleanText}`;
+                if (seen.has(sig)) return;
+                seen.add(sig);
+                items.push({ id: id || `rep_${seq++}`, kind, tag: cleanTag, text: cleanText, removed: false });
+            };
+
+            // 1. Poznámka k zápasu
+            if (m.note && String(m.note).trim()) {
+                pushUnique("note", "note", "POZNÁMKA Z KURTU", String(m.note).trim());
+            }
+
+            // 2. Zmeny na čele tabuľky ako dôsledok tohto zápasu
+            buildLeaderChangesForMatch(m).forEach((lc, idx) => {
+                pushUnique(`leader_${idx}`, "leader", lc.tag, lc.text);
+            });
+
+            // 3. Všetky vygenerované NEWS k tomuto zápasu (výsledok, body, bilancia, série, dráma)
+            const pool = m.type === "4H"
+                ? buildRecentMatchPool4H(m, computedMatches)
+                : buildRecentMatchPool2H(m, computedMatches);
+
+            if (pool.resultItem) {
+                pushUnique("result", "match", pool.resultItem.tag, pool.resultItem.text);
+            }
+
+            (pool.specialItems || []).forEach((sp, idx) => {
+                pushUnique(`spec_${idx}`, "match", sp.tag, sp.text);
+            });
+
+            // 4. Posun ELO z tohto zápasu
+            if (typeof m.eloDeltaA === "number" && !isNaN(m.eloDeltaA)) {
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                const swapOrder = s2 > s1;
+                const topName = swapOrder ? m.teamNameB : m.teamNameA;
+                const botName = swapOrder ? m.teamNameA : m.teamNameB;
+                const topDelta = swapOrder ? m.eloDeltaB : m.eloDeltaA;
+                const botDelta = swapOrder ? m.eloDeltaA : m.eloDeltaB;
+                const topTeam = swapOrder ? m.eloTeam2 : m.eloTeam1;
+                const botTeam = swapOrder ? m.eloTeam1 : m.eloTeam2;
+                const fmtD = (d) => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+                const eloLabel = m.type === "4H" ? "ELO 4H" : "ELO 2H";
+                const topAfter = Array.isArray(topTeam) && topTeam.length > 0
+                    ? ` (${topTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    : "";
+                const botAfter = Array.isArray(botTeam) && botTeam.length > 0
+                    ? ` (${botTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    : "";
+                pushUnique(
+                    "elo_shift",
+                    "match",
+                    `POSUN ${eloLabel}`,
+                    `${topName}: ${fmtD(topDelta)}${topAfter} · ${botName}: ${fmtD(botDelta)}${botAfter}.`
+                );
+            }
+
+            // 5. Zákulisné / vtipné NEWS k tomuto zápasu
+            (pool.jokeItems || []).forEach((jk, idx) => {
+                pushUnique(`joke_${idx}`, "joke", jk.tag, jk.text);
+            });
+
+            return items;
+        }
+
+        async function fetchWeatherForMatchDate(isoDate) {
+            if (!isoDate || !parseIsoLocal(isoDate)) return null;
+            const age = getMatchAgeDays(isoDate);
+            if (age < 0) return null;
+
+            const loc = getLocationContext();
+            let lat = loc.lat, lon = loc.lon, placeName = loc.name;
+            if ((lat === null || lon === null) && gpsWeatherState && gpsWeatherState.lat != null && gpsWeatherState.lon != null) {
+                lat = gpsWeatherState.lat;
+                lon = gpsWeatherState.lon;
+                placeName = gpsWeatherState.place || "";
+            }
+            if (lat === null || lon === null) return { noLocation: true };
+
+            const cacheKey = `${isoDate}|${lat.toFixed(3)}|${lon.toFixed(3)}`;
+            if (matchReportWeatherCache[cacheKey]) {
+                return matchReportWeatherCache[cacheKey];
+            }
+
+            const params = `latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max&timezone=auto&start_date=${isoDate}&end_date=${isoDate}`;
+            const urls = age <= 5
+                ? [
+                    `https://api.open-meteo.com/v1/forecast?${params}`,
+                    `https://archive-api.open-meteo.com/v1/archive?${params}`
+                ]
+                : [
+                    `https://archive-api.open-meteo.com/v1/archive?${params}`,
+                    `https://api.open-meteo.com/v1/forecast?${params}`
+                ];
+
+            for (const url of urls) {
+                try {
+                    const resp = await fetch(url, { cache: "no-store" });
+                    if (!resp.ok) continue;
+                    const data = await resp.json();
+                    const d = data && data.daily;
+                    if (!d || !Array.isArray(d.time) || d.time.length === 0) continue;
+                    const tMax = d.temperature_2m_max && d.temperature_2m_max[0];
+                    const tMin = d.temperature_2m_min && d.temperature_2m_min[0];
+                    const wCode = d.weather_code && d.weather_code[0];
+                    if (tMax === null || tMax === undefined || tMin === null || tMin === undefined) continue;
+
+                    const precip = Number(d.precipitation_sum && d.precipitation_sum[0]) || 0;
+                    const windMax = Number(d.wind_speed_10m_max && d.wind_speed_10m_max[0]) || 0;
+                    const wmo = decodeWmoWeather(wCode);
+                    const wmoLabelCap = wmo.label.charAt(0).toUpperCase() + wmo.label.slice(1);
+                    const fmtNum = (v) => (Math.round(Number(v) * 10) / 10).toFixed(1).replace(".", ",");
+                    const precipTxt = precip >= 0.1 ? `zrážky ${fmtNum(precip)} mm` : "bez zrážok";
+                    const windTxt = `vietor max ${Math.round(windMax)} km/h`;
+
+                    const tag = placeName
+                        ? `POČASIE ${placeName.toUpperCase()} · ${formatDateSk(isoDate)}`
+                        : `POČASIE · ${formatDateSk(isoDate)}`;
+                    const text = `${wmo.icon} ${wmoLabelCap}, teploty ${fmtNum(tMin)} až ${fmtNum(tMax)} °C, ${precipTxt}, ${windTxt}.`;
+
+                    const res = { tag, text };
+                    matchReportWeatherCache[cacheKey] = res;
+                    return res;
+                } catch (err) {
+                    // Skúsime záložný endpoint
+                }
+            }
+            return null;
+        }
+
+        function renderMatchReportItemsList() {
+            const listEl = document.getElementById("report-items-list");
+            const cntEl = document.getElementById("report-items-count");
+            const restoreBtn = document.getElementById("btn-report-restore-all");
+            if (!listEl) return;
+
+            const activeItems = matchReportItems.filter(it => !it.removed);
+            const removedCount = matchReportItems.length - activeItems.length;
+
+            if (cntEl) cntEl.textContent = activeItems.length;
+            if (restoreBtn) {
+                restoreBtn.style.display = removedCount > 0 ? "inline-flex" : "none";
+                restoreBtn.textContent = `Obnoviť všetko (+${removedCount})`;
+            }
+
+            if (activeItems.length === 0) {
+                listEl.innerHTML = `<div style="color:var(--text-muted); font-size:0.78rem; padding:4px 2px;">Všetky doplnkové riadky boli zrušené – PNG bude obsahovať len grafiku výsledku posledného zápasu.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = activeItems.map(it => `
+                <div class="report-item-row kind-${escapeHtml(it.kind)}">
+                    <div class="report-item-body">
+                        <div class="report-item-tag">${escapeHtml(it.tag)}</div>
+                        <div class="report-item-text">${escapeHtml(it.text)}</div>
+                    </div>
+                    <button type="button" class="report-remove-btn" data-rep-id="${escapeHtml(it.id)}" onclick="removeMatchReportItem(this.dataset.repId)" title="Odstrániť tento riadok z PNG reportu" aria-label="Odstrániť riadok">×</button>
+                </div>
+            `).join("");
+        }
+
+        function removeMatchReportItem(itemId) {
+            const item = matchReportItems.find(it => it.id === itemId);
+            if (!item) return;
+            item.removed = true;
+            renderMatchReportItemsList();
+            renderMatchReportCanvas();
+        }
+
+        function restoreAllMatchReportItems() {
+            matchReportItems.forEach(it => { it.removed = false; });
+            renderMatchReportItemsList();
+            renderMatchReportCanvas();
+        }
+
+        function wrapCanvasTextLines(ctx, text, maxWidth) {
+            const words = String(text || "").split(/\s+/).filter(Boolean);
+            const lines = [];
+            let current = "";
+
+            const pushChunked = (word) => {
+                let chunk = "";
+                for (const ch of word) {
+                    const test = chunk + ch;
+                    if (ctx.measureText(test).width > maxWidth && chunk) {
+                        lines.push(chunk);
+                        chunk = ch;
+                    } else {
+                        chunk = test;
+                    }
+                }
+                return chunk;
+            };
+
+            words.forEach(word => {
+                const candidate = current ? `${current} ${word}` : word;
+                if (ctx.measureText(candidate).width <= maxWidth) {
+                    current = candidate;
+                } else {
+                    if (current) lines.push(current);
+                    if (ctx.measureText(word).width > maxWidth) {
+                        current = pushChunked(word);
+                    } else {
+                        current = word;
+                    }
+                }
+            });
+            if (current) lines.push(current);
+            return lines.length > 0 ? lines : [""];
+        }
+
+        function renderMatchReportCanvas(targetCanvas = null, forceFallbackBg = false) {
+            const canvas = targetCanvas || document.getElementById("reportCanvas");
+            if (!canvas || computedMatches.length === 0) return;
+
+            const m = computedMatches[computedMatches.length - 1];
+            const activeItems = matchReportItems.filter(it => !it.removed);
+
+            const W = 1080;
+            const panelMarginX = 36;
+            const panelMarginY = 36;
+            const panelW = W - panelMarginX * 2;
+            const innerPadX = 34;
+            const innerX = panelMarginX + innerPadX;
+            const innerW = panelW - innerPadX * 2;
+
+            const s1 = Number(m.sets1) || 0;
+            const s2 = Number(m.sets2) || 0;
+            const isDraw = s1 === s2;
+            const swapOrder = s2 > s1;
+            const topTeam = swapOrder ? m.teamNameB : m.teamNameA;
+            const botTeam = swapOrder ? m.teamNameA : m.teamNameB;
+            const topSets = swapOrder ? s2 : s1;
+            const botSets = swapOrder ? s1 : s2;
+            const topPts = swapOrder ? m.ptsB : m.ptsA;
+            const botPts = swapOrder ? m.ptsA : m.ptsB;
+            const parsedSets = parseSetsFromGemsString(m.gems);
+            const setsCount = parsedSets.length;
+
+            // 1. Merací krok – vypočítame presnú výšku všetkých aktívnych riadkov
+            const measCtx = canvas.getContext("2d");
+            measCtx.font = "600 23px sans-serif";
+            const cardPadX = 24;
+            const cardAccentOffset = 10;
+            const textMaxW = innerW - cardPadX * 2 - cardAccentOffset;
+            const lineH = 33;
+
+            const measuredItems = activeItems.map(it => {
+                measCtx.font = "600 23px sans-serif";
+                const wrapped = wrapCanvasTextLines(measCtx, it.text, textMaxW);
+                const cardH = 16 + 30 + 10 + wrapped.length * lineH + 16;
+                return { ...it, lines: wrapped, cardH };
+            });
+
+            // Vertikálne bloky vnútri skleneného panelu
+            const topPad = 30;
+            const labelH = 34;
+            const sbRowH = 74;
+            const sbH = sbRowH * 2;
+            const expText = m.expiryDateStr
+                ? (m.isValid ? `Platí do ${m.expiryDateStr} vrátane` : `Mimo aktuálnej lehoty (platilo do ${m.expiryDateStr} vrátane)`)
+                : "";
+            const metaH = expText ? 66 : 36;
+            const dividerGap = measuredItems.length > 0 ? 28 : 10;
+            const itemGap = 14;
+            const itemsTotalH = measuredItems.reduce((sum, it) => sum + it.cardH, 0) +
+                (measuredItems.length > 1 ? (measuredItems.length - 1) * itemGap : 0);
+            const footerH = 44;
+
+            const panelH = topPad + labelH + 14 + sbH + 20 + metaH + dividerGap + itemsTotalH + 24 + footerH;
+            const H = Math.max(460, Math.round(panelH + panelMarginY * 2));
+
+            canvas.width = W;
+            canvas.height = H;
+            const dimPill = document.getElementById("report-dim-pill");
+            if (dimPill && !targetCanvas) dimPill.textContent = `${W} × ${H}`;
+
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, W, H);
+            drawTvBackgroundLayer(ctx, W, H, forceFallbackBg);
+
+            const panelX = panelMarginX;
+            const panelY = Math.round((H - panelH) / 2);
+            drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, 26, forceFallbackBg);
+
+            // 2. Horný nadpis posledného zápasu (1:1 ako na karte Tabuľka)
+            let curY = panelY + topPad;
+            const typeTxt = m.type === "4H" ? "ŠTVORHRA 4H" : "DVOJHRA 2H";
+            ctx.fillStyle = "rgba(226, 238, 248, 0.88)";
+            ctx.font = "800 22px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(`POSLEDNÝ ZÁPAS (#${m.index} · ${typeTxt}) · ${formatDateSk(m.date)}`, W / 2, curY + 22);
+            curY += labelH + 14;
+
+            // 3. TV Glass-Neon Scoreboard (1:1 kópia z karty Tabuľka)
+            const sbX = innerX, sbY = curY, sbW = innerW, sbRadius = 16;
+            const setsColW = 94;
+            const gemColW = setsCount <= 3 ? 82 : (setsCount === 4 ? 72 : 64);
+            const teamColW = sbW - setsColW - setsCount * gemColW;
+
+            ctx.save();
+            drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
+            ctx.clip();
+
+            const drawSbRow = (rowIdx, teamLabel, setsVal, isWinnerRow) => {
+                const ry = sbY + rowIdx * sbRowH;
+                const teamGrad = ctx.createLinearGradient(sbX, ry, sbX + teamColW, ry + sbRowH);
+                if (isDraw) {
+                    teamGrad.addColorStop(0, "rgba(0, 82, 180, 0.86)");
+                    teamGrad.addColorStop(1, "rgba(0, 52, 130, 0.82)");
+                } else if (isWinnerRow) {
+                    teamGrad.addColorStop(0, "rgba(0, 88, 192, 0.90)");
+                    teamGrad.addColorStop(1, "rgba(0, 56, 140, 0.84)");
+                } else {
+                    teamGrad.addColorStop(0, "rgba(0, 74, 166, 0.78)");
+                    teamGrad.addColorStop(1, "rgba(0, 48, 122, 0.74)");
+                }
+                ctx.fillStyle = teamGrad;
+                ctx.fillRect(sbX, ry, teamColW, sbRowH);
+
+                ctx.font = "italic 900 34px sans-serif";
+                ctx.textAlign = "left";
+                ctx.fillStyle = (!isDraw && !isWinnerRow) ? "rgba(255, 255, 255, 0.70)" : "#ffffff";
+                ctx.fillText(teamLabel, sbX + 26, ry + sbRowH / 2 + 12, teamColW - 44);
+
+                const setsX = sbX + teamColW;
+                const setsGrad = ctx.createLinearGradient(setsX, ry, setsX + setsColW, ry + sbRowH);
+                if (isDraw) {
+                    setsGrad.addColorStop(0, "rgba(240, 249, 255, 0.94)");
+                    setsGrad.addColorStop(1, "rgba(208, 232, 248, 0.84)");
+                } else if (isWinnerRow) {
+                    setsGrad.addColorStop(0, "rgba(255, 242, 20, 0.96)");
+                    setsGrad.addColorStop(1, "rgba(215, 248, 38, 0.88)");
+                } else {
+                    setsGrad.addColorStop(0, "rgba(255, 255, 255, 0.94)");
+                    setsGrad.addColorStop(1, "rgba(226, 238, 246, 0.84)");
+                }
+                ctx.fillStyle = setsGrad;
+                ctx.fillRect(setsX, ry, setsColW, sbRowH);
+
+                ctx.fillStyle = "#051018";
+                ctx.font = "italic 900 38px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(`${setsVal}`, setsX + setsColW / 2 - 1, ry + sbRowH / 2 + 13);
+
+                parsedSets.forEach((st, j) => {
+                    const gx = setsX + setsColW + j * gemColW;
+                    const gTop = swapOrder ? st.g2 : st.g1;
+                    const gBot = swapOrder ? st.g1 : st.g2;
+                    const gCur = rowIdx === 0 ? gTop : gBot;
+                    const gOpp = rowIdx === 0 ? gBot : gTop;
+
+                    const gemGrad = ctx.createLinearGradient(gx, ry, gx, ry + sbRowH);
+                    gemGrad.addColorStop(0, "rgba(50, 56, 62, 0.88)");
+                    gemGrad.addColorStop(1, "rgba(26, 31, 36, 0.92)");
+                    ctx.fillStyle = gemGrad;
+                    ctx.fillRect(gx, ry, gemColW, sbRowH);
+
+                    ctx.fillStyle = gCur < gOpp ? "rgba(255, 255, 255, 0.66)" : "#ffffff";
+                    ctx.font = "italic 900 34px sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(`${gCur}`, gx + gemColW / 2 - 1, ry + sbRowH / 2 + 12);
+                });
+            };
+
+            drawSbRow(0, topTeam, topSets, !isDraw);
+            drawSbRow(1, botTeam, botSets, false);
+
+            ctx.strokeStyle = "rgba(0, 10, 16, 0.85)";
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(sbX, sbY + sbRowH); ctx.lineTo(sbX + sbW, sbY + sbRowH);
+            ctx.moveTo(sbX + teamColW, sbY); ctx.lineTo(sbX + teamColW, sbY + sbH);
+            for (let j = 0; j < setsCount; j++) {
+                const vx = sbX + teamColW + setsColW + j * gemColW;
+                ctx.moveTo(vx, sbY); ctx.lineTo(vx, sbY + sbH);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.save();
+            drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
+            ctx.strokeStyle = isDraw ? "rgba(125, 211, 252, 0.65)" : "rgba(217, 249, 40, 0.65)";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+
+            curY += sbH + 20;
+
+            // 4. Riadok bodov a platnosti (rovnaké znenie ako na karte Tabuľka)
+            const topPtsCol = topPts > 0 ? "#6ee7b7" : "rgba(226, 238, 248, 0.82)";
+            const botPtsCol = botPts > 0 ? "#fde047" : "rgba(226, 238, 248, 0.82)";
+            const segs = [
+                { text: "B: ", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
+                { text: topTeam, color: "#ffffff", font: "800 22px sans-serif" },
+                { text: " (", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
+                { text: `+${formatPts(topPts)} b`, color: topPtsCol, font: "800 22px sans-serif" },
+                { text: ")  ·  ", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
+                { text: botTeam, color: "#ffffff", font: "800 22px sans-serif" },
+                { text: " (", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
+                { text: `+${formatPts(botPts)} b`, color: botPtsCol, font: "800 22px sans-serif" },
+                { text: ")", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" }
+            ];
+            let totalSegW = 0;
+            segs.forEach(sg => {
+                ctx.font = sg.font;
+                sg.w = ctx.measureText(sg.text).width;
+                totalSegW += sg.w;
+            });
+            const metaScale = totalSegW > innerW ? (innerW / totalSegW) : 1;
+            ctx.save();
+            ctx.translate(W / 2, curY + 22);
+            if (metaScale < 1) ctx.scale(metaScale, metaScale);
+            let sx = -totalSegW / 2;
+            ctx.textAlign = "left";
+            segs.forEach(sg => {
+                ctx.font = sg.font;
+                ctx.fillStyle = sg.color;
+                ctx.fillText(sg.text, sx, 0);
+                sx += sg.w;
+            });
+            ctx.restore();
+
+            if (expText) {
+                ctx.fillStyle = "rgba(226, 238, 248, 0.84)";
+                ctx.font = "600 20px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(expText, W / 2, curY + 54);
+            }
+            curY += metaH;
+
+            // 5. Oddeľovač & riadky NEWS / Poznámka / Počasie / Zmena lídra
+            if (measuredItems.length > 0) {
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(innerX, curY + 10);
+                ctx.lineTo(innerX + innerW, curY + 10);
+                ctx.stroke();
+                curY += dividerGap;
+
+                const paletteByKind = {
+                    note:    { fill: "rgba(190, 242, 100, 0.13)", stroke: "rgba(190, 242, 100, 0.42)", bar: "#bef264", pillBg: "#bef264", pillTxt: "#052e16" },
+                    weather: { fill: "rgba(56, 189, 248, 0.13)",  stroke: "rgba(56, 189, 248, 0.42)",  bar: "#38bdf8", pillBg: "#38bdf8", pillTxt: "#042033" },
+                    leader:  { fill: "rgba(250, 204, 21, 0.14)",  stroke: "rgba(250, 204, 21, 0.50)",  bar: "#facc15", pillBg: "#facc15", pillTxt: "#2b1803" },
+                    match:   { fill: "rgba(4, 16, 28, 0.72)",     stroke: "rgba(255, 255, 255, 0.18)", bar: "#dc2626", pillBg: "#dc2626", pillTxt: "#ffffff" },
+                    joke:    { fill: "rgba(4, 16, 28, 0.64)",     stroke: "rgba(255, 255, 255, 0.15)", bar: "#ef4444", pillBg: "#b91c1c", pillTxt: "#ffffff" }
+                };
+
+                measuredItems.forEach((it, idx) => {
+                    const pal = paletteByKind[it.kind] || paletteByKind.match;
+                    const cy = curY;
+                    const ch = it.cardH;
+
+                    ctx.save();
+                    drawRoundedRectPath(ctx, innerX, cy, innerW, ch, 14);
+                    ctx.fillStyle = pal.fill;
+                    ctx.fill();
+                    ctx.strokeStyle = pal.stroke;
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+
+                    // Ľavý farebný pásik
+                    ctx.clip();
+                    ctx.fillStyle = pal.bar;
+                    ctx.fillRect(innerX, cy, 6, ch);
+                    ctx.restore();
+
+                    // Štítok (TAG)
+                    const tx = innerX + cardAccentOffset + cardPadX - 4;
+                    const ty = cy + 16;
+                    ctx.font = "900 17px sans-serif";
+                    const tagW = Math.min(innerW - 60, ctx.measureText(it.tag).width + 24);
+                    ctx.save();
+                    drawRoundedRectPath(ctx, tx, ty, tagW, 28, 7);
+                    ctx.fillStyle = pal.pillBg;
+                    ctx.fill();
+                    ctx.fillStyle = pal.pillTxt;
+                    ctx.textAlign = "left";
+                    ctx.fillText(it.tag, tx + 12, ty + 20, tagW - 20);
+                    ctx.restore();
+
+                    // Zalamovaný text riadku
+                    ctx.fillStyle = "#f8fafc";
+                    ctx.font = "600 23px sans-serif";
+                    ctx.textAlign = "left";
+                    let lineY = ty + 28 + 10 + 22;
+                    it.lines.forEach(ln => {
+                        ctx.fillText(ln, tx, lineY);
+                        lineY += lineH;
+                    });
+
+                    curY += ch + (idx < measuredItems.length - 1 ? itemGap : 0);
+                });
+            } else {
+                curY += dividerGap;
+            }
+
+            // 6. Pätička PNG reportu
+            const footY = panelY + panelH - 20;
+            ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
+            ctx.font = "700 18px sans-serif";
+            ctx.textAlign = "left";
+            const loc = getLocationContext();
+            const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
+            ctx.fillText(`TenisTAB · v1.44${locSuffix}`, innerX + 2, footY);
+            ctx.textAlign = "right";
+            ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
+        }
+
+        function openMatchReportModal() {
+            if (computedMatches.length === 0) {
+                showToast("Zatiaľ nie je zapísaný žiaden zápas pre vytvorenie reportu.", true);
+                return;
+            }
+            const modal = document.getElementById("match-report-modal");
+            if (!modal) return;
+
+            const lastM = computedMatches[computedMatches.length - 1];
+            matchReportMatchId = lastM.id;
+            matchReportItems = buildMatchReportItems(lastM);
+
+            syncTvControlsUI();
+            renderMatchReportItemsList();
+            modal.classList.add("open");
+            renderMatchReportCanvas();
+            ensureTvBackgroundLoaded(() => {
+                if (modal.classList.contains("open")) renderMatchReportCanvas();
+            });
+
+            // Asynchrónne dotiahnutie počasia pre presný deň zápasu (aj spätne)
+            const wStatus = document.getElementById("report-weather-status");
+            if (wStatus) wStatus.textContent = "· načítavam počasie…";
+            const reqMatchId = lastM.id;
+            fetchWeatherForMatchDate(lastM.date).then(wRes => {
+                const modNow = document.getElementById("match-report-modal");
+                if (!modNow || !modNow.classList.contains("open") || matchReportMatchId !== reqMatchId) return;
+                if (wRes && wRes.tag && wRes.text) {
+                    if (wStatus) wStatus.textContent = "";
+                    const existingIdx = matchReportItems.findIndex(it => it.id === "weather");
+                    if (existingIdx === -1) {
+                        const insertAt = matchReportItems.length > 0 && matchReportItems[0].id === "note" ? 1 : 0;
+                        matchReportItems.splice(insertAt, 0, {
+                            id: "weather",
+                            kind: "weather",
+                            tag: wRes.tag,
+                            text: wRes.text,
+                            removed: false
+                        });
+                    }
+                    renderMatchReportItemsList();
+                    renderMatchReportCanvas();
+                } else {
+                    if (wStatus) {
+                        wStatus.textContent = (wRes && wRes.noLocation)
+                            ? "· počasie: nastav mesto v ⚙️"
+                            : "";
+                    }
+                }
+            });
+        }
+
+        function closeMatchReportModal() {
+            const modal = document.getElementById("match-report-modal");
+            if (modal) modal.classList.remove("open");
+        }
+
+        function downloadMatchReportGraphic() {
+            const canvas = document.getElementById("reportCanvas");
+            const lastM = computedMatches.length > 0 ? computedMatches[computedMatches.length - 1] : null;
+            const datePart = lastM ? lastM.date : getTodayIso();
+            const idxPart = lastM ? `_Zapas${lastM.index}` : "";
+            exportCanvasImage(canvas, `TenisTAB_Report${idxPart}_${datePart}`, "png", renderMatchReportCanvas);
+        }
+
 
         /* ==================== LOKALITA, POČASIE & NEWS BAR (v1.37) ==================== */
         const CADCA_DEFAULT_LAT = 49.4386;
@@ -13387,7 +14720,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.42! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.44! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -13975,7 +15308,7 @@
             // 9. O aplikácii & Tipy pre ovládanie (Tip / Vedeli ste?)
             add("O APLIKÁCII", "Aplikáciu TenisTAB vymyslel a dizajnoval Vlado Troják s pomocou AI Gemini v novembri 2026.");
             add("VEDELI STE?", "Nad tabuľkou si jedným klikom prepneš hlavný bodový rebríček (2H + 4H) na samostatné ELO rebríčky pre dvojhru (2H) alebo štvorhru (4H).");
-            add("TIP", "Chceš zmeniť vzhľad aplikácie? Stačí kliknúť na logo TT v ľavom hornom rohu a okamžite prepínaš medzi 8 farebnými motívmi (+ vlastným štýlom z karty História)!");
+            add("TIP", "Chceš zmeniť vzhľad aplikácie? Stačí kliknúť na logo TT v ľavom hornom rohu a okamžite prepínaš medzi 8 farebnými motívmi (+ vlastným motívom z Nastavení)!");
             add("VEDELI STE?", "Aplikácia si automaticky mení predvolený farebný motív podľa ročného obdobia v kalendári (Jar, Leto, Jeseň, Zima) – ak si kliknutím na logo vyberieš vlastný, zapamätá si ho.");
             add("TIP", "Nestíhaš čítať správy v NEWS lište? Kliknutím na biely pás text pozastavíš (na PC stačí prejsť myšou) a kliknutím na červené tlačidlo NEWS poradie správ premiešaš.");
             add("VEDELI STE?", "Body v TenisTAB platia predvolene presne 1 rok – v tabuľke si však jedným klikom prepneš okno na 3, 6, 12, 18, 24, 36 mesiacov alebo All-time.");
@@ -13985,7 +15318,7 @@
             add("TIP", "V sekcii Graf si môžeš prepínať vývoj bodov v kĺzavom okne 6 mesiacov, 1 rok alebo All-time a plynulo posúvať históriu prstom, myšou či posuvníkom.");
             add("TIP", "Chceš poslať tabuľku alebo graf do spoločnej skupiny? Tlačidlá TV a Graf vygenerujú FullHD PNG grafiku pre Body, ELO 2H, ELO 4H aj Posledný zápas – a cez Vložiť pozadie si môžeš nahrať vlastnú fotku.");
             add("VEDELI STE?", "Zelené tlačidlo v hornej časti tabuľky ti jedným klikom stiahne najnovšiu oficiálnu databázu z GitHubu – keď stmavne, máš istotu, že vidíš aktuálne dáta.");
-            add("TIP", "Ak si zabudol zapísať starší zápas, v sekcii História ho vložíš s pôvodným dátumom a aplikácia ho sama zaradí chronologicky a prepočíta celú tabuľku.");
+            add("TIP", "Ak si zabudol zapísať starší zápas, stačí v karte Nový zápas zvoliť pôvodný dátum a aplikácia ho sama zaradí chronologicky a prepočíta celú tabuľku.");
             add("VEDELI STE?", "Ikony pri menách v tabuľke prezrádzajú formu – 🔥 znamená 3 a viac výhier v rade, ❄️ sériu 3 a viac prehier a ⚫ označuje hráča, ktorý nehral viac ako rok (radí sa pod aktívnych).");
 
             return items;
@@ -14131,12 +15464,19 @@
             renderPlayerProfile();
             renderAchievements();
             renderMatchHistory();
+            const setMod = document.getElementById("settings-modal");
+            if (setMod && setMod.classList.contains("open") && activeSettingsTab === "players") {
+                renderPlayersManager();
+            }
             renderNewsTicker();
         }
 
         function initGlobalPcTooltips() {
             const tipMap = [
-                [".brand", "Zmena farebného motívu", "Kliknutím na 3D tlačidlo TT prepínaš medzi 8 motívmi (+ vlastným štýlom z karty História).", "Zvolený motív ostane uložený natrvalo v prehliadači."],
+                [".brand", "Zmena farebného motívu", "Kliknutím na 3D logo TT prepínaš medzi 8 motívmi (+ vlastným motívom z Nastavení).", "Zvolený motív ostane uložený natrvalo v prehliadači."],
+                ["#btn-settings-open", "Nastavenia, Správa hráčov & Dáta", "Otvorí nastavenia (vlastný motív, mesto/počasie, ELO K/D), správu hráčov a Import/Export databázy.", ""],
+                ["#last-match-banner", "Report posledného zápasu (PNG)", "Kliknutím otvoríš editor PNG reportu s grafikou zápasu, poznámkou, spätným počasím a všetkými NEWS k duelu.", "Nepotrebné riadky jednoducho vymažeš červeným krížikom pred stiahnutím PNG."],
+                ["#btn-history-add-past", "Zapísať starší zápas", "Prepne na formulár Nový zápas a zameria pole dátumu – starší zápas sa zaradí chronologicky.", ""],
                 ["#table-sync-db-btn", "Synchronizácia s GitHubom", "Stiahne najnovšiu oficiálnu databázu (databaza.json) zo servera pri zachovaní filtrov grafu a vlastného TV pozadia.", "Tmavozelená = dáta sú aktuálne."],
                 ["#tmode-btn-points", "Bodová tabuľka (2H + 4H)", "Kombinovaný rebríček podľa získaných bodov za dvojhry (1 b) aj štvorhry (0.5 b) vo zvolenej lehote.", ""],
                 ["#tmode-btn-elo2h", "ELO rebríček – Dvojhra (2H)", "Celoživotný singlový ELO rebríček počítaný z dvojhier podľa parametrov K a D.", "Ak bol posledný zápas 2H, banner hore ukáže posun ELO."],
@@ -14176,10 +15516,7 @@
                 ["#profile-select", "Výber profilu hráča", "Zobrazí kompletnú kartu hráča: rozpad 2H/4H, ELO, kalendár expirácie, odznaky, chémiu a súperov.", ""],
                 ["#prof-scope-window, #prof-scope-alltime", "Rozsah profilu hráča", "Prepína štatistiky na karte hráča medzi aktuálnou lehotou a celou históriou.", ""],
                 ["#ach-scope-alltime, #ach-scope-window", "Rozsah výpočtu odznakov", "Prepína držiteľov odznakov medzi historickými rekordmi a aktuálnou lehotou.", ""],
-                ["#hist-type-2H, #hist-type-4H", "Typ dodatočného zápasu", "Vyber, či do histórie vkladáš staršiu dvojhru (2H) alebo štvorhru (4H).", ""],
-                ["#hist-date", "Pôvodný dátum zápasu", "Zápas sa automaticky zaradí chronologicky a celé ELO aj body sa prepočítajú od začiatku.", ""],
-                ["#hist-gems", "Gemy historického zápasu", "Voliteľné presné gemy (napr. 6:4 6:3) – automaticky doplnia sety.", ""],
-                ["#hist-note", "Poznámka k historickému zápasu", "Voliteľný krátky popis zápasu do histórie a NEWS.", ""],
+
                 ["#history-sort-order", "Zoradenie histórie", "Zobrazí zoznam zápasov od najnovšieho alebo chronologicky od zápasu #1.", ""],
                 ["#history-filter-player", "Filter podľa hráča", "Zobrazí iba zápasy, v ktorých nastúpil vybraný tenista.", ""],
                 ["#history-filter-type", "Filter podľa disciplíny", "Zobrazí len dvojhry (2H), len štvorhry (4H) alebo všetky zápasy.", ""],
@@ -14196,10 +15533,11 @@
                 ["#tv-mode-elo2h", "TV Tabuľka – ELO 2H", "Prepne televíznu grafiku na ELO rebríček dvojhry.", ""],
                 ["#tv-mode-elo4h", "TV Tabuľka – ELO 4H", "Prepne televíznu grafiku na ELO rebríček štvorhry.", ""],
                 ["#tv-mode-last", "TV Karta – Posledný zápas", "Zobrazí broadcast výsledkovú kartu posledného zápasu s bodmi aj ELO zmenou.", ""],
-                ["#tv-blur-slider, #tv-chart-blur-slider", "Rozmazanie pozadia (Blur)", "Plynulo nastavuje mieru rozmazania obrázka priamo pod skleneným panelom (0 – 100 %).", ""],
-                ["#tv-transp-slider, #tv-chart-transp-slider", "Priehľadnosť panelu", "Nastavuje priehľadnosť tmavého skla pod tabuľkou alebo grafom (0 % nepriehľadné – 100 % čisté pozadie).", ""],
+                ["#tv-blur-slider, #tv-chart-blur-slider, #report-blur-slider", "Rozmazanie pozadia (Blur)", "Plynulo nastavuje mieru rozmazania obrázka priamo pod skleneným panelom (0 – 100 %).", ""],
+                ["#tv-transp-slider, #tv-chart-transp-slider, #report-transp-slider", "Priehľadnosť panelu", "Nastavuje priehľadnosť tmavého skla pod grafikou (0 % nepriehľadné – 100 % čisté pozadie).", ""],
                 ["#btn-tv-dl-png, #btn-tv-chart-dl-png", "Export FullHD PNG", "Stiahne televíznu grafiku v rozlíšení 1920×1080 px pripravenú na zdieľanie.", ""],
-                ["#btn-tv-custom-bg, #btn-tv-chart-custom-bg", "Vlastné pozadie (1920×1080)", "Vyber vlastnú fotku z galérie – aplikácia ju automaticky oreže/zväčší na FullHD podklad.", "Zostane aktívne aj po GitHub Sync (predvolené TV.jpeg vráti obnovenie stránky alebo Čistý štart)."],
+                ["#btn-report-dl-png", "Stiahnuť PNG report", "Exportuje kompletný PNG obrázok posledného zápasu s vybranými riadkami poznámky, počasia a NEWS.", ""],
+                ["#btn-tv-custom-bg, #btn-tv-chart-custom-bg, #btn-report-custom-bg", "Vlastné pozadie", "Vyber vlastnú fotku z galérie – aplikácia ju automaticky prispôsobí ako podklad pod grafiku.", "Zostane aktívne aj po GitHub Sync (predvolené TV.jpeg vráti obnovenie stránky alebo Čistý štart)."],
                 ["#tv-chart-metric-points", "TV Graf – Body", "Zobrazí v televíznom grafe vývoj bodov (2H + 4H).", ""],
                 ["#tv-chart-metric-elo2h", "TV Graf – ELO 2H", "Zobrazí v televíznom grafe vývoj ELO dvojhry (2H).", ""],
                 ["#tv-chart-metric-elo4h", "TV Graf – ELO 4H", "Zobrazí v televíznom grafe vývoj ELO štvorhry (4H).", ""],
@@ -14317,13 +15655,11 @@
             normalizeState();
             const todayIso = getTodayIso();
             document.getElementById("match-date").value = todayIso;
-            document.getElementById("hist-date").value = todayIso;
 
             sortMatchesChronologically();
             recalculateAll();
             populateSelects();
             setMatchFormType("new", "2H");
-            setMatchFormType("hist", "2H");
             refreshAllViews();
             setupChartCanvasEvents();
             setupTvChartCanvasEvents();
@@ -14332,15 +15668,17 @@
             initGlobalPcTooltips();
 
             document.addEventListener("click", e => {
-                const btn = e.target.closest(".btn-primary, .btn-secondary, .preset-btn, .tv-btn, .icon-btn, .icon-btn-alt, .chart-nav-btn, .tv-step-btn, .nav-item, .player-chip");
+                const btn = e.target.closest(".btn-primary, .btn-secondary, .preset-btn, .tv-btn, .settings-gear-btn, .icon-btn, .icon-btn-alt, .chart-nav-btn, .tv-step-btn, .nav-item, .player-chip");
                 if (btn) triggerThemedBtnSheen(btn);
             });
 
             document.addEventListener("keydown", e => {
                 if (e.key === "Escape") {
+                    closeSettingsModal();
                     closeEditMatchModal();
                     closeTvModal();
                     closeTvChartModal();
+                    closeMatchReportModal();
                 }
             });
 
