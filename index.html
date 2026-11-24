@@ -3343,7 +3343,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.41</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.42</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3374,7 +3374,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.41</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.42</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -6901,10 +6901,10 @@
             document.getElementById("prev-name-b").textContent = is4H ? `${nameB} (Ø ${avgEloB.toFixed(1)})` : `${nameB} (${avgEloB.toFixed(1)})`;
 
             document.getElementById("prev-gain-a").innerHTML =
-                `Body: <strong style="color:${p1 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p1)} b</strong>${is4H ? '/h' : ''} · ` +
+                `Body: <strong style="color:${p1 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p1)} b</strong> · ` +
                 `ELO: <strong style="color:${colDelta(deltaA)}">${fmtDelta(deltaA)}</strong> <span style="opacity:0.8;">(${(eA * 100).toFixed(0)}%)</span>`;
             document.getElementById("prev-gain-b").innerHTML =
-                `Body: <strong style="color:${p2 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p2)} b</strong>${is4H ? '/h' : ''} · ` +
+                `Body: <strong style="color:${p2 > 0 ? 'var(--win)' : 'var(--text-muted)'}">+${formatPts(p2)} b</strong> · ` +
                 `ELO: <strong style="color:${colDelta(deltaB)}">${fmtDelta(deltaB)}</strong> <span style="opacity:0.8;">(${(eB * 100).toFixed(0)}%)</span>`;
 
             const addA = countsNow ? p1 : 0;
@@ -8066,7 +8066,7 @@
                                     <div class="match-title">${escapeHtml(teamTitleA)} vs ${escapeHtml(teamTitleB)} <span class="match-score-pill">${sA}:${sB}</span> <span class="match-gems">${gemsFormatted ? '(' + escapeHtml(gemsFormatted) + ')' : ''}</span></div>
                                 </div>
                                 <div style="text-align:right; font-size:0.77rem; font-weight:800; color:${col}; white-space:nowrap;">
-                                    +${formatPts(pGain)} b/hráč
+                                    +${formatPts(pGain)} b
                                 </div>
                             </div>
                         `;
@@ -9481,7 +9481,7 @@
                     rules: "Deblový pár (4H), ktorý spoločne nazbieral najviac tabuľkových bodov na jedného hráča.",
                     iconFile: "dynamicke_duo.png", faClass: "fa-solid fa-handshake-simple",
                     theme: "ach-purple", accent: "#c084fc", isNegative: false,
-                    valueText: rBestPairPts.holders.length > 0 ? `${formatPts(rBestPairPts.value)} b / hráč` : "—",
+                    valueText: rBestPairPts.holders.length > 0 ? `${formatPts(rBestPairPts.value)} b` : "—",
                     pairNames: rBestPairPts.holders.map(x => x.name),
                     holders: bestPairPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.pts, pr => pr.name, v => `${formatPts(v)} b`, 0.25),
@@ -9847,7 +9847,6 @@
 
             list.innerHTML = filtered.map(m => {
                 const isDraw = m.outcome === "D";
-                const perUnit = m.type === "4H" ? " b/hráč" : " b";
 
                 let validityHtml = "";
                 if (wm === 0) {
@@ -9882,11 +9881,11 @@
                             <div class="match-title">
                                 ${escapeHtml(m.teamNameA)} <span style="color:var(--text-muted); font-weight:400;">vs</span> ${escapeHtml(m.teamNameB)}
                                 <span class="match-score-pill">${m.sets1}:${m.sets2}</span>
-                                <span class="match-gems">${m.gems ? '(' + escapeHtml(m.gems) + ')' : ''}</span>
                             </div>
+                            ${m.gems ? `<div class="match-gems" style="margin-top:2px;">(${escapeHtml(m.gems)})</div>` : ''}
                             <div class="match-elo-shift">
-                                Body: <strong>${escapeHtml(m.teamNameA)}</strong> <span style="color:${colA}; font-weight:700;">(+${formatPts(m.ptsA)}${perUnit})</span>
-                                · <strong>${escapeHtml(m.teamNameB)}</strong> <span style="color:${colB}; font-weight:700;">(+${formatPts(m.ptsB)}${perUnit})</span>
+                                <strong>${escapeHtml(m.teamNameA)}</strong> <span style="color:${colA}; font-weight:700;">(+${formatPts(m.ptsA)} b)</span>
+                                · <strong>${escapeHtml(m.teamNameB)}</strong> <span style="color:${colB}; font-weight:700;">(+${formatPts(m.ptsB)} b)</span>
                             </div>
                             ${m.note ? `<div class="match-note-line">🎙️ ${escapeHtml(m.note)}</div>` : ''}
                         </div>
@@ -13388,7 +13387,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.41! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.42! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -14147,7 +14146,7 @@
                 ["#new-player-elo", "Počiatočné ELO (2H aj 4H)", "Nastaví východiskovú ELO hodnotu pre nového hráča (štandard je 1500.0).", "Vyššie štartovacie ELO použi len pre výrazne silnejšieho nového člena."],
                 ["#btn-add-new-player", "Pridať hráča do databázy", "Uloží nového tenistu do tabuľky aj do výberov pre zápasy a H2H.", ""],
                 ["#match-type-2H", "Zápis dvojhry (2H)", "Prepne formulár na singlový zápas 1 vs 1 (výhra = 1.00 b, remíza = 0.50 b + ELO 2H).", ""],
-                ["#match-type-4H", "Zápis štvorhry (4H)", "Prepne formulár na deblový zápas 2 vs 2 (výhra = 0.50 b/hráč, remíza = 0.25 b/hráč + ELO 4H).", ""],
+                ["#match-type-4H", "Zápis štvorhry (4H)", "Prepne formulár na deblový zápas 2 vs 2 (výhra = 0.50 b, remíza = 0.25 b + ELO 4H).", ""],
                 ["#match-date", "Dátum odohratia zápasu", "Určuje chronologické poradie pre ELO aj dátum expirácie bodov v kĺzavej lehote.", ""],
                 ["#match-t1p1", "Výber hráča (Strana A)", "Vyber hráča na prvej strane zápasu. V živom náhľade uvidíš body aj ELO zmenu.", ""],
                 ["#match-t1p2", "Výber spoluhráča A2 (4H)", "Vyber druhého hráča do dvojice A pre štvorhru.", ""],
