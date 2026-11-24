@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 38,
+  "databaseRevision": 44,
   "config": {
     "windowMonths": 12,
     "K": 32,
@@ -15,17 +15,17 @@
     {
       "id": "vlado",
       "name": "Vlado",
-      "color": "#ccff00"
+      "color": "#bbff00"
     },
     {
       "id": "tibor",
       "name": "Tibor",
-      "color": "#00d9ad"
+      "color": "#00bd9d"
     },
     {
       "id": "belo",
       "name": "Belo",
-      "color": "#2483ff"
+      "color": "#2e89ff"
     },
     {
       "id": "martin",
@@ -50,12 +50,12 @@
     {
       "id": "matus",
       "name": "Matúš",
-      "color": "#858511"
+      "color": "#c8c81e"
     },
     {
       "id": "tono",
       "name": "Toňo",
-      "color": "#119c31"
+      "color": "#0ba300"
     },
     {
       "id": "cicero",
@@ -65,7 +65,7 @@
     {
       "id": "peto",
       "name": "Peťo",
-      "color": "#ebde2f"
+      "color": "#e3e3e3"
     },
     {
       "id": "majo",
@@ -1377,6 +1377,6 @@
       "surface": "tvrdy"
     }
   ],
-  "updatedAt": 1795510361813,
-  "exportedAtIso": "2026-11-24T08:53:08.829Z"
+  "updatedAt": 1795517965565,
+  "exportedAtIso": "2026-11-24T10:59:44.514Z"
 }
