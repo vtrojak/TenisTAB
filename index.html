@@ -3343,7 +3343,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.40</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.41</span>
                 </div>
             </div>
             <div class="header-badges">
@@ -3374,7 +3374,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.40</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.41</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4936,6 +4936,27 @@
             return new Date(targetFirst.getFullYear(), targetFirst.getMonth(), Math.min(origD, lastDay));
         }
 
+        // Posledný platný deň zápasu (vrátane) – Možnosť B:
+        // napr. 24.11.2026 + 12 mes. -> platí do 23.11.2027 vrátane (padá 24.11.2027),
+        // 29.2.2028 + 12 mes. -> platí do 28.2.2029 vrátane (padá 1.3.2029).
+        function getMatchValidUntilDate(isoDate, months) {
+            const base = parseIsoLocal(isoDate);
+            if (!base) return null;
+            const origY = base.getFullYear(), origM = base.getMonth(), origD = base.getDate();
+            const targetFirst = new Date(origY, origM + months, 1);
+            const lastDay = new Date(targetFirst.getFullYear(), targetFirst.getMonth() + 1, 0).getDate();
+            if (origD === 1) {
+                return new Date(targetFirst.getFullYear(), targetFirst.getMonth(), 0);
+            }
+            return new Date(targetFirst.getFullYear(), targetFirst.getMonth(), Math.min(origD - 1, lastDay));
+        }
+
+        // Prvý platný deň aktuálneho kĺzavého okna (vrátane) – napr. k 24.11.2026 (12 mes.) -> 25.11.2025
+        function getWindowStartDate(dateObj, months) {
+            const base = subtractCalendarMonths(dateObj, months);
+            return new Date(base.getFullYear(), base.getMonth(), base.getDate() + 1);
+        }
+
         function formatDateSk(isoOrDate) {
             if (!isoOrDate) return "—";
             if (isoOrDate instanceof Date) {
@@ -5566,7 +5587,7 @@
                 let isValid = true;
 
                 if (wm > 0) {
-                    expiryDate = addCalendarMonths(m.date, wm);
+                    expiryDate = getMatchValidUntilDate(m.date, wm);
                     if (expiryDate) {
                         daysUntilExpiry = diffDays(expiryDate, today);
                         isValid = daysUntilExpiry >= 0;
@@ -5575,7 +5596,7 @@
 
                 if (isValid) {
                     validMatchesCount++;
-                    const isExpiringSoon = wm > 0 && daysUntilExpiry !== null && daysUntilExpiry >= 0 && daysUntilExpiry <= 30;
+                    const isExpiringSoon = wm > 0 && daysUntilExpiry !== null && daysUntilExpiry >= 0 && daysUntilExpiry < 30;
 
                     const applyTeamStats = (teamObjs, ptsEarned, resChar, sw, sl, gw, gl) => {
                         teamObjs.forEach(pl => {
@@ -5690,7 +5711,7 @@
                 if (wm === 0) {
                     rangePill.textContent = `Všetky zápasy (${computedMatches.length})`;
                 } else {
-                    const startDt = subtractCalendarMonths(today, wm);
+                    const startDt = getWindowStartDate(today, wm);
                     rangePill.textContent = `${formatDateSk(startDt)} – ${formatDateSk(today)}`;
                 }
             }
@@ -6374,7 +6395,7 @@
                 const topCol = topPts > 0 ? "var(--win)" : "var(--text-muted)";
                 const botCol = botPts > 0 ? "var(--draw)" : "var(--text-muted)";
                 const expText = lastM.expiryDateStr
-                    ? (lastM.isValid ? `Platí do ${lastM.expiryDateStr}` : `Mimo aktuálnej lehoty`)
+                    ? (lastM.isValid ? `Platí do ${lastM.expiryDateStr} vrátane` : `Mimo aktuálnej lehoty (platilo do ${lastM.expiryDateStr} vrátane)`)
                     : "";
                 const expLineHtml = expText
                     ? `<div style="margin-top: 2px;">${escapeHtml(expText)}</div>`
@@ -6527,7 +6548,7 @@
                 if (wm === 0) {
                     rangePill.textContent = `Všetky zápasy (${computedMatches.length})`;
                 } else {
-                    const startDt = subtractCalendarMonths(today, wm);
+                    const startDt = getWindowStartDate(today, wm);
                     rangePill.textContent = `${formatDateSk(startDt)} – ${formatDateSk(today)}`;
                 }
             }
@@ -6607,7 +6628,7 @@
                 let expHtml = `<span style="color:var(--text-muted);">—</span>`;
                 if (wm > 0 && p.expiring30 > 0) {
                     const tipLines = p.expiringDetails
-                        .map(d => `${formatPts(d.pts)} b zo dňa ${formatDateSk(d.date)} (padá po ${d.expiryStr})`)
+                        .map(d => `${formatPts(d.pts)} b zo dňa ${formatDateSk(d.date)} (platí do ${d.expiryStr} vrátane)`)
                         .join("&#10;");
                     expHtml = `<span class="exp-pill" title="${tipLines}">-${formatPts(p.expiring30)}</span>`;
                 }
@@ -6870,7 +6891,7 @@
 
             const wm = Number(state.config.windowMonths) || 0;
             const today = getTodayMidnight();
-            const expDt = wm > 0 ? addCalendarMonths(dateStr, wm) : null;
+            const expDt = wm > 0 ? getMatchValidUntilDate(dateStr, wm) : null;
             const countsNow = wm === 0 || (expDt && diffDays(expDt, today) >= 0);
 
             const fmtDelta = (d) => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
@@ -6900,9 +6921,9 @@
             if (wm === 0) {
                 hintEl.innerHTML = `V režime <strong>All-time</strong> platia body neobmedzene · ELO sa počíta s <strong>K=${K}, D=${D}</strong>.`;
             } else if (countsNow && expDt) {
-                hintEl.innerHTML = `Body pri lehote <strong>${wm} mes.</strong> platia do <strong style="color:var(--tennis-lime);">${formatDateSk(expDt)}</strong> · ELO (${is4H ? '4H' : '2H'}): <strong>K=${K}, D=${D}</strong>.`;
+                hintEl.innerHTML = `Body pri lehote <strong>${wm} mes.</strong>: <strong>Platí do <span style="color:var(--tennis-lime);">${formatDateSk(expDt)} vrátane</span></strong> · ELO (${is4H ? '4H' : '2H'}): <strong>K=${K}, D=${D}</strong>.`;
             } else if (expDt) {
-                hintEl.innerHTML = `<span style="color:var(--warn);">Dátum je starší ako lehota (${wm} mes.) – body už vypršali ${formatDateSk(expDt)}, ale zápas sa uloží do histórie aj do ELO.</span>`;
+                hintEl.innerHTML = `<span style="color:var(--warn);">Dátum je starší ako lehota (${wm} mes.) – body platili do ${formatDateSk(expDt)} vrátane, ale zápas sa uloží do histórie aj do ELO.</span>`;
             }
         }
 
@@ -7228,7 +7249,7 @@
 
             const precalc = computedMatches.map(m => {
                 const dt = parseIsoLocal(m.date);
-                const expDt = mode > 0 ? addCalendarMonths(m.date, mode) : null;
+                const expDt = mode > 0 ? getMatchValidUntilDate(m.date, mode) : null;
                 return {
                     m,
                     dtTime: dt ? dt.getTime() : 0,
@@ -8296,8 +8317,8 @@
                 const listRows = activeScoringMatches.length === 0
                     ? `<div style="color:var(--text-muted); font-size:0.8rem;">Hráč momentálne nemá žiadne aktívne body v ${wm}-mesačnom okne.</div>`
                     : activeScoringMatches.slice(0, 8).map(item => {
-                        const isSoon = item.daysUntilExpiry <= 30;
-                        const daysTxt = item.daysUntilExpiry === 0 ? "dnes" : `o ${item.daysUntilExpiry} d.`;
+                        const isSoon = item.daysUntilExpiry < 30;
+                        const daysTxt = item.daysUntilExpiry === 0 ? "posledný deň" : `ešte ${item.daysUntilExpiry} d.`;
                         return `
                             <div class="exp-item-row ${isSoon ? 'soon' : ''}">
                                 <div>
@@ -8306,7 +8327,7 @@
                                     <span style="color:var(--text-muted);"> · ${formatDateSk(item.date)} vs ${escapeHtml(item.oppName)} (${item.score})</span>
                                 </div>
                                 <div style="font-weight:800; color:${isSoon ? '#fdba74' : 'var(--win)'}; white-space:nowrap;">
-                                    Padá ${item.expiryDateStr} (${daysTxt})
+                                    Platí do ${item.expiryDateStr} vrátane (${daysTxt})
                                 </div>
                             </div>
                         `;
@@ -8514,7 +8535,7 @@
                     <div class="stat-tile">
                         <div class="stat-tile-label">Expiruje (30 d.)</div>
                         <div class="stat-tile-value" style="color:${p.expiring30 > 0 ? '#fdba74' : 'var(--win)'};">${wm === 0 ? '—' : (p.expiring30 > 0 ? '-' + formatPts(p.expiring30) : '0.00')}</div>
-                        <div class="stat-tile-sub">${wm === 0 ? 'All-time režim' : (nextExp ? 'Najbližšie: ' + nextExp.expiryDateStr : 'Bez aktívnych bodov')}</div>
+                        <div class="stat-tile-sub">${wm === 0 ? 'All-time režim' : (nextExp ? 'Platí do ' + nextExp.expiryDateStr + ' vrátane' : 'Bez aktívnych bodov')}</div>
                     </div>
                 </div>
 
@@ -9832,12 +9853,12 @@
                 if (wm === 0) {
                     validityHtml = `<span class="validity-badge val-active">All-time</span>`;
                 } else if (!m.isValid) {
-                    validityHtml = `<span class="validity-badge val-expired">Expirovalo (${m.expiryDateStr})</span>`;
-                } else if (m.daysUntilExpiry !== null && m.daysUntilExpiry <= 30) {
-                    const daysTxt = m.daysUntilExpiry === 0 ? "dnes" : `o ${m.daysUntilExpiry} d.`;
-                    validityHtml = `<span class="validity-badge val-soon">Expiruje ${daysTxt} (${m.expiryDateStr})</span>`;
+                    validityHtml = `<span class="validity-badge val-expired">Expirovalo (platilo do ${m.expiryDateStr} vrátane)</span>`;
+                } else if (m.daysUntilExpiry !== null && m.daysUntilExpiry < 30) {
+                    const daysTxt = m.daysUntilExpiry === 0 ? "posledný deň" : `ešte ${m.daysUntilExpiry} d.`;
+                    validityHtml = `<span class="validity-badge val-soon">Platí do ${m.expiryDateStr} vrátane (${daysTxt})</span>`;
                 } else {
-                    validityHtml = `<span class="validity-badge val-active">Platí do ${m.expiryDateStr}</span>`;
+                    validityHtml = `<span class="validity-badge val-active">Platí do ${m.expiryDateStr} vrátane</span>`;
                 }
 
                 const rawIdx = state.matches.findIndex(x => x.id === m.id);
@@ -10788,7 +10809,7 @@
             ctx.fillText((topG + botG > 0) ? `SÚČET GEMOV: ${topG} : ${botG}` : `VÝSLEDOK NA SETY: ${topSets} : ${botSets}`, innerX + 4, footY);
             ctx.textAlign = "right";
             const expTxt = m.expiryDateStr
-                ? (m.isValid ? `BODY PLATIA DO: ${m.expiryDateStr}` : `BODY MIMO LEHOTY`)
+                ? (m.isValid ? `PLATÍ DO: ${m.expiryDateStr} VRÁTANE` : `BODY MIMO LEHOTY`)
                 : "BODY: ALL-TIME";
             ctx.fillText(`${expTxt}  ·  ELO K=${getEloK()}, D=${getEloD()}  ·  ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 4, footY);
         }
@@ -12634,7 +12655,7 @@
             }
 
             const specialItems = [];
-            const expSuffix = m.expiryDateStr ? ` (body platia do ${m.expiryDateStr})` : "";
+            const expSuffix = m.expiryDateStr ? ` (platí do ${m.expiryDateStr} vrátane)` : "";
 
             if (isAWin) {
                 specialItems.push({ tag: "BODOVÝ ZISK 2H", text: `${m.teamNameA} si za víťazstvo v dvojhre #${m.index} pripísal celý +1,00 bod do tabuľky${expSuffix}.` });
@@ -12719,7 +12740,7 @@
             }
 
             const specialItems = [];
-            const expSuffix = m.expiryDateStr ? ` (body platia do ${m.expiryDateStr})` : "";
+            const expSuffix = m.expiryDateStr ? ` (platí do ${m.expiryDateStr} vrátane)` : "";
 
             if (isAWin) {
                 specialItems.push({ tag: "BODOVÝ ZISK 4H", text: `Pár ${m.teamNameA} bral za víťazstvo v štvorhre #${m.index} po +0,50 bodu na hráča${expSuffix}.` });
@@ -12925,7 +12946,7 @@
             if (matches.length === 0) return [];
             const precalc = matches.map(m => {
                 const dt = parseIsoLocal(m.date);
-                const expDt = wm > 0 ? addCalendarMonths(m.date, wm) : null;
+                const expDt = wm > 0 ? getMatchValidUntilDate(m.date, wm) : null;
                 return { m, dtTime: dt ? dt.getTime() : 0, expTime: expDt ? expDt.getTime() : Infinity };
             });
 
@@ -12987,18 +13008,22 @@
             const matches = computedMatches || [];
             const precalc = matches.map(m => {
                 const dt = parseIsoLocal(m.date);
-                const expDt = addCalendarMonths(m.date, wm);
-                return { m, dtTime: dt ? dt.getTime() : 0, expTime: expDt ? expDt.getTime() : Infinity };
+                const expDt = getMatchValidUntilDate(m.date, wm);
+                const dropDt = expDt ? new Date(expDt.getFullYear(), expDt.getMonth(), expDt.getDate() + 1) : null;
+                return {
+                    m,
+                    dtTime: dt ? dt.getTime() : 0,
+                    expTime: expDt ? expDt.getTime() : Infinity,
+                    dropTime: dropDt ? dropDt.getTime() : Infinity
+                };
             });
 
-            // Zozbierame presné dni po expirácii (expTime + 1 deň) medzi posledným zápasom a dneškom
-            const dayMs = 24 * 60 * 60 * 1000;
+            // Zozbierame presné dni po expirácii (deň po poslednom platnom dni vrátane) medzi posledným zápasom a dneškom
             const checkTimesSet = new Set([todayTime]);
             precalc.forEach(item => {
-                if (isFinite(item.expTime)) {
-                    const dropTime = item.expTime + dayMs;
-                    if (dropTime > lastMatchDt.getTime() && dropTime <= todayTime) {
-                        checkTimesSet.add(dropTime);
+                if (isFinite(item.dropTime)) {
+                    if (item.dropTime > lastMatchDt.getTime() && item.dropTime <= todayTime) {
+                        checkTimesSet.add(item.dropTime);
                     }
                 }
             });
@@ -13363,7 +13388,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.40! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.41! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -13464,7 +13489,7 @@
                 const defending = players.filter(p => p.expiring30 > 0).sort((a, b) => b.expiring30 - a.expiring30);
                 defending.slice(0, 3).forEach(p => {
                     const nextD = p.expiringDetails && p.expiringDetails[0];
-                    const whenTxt = nextD ? ` (najbližšie po ${nextD.expiryStr})` : "";
+                    const whenTxt = nextD ? ` (najbližšie platí do ${nextD.expiryStr} vrátane)` : "";
                     add("OBHAJOBA BODOV", `${p.name} obhajuje v najbližších 30 dňoch ${skPts(p.expiring30, "nom")}${whenTxt}.`);
                 });
             }
