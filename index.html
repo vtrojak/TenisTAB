@@ -4109,7 +4109,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.45</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.461</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4143,7 +4143,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.45</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.461</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4580,7 +4580,7 @@
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Jednotlivci</div>
-                    <div class="stat-tile-value">24</div>
+                    <div class="stat-tile-value">26</div>
                     <div class="stat-tile-sub">Kategórie 1 – 3</div>
                 </div>
                 <div class="stat-tile">
@@ -10168,7 +10168,7 @@
                             if (p.curUnbeatenStreak > p.maxUnbeatenStreak) p.maxUnbeatenStreak = p.curUnbeatenStreak;
                         } else if (res === "L") {
                             p.losses++;
-                            // Smoliar / O chlp: prehra, kde sú zadané gemy a rozdiel gemov v prospech víťaza <= 2
+                            // Smoliar: prehra, kde sú zadané gemy a rozdiel gemov v prospech víťaza <= 2
                             if (totalGems > 0 && (gL - gW) <= 2) {
                                 p.closeLosses++;
                             }
@@ -10361,6 +10361,76 @@
             const rDoublesKing = findTopHolders(activePlayers, p => p.pts4H, 0.25);
             const rWinterWolf  = findTopHolders(activePlayers, p => p.ptsWinter, 0.25);
             const rBeachBoy    = findTopHolders(activePlayers, p => p.ptsSummer, 0.25);
+            const computeRollingSurface12M = (surfaceKey, achId) => {
+                const surfMatches = computedMatches.filter(m => normalizeSurfaceValue(m.surface) === surfaceKey);
+                const withDates = surfMatches.map(m => {
+                    const dt = parseIsoLocal(m.date);
+                    const expDt = getMatchValidUntilDate(m.date, 12);
+                    return {
+                        m,
+                        dtMs: dt ? dt.getTime() : 0,
+                        expMs: expDt ? expDt.getTime() : -Infinity
+                    };
+                });
+
+                const evalAtTime = (refMs, upToIdx) => {
+                    const ptsMap = {};
+                    computedPlayers.forEach(p => {
+                        ptsMap[p.id] = { id: p.id, name: p.name, color: p.color, pts: 0, lastDateIso: null };
+                    });
+                    for (let j = 0; j <= upToIdx; j++) {
+                        const rec = withDates[j];
+                        if (rec.expMs >= refMs) {
+                            const pm = rec.m;
+                            if (pm.ptsA > 0) {
+                                pm.team1.forEach(pid => {
+                                    if (ptsMap[pid]) {
+                                        ptsMap[pid].pts = Math.round((ptsMap[pid].pts + pm.ptsA) * 100) / 100;
+                                        ptsMap[pid].lastDateIso = pm.date;
+                                    }
+                                });
+                            }
+                            if (pm.ptsB > 0) {
+                                pm.team2.forEach(pid => {
+                                    if (ptsMap[pid]) {
+                                        ptsMap[pid].pts = Math.round((ptsMap[pid].pts + pm.ptsB) * 100) / 100;
+                                        ptsMap[pid].lastDateIso = pm.date;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    return Object.values(ptsMap).filter(x => x.pts > 0);
+                };
+
+                for (let i = 0; i < withDates.length; i++) {
+                    const snapPool = evalAtTime(withDates[i].dtMs, i);
+                    const leaders = getLeaderIdsForMetric(snapPool, x => x.pts, 0.25);
+                    updateOwnershipFor(achId, leaders, withDates[i].m.date);
+                }
+
+                const todayMs = today.getTime();
+                const currentPool = evalAtTime(todayMs, withDates.length - 1);
+                const result = findTopHolders(currentPool, x => x.pts, 0.25);
+                const top3 = buildTop3Ranking(currentPool, x => x.pts, p => p.name, v => `${formatPts(v)} b`, 0.25);
+
+                const curMap = ownershipSince[achId] || {};
+                const validIds = new Set(result.holders.map(p => p.id));
+                Object.keys(curMap).forEach(k => {
+                    if (!validIds.has(k)) delete curMap[k];
+                });
+                result.holders.forEach(p => {
+                    if (!curMap[p.id] && p.lastDateIso) curMap[p.id] = p.lastDateIso;
+                });
+                ownershipSince[achId] = curMap;
+
+                return { result, top3 };
+            };
+
+            const rg12M = computeRollingSurface12M("antuka", "roland_garros");
+            const betonar12M = computeRollingSurface12M("tvrdy", "betonar");
+            const rRolandGarros = rg12M.result;
+            const rBetonar      = betonar12M.result;
             const rGiantKiller = findTopHolders(activePlayers, p => p.maxEloGain, 0.1);
             const rJanosik     = findTopHolders(activePlayers, p => p.maxEloLoss2H, 0.1);
             const rIronMan     = findTopHolders(activePlayers, p => p.matches, 1);
@@ -10527,7 +10597,7 @@
                     held: getHeldInfo("marathoner")
                 },
                 {
-                    id: "unlucky", cat: 2, title: "Smoliar / O chlp",
+                    id: "unlucky", cat: 2, title: "Smoliar",
                     desc: "Najviac prehier o najviac 2 gemy",
                     rules: "Negatívny odznak za prehry, kde víťaz získal najviac o 2 gemy viac (vrátane prehry s viac gemami).",
                     iconFile: "smoliar.png", faClass: "fa-solid fa-heart-crack",
@@ -10538,7 +10608,7 @@
                     held: getHeldInfo("unlucky")
                 },
 
-                // KATEGÓRIA 3: Bodové míľniky a aktivita (12)
+                // KATEGÓRIA 3: Bodové míľniky a aktivita (14)
                 {
                     id: "points_king", cat: 3, title: "Kráľ bodov",
                     desc: "Najviac získaných bodov spolu (kombinovane 2H + 4H)",
@@ -10574,8 +10644,8 @@
                 },
                 {
                     id: "winter_wolf", cat: 3, title: "Zimný vlk",
-                    desc: "Najviac bodov v halovej sezóne (november – apríl)",
-                    rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch november až apríl.",
+                    desc: "Najviac bodov v zimnej sezóne",
+                    rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v zimnej sezóne (november – apríl).",
                     iconFile: "zimny_vlk.png", faClass: "fa-solid fa-snowflake",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: formatPtsWithUnit(rWinterWolf.value),
@@ -10585,14 +10655,36 @@
                 },
                 {
                     id: "beach_boy", cat: 3, title: "Plážový chlapec",
-                    desc: "Najviac bodov vo vonkajšej sezóne (máj – október)",
-                    rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v mesiacoch máj až október.",
+                    desc: "Najviac bodov v letnej sezóne",
+                    rules: "Súčet získaných bodov (2H + 4H) zo zápasov odohratých v letnej sezóne (máj – október).",
                     iconFile: "plazovy_chlapec.png", faClass: "fa-solid fa-sun",
                     theme: "ach-green", accent: "#4ade80", isNegative: false,
                     valueText: formatPtsWithUnit(rBeachBoy.value),
                     holders: rBeachBoy.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.ptsSummer, pName, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("beach_boy")
+                },
+                {
+                    id: "roland_garros", cat: 3, title: "Roland Garros",
+                    desc: "Najlepší hráč na antuke za posledných 12 mesiacov",
+                    rules: "Najviac získaných bodov (2H + 4H) zo zápasov označených povrchom Antuka za posledných 12 mesiacov.",
+                    iconFile: "roland_garros.png", faClass: "fa-solid fa-trophy",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: rRolandGarros.holders.length > 0 ? formatPtsWithUnit(rRolandGarros.value) : "—",
+                    holders: rRolandGarros.holders,
+                    top3: rg12M.top3,
+                    held: getHeldInfo("roland_garros")
+                },
+                {
+                    id: "betonar", cat: 3, title: "Betonár",
+                    desc: "Najlepší hráč na tvrdom povrchu za posledných 12 mesiacov",
+                    rules: "Najviac získaných bodov (2H + 4H) zo zápasov označených povrchom Tvrdý za posledných 12 mesiacov.",
+                    iconFile: "betonar.png", faClass: "fa-solid fa-trowel-bricks",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: rBetonar.holders.length > 0 ? formatPtsWithUnit(rBetonar.value) : "—",
+                    holders: rBetonar.holders,
+                    top3: betonar12M.top3,
+                    held: getHeldInfo("betonar")
                 },
                 {
                     id: "giant_killer", cat: 3, title: "Lovec obrov",
@@ -14202,7 +14294,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.45${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.461${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -16000,7 +16092,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.45! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.461! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -16349,7 +16441,7 @@
                 add("ŤAŽKÝ BATOH", "Kilogramy nabraté po Vianociach môžu dobre slúžiť ako tréningová záťaž po celý rok!");
             }
 
-            // 8. Správy priamo z Achievementov (všetkých 32 odznakov · dynamický rozsah All-time vs. okno)
+            // 8. Správy priamo z Achievementov (všetkých 34 odznakov · dynamický rozsah All-time vs. okno)
             const isWindowBadges = badgesScope === "window" && wm > 0;
             const achScopeLabel = isWindowBadges ? `v ${wm}-mesačnom okne` : "histórie";
             const achRecCap = isWindowBadges ? `Rekord (${wm}M)` : "Historický rekord";
@@ -16479,9 +16571,9 @@
                 },
                 unlucky: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
-                    return ["SMOLIAR O CHLP", holders.length > 1
-                        ? `Odznak Smoliar / O chlp (${a.valueText} do 2 gemov) si delia ${n} – občas stačí centimeter na čiare.`
-                        : `Odznak Smoliar / O chlp (${a.valueText} do 2 gemov) patrí ${skName(holders[0].name, "dat")} – šťastena mu pri tesných záveroch dlhuje kávu.`];
+                    return ["SMOLIAR", holders.length > 1
+                        ? `Odznak Smoliar (${a.valueText} do 2 gemov) si delia ${n} – občas stačí centimeter na čiare.`
+                        : `Odznak Smoliar (${a.valueText} do 2 gemov) patrí ${skName(holders[0].name, "dat")} – šťastena mu pri tesných záveroch dlhuje kávu.`];
                 },
                 singles_king: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
@@ -16503,15 +16595,29 @@
                     const n = skJoinNames(holders, "nom");
                     const valTxt = a.valueText.replace(".", ",");
                     return ["ZIMNÝ VLK", holders.length > 1
-                        ? `Halovej sezóne (november – apríl) vládnu ${n} so ziskom ${valTxt}.`
-                        : `Zimným vlkom haly (november – apríl) je ${n} – nazbieral ${valTxt}.`];
+                        ? `Zimnej sezóne (november – apríl) vládnu ${n} so ziskom ${valTxt}.`
+                        : `Zimným vlkom sezóny (november – apríl) je ${n} – nazbieral ${valTxt}.`];
                 },
                 beach_boy: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
                     const valTxt = a.valueText.replace(".", ",");
                     return ["PLÁŽOVÝ CHLAPEC", holders.length > 1
-                        ? `Vonkajšej antukovej sezóne (máj – október) kraľujú ${n} (${valTxt}).`
-                        : `Antukovým špecialistom letnej sezóny (máj – október) je ${n} (${valTxt}).`];
+                        ? `Letnej sezóne (máj – október) kraľujú ${n} so ziskom ${valTxt}.`
+                        : `Plážovým chlapcom letnej sezóny (máj – október) je ${n} – nazbieral ${valTxt}.`];
+                },
+                roland_garros: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["ROLAND GARROS", holders.length > 1
+                        ? `Antukovým kurtom za posledných 12 mesiacov vládnu ${n} so ziskom ${valTxt} – Paríž volá!`
+                        : `Odznak Roland Garros pre najlepšieho hráča na antuke za posledných 12 mesiacov drží ${n} (${valTxt})!`];
+                },
+                betonar: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["BETONÁR", holders.length > 1
+                        ? `Na tvrdom povrchu za posledných 12 mesiacov kraľujú ${n} so ziskom ${valTxt}.`
+                        : `Titul Betonár pre najlepšieho hráča na tvrdom povrchu za posledných 12 mesiacov patrí ${skName(holders[0].name, "dat")} (${valTxt})!`];
                 },
                 janosik: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
