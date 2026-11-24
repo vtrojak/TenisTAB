@@ -732,11 +732,13 @@
             vertical-align: middle;
         }
 
-        /* REPORT POSLEDNÉHO ZÁPASU MODAL (v1.44) */
+        /* REPORT POSLEDNÉHO ZÁPASU MODAL (v1.48 – 9:16 + Pan/Zoom) */
         .report-canvas-frame {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 6px;
             background: rgba(4, 12, 22, 0.78);
             padding: 8px;
         }
@@ -744,11 +746,45 @@
         canvas#reportCanvas {
             width: auto;
             max-width: 100%;
-            max-height: 52vh;
+            max-height: 54vh;
+            aspect-ratio: 9 / 16;
             height: auto;
             display: block;
             border-radius: 10px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        canvas#reportCanvas.can-pan {
+            cursor: grab;
+            touch-action: none;
+        }
+
+        canvas#reportCanvas.is-panning {
+            cursor: grabbing;
+        }
+
+        .report-gesture-hint {
+            font-size: 0.69rem;
+            color: var(--tennis-lime);
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .report-photo-tools {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(186, 230, 253, 0.16);
+        }
+
+        .report-photo-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
         }
 
         .report-list-head {
@@ -4109,7 +4145,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.47</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.48</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4143,7 +4179,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.47</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.48</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -5173,7 +5209,7 @@
                         <span>Report posledného zápasu (PNG)</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:6px;">
-                        <span class="chart-range-pill" id="report-dim-pill">1080 × 900</span>
+                        <span class="chart-range-pill" id="report-dim-pill">900 × 1600 (9:16)</span>
                         <button type="button" class="icon-btn" onclick="closeMatchReportModal()">Zavrieť ✕</button>
                     </div>
                 </div>
@@ -5181,18 +5217,49 @@
 
             <div class="tv-modal-body">
                 <div class="tv-canvas-frame report-canvas-frame">
-                    <canvas id="reportCanvas" width="1080" height="900"></canvas>
+                    <canvas id="reportCanvas" width="900" height="1600"></canvas>
+                    <div id="report-gesture-hint" class="report-gesture-hint" style="display:none;">
+                        ✋ Posúvaj fotku prstom/myšou · 🤏 2 prstami alebo kolieskom zmenši/zväčši
+                    </div>
                 </div>
 
                 <div class="tv-ctrl-section">
                     <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
-                        <span style="font-size:0.74rem; font-weight:800; color:var(--text-main);">Pozadie PNG reportu</span>
+                        <span style="font-size:0.74rem; font-weight:800; color:var(--text-main);">Pozadie PNG reportu (9:16)</span>
                         <span id="report-bg-theme-label" style="font-size:0.70rem; color:var(--tennis-lime); font-weight:700;">—</span>
                     </div>
                     <div class="report-bg-bar">
                         <button type="button" id="report-bg-btn-default" class="preset-btn report-bg-btn active" onclick="setReportBgMode('default')">🖼️ Predvolené</button>
                         <button type="button" id="report-bg-btn-theme" class="preset-btn report-bg-btn" onclick="setReportBgMode('theme')">🎨 Farebný motív</button>
                         <button type="button" id="report-bg-btn-custom" class="preset-btn report-bg-btn" onclick="setReportBgMode('custom')">📷 Vlastná fotka</button>
+                    </div>
+
+                    <div id="report-photo-tools" class="report-photo-tools" style="display:none;">
+                        <div class="tv-ctrl-top" style="margin-bottom:0;">
+                            <span class="tv-ctrl-label">Veľkosť fotky (Zoom)</span>
+                            <div class="tv-ctrl-steppers">
+                                <button type="button" class="tv-step-btn" onclick="stepReportPhotoZoom(-10)">−</button>
+                                <span class="tv-pct-badge" id="report-zoom-val" onclick="resetReportPhotoTransform()">100%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepReportPhotoZoom(10)">+</button>
+                            </div>
+                        </div>
+                        <input type="range" id="report-zoom-slider" class="tv-range" min="35" max="350" step="1" value="100" oninput="setReportPhotoZoom(this.value)">
+                        <div class="report-photo-actions">
+                            <button type="button" id="btn-report-fit-photo" class="chart-quick-btn" onclick="fitWholeReportPhoto()">↔️ Celá fotka (bez orezu)</button>
+                            <button type="button" id="btn-report-reset-photo" class="chart-quick-btn" onclick="resetReportPhotoTransform()">↺ Vycentrovať (100%)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tv-ctrl-section">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+                        <span style="font-size:0.74rem; font-weight:800; color:var(--text-main);">Poloha karty na pozadí</span>
+                        <span style="font-size:0.68rem; color:var(--text-muted);">aby vynikol motív fotky</span>
+                    </div>
+                    <div class="report-bg-bar">
+                        <button type="button" id="report-align-top" class="preset-btn report-bg-btn" onclick="setReportPanelAlign('top')">⬆️ Hore</button>
+                        <button type="button" id="report-align-center" class="preset-btn report-bg-btn active" onclick="setReportPanelAlign('center')">⏺️ Stred</button>
+                        <button type="button" id="report-align-bottom" class="preset-btn report-bg-btn" onclick="setReportPanelAlign('bottom')">⬇️ Dole</button>
                     </div>
                 </div>
 
@@ -5213,25 +5280,25 @@
                 <div class="tv-controls-grid">
                     <div class="tv-ctrl-card">
                         <div class="tv-ctrl-top">
-                            <span class="tv-ctrl-label">Blur pozadia</span>
+                            <span class="tv-ctrl-label">Blur pod kartou</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(-10)">−</button>
-                                <span class="tv-pct-badge" id="report-blur-val" onclick="setTvBlur(50)">50%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepTvBlur(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportBlur(-10)">−</button>
+                                <span class="tv-pct-badge" id="report-blur-val" onclick="setReportBlur(35)">35%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepReportBlur(10)">+</button>
                             </div>
                         </div>
-                        <input type="range" id="report-blur-slider" class="tv-range" min="0" max="100" step="1" value="50" oninput="setTvBlur(this.value)">
+                        <input type="range" id="report-blur-slider" class="tv-range" min="0" max="100" step="1" value="35" oninput="setReportBlur(this.value)">
                     </div>
                     <div class="tv-ctrl-card">
                         <div class="tv-ctrl-top">
                             <span class="tv-ctrl-label">Priehľadnosť</span>
                             <div class="tv-ctrl-steppers">
-                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(-10)">−</button>
-                                <span class="tv-pct-badge" id="report-transp-val" onclick="setTvTransparency(40)">40%</span>
-                                <button type="button" class="tv-step-btn" onclick="stepTvTransparency(10)">+</button>
+                                <button type="button" class="tv-step-btn" onclick="stepReportTransparency(-10)">−</button>
+                                <span class="tv-pct-badge" id="report-transp-val" onclick="setReportTransparency(40)">40%</span>
+                                <button type="button" class="tv-step-btn" onclick="stepReportTransparency(10)">+</button>
                             </div>
                         </div>
-                        <input type="range" id="report-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setTvTransparency(this.value)">
+                        <input type="range" id="report-transp-slider" class="tv-range" min="0" max="100" step="1" value="40" oninput="setReportTransparency(this.value)">
                     </div>
                 </div>
             </div>
@@ -12002,15 +12069,40 @@
                     const dh = rawImg.naturalHeight * scale;
                     octx.drawImage(rawImg, (1920 - dw) / 2, (1080 - dh) / 2, dw, dh);
 
+                    // Zachováme aj pôvodný pomer strán fotky (max 2400 px) pre 9:16 Report bez 16:9 orezu
+                    const maxSide = 2400;
+                    const natW = rawImg.naturalWidth;
+                    const natH = rawImg.naturalHeight;
+                    const repScale = Math.min(1, maxSide / Math.max(natW, natH));
+                    const repOff = document.createElement("canvas");
+                    repOff.width = Math.max(1, Math.round(natW * repScale));
+                    repOff.height = Math.max(1, Math.round(natH * repScale));
+                    repOff.getContext("2d").drawImage(rawImg, 0, 0, repOff.width, repOff.height);
+
+                    let loadedParts = 0;
+                    const finishUpload = () => {
+                        loadedParts++;
+                        if (loadedParts < 2) return;
+                        reportBgMode = "custom";
+                        resetReportPhotoTransform(false);
+                        syncReportBgButtonsUI();
+                        scheduleTvRender();
+                        showToast("Vlastná fotka bola vložená (môžeš ju posúvať aj zmenšovať)!");
+                    };
+
                     const cropped = new Image();
                     cropped.onload = () => {
                         tvCustomBgImage = cropped;
-                        reportBgMode = "custom";
-                        syncReportBgButtonsUI();
-                        scheduleTvRender();
-                        showToast("Vlastné pozadie bolo vložené!");
+                        finishUpload();
                     };
                     cropped.src = off.toDataURL("image/jpeg", 0.92);
+
+                    const fullAspectImg = new Image();
+                    fullAspectImg.onload = () => {
+                        reportCustomBgImage = fullAspectImg;
+                        finishUpload();
+                    };
+                    fullAspectImg.src = repOff.toDataURL("image/jpeg", 0.92);
                 };
                 rawImg.onerror = () => showToast("Nepodarilo sa načítať vybraný obrázok.", true);
                 rawImg.src = e.target.result;
@@ -12034,6 +12126,15 @@
                     if (parsed.reportBgMode === "theme" || parsed.reportBgMode === "default") {
                         reportBgMode = parsed.reportBgMode;
                     }
+                    if (typeof parsed.reportBlurPct === "number" && !isNaN(parsed.reportBlurPct)) {
+                        reportBlurPct = Math.max(0, Math.min(100, Math.round(parsed.reportBlurPct)));
+                    }
+                    if (typeof parsed.reportTransparencyPct === "number" && !isNaN(parsed.reportTransparencyPct)) {
+                        reportTransparencyPct = Math.max(0, Math.min(100, Math.round(parsed.reportTransparencyPct)));
+                    }
+                    if (parsed.reportPanelAlign === "top" || parsed.reportPanelAlign === "center" || parsed.reportPanelAlign === "bottom") {
+                        reportPanelAlign = parsed.reportPanelAlign;
+                    }
                 }
             } catch (e) {}
             syncTvControlsUI();
@@ -12045,7 +12146,10 @@
                 localStorage.setItem(TV_SETTINGS_KEY, JSON.stringify({
                     blurPct: tvBlurPct,
                     transparencyPct: tvTransparencyPct,
-                    reportBgMode: reportBgMode === "theme" ? "theme" : "default"
+                    reportBgMode: reportBgMode === "theme" ? "theme" : "default",
+                    reportBlurPct,
+                    reportTransparencyPct,
+                    reportPanelAlign
                 }));
             } catch (e) {}
         }
@@ -12056,8 +12160,8 @@
                 ["tv-transp-slider", "tv-transp-val", tvTransparencyPct],
                 ["tv-chart-blur-slider", "tv-chart-blur-val", tvBlurPct],
                 ["tv-chart-transp-slider", "tv-chart-transp-val", tvTransparencyPct],
-                ["report-blur-slider", "report-blur-val", tvBlurPct],
-                ["report-transp-slider", "report-transp-val", tvTransparencyPct]
+                ["report-blur-slider", "report-blur-val", reportBlurPct],
+                ["report-transp-slider", "report-transp-val", reportTransparencyPct]
             ];
             pairs.forEach(([sId, vId, val]) => {
                 const sEl = document.getElementById(sId);
@@ -13553,17 +13657,236 @@
                 : (chartMetric === "elo4h" ? "ELO_4H" : (chartModeMonths === 0 ? "Body_AllTime" : `Body_${chartModeMonths}M`));
             exportCanvasImage(canvas, `TenisTAB_TV_Graf_${modeTag}_${getTodayIso()}`, format, renderTvChartCanvas);
         }
-        /* ==================== REPORT POSLEDNÉHO ZÁPASU – PNG (v1.441) ==================== */
+        /* ==================== REPORT POSLEDNÉHO ZÁPASU – PNG 9:16 (v1.48) ==================== */
+        const REPORT_CANVAS_W = 900;
+        const REPORT_CANVAS_H = 1600;
         let matchReportMatchId = null;
         let matchReportItems = [];
         let reportBgMode = "default"; // "default" | "theme" | "custom"
+        let reportPanelAlign = "center"; // "top" | "center" | "bottom"
+        let reportBlurPct = 35;
+        let reportTransparencyPct = 40;
+        let reportCustomBgImage = null;
+        let reportPhotoTransform = { zoom: 1, panX: 0, panY: 0 };
         let reportEditRenderRaf = null;
         const matchReportWeatherCache = {};
 
+        function getReportCustomImage() {
+            if (reportCustomBgImage && reportCustomBgImage.naturalWidth > 0) return reportCustomBgImage;
+            if (tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) return tvCustomBgImage;
+            return null;
+        }
+
         function getEffectiveReportBgMode() {
             if (reportBgMode === "theme") return "theme";
-            if (reportBgMode === "custom" && tvCustomBgImage && tvCustomBgImage.naturalWidth > 0) return "custom";
+            if (reportBgMode === "custom" && getReportCustomImage()) return "custom";
             return "default";
+        }
+
+        function getReportPhotoMetrics(img, W = REPORT_CANVAS_W, H = REPORT_CANVAS_H) {
+            const imgW = img.naturalWidth;
+            const imgH = img.naturalHeight;
+            const coverScale = Math.max(W / imgW, H / imgH);
+            const containScale = Math.min(W / imgW, H / imgH);
+            const zoom = Math.max(0.35, Math.min(3.5, Number(reportPhotoTransform.zoom) || 1));
+            const actualScale = coverScale * zoom;
+            const drawW = imgW * actualScale;
+            const drawH = imgH * actualScale;
+
+            const maxPanX = Math.abs(drawW - W) / 2;
+            const maxPanY = Math.abs(drawH - H) / 2;
+            const panX = Math.max(-maxPanX, Math.min(maxPanX, Number(reportPhotoTransform.panX) || 0));
+            const panY = Math.max(-maxPanY, Math.min(maxPanY, Number(reportPhotoTransform.panY) || 0));
+            reportPhotoTransform.zoom = zoom;
+            reportPhotoTransform.panX = panX;
+            reportPhotoTransform.panY = panY;
+
+            return {
+                imgW,
+                imgH,
+                coverScale,
+                containScale,
+                zoom,
+                drawW,
+                drawH,
+                drawX: (W - drawW) / 2 + panX,
+                drawY: (H - drawH) / 2 + panY
+            };
+        }
+
+        function syncReportPhotoControlsUI() {
+            const eff = getEffectiveReportBgMode();
+            const isCustom = eff === "custom";
+            const toolsEl = document.getElementById("report-photo-tools");
+            const hintEl = document.getElementById("report-gesture-hint");
+            const canvasEl = document.getElementById("reportCanvas");
+            if (toolsEl) toolsEl.style.display = isCustom ? "flex" : "none";
+            if (hintEl) hintEl.style.display = isCustom ? "block" : "none";
+            if (canvasEl) canvasEl.classList.toggle("can-pan", isCustom);
+
+            const pct = Math.round((Number(reportPhotoTransform.zoom) || 1) * 100);
+            const sEl = document.getElementById("report-zoom-slider");
+            const vEl = document.getElementById("report-zoom-val");
+            if (sEl) sEl.value = pct;
+            if (vEl) vEl.textContent = `${pct}%`;
+
+            ["top", "center", "bottom"].forEach(al => {
+                const btn = document.getElementById(`report-align-${al}`);
+                if (btn) btn.classList.toggle("active", reportPanelAlign === al);
+            });
+        }
+
+        function setReportPhotoZoom(pctVal, anchorCanvasX = REPORT_CANVAS_W / 2, anchorCanvasY = REPORT_CANVAS_H / 2) {
+            const img = getReportCustomImage();
+            const clampedPct = Math.max(35, Math.min(350, Math.round(Number(pctVal) || 100)));
+            const newZoom = clampedPct / 100;
+            if (img) {
+                const oldM = getReportPhotoMetrics(img, REPORT_CANVAS_W, REPORT_CANVAS_H);
+                const ratio = newZoom / oldM.zoom;
+                const cx = REPORT_CANVAS_W / 2;
+                const cy = REPORT_CANVAS_H / 2;
+                reportPhotoTransform.panX = (anchorCanvasX - cx) * (1 - ratio) + oldM.panX * ratio;
+                reportPhotoTransform.panY = (anchorCanvasY - cy) * (1 - ratio) + oldM.panY * ratio;
+                reportPhotoTransform.zoom = newZoom;
+                getReportPhotoMetrics(img, REPORT_CANVAS_W, REPORT_CANVAS_H);
+            } else {
+                reportPhotoTransform.zoom = newZoom;
+            }
+            syncReportPhotoControlsUI();
+            scheduleReportCanvasRedraw();
+        }
+
+        function stepReportPhotoZoom(deltaPct) {
+            const curPct = Math.round((Number(reportPhotoTransform.zoom) || 1) * 100);
+            setReportPhotoZoom(curPct + deltaPct);
+        }
+
+        function fitWholeReportPhoto() {
+            const img = getReportCustomImage();
+            if (!img) return;
+            const m = getReportPhotoMetrics(img, REPORT_CANVAS_W, REPORT_CANVAS_H);
+            const fitZoom = Math.max(0.35, Math.min(1, m.containScale / m.coverScale));
+            reportPhotoTransform = { zoom: fitZoom, panX: 0, panY: 0 };
+            syncReportPhotoControlsUI();
+            renderMatchReportCanvas();
+        }
+
+        function resetReportPhotoTransform(redraw = true) {
+            reportPhotoTransform = { zoom: 1, panX: 0, panY: 0 };
+            syncReportPhotoControlsUI();
+            if (redraw) renderMatchReportCanvas();
+        }
+
+        function setReportPanelAlign(align) {
+            reportPanelAlign = (align === "top" || align === "bottom") ? align : "center";
+            saveTvSettings();
+            syncReportPhotoControlsUI();
+            renderMatchReportCanvas();
+        }
+
+        function setReportBlur(val) {
+            reportBlurPct = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+            syncTvControlsUI();
+            saveTvSettings();
+            scheduleReportCanvasRedraw();
+        }
+
+        function stepReportBlur(delta) { setReportBlur(reportBlurPct + delta); }
+
+        function setReportTransparency(val) {
+            reportTransparencyPct = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+            syncTvControlsUI();
+            saveTvSettings();
+            scheduleReportCanvasRedraw();
+        }
+
+        function stepReportTransparency(delta) { setReportTransparency(reportTransparencyPct + delta); }
+
+        function drawReportBackgroundLayer(targetCtx, W, H, forceFallbackBg = false, bgMode = "default") {
+            if (bgMode === "theme") {
+                drawThemeFallbackBackground(targetCtx, W, H);
+                return;
+            }
+            const customImg = bgMode === "custom" ? getReportCustomImage() : null;
+            if (customImg) {
+                const m = getReportPhotoMetrics(customImg, W, H);
+                // Ak je fotka zmenšená pod 100 % a nepokrýva celé plátno, okraje jemne vyplníme rozmazanou verziou tej istej fotky
+                if (m.drawW < W - 0.5 || m.drawH < H - 0.5) {
+                    const bgW = m.imgW * m.coverScale;
+                    const bgH = m.imgH * m.coverScale;
+                    targetCtx.save();
+                    targetCtx.filter = "blur(24px)";
+                    targetCtx.drawImage(customImg, (W - bgW) / 2 - 24, (H - bgH) / 2 - 24, bgW + 48, bgH + 48);
+                    targetCtx.filter = "none";
+                    targetCtx.fillStyle = "rgba(4, 12, 22, 0.36)";
+                    targetCtx.fillRect(0, 0, W, H);
+                    targetCtx.restore();
+                }
+                targetCtx.drawImage(customImg, m.drawX, m.drawY, m.drawW, m.drawH);
+                if (m.drawW < W - 0.5 || m.drawH < H - 0.5) {
+                    targetCtx.save();
+                    targetCtx.strokeStyle = "rgba(255, 255, 255, 0.24)";
+                    targetCtx.lineWidth = 2;
+                    targetCtx.strokeRect(m.drawX + 1, m.drawY + 1, Math.max(0, m.drawW - 2), Math.max(0, m.drawH - 2));
+                    targetCtx.restore();
+                }
+                return;
+            }
+            if (!forceFallbackBg && tvBgLoaded && tvBgImage && tvBgImage.naturalWidth > 0) {
+                const imgW = tvBgImage.naturalWidth;
+                const imgH = tvBgImage.naturalHeight;
+                const scale = Math.max(W / imgW, H / imgH);
+                const drawW = imgW * scale;
+                const drawH = imgH * scale;
+                targetCtx.drawImage(tvBgImage, (W - drawW) / 2, (H - drawH) / 2, drawW, drawH);
+
+                const vig = targetCtx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.25, W / 2, H / 2, Math.max(W, H) * 0.72);
+                vig.addColorStop(0, "rgba(0, 18, 15, 0.08)");
+                vig.addColorStop(1, "rgba(0, 12, 10, 0.45)");
+                targetCtx.fillStyle = vig;
+                targetCtx.fillRect(0, 0, W, H);
+            } else {
+                drawThemeFallbackBackground(targetCtx, W, H);
+            }
+        }
+
+        function drawReportGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, panelRadius, forceFallbackBg, bgMode) {
+            const blurPx = Math.round((reportBlurPct / 100) * 28 * 10) / 10;
+            const opacityFactor = Math.max(0, Math.min(1, 1 - reportTransparencyPct / 100));
+
+            ctx.save();
+            drawRoundedRectPath(ctx, panelX, panelY, panelW, panelH, panelRadius);
+            ctx.clip();
+            if (blurPx > 0) {
+                ctx.filter = `blur(${blurPx}px)`;
+                drawReportBackgroundLayer(ctx, W, H, forceFallbackBg, bgMode);
+                ctx.filter = "none";
+            }
+            if (opacityFactor > 0.001) {
+                const a0 = Math.min(1, +(opacityFactor * 1.033).toFixed(3));
+                const a1 = Math.min(1, +(opacityFactor * 0.90).toFixed(3));
+                const a2 = Math.min(1, +(opacityFactor * 1.10).toFixed(3));
+                const glassGrad = ctx.createLinearGradient(panelX, panelY, panelX + panelW, panelY + panelH);
+                glassGrad.addColorStop(0, `rgba(6, 38, 34, ${a0})`);
+                glassGrad.addColorStop(0.5, `rgba(4, 28, 25, ${a1})`);
+                glassGrad.addColorStop(1, `rgba(2, 20, 18, ${a2})`);
+                ctx.fillStyle = glassGrad;
+                ctx.fillRect(panelX, panelY, panelW, panelH);
+
+                const shineGrad = ctx.createLinearGradient(panelX, panelY, panelX, panelY + 180);
+                shineGrad.addColorStop(0, `rgba(255, 255, 255, ${+(0.14 * opacityFactor).toFixed(3)})`);
+                shineGrad.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+                ctx.fillStyle = shineGrad;
+                ctx.fillRect(panelX, panelY, panelW, 180);
+            }
+            ctx.restore();
+
+            ctx.save();
+            drawRoundedRectPath(ctx, panelX, panelY, panelW, panelH, panelRadius);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${+(Math.max(0.18, 0.36 * Math.max(0.45, opacityFactor))).toFixed(3)})`;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
         }
 
         function syncReportBgButtonsUI() {
@@ -13581,16 +13904,18 @@
                 if (eff === "theme") {
                     lbl.textContent = `Aktívny motív: ${activeTheme.label}`;
                 } else if (eff === "custom") {
-                    lbl.textContent = "Vlastná fotografia";
+                    const im = getReportCustomImage();
+                    lbl.textContent = im ? `Vlastná fotka (${im.naturalWidth}×${im.naturalHeight})` : "Vlastná fotografia";
                 } else {
                     lbl.textContent = tvBgLoaded ? "Predvolené (TV.jpeg)" : `Predvolené (${activeTheme.label})`;
                 }
             }
+            syncReportPhotoControlsUI();
         }
 
         function setReportBgMode(mode) {
             if (mode === "custom") {
-                if (!tvCustomBgImage || !tvCustomBgImage.naturalWidth) {
+                if (!getReportCustomImage()) {
                     triggerCustomTvBgPicker();
                     return;
                 }
@@ -14009,11 +14334,12 @@
             const activeItems = matchReportItems.filter(it => !it.removed && String(it.text || "").trim().length > 0);
             const effBgMode = getEffectiveReportBgMode();
 
-            const W = 1080;
-            const panelMarginX = 36;
-            const panelMarginY = 36;
+            const W = REPORT_CANVAS_W;
+            const H = REPORT_CANVAS_H;
+            const panelMarginX = 30;
+            const panelMarginY = 30;
             const panelW = W - panelMarginX * 2;
-            const innerPadX = 34;
+            const innerPadX = 28;
             const innerX = panelMarginX + innerPadX;
             const innerW = panelW - innerPadX * 2;
 
@@ -14030,74 +14356,103 @@
             const parsedSets = parseSetsFromGemsString(m.gems);
             const setsCount = parsedSets.length;
 
-            // 1. Merací krok – vypočítame presnú výšku všetkých aktívnych riadkov
-            const measCtx = canvas.getContext("2d");
-            measCtx.font = "600 23px sans-serif";
-            const cardPadX = 24;
-            const cardAccentOffset = 10;
-            const textMaxW = innerW - cardPadX * 2 - cardAccentOffset;
-            const lineH = 33;
-
-            const measuredItems = activeItems.map(it => {
-                measCtx.font = "600 23px sans-serif";
-                const cleanTag = String(it.tag || "").trim().toUpperCase();
-                const wrapped = wrapCanvasTextLines(measCtx, String(it.text || "").trim(), textMaxW);
-                const tagBlockH = cleanTag ? (30 + 10) : 0;
-                const cardH = 16 + tagBlockH + wrapped.length * lineH + 16;
-                return { ...it, cleanTag, lines: wrapped, cardH };
-            });
-
-            // Vertikálne bloky vnútri skleneného panelu
-            const topPad = 30;
-            const labelH = 34;
-            const sbRowH = 74;
-            const sbH = sbRowH * 2;
             const expText = m.expiryDateStr
                 ? (m.isValid ? `Platí do ${m.expiryDateStr} vrátane` : `Mimo aktuálnej lehoty (platilo do ${m.expiryDateStr} vrátane)`)
                 : "";
-            const metaH = expText ? 66 : 36;
-            const dividerGap = measuredItems.length > 0 ? 28 : 10;
-            const itemGap = 14;
-            const itemsTotalH = measuredItems.reduce((sum, it) => sum + it.cardH, 0) +
-                (measuredItems.length > 1 ? (measuredItems.length - 1) * itemGap : 0);
-            const footerH = 44;
 
-            const panelH = topPad + labelH + 14 + sbH + 20 + metaH + dividerGap + itemsTotalH + 24 + footerH;
-            const H = Math.max(460, Math.round(panelH + panelMarginY * 2));
+            // 1. Merací krok – vypočítame výšku karty a prípadne ju jemne zhustíme, aby sa vždy zmestila do 9:16
+            const measCtx = canvas.getContext("2d");
+            const measureLayout = (sc) => {
+                const fontPx = Math.max(15, Math.round(21 * sc));
+                const lineH = Math.max(21, Math.round(29 * sc));
+                const tagH = Math.max(20, Math.round(26 * sc));
+                const tagFontPx = Math.max(13, Math.round(16 * sc));
+                const cardPadY = Math.max(9, Math.round(14 * sc));
+                const tagGap = Math.max(6, Math.round(9 * sc));
+                const cardPadX = 20;
+                const cardAccentOffset = 8;
+                const textMaxW = innerW - cardPadX * 2 - cardAccentOffset;
+
+                const items = activeItems.map(it => {
+                    measCtx.font = `600 ${fontPx}px sans-serif`;
+                    const cleanTag = String(it.tag || "").trim().toUpperCase();
+                    const wrapped = wrapCanvasTextLines(measCtx, String(it.text || "").trim(), textMaxW);
+                    const tagBlockH = cleanTag ? (tagH + tagGap) : 0;
+                    const cardH = cardPadY + tagBlockH + wrapped.length * lineH + cardPadY;
+                    return { ...it, cleanTag, lines: wrapped, cardH };
+                });
+
+                const topPad = Math.max(18, Math.round(26 * sc));
+                const labelH = Math.max(24, Math.round(30 * sc));
+                const sbRowH = Math.max(52, Math.round(66 * sc));
+                const sbH = sbRowH * 2;
+                const metaH = expText ? Math.max(46, Math.round(60 * sc)) : Math.max(28, Math.round(34 * sc));
+                const dividerGap = items.length > 0 ? Math.max(16, Math.round(24 * sc)) : 10;
+                const itemGap = Math.max(8, Math.round(12 * sc));
+                const itemsTotalH = items.reduce((sum, it) => sum + it.cardH, 0) +
+                    (items.length > 1 ? (items.length - 1) * itemGap : 0);
+                const footerH = Math.max(30, Math.round(38 * sc));
+                const totalH = topPad + labelH + 12 + sbH + 16 + metaH + dividerGap + itemsTotalH + 18 + footerH;
+                return {
+                    sc, fontPx, lineH, tagH, tagFontPx, cardPadY, tagGap,
+                    cardPadX, cardAccentOffset, items, topPad, labelH, sbRowH, sbH,
+                    metaH, dividerGap, itemGap, footerH, panelH: totalH
+                };
+            };
+
+            let lay = measureLayout(1.0);
+            const maxPanelH = H - panelMarginY * 2;
+            if (lay.panelH > maxPanelH) {
+                const fitScale = Math.max(0.66, (maxPanelH / lay.panelH) * 0.97);
+                lay = measureLayout(fitScale);
+            }
+            const panelH = Math.min(maxPanelH, Math.round(lay.panelH));
 
             canvas.width = W;
             canvas.height = H;
             const dimPill = document.getElementById("report-dim-pill");
-            if (dimPill && !targetCanvas) dimPill.textContent = `${W} × ${H}`;
+            if (dimPill && !targetCanvas) dimPill.textContent = `${W} × ${H} (9:16)`;
 
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, W, H);
-            drawTvBackgroundLayer(ctx, W, H, forceFallbackBg, effBgMode);
+            drawReportBackgroundLayer(ctx, W, H, forceFallbackBg, effBgMode);
 
             const panelX = panelMarginX;
-            const panelY = Math.round((H - panelH) / 2);
-            drawTvGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, 26, forceFallbackBg, effBgMode);
+            let panelY;
+            if (reportPanelAlign === "top") {
+                panelY = panelMarginY;
+            } else if (reportPanelAlign === "bottom") {
+                panelY = Math.max(panelMarginY, H - panelH - panelMarginY);
+            } else {
+                panelY = Math.round((H - panelH) / 2);
+            }
+            drawReportGlassPanel(ctx, W, H, panelX, panelY, panelW, panelH, 24, forceFallbackBg, effBgMode);
 
-            // 2. Horný nadpis posledného zápasu (1:1 ako na karte Tabuľka)
-            let curY = panelY + topPad;
+            // 2. Horný nadpis posledného zápasu
+            let curY = panelY + lay.topPad;
             const typeTxt = m.type === "4H" ? "ŠTVORHRA 4H" : "DVOJHRA 2H";
-            ctx.fillStyle = "rgba(226, 238, 248, 0.88)";
-            ctx.font = "800 22px sans-serif";
+            ctx.fillStyle = "rgba(226, 238, 248, 0.90)";
+            ctx.font = `800 ${Math.max(17, Math.round(20 * lay.sc))}px sans-serif`;
             ctx.textAlign = "center";
             const repSurfMeta = getSurfaceMeta(m.surface);
             const repSurfTxt = repSurfMeta ? ` · ${repSurfMeta.label.toUpperCase()}` : "";
-            ctx.fillText(`POSLEDNÝ ZÁPAS (#${m.index} · ${typeTxt}${repSurfTxt}) · ${formatDateSk(m.date)}`, W / 2, curY + 22);
-            curY += labelH + 14;
+            ctx.fillText(`POSLEDNÝ ZÁPAS (#${m.index} · ${typeTxt}${repSurfTxt}) · ${formatDateSk(m.date)}`, W / 2, curY + Math.round(lay.labelH * 0.72), innerW);
+            curY += lay.labelH + 12;
 
-            // 3. TV Glass-Neon Scoreboard (1:1 kópia z karty Tabuľka)
-            const sbX = innerX, sbY = curY, sbW = innerW, sbRadius = 16;
-            const setsColW = 94;
-            const gemColW = setsCount <= 3 ? 82 : (setsCount === 4 ? 72 : 64);
+            // 3. TV Glass-Neon Scoreboard
+            const sbX = innerX, sbY = curY, sbW = innerW, sbRadius = 15;
+            const setsColW = 84;
+            const gemColW = setsCount <= 3 ? 72 : (setsCount === 4 ? 62 : 54);
             const teamColW = sbW - setsColW - setsCount * gemColW;
+            const sbRowH = lay.sbRowH;
+            const sbH = lay.sbH;
 
             ctx.save();
             drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
             ctx.clip();
+
+            const teamFontPx = Math.max(24, Math.round(31 * lay.sc));
+            const setsFontPx = Math.max(28, Math.round(35 * lay.sc));
 
             const drawSbRow = (rowIdx, teamLabel, setsVal, isWinnerRow) => {
                 const ry = sbY + rowIdx * sbRowH;
@@ -14115,10 +14470,10 @@
                 ctx.fillStyle = teamGrad;
                 ctx.fillRect(sbX, ry, teamColW, sbRowH);
 
-                ctx.font = "italic 900 34px sans-serif";
+                ctx.font = `italic 900 ${teamFontPx}px sans-serif`;
                 ctx.textAlign = "left";
                 ctx.fillStyle = (!isDraw && !isWinnerRow) ? "rgba(255, 255, 255, 0.70)" : "#ffffff";
-                ctx.fillText(teamLabel, sbX + 26, ry + sbRowH / 2 + 12, teamColW - 44);
+                ctx.fillText(teamLabel, sbX + 22, ry + sbRowH / 2 + Math.round(teamFontPx * 0.35), teamColW - 36);
 
                 const setsX = sbX + teamColW;
                 const setsGrad = ctx.createLinearGradient(setsX, ry, setsX + setsColW, ry + sbRowH);
@@ -14136,9 +14491,9 @@
                 ctx.fillRect(setsX, ry, setsColW, sbRowH);
 
                 ctx.fillStyle = "#051018";
-                ctx.font = "italic 900 38px sans-serif";
+                ctx.font = `italic 900 ${setsFontPx}px sans-serif`;
                 ctx.textAlign = "center";
-                ctx.fillText(`${setsVal}`, setsX + setsColW / 2 - 1, ry + sbRowH / 2 + 13);
+                ctx.fillText(`${setsVal}`, setsX + setsColW / 2 - 1, ry + sbRowH / 2 + Math.round(setsFontPx * 0.35));
 
                 parsedSets.forEach((st, j) => {
                     const gx = setsX + setsColW + j * gemColW;
@@ -14154,9 +14509,9 @@
                     ctx.fillRect(gx, ry, gemColW, sbRowH);
 
                     ctx.fillStyle = gCur < gOpp ? "rgba(255, 255, 255, 0.66)" : "#ffffff";
-                    ctx.font = "italic 900 34px sans-serif";
+                    ctx.font = `italic 900 ${teamFontPx}px sans-serif`;
                     ctx.textAlign = "center";
-                    ctx.fillText(`${gCur}`, gx + gemColW / 2 - 1, ry + sbRowH / 2 + 12);
+                    ctx.fillText(`${gCur}`, gx + gemColW / 2 - 1, ry + sbRowH / 2 + Math.round(teamFontPx * 0.35));
                 });
             };
 
@@ -14182,21 +14537,22 @@
             ctx.stroke();
             ctx.restore();
 
-            curY += sbH + 20;
+            curY += sbH + 16;
 
-            // 4. Riadok bodov a platnosti (rovnaké znenie ako na karte Tabuľka)
+            // 4. Riadok bodov a platnosti
             const topPtsCol = topPts > 0 ? "#6ee7b7" : "rgba(226, 238, 248, 0.82)";
             const botPtsCol = botPts > 0 ? "#fde047" : "rgba(226, 238, 248, 0.82)";
+            const metaFontPx = Math.max(16, Math.round(20 * lay.sc));
             const segs = [
-                { text: "B: ", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
-                { text: topTeam, color: "#ffffff", font: "800 22px sans-serif" },
-                { text: " (", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
-                { text: `+${formatPts(topPts)} b`, color: topPtsCol, font: "800 22px sans-serif" },
-                { text: ")  ·  ", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
-                { text: botTeam, color: "#ffffff", font: "800 22px sans-serif" },
-                { text: " (", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" },
-                { text: `+${formatPts(botPts)} b`, color: botPtsCol, font: "800 22px sans-serif" },
-                { text: ")", color: "rgba(226, 238, 248, 0.86)", font: "600 22px sans-serif" }
+                { text: "B: ", color: "rgba(226, 238, 248, 0.86)", font: `600 ${metaFontPx}px sans-serif` },
+                { text: topTeam, color: "#ffffff", font: `800 ${metaFontPx}px sans-serif` },
+                { text: " (", color: "rgba(226, 238, 248, 0.86)", font: `600 ${metaFontPx}px sans-serif` },
+                { text: `+${formatPts(topPts)} b`, color: topPtsCol, font: `800 ${metaFontPx}px sans-serif` },
+                { text: ")  ·  ", color: "rgba(226, 238, 248, 0.86)", font: `600 ${metaFontPx}px sans-serif` },
+                { text: botTeam, color: "#ffffff", font: `800 ${metaFontPx}px sans-serif` },
+                { text: " (", color: "rgba(226, 238, 248, 0.86)", font: `600 ${metaFontPx}px sans-serif` },
+                { text: `+${formatPts(botPts)} b`, color: botPtsCol, font: `800 ${metaFontPx}px sans-serif` },
+                { text: ")", color: "rgba(226, 238, 248, 0.86)", font: `600 ${metaFontPx}px sans-serif` }
             ];
             let totalSegW = 0;
             segs.forEach(sg => {
@@ -14206,7 +14562,7 @@
             });
             const metaScale = totalSegW > innerW ? (innerW / totalSegW) : 1;
             ctx.save();
-            ctx.translate(W / 2, curY + 22);
+            ctx.translate(W / 2, curY + metaFontPx);
             if (metaScale < 1) ctx.scale(metaScale, metaScale);
             let sx = -totalSegW / 2;
             ctx.textAlign = "left";
@@ -14220,21 +14576,21 @@
 
             if (expText) {
                 ctx.fillStyle = "rgba(226, 238, 248, 0.84)";
-                ctx.font = "600 20px sans-serif";
+                ctx.font = `600 ${Math.max(15, Math.round(18 * lay.sc))}px sans-serif`;
                 ctx.textAlign = "center";
-                ctx.fillText(expText, W / 2, curY + 54);
+                ctx.fillText(expText, W / 2, curY + Math.round(lay.metaH * 0.84), innerW);
             }
-            curY += metaH;
+            curY += lay.metaH;
 
             // 5. Oddeľovač & riadky NEWS / Poznámka / Počasie / Zmena lídra
-            if (measuredItems.length > 0) {
+            if (lay.items.length > 0) {
                 ctx.strokeStyle = "rgba(255, 255, 255, 0.16)";
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.moveTo(innerX, curY + 10);
-                ctx.lineTo(innerX + innerW, curY + 10);
+                ctx.moveTo(innerX, curY + 8);
+                ctx.lineTo(innerX + innerW, curY + 8);
                 ctx.stroke();
-                curY += dividerGap;
+                curY += lay.dividerGap;
 
                 const paletteByKind = {
                     note:    { fill: "rgba(190, 242, 100, 0.13)", stroke: "rgba(190, 242, 100, 0.42)", bar: "#bef264", pillBg: "#bef264", pillTxt: "#052e16" },
@@ -14244,13 +14600,13 @@
                     joke:    { fill: "rgba(4, 16, 28, 0.64)",     stroke: "rgba(255, 255, 255, 0.15)", bar: "#ef4444", pillBg: "#b91c1c", pillTxt: "#ffffff" }
                 };
 
-                measuredItems.forEach((it, idx) => {
+                lay.items.forEach((it, idx) => {
                     const pal = paletteByKind[it.kind] || paletteByKind.match;
                     const cy = curY;
                     const ch = it.cardH;
 
                     ctx.save();
-                    drawRoundedRectPath(ctx, innerX, cy, innerW, ch, 14);
+                    drawRoundedRectPath(ctx, innerX, cy, innerW, ch, 13);
                     ctx.fillStyle = pal.fill;
                     ctx.fill();
                     ctx.strokeStyle = pal.stroke;
@@ -14260,53 +14616,185 @@
                     // Ľavý farebný pásik
                     ctx.clip();
                     ctx.fillStyle = pal.bar;
-                    ctx.fillRect(innerX, cy, 6, ch);
+                    ctx.fillRect(innerX, cy, 5, ch);
                     ctx.restore();
 
-                    // Štítok (TAG) – vykreslí sa, ak nie je prázdny
-                    const tx = innerX + cardAccentOffset + cardPadX - 4;
-                    const ty = cy + 16;
+                    // Štítok (TAG)
+                    const tx = innerX + lay.cardAccentOffset + lay.cardPadX - 4;
+                    const ty = cy + lay.cardPadY;
                     let textTopY = ty;
                     if (it.cleanTag) {
-                        ctx.font = "900 17px sans-serif";
-                        const tagW = Math.min(innerW - 60, ctx.measureText(it.cleanTag).width + 24);
+                        ctx.font = `900 ${lay.tagFontPx}px sans-serif`;
+                        const tagW = Math.min(innerW - 50, ctx.measureText(it.cleanTag).width + 22);
                         ctx.save();
-                        drawRoundedRectPath(ctx, tx, ty, tagW, 28, 7);
+                        drawRoundedRectPath(ctx, tx, ty, tagW, lay.tagH, 6);
                         ctx.fillStyle = pal.pillBg;
                         ctx.fill();
                         ctx.fillStyle = pal.pillTxt;
                         ctx.textAlign = "left";
-                        ctx.fillText(it.cleanTag, tx + 12, ty + 20, tagW - 20);
+                        ctx.fillText(it.cleanTag, tx + 11, ty + Math.round(lay.tagH * 0.72), tagW - 18);
                         ctx.restore();
-                        textTopY = ty + 28 + 10;
+                        textTopY = ty + lay.tagH + lay.tagGap;
                     }
 
                     // Zalamovaný text riadku
                     ctx.fillStyle = "#f8fafc";
-                    ctx.font = "600 23px sans-serif";
+                    ctx.font = `600 ${lay.fontPx}px sans-serif`;
                     ctx.textAlign = "left";
-                    let lineY = textTopY + 22;
+                    let lineY = textTopY + Math.round(lay.fontPx * 0.94);
                     it.lines.forEach(ln => {
                         ctx.fillText(ln, tx, lineY);
-                        lineY += lineH;
+                        lineY += lay.lineH;
                     });
 
-                    curY += ch + (idx < measuredItems.length - 1 ? itemGap : 0);
+                    curY += ch + (idx < lay.items.length - 1 ? lay.itemGap : 0);
                 });
             } else {
-                curY += dividerGap;
+                curY += lay.dividerGap;
             }
 
             // 6. Pätička PNG reportu
-            const footY = panelY + panelH - 20;
-            ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-            ctx.font = "700 18px sans-serif";
+            const footY = panelY + panelH - Math.max(14, Math.round(18 * lay.sc));
+            ctx.fillStyle = "rgba(226, 238, 248, 0.75)";
+            ctx.font = `700 ${Math.max(14, Math.round(17 * lay.sc))}px sans-serif`;
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.47${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.48${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
+        }
+
+        function setupMatchReportCanvasEvents() {
+            const canvas = document.getElementById("reportCanvas");
+            if (!canvas || canvas.dataset.panZoomBound === "1") return;
+            canvas.dataset.panZoomBound = "1";
+
+            let isMouseDragging = false;
+            let dragStartClientX = 0;
+            let dragStartClientY = 0;
+            let dragStartPanX = 0;
+            let dragStartPanY = 0;
+
+            let touchMode = null; // "pan" | "pinch"
+            let pinchStartDist = 0;
+            let pinchStartZoom = 1;
+            let pinchStartPanX = 0;
+            let pinchStartPanY = 0;
+            let pinchStartMidCanvasX = 0;
+            let pinchStartMidCanvasY = 0;
+
+            const clientToCanvas = (clientX, clientY) => {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = REPORT_CANVAS_W / Math.max(1, rect.width);
+                const scaleY = REPORT_CANVAS_H / Math.max(1, rect.height);
+                return {
+                    x: (clientX - rect.left) * scaleX,
+                    y: (clientY - rect.top) * scaleY,
+                    scaleX,
+                    scaleY
+                };
+            };
+
+            canvas.addEventListener("mousedown", e => {
+                if (e.button !== 0 || getEffectiveReportBgMode() !== "custom") return;
+                e.preventDefault();
+                isMouseDragging = true;
+                canvas.classList.add("is-panning");
+                dragStartClientX = e.clientX;
+                dragStartClientY = e.clientY;
+                dragStartPanX = reportPhotoTransform.panX;
+                dragStartPanY = reportPhotoTransform.panY;
+            });
+
+            window.addEventListener("mousemove", e => {
+                if (!isMouseDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const sx = REPORT_CANVAS_W / Math.max(1, rect.width);
+                const sy = REPORT_CANVAS_H / Math.max(1, rect.height);
+                reportPhotoTransform.panX = dragStartPanX + (e.clientX - dragStartClientX) * sx;
+                reportPhotoTransform.panY = dragStartPanY + (e.clientY - dragStartClientY) * sy;
+                scheduleReportCanvasRedraw();
+            });
+
+            window.addEventListener("mouseup", () => {
+                if (!isMouseDragging) return;
+                isMouseDragging = false;
+                canvas.classList.remove("is-panning");
+            });
+
+            canvas.addEventListener("wheel", e => {
+                if (getEffectiveReportBgMode() !== "custom") return;
+                e.preventDefault();
+                const pt = clientToCanvas(e.clientX, e.clientY);
+                const step = e.deltaY < 0 ? 8 : -8;
+                const curPct = Math.round((Number(reportPhotoTransform.zoom) || 1) * 100);
+                setReportPhotoZoom(curPct + step, pt.x, pt.y);
+            }, { passive: false });
+
+            canvas.addEventListener("touchstart", e => {
+                if (getEffectiveReportBgMode() !== "custom") return;
+                if (e.touches.length === 1) {
+                    e.preventDefault();
+                    touchMode = "pan";
+                    dragStartClientX = e.touches[0].clientX;
+                    dragStartClientY = e.touches[0].clientY;
+                    dragStartPanX = reportPhotoTransform.panX;
+                    dragStartPanY = reportPhotoTransform.panY;
+                } else if (e.touches.length >= 2) {
+                    e.preventDefault();
+                    touchMode = "pinch";
+                    const t0 = e.touches[0];
+                    const t1 = e.touches[1];
+                    pinchStartDist = Math.max(10, Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY));
+                    pinchStartZoom = Number(reportPhotoTransform.zoom) || 1;
+                    pinchStartPanX = Number(reportPhotoTransform.panX) || 0;
+                    pinchStartPanY = Number(reportPhotoTransform.panY) || 0;
+                    const mid = clientToCanvas((t0.clientX + t1.clientX) / 2, (t0.clientY + t1.clientY) / 2);
+                    pinchStartMidCanvasX = mid.x;
+                    pinchStartMidCanvasY = mid.y;
+                }
+            }, { passive: false });
+
+            canvas.addEventListener("touchmove", e => {
+                if (getEffectiveReportBgMode() !== "custom" || !touchMode) return;
+                if (touchMode === "pan" && e.touches.length === 1) {
+                    e.preventDefault();
+                    const rect = canvas.getBoundingClientRect();
+                    const sx = REPORT_CANVAS_W / Math.max(1, rect.width);
+                    const sy = REPORT_CANVAS_H / Math.max(1, rect.height);
+                    reportPhotoTransform.panX = dragStartPanX + (e.touches[0].clientX - dragStartClientX) * sx;
+                    reportPhotoTransform.panY = dragStartPanY + (e.touches[0].clientY - dragStartClientY) * sy;
+                    scheduleReportCanvasRedraw();
+                } else if (e.touches.length >= 2) {
+                    e.preventDefault();
+                    const t0 = e.touches[0];
+                    const t1 = e.touches[1];
+                    const dist = Math.max(10, Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY));
+                    const newZoom = Math.max(0.35, Math.min(3.5, pinchStartZoom * (dist / pinchStartDist)));
+                    const ratio = newZoom / pinchStartZoom;
+                    const curMid = clientToCanvas((t0.clientX + t1.clientX) / 2, (t0.clientY + t1.clientY) / 2);
+                    const cx = REPORT_CANVAS_W / 2;
+                    const cy = REPORT_CANVAS_H / 2;
+                    reportPhotoTransform.zoom = newZoom;
+                    reportPhotoTransform.panX = (curMid.x - cx) - (pinchStartMidCanvasX - cx - pinchStartPanX) * ratio;
+                    reportPhotoTransform.panY = (curMid.y - cy) - (pinchStartMidCanvasY - cy - pinchStartPanY) * ratio;
+                    syncReportPhotoControlsUI();
+                    scheduleReportCanvasRedraw();
+                }
+            }, { passive: false });
+
+            canvas.addEventListener("touchend", e => {
+                if (e.touches.length === 0) {
+                    touchMode = null;
+                } else if (e.touches.length === 1 && getEffectiveReportBgMode() === "custom") {
+                    touchMode = "pan";
+                    dragStartClientX = e.touches[0].clientX;
+                    dragStartClientY = e.touches[0].clientY;
+                    dragStartPanX = reportPhotoTransform.panX;
+                    dragStartPanY = reportPhotoTransform.panY;
+                }
+            }, { passive: true });
         }
 
         function openMatchReportModal() {
@@ -16102,7 +16590,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.47! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.48! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -16942,7 +17430,12 @@
                 ["#btn-report-dl-png", "Stiahnuť PNG report", "Exportuje kompletný PNG obrázok posledného zápasu s upravenými riadkami poznámky, počasia a NEWS.", ""],
                 ["#report-bg-btn-default", "Predvolené pozadie", "Použije predvolený obrázok pozadia TV.jpeg (ak nie je dostupný, použije aktívny motív).", ""],
                 ["#report-bg-btn-theme", "Pozadie: Aktuálny farebný motív", "Použije ako pozadie PNG reportu aktuálne zvolený farebný gradient aplikácie (vrátane vlastného motívu).", ""],
-                ["#report-bg-btn-custom", "Pozadie: Vlastná fotka", "Použije vlastnú fotografiu z galérie (ak ešte nie je nahraná, otvorí výber súboru).", ""],
+                ["#report-bg-btn-custom", "Pozadie: Vlastná fotka (9:16)", "Použije vlastnú fotografiu bez 16:9 orezu. Priamo na náhľade ju môžeš posúvať aj zmenšovať/zväčšovať.", ""],
+                ["#btn-report-fit-photo", "Zobraziť celú fotku", "Zmenší fotku tak, aby sa do formátu 9:16 zmestila celá bez odrezania okrajov (ideálne pre fotky na šírku).", ""],
+                ["#btn-report-reset-photo", "Vycentrovať na 100 %", "Vráti fotku na stred a mierku 100 % (vyplnenie celého 9:16 plátna).", ""],
+                ["#report-align-top", "Zarovnať kartu hore", "Posunie kartu zápasu k hornému okraju, aby vynikla spodná časť fotky.", ""],
+                ["#report-align-center", "Zarovnať kartu na stred", "Vycentruje kartu zápasu do stredu 9:16 fotky.", ""],
+                ["#report-align-bottom", "Zarovnať kartu dole", "Posunie kartu zápasu k spodnému okraju, aby vynikla horná časť fotky.", ""],
                 ["#btn-tv-custom-bg, #btn-tv-chart-custom-bg, #btn-report-custom-bg", "Vlastné pozadie", "Vyber vlastnú fotku z galérie – aplikácia ju automaticky prispôsobí ako podklad pod grafiku.", "Zostane aktívne aj po GitHub Sync (predvolené TV.jpeg vráti obnovenie stránky alebo Čistý štart)."],
                 ["#tv-chart-metric-points", "TV Graf – Body", "Zobrazí v televíznom grafe vývoj bodov (2H + 4H).", ""],
                 ["#tv-chart-metric-elo2h", "TV Graf – ELO 2H", "Zobrazí v televíznom grafe vývoj ELO dvojhry (2H).", ""],
@@ -17069,6 +17562,7 @@
             refreshAllViews();
             setupChartCanvasEvents();
             setupTvChartCanvasEvents();
+            setupMatchReportCanvasEvents();
             loadTvSettings();
             ensureTvBackgroundLoaded();
             initGlobalPcTooltips();
