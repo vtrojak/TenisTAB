@@ -4203,7 +4203,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.55</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.56</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4237,7 +4237,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.55</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.56</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4673,13 +4673,13 @@
                     <div class="stat-tile-sub" id="ach-top-collector-count">0 titulov</div>
                 </div>
                 <div class="stat-tile">
-                    <div class="stat-tile-label">Jednotlivci</div>
-                    <div class="stat-tile-value">30</div>
+                    <div class="stat-tile-label">Jednotlivci &amp; Zápasy</div>
+                    <div class="stat-tile-value">32</div>
                     <div class="stat-tile-sub">Kategórie 1 – 3</div>
                 </div>
                 <div class="stat-tile">
-                    <div class="stat-tile-label">Tímy &amp; Zápasy</div>
-                    <div class="stat-tile-value">8</div>
+                    <div class="stat-tile-label">Deblové dvojice</div>
+                    <div class="stat-tile-value">6</div>
                     <div class="stat-tile-sub">Kategória 4</div>
                 </div>
             </div>
@@ -4738,9 +4738,9 @@
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-title-dot" style="background: #e879f9;"></span>
-                        4. Tímové odznaky a zápasové rekordy
+                        4. Tímové odznaky (Deblové dvojice)
                     </div>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">Deblové páry a najväčšie bitky</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);">Rekordy pevných párov vo štvorhre (4H)</span>
                 </div>
                 <div class="ach-grid" id="ach-cat-4"></div>
             </div>
@@ -10222,8 +10222,8 @@
             const calcSniperVal = (p) => (p.gemsMatches >= 3
                 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10
                 : -999);
-            const calcRockyVal = (p) => (p.gemsMatches >= 3
-                ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10
+            const calcRockyVal = (p) => (p.gemsMatches2H >= 3
+                ? Math.round((p.gemsTotal2H / p.gemsMatches2H) * 10) / 10
                 : -1);
             const calcSizyfosVal = (p) => (p.gemsMatches4H >= 3
                 ? Math.round((p.gemsTotal4H / p.gemsMatches4H) * 10) / 10
@@ -10233,10 +10233,10 @@
             computedPlayers.forEach(p => {
                 pStatsMap[p.id] = {
                     id: p.id, name: p.name, color: p.color,
-                    matches: 0, gemsMatches: 0, gemsMatches4H: 0, wins: 0, draws: 0, losses: 0,
+                    matches: 0, gemsMatches: 0, gemsMatches2H: 0, gemsMatches4H: 0, wins: 0, draws: 0, losses: 0,
                     points: 0, pts2H: 0, pts4H: 0,
                     ptsWinter: 0, ptsSummer: 0,
-                    gemsWon: 0, gemsLost: 0, gemsTotal4H: 0,
+                    gemsWon: 0, gemsLost: 0, gemsTotal2H: 0, gemsTotal4H: 0,
                     curWinStreak: 0, maxWinStreak: 0,
                     curLossStreak: 0, maxLossStreak: 0,
                     curUnbeatenStreak: 0, maxUnbeatenStreak: 0,
@@ -10363,7 +10363,10 @@
 
                         if (totalGems > 0) {
                             p.gemsMatches++;
-                            if (m.type === "4H") {
+                            if (m.type === "2H") {
+                                p.gemsMatches2H++;
+                                p.gemsTotal2H += totalGems;
+                            } else if (m.type === "4H") {
                                 p.gemsMatches4H++;
                                 p.gemsTotal4H += totalGems;
                             }
@@ -10530,7 +10533,7 @@
                 uniquePartnersCount: p.partnersSet.size,
                 uniqueDefeated2HCount: p.defeated2HSet.size,
                 avgGemDiff: p.gemsMatches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10 : null,
-                avgTotalGems: p.gemsMatches >= 3 ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10 : null,
+                avgTotalGems2H: p.gemsMatches2H >= 3 ? Math.round((p.gemsTotal2H / p.gemsMatches2H) * 10) / 10 : null,
                 avgTotalGems4H: p.gemsMatches4H >= 3 ? Math.round((p.gemsTotal4H / p.gemsMatches4H) * 10) / 10 : null
             }));
             const hotHandPool = activePlayers.filter(p => p.lastDateObj && diffDays(today, p.lastDateObj) <= HOT_HAND_MAX_INACTIVE_DAYS);
@@ -10577,7 +10580,7 @@
             const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, 0.1);
             const rPhoenix     = findTopHolders(activePlayers, p => p.comebackWins, 1);
             const rMarathoner  = findTopHolders(activePlayers, p => p.marathonCount, 1);
-            const rRockyBalboa = findTopHolders(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, 0.1);
+            const rRockyBalboa = findTopHolders(activePlayers, p => p.avgTotalGems2H !== null ? p.avgTotalGems2H : -1, 0.1);
             const rSizyfos     = findTopHolders(activePlayers, p => p.avgTotalGems4H !== null ? p.avgTotalGems4H : -1, 0.1);
             const rUnlucky        = findTopHolders(activePlayers, p => p.closeLosses, 1);
             const rScalpCollector = findTopHolders(activePlayers, p => p.uniqueDefeated2HCount, 1);
@@ -10931,15 +10934,42 @@
                     held: getHeldInfo("marathoner")
                 },
                 {
+                    id: "steamroller", cat: 2, title: "Parný valec",
+                    desc: steamrollerMatches.length > 0
+                        ? `Najvyšší rozdiel gemov v jednom zápase (${steamrollerMatches.map(m => '#' + m.index + ' ' + formatGemsForOrder(m.gems, m.gems1 >= m.gems2)).join(', ')})`
+                        : "Najvyšší rozdiel gemov v jednom zápase",
+                    scoreSummary: steamrollerMatches.length > 0
+                        ? steamrollerMatches.map(m => formatGemsForOrder(m.gems, m.gems1 >= m.gems2)).join(', ')
+                        : "",
+                    rules: "Najdominantnejšie víťazstvo podľa absolútneho rozdielu vyhratých a prehratých gemov v zápase.",
+                    iconFile: "valec.png", faClass: "fa-solid fa-burst",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: maxGemDiffVal > 0 ? `Rozdiel +${skCount(maxGemDiffVal, "gem", "gemy", "gemov")}` : "—",
+                    holders: steamrollerHolders,
+                    top3: buildTop3Ranking(matchGemDiffList, x => x.val, x => x.label, v => `+${v} g.`, 1),
+                    held: getHeldInfo("steamroller")
+                },
+                {
                     id: "rocky_balboa", cat: 2, title: "Rocky Balboa",
-                    desc: "Najviac odohratých gemov na zápas v priemere (2H + 4H, min. 3 štarty)",
-                    rules: "Priemerný celkový počet odohratých gemov (vyhraté + prehraté) na 1 zápas so zadanými gemami (2H + 4H); podmienkou sú min. 3 takéto zápasy.",
+                    desc: "Najviac odohratých gemov na zápas vo dvojhre (2H, min. 3 štarty)",
+                    rules: "Priemerný celkový počet odohratých gemov (vyhraté + prehraté) na 1 singlový zápas (2H) so zadanými gemami; podmienkou sú min. 3 takéto dvojhry.",
                     iconFile: "rocky_balboa.png", faClass: "fa-solid fa-hand-fist",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
                     valueText: `${Number(rRockyBalboa.value).toFixed(1)} gemu / záp.`,
                     holders: rRockyBalboa.holders,
-                    top3: buildTop3Ranking(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, pName, v => `${Number(v).toFixed(1)} g.`, 0.1),
+                    top3: buildTop3Ranking(activePlayers, p => p.avgTotalGems2H !== null ? p.avgTotalGems2H : -1, pName, v => `${Number(v).toFixed(1)} g.`, 0.1),
                     held: getHeldInfo("rocky_balboa")
+                },
+                {
+                    id: "sizyfos", cat: 2, title: "Sizyfos",
+                    desc: "Najviac odohratých gemov na zápas v štvorhre (4H, min. 3 štarty)",
+                    rules: "Priemerný celkový počet odohratých gemov (vyhraté + prehraté) na 1 deblový zápas (4H) so zadanými gemami; podmienkou sú min. 3 takéto štvorhry.",
+                    iconFile: "sizyfos.png", faClass: "fa-solid fa-hill-rockslide",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${Number(rSizyfos.value).toFixed(1)} gemu / záp.`,
+                    holders: rSizyfos.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.avgTotalGems4H !== null ? p.avgTotalGems4H : -1, pName, v => `${Number(v).toFixed(1)} g.`, 0.1),
+                    held: getHeldInfo("sizyfos")
                 },
                 {
                     id: "unlucky", cat: 2, title: "Smoliar",
@@ -11156,33 +11186,6 @@
                     holders: bestPairPlayers,
                     top3: buildTop3Ranking(pairsList, pr => pr.pts, pr => pr.name, v => `${formatPts(v)} b`, 0.25),
                     held: getHeldInfo("dynamic_duo")
-                },
-                {
-                    id: "steamroller", cat: 4, title: "Parný valec",
-                    desc: steamrollerMatches.length > 0
-                        ? `Najvyšší rozdiel gemov v jednom zápase (${steamrollerMatches.map(m => '#' + m.index + ' ' + formatGemsForOrder(m.gems, m.gems1 >= m.gems2)).join(', ')})`
-                        : "Najvyšší rozdiel gemov v jednom zápase",
-                    scoreSummary: steamrollerMatches.length > 0
-                        ? steamrollerMatches.map(m => formatGemsForOrder(m.gems, m.gems1 >= m.gems2)).join(', ')
-                        : "",
-                    rules: "Najdominantnejšie víťazstvo podľa absolútneho rozdielu vyhratých a prehratých gemov v zápase.",
-                    iconFile: "valec.png", faClass: "fa-solid fa-burst",
-                    theme: "ach-green", accent: "#4ade80", isNegative: false,
-                    valueText: maxGemDiffVal > 0 ? `Rozdiel +${skCount(maxGemDiffVal, "gem", "gemy", "gemov")}` : "—",
-                    holders: steamrollerHolders,
-                    top3: buildTop3Ranking(matchGemDiffList, x => x.val, x => x.label, v => `+${v} g.`, 1),
-                    held: getHeldInfo("steamroller")
-                },
-                {
-                    id: "sizyfos", cat: 4, title: "Sizyfos",
-                    desc: "Najviac odohratých gemov na zápas v štvorhre (4H, min. 3 štarty)",
-                    rules: "Priemerný celkový počet odohratých gemov (vyhraté + prehraté) na 1 deblový zápas (4H) so zadanými gemami; podmienkou sú min. 3 takéto štvorhry.",
-                    iconFile: "sizyfos.png", faClass: "fa-solid fa-hill-rockslide",
-                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
-                    valueText: `${Number(rSizyfos.value).toFixed(1)} gemu / záp.`,
-                    holders: rSizyfos.holders,
-                    top3: buildTop3Ranking(activePlayers, p => p.avgTotalGems4H !== null ? p.avgTotalGems4H : -1, pName, v => `${Number(v).toFixed(1)} g.`, 0.1),
-                    held: getHeldInfo("sizyfos")
                 },
                 {
                     id: "inseparable_pair", cat: 4, title: "Nerozlučná dvojka",
@@ -15379,7 +15382,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.55${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.56${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17309,7 +17312,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.55! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.56! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17880,9 +17883,9 @@
                 rocky_balboa: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
                     const valTxt = a.valueText.replace(".", ",");
-                    return ["ROCKY BALBOA", holders.length > 1
-                        ? `Titul Rocky Balboa za najdlhšie gemové bitky ${achScopeLabel} si delia ${n} – priemerne až ${valTxt}!`
-                        : `Titul Rocky Balboa patrí ${skName(holders[0].name, "dat")} – jeho zápasy ${achScopeLabel} majú priemerne až ${valTxt}!`];
+                    return ["ROCKY BALBOA 2H", holders.length > 1
+                        ? `Titul Rocky Balboa za najdlhšie singlové bitky ${achScopeLabel} si delia ${n} – priemerne až ${valTxt}!`
+                        : `Titul Rocky Balboa patrí ${skName(holders[0].name, "dat")} – jeho dvojhry ${achScopeLabel} majú priemerne až ${valTxt}!`];
                 },
                 sizyfos: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
