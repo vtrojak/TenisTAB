@@ -4203,7 +4203,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.54</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.55</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4237,7 +4237,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.54</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.55</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4674,7 +4674,7 @@
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Jednotlivci</div>
-                    <div class="stat-tile-value">29</div>
+                    <div class="stat-tile-value">30</div>
                     <div class="stat-tile-sub">Kategórie 1 – 3</div>
                 </div>
                 <div class="stat-tile">
@@ -10245,7 +10245,8 @@
                     comebackWins: 0, marathonCount: 0, closeLosses: 0,
                     maxEloGain: 0, maxEloLoss2H: 0,
                     lastDateObj: null, lastDateIso: null, maxGapDays: 0,
-                    partnersSet: new Set()
+                    partnersSet: new Set(),
+                    defeated2HSet: new Set()
                 };
             });
 
@@ -10411,8 +10412,13 @@
                     t2.forEach(p => { if (m.eloDeltaB > p.maxEloGain) p.maxEloGain = m.eloDeltaB; });
                 }
 
-                // Jánošík (najväčšia strata ELO v jednom zápase vo dvojhre 2H)
+                // Jánošík (najväčšia strata ELO v jednom zápase vo dvojhre 2H) & Zberateľ skalpov (rôzni porazení súperi v 2H)
                 if (m.type === "2H") {
+                    if (s1 > s2 && t1[0] && t2[0]) {
+                        t1[0].defeated2HSet.add(t2[0].id);
+                    } else if (s2 > s1 && t1[0] && t2[0]) {
+                        t2[0].defeated2HSet.add(t1[0].id);
+                    }
                     if (typeof m.eloDeltaA === "number" && m.eloDeltaA < 0) {
                         const lossAbs = Math.round(Math.abs(m.eloDeltaA) * 10) / 10;
                         t1.forEach(p => { if (lossAbs > p.maxEloLoss2H) p.maxEloLoss2H = lossAbs; });
@@ -10495,6 +10501,7 @@
                 updateOwnershipFor("rocky_balboa",    getLeaderIdsForMetric(stepPlayers, calcRockyVal, 0.1), dIso);
                 updateOwnershipFor("sizyfos",         getLeaderIdsForMetric(stepPlayers, calcSizyfosVal, 0.1), dIso);
                 updateOwnershipFor("unlucky",         getLeaderIdsForMetric(stepPlayers, p => p.closeLosses, 1), dIso);
+                updateOwnershipFor("scalp_collector", getLeaderIdsForMetric(stepPlayers, p => p.defeated2HSet.size, 1), dIso);
 
                 updateOwnershipFor("points_king",     getLeaderIdsForMetric(stepPlayers, p => p.points, 0.25), dIso);
                 updateOwnershipFor("singles_king",    getLeaderIdsForMetric(stepPlayers, p => p.pts2H, 0.25), dIso);
@@ -10521,6 +10528,7 @@
             const activePlayers = Object.values(pStatsMap).filter(p => p.matches > 0).map(p => ({
                 ...p,
                 uniquePartnersCount: p.partnersSet.size,
+                uniqueDefeated2HCount: p.defeated2HSet.size,
                 avgGemDiff: p.gemsMatches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10 : null,
                 avgTotalGems: p.gemsMatches >= 3 ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10 : null,
                 avgTotalGems4H: p.gemsMatches4H >= 3 ? Math.round((p.gemsTotal4H / p.gemsMatches4H) * 10) / 10 : null
@@ -10571,7 +10579,8 @@
             const rMarathoner  = findTopHolders(activePlayers, p => p.marathonCount, 1);
             const rRockyBalboa = findTopHolders(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, 0.1);
             const rSizyfos     = findTopHolders(activePlayers, p => p.avgTotalGems4H !== null ? p.avgTotalGems4H : -1, 0.1);
-            const rUnlucky     = findTopHolders(activePlayers, p => p.closeLosses, 1);
+            const rUnlucky        = findTopHolders(activePlayers, p => p.closeLosses, 1);
+            const rScalpCollector = findTopHolders(activePlayers, p => p.uniqueDefeated2HCount, 1);
 
             const rPointsKing  = findTopHolders(activePlayers, p => p.points, 0.25);
             const rSinglesKing = findTopHolders(activePlayers, p => p.pts2H, 0.25);
@@ -10942,6 +10951,17 @@
                     holders: rUnlucky.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.closeLosses, pName, v => `${v}×`, 1),
                     held: getHeldInfo("unlucky")
+                },
+                {
+                    id: "scalp_collector", cat: 2, title: "Zberateľ skalpov",
+                    desc: "Najviac rôznych porazených súperov vo dvojhre (2H)",
+                    rules: "Počet unikátnych súperov, ktorých hráč dokázal poraziť v singlových zápasoch (2H) vo zvolenom období.",
+                    iconFile: "zberatel.png", faClass: "fa-solid fa-bullseye",
+                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    valueText: `${skCount(rScalpCollector.value, "skalp", "skalpy", "skalpov")}`,
+                    holders: rScalpCollector.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.uniqueDefeated2HCount, pName, v => `${v}`, 1),
+                    held: getHeldInfo("scalp_collector")
                 },
 
                 // KATEGÓRIA 3: Bodové míľniky a aktivita (14)
@@ -15359,7 +15379,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.54${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.55${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17289,7 +17309,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.54! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.55! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17870,6 +17890,14 @@
                     return ["SIZYFOS 4H", holders.length > 1
                         ? `Nekonečné štvorhry ${achScopeLabel} tlačia do kopca ${n} – priemerne až ${valTxt}!`
                         : `Deblovým Sizyfom ${achScopeLabel} je ${n} – jeho štvorhry sa v priemere natiahnu až na ${valTxt}!`];
+                },
+                scalp_collector: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const num = parseInt(a.valueText, 10) || 0;
+                    const oppTxt = skCount(num, "súpera", "rôznych súperov", "rôznych súperov");
+                    return ["ZBERATEĽ SKALPOV", holders.length > 1
+                        ? `Titul Zberateľ skalpov ${achScopeLabel} si delia ${n} – každý už vo dvojhre porazil ${oppTxt}!`
+                        : `Zberateľom skalpov ${achScopeLabel} je ${n} – vo dvojhre už dokázal poraziť ${oppTxt}!`];
                 },
                 inseparable_pair: (holders, a) => {
                     const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
