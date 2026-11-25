@@ -4203,7 +4203,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.52</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.54</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4237,7 +4237,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.52</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.54</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4679,7 +4679,7 @@
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Tímy &amp; Zápasy</div>
-                    <div class="stat-tile-value">7</div>
+                    <div class="stat-tile-value">8</div>
                     <div class="stat-tile-sub">Kategória 4</div>
                 </div>
             </div>
@@ -10031,7 +10031,8 @@
         }
 
         const ACH_ICON_LEGACY_FALLBACKS = {
-            "terminator.png": "zelezny_muz.png"
+            "terminator.png": "zelezny_muz.png",
+            "rocky_balboa.png": "krv_pot.png"
         };
 
         function handleAchIconError(imgEl) {
@@ -10221,18 +10222,21 @@
             const calcSniperVal = (p) => (p.gemsMatches >= 3
                 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10
                 : -999);
-            const calcBloodSweatVal = (p) => (p.gemsMatches >= 3
+            const calcRockyVal = (p) => (p.gemsMatches >= 3
                 ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10
+                : -1);
+            const calcSizyfosVal = (p) => (p.gemsMatches4H >= 3
+                ? Math.round((p.gemsTotal4H / p.gemsMatches4H) * 10) / 10
                 : -1);
 
             const pStatsMap = {};
             computedPlayers.forEach(p => {
                 pStatsMap[p.id] = {
                     id: p.id, name: p.name, color: p.color,
-                    matches: 0, gemsMatches: 0, wins: 0, draws: 0, losses: 0,
+                    matches: 0, gemsMatches: 0, gemsMatches4H: 0, wins: 0, draws: 0, losses: 0,
                     points: 0, pts2H: 0, pts4H: 0,
                     ptsWinter: 0, ptsSummer: 0,
-                    gemsWon: 0, gemsLost: 0,
+                    gemsWon: 0, gemsLost: 0, gemsTotal4H: 0,
                     curWinStreak: 0, maxWinStreak: 0,
                     curLossStreak: 0, maxLossStreak: 0,
                     curUnbeatenStreak: 0, maxUnbeatenStreak: 0,
@@ -10356,7 +10360,13 @@
                         if (isWinterSeason) p.ptsWinter = Math.round((p.ptsWinter + ptsEarned) * 100) / 100;
                         else if (isSummerSeason) p.ptsSummer = Math.round((p.ptsSummer + ptsEarned) * 100) / 100;
 
-                        if (totalGems > 0) p.gemsMatches++;
+                        if (totalGems > 0) {
+                            p.gemsMatches++;
+                            if (m.type === "4H") {
+                                p.gemsMatches4H++;
+                                p.gemsTotal4H += totalGems;
+                            }
+                        }
                         p.gemsWon += gW;
                         p.gemsLost += gL;
 
@@ -10482,7 +10492,8 @@
                 updateOwnershipFor("sniper",          getLeaderIdsForMetric(stepPlayers, calcSniperVal, 0.1), dIso);
                 updateOwnershipFor("phoenix",         getLeaderIdsForMetric(stepPlayers, p => p.comebackWins, 1), dIso);
                 updateOwnershipFor("marathoner",      getLeaderIdsForMetric(stepPlayers, p => p.marathonCount, 1), dIso);
-                updateOwnershipFor("blood_sweat",     getLeaderIdsForMetric(stepPlayers, calcBloodSweatVal, 0.1), dIso);
+                updateOwnershipFor("rocky_balboa",    getLeaderIdsForMetric(stepPlayers, calcRockyVal, 0.1), dIso);
+                updateOwnershipFor("sizyfos",         getLeaderIdsForMetric(stepPlayers, calcSizyfosVal, 0.1), dIso);
                 updateOwnershipFor("unlucky",         getLeaderIdsForMetric(stepPlayers, p => p.closeLosses, 1), dIso);
 
                 updateOwnershipFor("points_king",     getLeaderIdsForMetric(stepPlayers, p => p.points, 0.25), dIso);
@@ -10511,7 +10522,8 @@
                 ...p,
                 uniquePartnersCount: p.partnersSet.size,
                 avgGemDiff: p.gemsMatches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10 : null,
-                avgTotalGems: p.gemsMatches >= 3 ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10 : null
+                avgTotalGems: p.gemsMatches >= 3 ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10 : null,
+                avgTotalGems4H: p.gemsMatches4H >= 3 ? Math.round((p.gemsTotal4H / p.gemsMatches4H) * 10) / 10 : null
             }));
             const hotHandPool = activePlayers.filter(p => p.lastDateObj && diffDays(today, p.lastDateObj) <= HOT_HAND_MAX_INACTIVE_DAYS);
             const pairsList = Object.values(pairsMap);
@@ -10557,7 +10569,8 @@
             const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, 0.1);
             const rPhoenix     = findTopHolders(activePlayers, p => p.comebackWins, 1);
             const rMarathoner  = findTopHolders(activePlayers, p => p.marathonCount, 1);
-            const rBloodSweat  = findTopHolders(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, 0.1);
+            const rRockyBalboa = findTopHolders(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, 0.1);
+            const rSizyfos     = findTopHolders(activePlayers, p => p.avgTotalGems4H !== null ? p.avgTotalGems4H : -1, 0.1);
             const rUnlucky     = findTopHolders(activePlayers, p => p.closeLosses, 1);
 
             const rPointsKing  = findTopHolders(activePlayers, p => p.points, 0.25);
@@ -10909,15 +10922,15 @@
                     held: getHeldInfo("marathoner")
                 },
                 {
-                    id: "blood_sweat", cat: 2, title: "Krv, pot a slzy",
-                    desc: "Najviac odohratých gemov na zápas v priemere (min. 3 štarty)",
+                    id: "rocky_balboa", cat: 2, title: "Rocky Balboa",
+                    desc: "Najviac odohratých gemov na zápas v priemere (2H + 4H, min. 3 štarty)",
                     rules: "Priemerný celkový počet odohratých gemov (vyhraté + prehraté) na 1 zápas so zadanými gemami (2H + 4H); podmienkou sú min. 3 takéto zápasy.",
-                    iconFile: "krv_pot.png", faClass: "fa-solid fa-stopwatch",
+                    iconFile: "rocky_balboa.png", faClass: "fa-solid fa-hand-fist",
                     theme: "ach-blue", accent: "#38bdf8", isNegative: false,
-                    valueText: `${Number(rBloodSweat.value).toFixed(1)} gemu / záp.`,
-                    holders: rBloodSweat.holders,
+                    valueText: `${Number(rRockyBalboa.value).toFixed(1)} gemu / záp.`,
+                    holders: rRockyBalboa.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, pName, v => `${Number(v).toFixed(1)} g.`, 0.1),
-                    held: getHeldInfo("blood_sweat")
+                    held: getHeldInfo("rocky_balboa")
                 },
                 {
                     id: "unlucky", cat: 2, title: "Smoliar",
@@ -11140,7 +11153,17 @@
                     top3: buildTop3Ranking(matchGemDiffList, x => x.val, x => x.label, v => `+${v} g.`, 1),
                     held: getHeldInfo("steamroller")
                 },
-
+                {
+                    id: "sizyfos", cat: 4, title: "Sizyfos",
+                    desc: "Najviac odohratých gemov na zápas v štvorhre (4H, min. 3 štarty)",
+                    rules: "Priemerný celkový počet odohratých gemov (vyhraté + prehraté) na 1 deblový zápas (4H) so zadanými gemami; podmienkou sú min. 3 takéto štvorhry.",
+                    iconFile: "sizyfos.png", faClass: "fa-solid fa-hill-rockslide",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${Number(rSizyfos.value).toFixed(1)} gemu / záp.`,
+                    holders: rSizyfos.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.avgTotalGems4H !== null ? p.avgTotalGems4H : -1, pName, v => `${Number(v).toFixed(1)} g.`, 0.1),
+                    held: getHeldInfo("sizyfos")
+                },
                 {
                     id: "inseparable_pair", cat: 4, title: "Nerozlučná dvojka",
                     desc: rFreqPair.holders.length > 0
@@ -15336,7 +15359,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.52${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.54${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17266,7 +17289,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.52! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.54! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17834,12 +17857,19 @@
                     const scorePart = a.scoreSummary ? `, ${a.scoreSummary}` : "";
                     return ["PARNÝ VALEC", `Rekordný debakel ${achScopeLabel} (${a.valueText}${scorePart}) ${holders.length > 1 ? "majú" : "má"} na svedomí ${n}.`];
                 },
-                blood_sweat: (holders, a) => {
+                rocky_balboa: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
                     const valTxt = a.valueText.replace(".", ",");
-                    return ["KRV, POT A SLZY", holders.length > 1
-                        ? `Najdlhšie gemové bitky ${achScopeLabel} zvádzajú ${n} – priemerne až ${valTxt}!`
-                        : `Odznak Krv, pot a slzy patrí ${skName(holders[0].name, "dat")} – jeho zápasy ${achScopeLabel} majú priemerne až ${valTxt}!`];
+                    return ["ROCKY BALBOA", holders.length > 1
+                        ? `Titul Rocky Balboa za najdlhšie gemové bitky ${achScopeLabel} si delia ${n} – priemerne až ${valTxt}!`
+                        : `Titul Rocky Balboa patrí ${skName(holders[0].name, "dat")} – jeho zápasy ${achScopeLabel} majú priemerne až ${valTxt}!`];
+                },
+                sizyfos: (holders, a) => {
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["SIZYFOS 4H", holders.length > 1
+                        ? `Nekonečné štvorhry ${achScopeLabel} tlačia do kopca ${n} – priemerne až ${valTxt}!`
+                        : `Deblovým Sizyfom ${achScopeLabel} je ${n} – jeho štvorhry sa v priemere natiahnu až na ${valTxt}!`];
                 },
                 inseparable_pair: (holders, a) => {
                     const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
