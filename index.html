@@ -4203,7 +4203,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.51</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.52</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4237,7 +4237,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.51</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.52</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4674,12 +4674,12 @@
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Jednotlivci</div>
-                    <div class="stat-tile-value">28</div>
+                    <div class="stat-tile-value">29</div>
                     <div class="stat-tile-sub">Kategórie 1 – 3</div>
                 </div>
                 <div class="stat-tile">
                     <div class="stat-tile-label">Tímy &amp; Zápasy</div>
-                    <div class="stat-tile-value">8</div>
+                    <div class="stat-tile-value">7</div>
                     <div class="stat-tile-sub">Kategória 4</div>
                 </div>
             </div>
@@ -10221,6 +10221,9 @@
             const calcSniperVal = (p) => (p.gemsMatches >= 3
                 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10
                 : -999);
+            const calcBloodSweatVal = (p) => (p.gemsMatches >= 3
+                ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10
+                : -1);
 
             const pStatsMap = {};
             computedPlayers.forEach(p => {
@@ -10244,11 +10247,8 @@
 
             const pairsMap = {};
             const matchGemDiffList = [];
-            const matchTotalGemsList = [];
             let maxGemDiffVal = 0;
             let steamrollerMatches = [];
-            let maxTotalGemsVal = 0;
-            let marathonMatches = [];
 
             // Sledovanie doby nepretržitého držania 1. miesta pre každý odznak
             const ownershipSince = {};
@@ -10308,30 +10308,11 @@
                         match: m
                     });
                 }
-                if (totalGems > 0) {
-                    const isTeam2Win = s2 > s1 || (s1 === s2 && g.g2 > g.g1);
-                    const firstTeam = isTeam2Win ? m.teamNameB : m.teamNameA;
-                    const secondTeam = isTeam2Win ? m.teamNameA : m.teamNameB;
-                    matchTotalGemsList.push({
-                        key: m.id,
-                        label: `#${m.index} ${firstTeam} vs ${secondTeam}`,
-                        val: totalGems,
-                        match: m
-                    });
-                }
-
                 if (gemDiff > maxGemDiffVal) {
                     maxGemDiffVal = gemDiff;
                     steamrollerMatches = [m];
                 } else if (gemDiff === maxGemDiffVal && maxGemDiffVal > 0) {
                     steamrollerMatches.push(m);
-                }
-
-                if (totalGems > maxTotalGemsVal) {
-                    maxTotalGemsVal = totalGems;
-                    marathonMatches = [m];
-                } else if (totalGems === maxTotalGemsVal && maxTotalGemsVal > 0) {
-                    marathonMatches.push(m);
                 }
 
                 // Kanáre a tiebreaky
@@ -10501,6 +10482,7 @@
                 updateOwnershipFor("sniper",          getLeaderIdsForMetric(stepPlayers, calcSniperVal, 0.1), dIso);
                 updateOwnershipFor("phoenix",         getLeaderIdsForMetric(stepPlayers, p => p.comebackWins, 1), dIso);
                 updateOwnershipFor("marathoner",      getLeaderIdsForMetric(stepPlayers, p => p.marathonCount, 1), dIso);
+                updateOwnershipFor("blood_sweat",     getLeaderIdsForMetric(stepPlayers, calcBloodSweatVal, 0.1), dIso);
                 updateOwnershipFor("unlucky",         getLeaderIdsForMetric(stepPlayers, p => p.closeLosses, 1), dIso);
 
                 updateOwnershipFor("points_king",     getLeaderIdsForMetric(stepPlayers, p => p.points, 0.25), dIso);
@@ -10523,13 +10505,13 @@
                 updateOwnershipFor("dramatics",        getLeaderIdsForMetric(stepPairs, pr => pr.dramaWins, 1), dIso);
                 updateOwnershipFor("pat_mat",          getLeaderIdsForMetric(stepPairs, pr => pr.losses, 1), dIso);
                 updateOwnershipFor("steamroller",      steamrollerMatches.map(x => x.id), dIso);
-                updateOwnershipFor("blood_sweat",      marathonMatches.map(x => x.id), dIso);
             });
 
             const activePlayers = Object.values(pStatsMap).filter(p => p.matches > 0).map(p => ({
                 ...p,
                 uniquePartnersCount: p.partnersSet.size,
-                avgGemDiff: p.gemsMatches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10 : null
+                avgGemDiff: p.gemsMatches >= 3 ? Math.round(((p.gemsWon - p.gemsLost) / p.gemsMatches) * 10) / 10 : null,
+                avgTotalGems: p.gemsMatches >= 3 ? Math.round(((p.gemsWon + p.gemsLost) / p.gemsMatches) * 10) / 10 : null
             }));
             const hotHandPool = activePlayers.filter(p => p.lastDateObj && diffDays(today, p.lastDateObj) <= HOT_HAND_MAX_INACTIVE_DAYS);
             const pairsList = Object.values(pairsMap);
@@ -10575,6 +10557,7 @@
             const rSniper      = findTopHolders(activePlayers, p => p.avgGemDiff !== null ? p.avgGemDiff : -999, 0.1);
             const rPhoenix     = findTopHolders(activePlayers, p => p.comebackWins, 1);
             const rMarathoner  = findTopHolders(activePlayers, p => p.marathonCount, 1);
+            const rBloodSweat  = findTopHolders(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, 0.1);
             const rUnlucky     = findTopHolders(activePlayers, p => p.closeLosses, 1);
 
             const rPointsKing  = findTopHolders(activePlayers, p => p.points, 0.25);
@@ -10797,9 +10780,6 @@
             const steamrollerHolders = collectPlayersByIds(
                 steamrollerMatches.flatMap(m => (m.gems1 >= m.gems2 ? m.team1 : m.team2))
             );
-            const marathonHolders = collectPlayersByIds(
-                marathonMatches.flatMap(m => [...m.team1, ...m.team2])
-            );
 
             const pName = p => p.name;
 
@@ -10927,6 +10907,17 @@
                     holders: rMarathoner.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.marathonCount, pName, v => `${v}×`, 1),
                     held: getHeldInfo("marathoner")
+                },
+                {
+                    id: "blood_sweat", cat: 2, title: "Krv, pot a slzy",
+                    desc: "Najviac odohratých gemov na zápas v priemere (min. 3 štarty)",
+                    rules: "Priemerný celkový počet odohratých gemov (vyhraté + prehraté) na 1 zápas so zadanými gemami (2H + 4H); podmienkou sú min. 3 takéto zápasy.",
+                    iconFile: "krv_pot.png", faClass: "fa-solid fa-stopwatch",
+                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
+                    valueText: `${Number(rBloodSweat.value).toFixed(1)} gemu / záp.`,
+                    holders: rBloodSweat.holders,
+                    top3: buildTop3Ranking(activePlayers, p => p.avgTotalGems !== null ? p.avgTotalGems : -1, pName, v => `${Number(v).toFixed(1)} g.`, 0.1),
+                    held: getHeldInfo("blood_sweat")
                 },
                 {
                     id: "unlucky", cat: 2, title: "Smoliar",
@@ -11149,28 +11140,7 @@
                     top3: buildTop3Ranking(matchGemDiffList, x => x.val, x => x.label, v => `+${v} g.`, 1),
                     held: getHeldInfo("steamroller")
                 },
-                {
-                    id: "blood_sweat", cat: 4, title: "Krv, pot a slzy",
-                    desc: marathonMatches.length > 0
-                        ? `Najdlhšia bitka podľa počtu gemov (${marathonMatches.map(m => {
-                            const isFirstWinner = (Number(m.sets1) || 0) > (Number(m.sets2) || 0) || ((Number(m.sets1) || 0) === (Number(m.sets2) || 0) && m.gems1 >= m.gems2);
-                            return '#' + m.index + ' ' + formatGemsForOrder(m.gems, isFirstWinner);
-                        }).join(', ')})`
-                        : "Najdlhšia bitka podľa počtu gemov",
-                    scoreSummary: marathonMatches.length > 0
-                        ? marathonMatches.map(m => {
-                            const isFirstWinner = (Number(m.sets1) || 0) > (Number(m.sets2) || 0) || ((Number(m.sets1) || 0) === (Number(m.sets2) || 0) && m.gems1 >= m.gems2);
-                            return formatGemsForOrder(m.gems, isFirstWinner);
-                        }).join(', ')
-                        : "",
-                    rules: "Zápas s najvyšším celkovým súčtom všetkých odohratých gemov oboch strán.",
-                    iconFile: "krv_pot.png", faClass: "fa-solid fa-stopwatch",
-                    theme: "ach-blue", accent: "#38bdf8", isNegative: false,
-                    valueText: maxTotalGemsVal > 0 ? `${skCount(maxTotalGemsVal, "odohratý gem", "odohraté gemy", "odohratých gemov")}` : "—",
-                    holders: marathonHolders,
-                    top3: buildTop3Ranking(matchTotalGemsList, x => x.val, x => x.label, v => `${v} g.`, 1),
-                    held: getHeldInfo("blood_sweat")
-                },
+
                 {
                     id: "inseparable_pair", cat: 4, title: "Nerozlučná dvojka",
                     desc: rFreqPair.holders.length > 0
@@ -15366,7 +15336,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.51${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.52${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17296,7 +17266,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.51! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.52! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17865,8 +17835,11 @@
                     return ["PARNÝ VALEC", `Rekordný debakel ${achScopeLabel} (${a.valueText}${scorePart}) ${holders.length > 1 ? "majú" : "má"} na svedomí ${n}.`];
                 },
                 blood_sweat: (holders, a) => {
-                    const scorePart = a.scoreSummary ? ` (${a.scoreSummary})` : "";
-                    return ["KRV, POT A SLZY", `Najdlhšia bitka ${achScopeLabel} priniesla až ${a.valueText}${scorePart}!`];
+                    const n = skJoinNames(holders, "nom");
+                    const valTxt = a.valueText.replace(".", ",");
+                    return ["KRV, POT A SLZY", holders.length > 1
+                        ? `Najdlhšie gemové bitky ${achScopeLabel} zvádzajú ${n} – priemerne až ${valTxt}!`
+                        : `Odznak Krv, pot a slzy patrí ${skName(holders[0].name, "dat")} – jeho zápasy ${achScopeLabel} majú priemerne až ${valTxt}!`];
                 },
                 inseparable_pair: (holders, a) => {
                     const pNames = Array.isArray(a.pairNames) && a.pairNames.length > 0 ? a.pairNames : [skJoinNames(holders, "nom")];
