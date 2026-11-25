@@ -1468,6 +1468,27 @@
             color: #ffffff;
         }
 
+        .rank-cell {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rank-delta {
+            font-size: 0.66rem;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+        }
+
+        .rank-delta.rank-up { color: var(--win); }
+        .rank-delta.rank-down { color: var(--loss); }
+
+        table.elo-table tbody tr.row-inactive .rank-delta {
+            color: rgba(185, 198, 195, 0.50) !important;
+        }
+
         .elo-pill {
             font-weight: 800;
             font-size: 0.92rem;
@@ -4203,7 +4224,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.57</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.58</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4237,7 +4258,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.57</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.58</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -6809,8 +6830,82 @@
                 const rank = (tieKey === lastKey) ? lastRank : (idx + 1);
                 lastKey = tieKey;
                 lastRank = rank;
-                return { ...p, rank };
+                return { ...p, rank, prevRank: null, rankDelta: 0, rankDeltaMatchIdx: null };
             });
+
+            // Posun poradia oproti stavu tesne pred posledným zápasom (ak patrí do aktuálneho okna)
+            if (computedMatches.length >= 2) {
+                const lastM = computedMatches[computedMatches.length - 1];
+                if (lastM && lastM.isValid) {
+                    const prevMap = {};
+                    state.players.forEach(p => {
+                        prevMap[p.id] = {
+                            id: p.id, name: p.name,
+                            points: 0, pts2H: 0, matches: 0, wins: 0,
+                            lastMatchDate: null, isInactive: false
+                        };
+                    });
+                    for (let i = 0; i < computedMatches.length - 1; i++) {
+                        const pm = computedMatches[i];
+                        [...pm.team1, ...pm.team2].forEach(id => {
+                            const pl = prevMap[id];
+                            if (pl && pm.date && (!pl.lastMatchDate || pm.date > pl.lastMatchDate)) {
+                                pl.lastMatchDate = pm.date;
+                            }
+                        });
+                        if (pm.isValid) {
+                            const s1 = Number(pm.sets1) || 0;
+                            const s2 = Number(pm.sets2) || 0;
+                            pm.team1.forEach(id => {
+                                const pl = prevMap[id];
+                                if (!pl) return;
+                                pl.points = Math.round((pl.points + pm.ptsA) * 100) / 100;
+                                if (pm.type === "2H") pl.pts2H = Math.round((pl.pts2H + pm.ptsA) * 100) / 100;
+                                pl.matches++;
+                                if (s1 > s2) pl.wins++;
+                            });
+                            pm.team2.forEach(id => {
+                                const pl = prevMap[id];
+                                if (!pl) return;
+                                pl.points = Math.round((pl.points + pm.ptsB) * 100) / 100;
+                                if (pm.type === "2H") pl.pts2H = Math.round((pl.pts2H + pm.ptsB) * 100) / 100;
+                                pl.matches++;
+                                if (s2 > s1) pl.wins++;
+                            });
+                        }
+                    }
+                    Object.values(prevMap).forEach(pl => {
+                        if (pl.lastMatchDate) {
+                            const lastDt = parseIsoLocal(pl.lastMatchDate);
+                            if (lastDt) pl.isInactive = diffDays(today, lastDt) >= 365;
+                        }
+                    });
+                    const prevSorted = Object.values(prevMap).sort((a, b) => {
+                        if (a.isInactive !== b.isInactive) return a.isInactive ? 1 : -1;
+                        if (b.points !== a.points) return b.points - a.points;
+                        if (a.matches !== b.matches) return a.matches - b.matches;
+                        if (b.wins !== a.wins) return b.wins - a.wins;
+                        if (b.pts2H !== a.pts2H) return b.pts2H - a.pts2H;
+                        return a.name.localeCompare(b.name, "sk");
+                    });
+                    const prevRankMap = {};
+                    let pLastKey = null, pLastRank = 1;
+                    prevSorted.forEach((p, idx) => {
+                        const tk = `${p.isInactive ? 1 : 0}|${p.points.toFixed(2)}|${p.matches}|${p.wins}|${p.pts2H.toFixed(2)}`;
+                        const r = (tk === pLastKey) ? pLastRank : (idx + 1);
+                        pLastKey = tk;
+                        pLastRank = r;
+                        prevRankMap[p.id] = r;
+                    });
+                    computedPlayers.forEach(p => {
+                        if (!p.isInactive && typeof prevRankMap[p.id] === "number") {
+                            p.prevRank = prevRankMap[p.id];
+                            p.rankDelta = p.prevRank - p.rank;
+                            p.rankDeltaMatchIdx = lastM.index;
+                        }
+                    });
+                }
+            }
 
             // Aktualizácia piluliek v hlavičke
             const headerWinPill = document.getElementById("header-window-pill");
@@ -6869,11 +6964,16 @@
                         gemsWon: 0,
                         gemsLost: 0,
                         form: [],
+                        eloHistoryDeltas: [],
+                        momentum5: null,
                         curWinStreak: 0,
                         curLossStreak: 0,
                         lastMatchDate: null,
                         daysSinceLastMatch: null,
-                        isInactive: false
+                        isInactive: false,
+                        prevRank: null,
+                        rankDelta: 0,
+                        rankDeltaMatchIdx: null
                     };
                 });
                 return map;
@@ -6918,6 +7018,9 @@
             // --- 1. ELO DVOJHRA (2H) – matematika 1:1 z ELO2MASTER ---
             const map2H = initEloMap();
             let last2HMatchDelta = null;
+            let prevSnap2H = null;
+            let last2HMatchIdx = null;
+            const total2HValid = state.matches.filter(m => m.type === "2H" && map2H[m.team1[0]] && map2H[m.team2[0]]).length;
             elo2HMatchesCount = 0;
             elo2HLeaderSnaps = [];
             elo2HTimelinePoints = [{
@@ -6935,6 +7038,14 @@
                 const pB = map2H[m.team2[0]];
                 if (!pA || !pB) return;
 
+                if (total2HValid >= 2 && elo2HMatchesCount === total2HValid - 1) {
+                    prevSnap2H = Object.values(map2H).map(p => ({
+                        id: p.id, name: p.name, elo: p.elo, matches: p.matches,
+                        lastMatchDate: p.lastMatchDate, isInactive: false
+                    }));
+                    const cmLast2 = cmById[m.id];
+                    last2HMatchIdx = cmLast2 ? cmLast2.index : null;
+                }
                 elo2HMatchesCount++;
                 const rA = pA.elo;
                 const rB = pB.elo;
@@ -6984,6 +7095,8 @@
 
                 pA.elo = newEloA;
                 pB.elo = newEloB;
+                pA.eloHistoryDeltas.push(appliedDeltaA);
+                pB.eloHistoryDeltas.push(appliedDeltaB);
                 if (pA.elo > pA.maxElo) pA.maxElo = pA.elo;
                 if (pA.elo < pA.minElo) pA.minElo = pA.elo;
                 if (pB.elo > pB.maxElo) pB.maxElo = pB.elo;
@@ -7019,6 +7132,10 @@
             const map4HPairs = {};
             let last4HMatchDelta = null;
             let last4HPairMatchDelta = null;
+            let prevSnap4H = null;
+            let prevSnap4HPairs = null;
+            let last4HMatchIdx = null;
+            const total4HValid = state.matches.filter(m => m.type === "4H" && map4H[m.team1[0]] && map4H[m.team1[1]] && map4H[m.team2[0]] && map4H[m.team2[1]]).length;
             elo4HMatchesCount = 0;
             elo4HLeaderSnaps = [];
             elo4HPairsLeaderSnaps = [];
@@ -7037,6 +7154,18 @@
                 const pB1 = map4H[m.team2[0]], pB2 = map4H[m.team2[1]];
                 if (!pA1 || !pA2 || !pB1 || !pB2) return;
 
+                if (total4HValid >= 2 && elo4HMatchesCount === total4HValid - 1) {
+                    prevSnap4H = Object.values(map4H).map(p => ({
+                        id: p.id, name: p.name, elo: p.elo, matches: p.matches,
+                        lastMatchDate: p.lastMatchDate, isInactive: false
+                    }));
+                    prevSnap4HPairs = Object.values(map4HPairs).map(pr => ({
+                        id: pr.key, key: pr.key, name: pr.name, elo: pr.elo, matches: pr.matches,
+                        lastMatchDate: pr.lastMatchDate, isInactive: false
+                    }));
+                    const cmLast4 = cmById[m.id];
+                    last4HMatchIdx = cmLast4 ? cmLast4.index : null;
+                }
                 elo4HMatchesCount++;
                 const rA1 = pA1.elo, rA2 = pA2.elo;
                 const rB1 = pB1.elo, rB2 = pB2.elo;
@@ -7078,6 +7207,10 @@
                 pA2.elo = Math.round((rA2 + deltaA) * 10) / 10;
                 pB1.elo = Math.round((rB1 + deltaB) * 10) / 10;
                 pB2.elo = Math.round((rB2 + deltaB) * 10) / 10;
+                pA1.eloHistoryDeltas.push(deltaA);
+                pA2.eloHistoryDeltas.push(deltaA);
+                pB1.eloHistoryDeltas.push(deltaB);
+                pB2.eloHistoryDeltas.push(deltaB);
 
                 [pA1, pA2, pB1, pB2].forEach(p => {
                     if (p.elo > p.maxElo) p.maxElo = p.elo;
@@ -7220,9 +7353,40 @@
                 })
                 .map((p, idx) => ({ ...p, rank: idx + 1 }));
 
+            const attachMomentum = (obj) => {
+                if (Array.isArray(obj.eloHistoryDeltas) && obj.eloHistoryDeltas.length >= 5) {
+                    const last5 = obj.eloHistoryDeltas.slice(-5);
+                    obj.momentum5 = Math.round(last5.reduce((acc, v) => acc + v, 0) * 10) / 10;
+                } else {
+                    obj.momentum5 = null;
+                }
+            };
+            Object.values(map2H).forEach(attachMomentum);
+            Object.values(map4H).forEach(attachMomentum);
+
             computedElo2H = sortEloStandings(Object.values(map2H));
             computedElo4H = sortEloStandings(Object.values(map4H));
             computedElo4HPairs = sortEloStandings(Object.values(map4HPairs));
+
+            const attachEloRankDelta = (currentList, prevSnap, matchIdx, keyField = "id") => {
+                currentList.forEach(item => { item.prevRank = null; item.rankDelta = 0; item.rankDeltaMatchIdx = null; });
+                if (!Array.isArray(prevSnap) || prevSnap.length === 0) return;
+                prevSnap.forEach(finalizeInactivity);
+                const prevRanked = sortEloStandings(prevSnap);
+                const prevRankMap = {};
+                prevRanked.forEach(item => { prevRankMap[item[keyField]] = item.rank; });
+                currentList.forEach(item => {
+                    const k = item[keyField];
+                    if (!item.isInactive && typeof prevRankMap[k] === "number") {
+                        item.prevRank = prevRankMap[k];
+                        item.rankDelta = item.prevRank - item.rank;
+                        item.rankDeltaMatchIdx = matchIdx;
+                    }
+                });
+            };
+            attachEloRankDelta(computedElo2H, prevSnap2H, last2HMatchIdx, "id");
+            attachEloRankDelta(computedElo4H, prevSnap4H, last4HMatchIdx, "id");
+            attachEloRankDelta(computedElo4HPairs, prevSnap4HPairs, last4HMatchIdx, "key");
 
             if (last2HMatchDelta) {
                 const a = computedElo2H.find(p => p.id === last2HMatchDelta.idA);
@@ -7524,6 +7688,17 @@
             }
         }
 
+        function renderRankDeltaHtml(p) {
+            if (!p || !p.rankDelta || p.isInactive) return "";
+            const d = p.rankDelta;
+            const matchPart = p.rankDeltaMatchIdx ? ` po zápase #${p.rankDeltaMatchIdx}` : "";
+            const tip = `Posun${matchPart}: ${p.prevRank}. → ${p.rank}. miesto`;
+            if (d > 0) {
+                return `<span class="rank-delta rank-up" title="${escapeHtml(tip)}">▲${d}</span>`;
+            }
+            return `<span class="rank-delta rank-down" title="${escapeHtml(tip)}">▼${Math.abs(d)}</span>`;
+        }
+
         function renderLeaderboard() {
             renderLastMatchBanner();
 
@@ -7638,7 +7813,7 @@
                         : `<span class="player-color-dot" style="width:8px; height:8px; border-radius:50%; background:${p.color}; display:inline-block; flex-shrink:0;"></span>`;
 
                     tr.innerHTML = `
-                        <td><span class="rank-badge ${rankClass}">${rank}.</span></td>
+                        <td><div class="rank-cell"><span class="rank-badge ${rankClass}">${rank}.</span>${renderRankDeltaHtml(p)}</div></td>
                         <td>
                             <div style="display:flex; align-items:center; gap:6px;">
                                 ${dotsHtml}
@@ -7759,7 +7934,7 @@
                 tr.onclick = () => openPlayerDetail(p.id);
 
                 tr.innerHTML = `
-                    <td><span class="rank-badge ${rankClass}" title="${isTied ? 'Delené ' + p.rank + '. miesto' : p.rank + '. miesto'}">${rankLabel}</span></td>
+                    <td><div class="rank-cell"><span class="rank-badge ${rankClass}" title="${isTied ? 'Delené ' + p.rank + '. miesto' : p.rank + '. miesto'}">${rankLabel}</span>${renderRankDeltaHtml(p)}</div></td>
                     <td>
                         <div style="display:flex; align-items:center; gap:6px;">
                             <span class="player-color-dot" style="width:8px; height:8px; border-radius:50%; background:${p.color}; display:inline-block; flex-shrink:0;"></span>
@@ -13496,8 +13671,8 @@
                 ctx.restore();
 
                 const eCols = [
-                    { label: "POR.",       x: innerX + 55,   align: "center" },
-                    { label: isEloPairs ? "DVOJICA (TÍM)" : "MENO HRÁČA", x: innerX + 125,  align: "left"   },
+                    { label: "POR.",       x: innerX + 46,   align: "center" },
+                    { label: isEloPairs ? "DVOJICA (TÍM)" : "MENO HRÁČA", x: innerX + 132,  align: "left"   },
                     { label: "ELO",        x: innerX + 545,  align: "center" },
                     { label: "ZÁP.",       x: innerX + 735,  align: "center" },
                     { label: "VÝHRY",      x: innerX + 880,  align: "center" },
@@ -13566,6 +13741,15 @@
                     ctx.fillStyle = (!p.isInactive && (p.rank === 1 || p.rank === 2)) ? "#090e1a" : "#ffffff";
                     ctx.fillText(`${p.rank}`, eCols[0].x, textY - 1);
 
+                    if (!p.isInactive && p.rankDelta) {
+                        const rdFont = Math.max(13, Math.round(fontSize * 0.66));
+                        ctx.font = `800 ${rdFont}px sans-serif`;
+                        ctx.textAlign = "left";
+                        ctx.fillStyle = p.rankDelta > 0 ? "#4ade80" : "#f87171";
+                        const rdTxt = p.rankDelta > 0 ? `▲${p.rankDelta}` : `▼${Math.abs(p.rankDelta)}`;
+                        ctx.fillText(rdTxt, eCols[0].x + badgeSize / 2 + 6, ry + rowH / 2 + Math.round(rdFont * 0.36));
+                    }
+
                     const dotR = Math.max(5, Math.round(fontSize * 0.22));
                     let nameOffsetX = dotR * 2 + 12;
                     if (isEloPairs && p.color1 && p.color2) {
@@ -13588,7 +13772,7 @@
                     ctx.font = `800 ${fontSize}px sans-serif`;
                     ctx.textAlign = "left";
                     ctx.fillStyle = p.isInactive ? "rgba(205, 215, 213, 0.62)" : "#ffffff";
-                    ctx.fillText(p.name.toUpperCase(), eCols[1].x + nameOffsetX, textY, 325 - nameOffsetX);
+                    ctx.fillText(p.name.toUpperCase(), eCols[1].x + nameOffsetX, textY, 318 - nameOffsetX);
 
                     ctx.textAlign = "center";
                     ctx.fillStyle = "#a5f3fc";
@@ -13658,8 +13842,8 @@
             ctx.restore();
 
             const cols = [
-                { label: "POR.",       x: innerX + 55,   align: "center" },
-                { label: "MENO HRÁČA", x: innerX + 125,  align: "left"   },
+                { label: "POR.",       x: innerX + 46,   align: "center" },
+                { label: "MENO HRÁČA", x: innerX + 132,  align: "left"   },
                 { label: "BODY",       x: innerX + 530,  align: "center" },
                 { label: "2H",         x: innerX + 695,  align: "center" },
                 { label: "4H",         x: innerX + 835,  align: "center" },
@@ -13743,6 +13927,15 @@
                 ctx.fillStyle = (!p.isInactive && (rank === 1 || rank === 2)) ? "#090e1a" : "#ffffff";
                 ctx.fillText(rankLbl, cols[0].x, textY - 1);
 
+                if (!p.isInactive && p.rankDelta) {
+                    const rdFont = Math.max(13, Math.round(fontSize * 0.66));
+                    ctx.font = `800 ${rdFont}px sans-serif`;
+                    ctx.textAlign = "left";
+                    ctx.fillStyle = p.rankDelta > 0 ? "#4ade80" : "#f87171";
+                    const rdTxt = p.rankDelta > 0 ? `▲${p.rankDelta}` : `▼${Math.abs(p.rankDelta)}`;
+                    ctx.fillText(rdTxt, cols[0].x + badgeSize / 2 + 6, ry + rowH / 2 + Math.round(rdFont * 0.36));
+                }
+
                 const dotR = Math.max(5, Math.round(fontSize * 0.22));
                 ctx.beginPath();
                 ctx.arc(cols[1].x + dotR, ry + rowH / 2, dotR, 0, Math.PI * 2);
@@ -13752,7 +13945,7 @@
                 ctx.font = `800 ${fontSize}px sans-serif`;
                 ctx.textAlign = "left";
                 ctx.fillStyle = p.isInactive ? "rgba(205, 215, 213, 0.62)" : "#ffffff";
-                ctx.fillText(p.name.toUpperCase(), cols[1].x + dotR * 2 + 12, textY, 290);
+                ctx.fillText(p.name.toUpperCase(), cols[1].x + dotR * 2 + 12, textY, 283);
 
                 ctx.textAlign = "center";
                 ctx.fillStyle = "#a5f3fc";
@@ -15387,7 +15580,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.57${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.58${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17612,7 +17805,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.57! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.58! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17787,6 +17980,49 @@
                 const chosen = teamWinPool[(pr.curWinStreak + idx + weatherQuipSeed) % teamWinPool.length];
                 add(chosen.tag, chosen.text);
             });
+
+            // 5b. ELO Momentum (čistý súčet Δ ELO za posledných 5 zápasov, aktívni do 180 dní, prah ±15 ELO)
+            const emitEloMomentumNews = (eloList, is4H) => {
+                const eligible = (eloList || []).filter(p =>
+                    !p.isInactive &&
+                    typeof p.momentum5 === "number" &&
+                    typeof p.daysSinceLastMatch === "number" &&
+                    p.daysSinceLastMatch <= 180
+                );
+                if (eligible.length === 0) return;
+
+                const upRes = getMaxHolders(eligible, p => p.momentum5);
+                if (upRes.holders.length > 0 && upRes.maxVal >= 15.0) {
+                    const nUp = skJoinNames(upRes.holders, "nom");
+                    const vTxt = `+${skNum(upRes.maxVal, 1)}`;
+                    if (is4H) {
+                        add("ELO MOMENTUM 4H", upRes.holders.length > 1
+                            ? `${nUp} sú vo štvorhre na vlne – za posledných 5 deblov nabrali zhodne po ${vTxt} ELO!`
+                            : `${nUp} je vo štvorhre na vlne – za posledných 5 deblov nabral spolu ${vTxt} ELO (najrýchlejší rast v 4H)!`);
+                    } else {
+                        add("ELO MOMENTUM 2H", upRes.holders.length > 1
+                            ? `${nUp} chytili singlovú fazónu – za posledných 5 dvojhier nabrali zhodne po ${vTxt} ELO!`
+                            : `${nUp} chytil singlovú fazónu – za posledných 5 dvojhier nabral spolu ${vTxt} ELO (najrýchlejší rast v lige)!`);
+                    }
+                }
+
+                const downRes = getMinHolders(eligible, p => p.momentum5);
+                if (downRes.holders.length > 0 && downRes.minVal <= -15.0) {
+                    const nDn = skJoinNames(downRes.holders, "nom");
+                    const vTxt = skNum(downRes.minVal, 1);
+                    if (is4H) {
+                        add("ELO OCHLADENIE 4H", downRes.holders.length > 1
+                            ? `${nDn} za posledných 5 štvorhier pustili zhodne po ${vTxt} ELO – v debli čakajú na obrat.`
+                            : `${nDn} za posledných 5 štvorhier pustil spolu ${vTxt} ELO – v debli čaká na obrat.`);
+                    } else {
+                        add("ELO OCHLADENIE 2H", downRes.holders.length > 1
+                            ? `${nDn} za posledných 5 dvojhier pustili zhodne po ${vTxt} ELO – hľadajú stratený singlový rytmus.`
+                            : `${nDn} za posledných 5 dvojhier pustil spolu ${vTxt} ELO – súperi mu v poslednom čase berú drahocenné body.`);
+                    }
+                }
+            };
+            emitEloMomentumNews(computedElo2H, false);
+            emitEloMomentumNews(computedElo4H, true);
 
             // 6. Hráčske štatistiky (zápasy, úspešnosť, gemy, 2H vs 4H špecialisti)
             if (activeRanked.length > 0) {
