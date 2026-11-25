@@ -4203,7 +4203,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.56</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.57</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4237,7 +4237,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.56</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.57</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -14787,6 +14787,11 @@
                 pushUnique("result", "match", pool.resultItem.tag, pool.resultItem.text);
             }
 
+            // 3b. NEWS IMPACT v2 – posun v poradí, prekvapenie kola, premiérový skalp, rekord ELO a jubileá
+            buildMatchImpactItems(m, computedMatches).forEach((imp, idx) => {
+                pushUnique(`impact_${idx}`, imp.kind || "match", imp.tag, imp.text);
+            });
+
             (pool.specialItems || []).forEach((sp, idx) => {
                 pushUnique(`spec_${idx}`, "match", sp.tag, sp.text);
             });
@@ -15382,7 +15387,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.56${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.57${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -16477,19 +16482,19 @@
 
         function getMatchJokePool(matchIndex, isDraw = false) {
             const pool = [
-                { tag: "BEZ TV PRENOSU", text: `Zápas #${matchIndex} z technických príčin nevysielala žiadna TV.` },
+                { tag: "BEZ TV PRENOSU", text: `Zápas #${matchIndex} z technických príčin nevysielala žiadna TV – kameraman vraj zabudol nabiť batériu a sťažoval sa na slabý honorár.` },
                 { tag: "BEZ ROZHODCU", text: `Duel #${matchIndex} sa odohral aj napriek tomu, že hlavný rozhodca sa nedostavil. Podľa očitých svedkov ho videli v blízkej krčme s partiou miestnych štamgastov.` },
                 { tag: "ZÁKULISIE", text: `Zápas #${matchIndex} sa musel zaobísť bez rozhodcu – zákulisné správy tvrdia, že dal prednosť blízkej krčme v spoločnosti veselých slečien.` },
                 { tag: "HAWK-EYE", text: `V zápase #${matchIndex} opäť nefungoval systém Hawk-Eye – všetky sporné auty sa riešili ${getLocationContext().methodAdj}: kto zakričal hlasnejšie, mal pravdu.` },
-                { tag: "ANTIDOPING", text: `Antidopingový komisár po zápase #${matchIndex} odobral vzorky – v krvi hráčov sa našli len stopy horčíka, kofeínu a zanedbateľné množstvo etanolu.` },
-                { tag: "TRIBÚNA", text: `Zápas #${matchIndex} sledoval náhodný okoloidúci, ktorý hľadal skratku do obchodu.` },
+                { tag: "ANTIDOPING", text: `Antidopingový komisár po zápase #${matchIndex} odobral vzorky – v krvi hráčov sa našli len stopy horčíka, kofeínu a stopové množstvo etanolu.` },
+                { tag: "TRIBÚNA", text: `Zápas #${matchIndex} sledovala z tribúny napätá návšteva: jeden znudený holub a náhodný okoloidúci, ktorý hľadal skratku do obchodu.` },
                 { tag: "ZBERAČI", text: `Pre štrajk zberačov loptičiek si hráči v zápase #${matchIndex} museli po každý aut chodiť sami – najviac kilometrov tak nabehali mimo výmen.` },
                 { tag: "STÁVKOVKY", text: `Po výsledku zápasu #${matchIndex} musela jedna nemenovaná stávková kancelária dočasne pozastaviť kurzy na ďalšie kolo.` }
             ];
             if (isDraw) {
-                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde všetci označili za hlavnú príčinu remízy vypršaný čas na kurte.` });
+                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po remízovom dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde všetci označili za hlavného vinníka vypršaný čas na kurte a krivé čiary.` });
             } else {
-                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde porazený označil za hlavného vinníka zlé svetlo, starú omotávku a nový výplet.` });
+                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde porazený označil za hlavného vinníka zlé svetlo, krivé čiary a nový výplet.` });
             }
             return pool;
         }
@@ -16532,8 +16537,8 @@
                 out.push({
                     tag: "TIEBREAKOVÁ DRÁMA",
                     text: isDraw
-                        ? `V zápase #${m.index} sa bojovalo až do tiebreaku! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty na rukách aj na nohách.`
-                        : `Zápas #${m.index} musel rozlúsknuť až tiebreak! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty na rukách aj na nohách.`
+                        ? `V zápase #${m.index} sa bojovalo až do tiebreaku! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty až po lakte.`
+                        : `Zápas #${m.index} musel rozlúsknuť až tiebreak! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty až po lakte.`
                 });
             }
 
@@ -16547,15 +16552,300 @@
                 if (isDraw) {
                     closePool.push(
                         { tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} sa bojovalo o každú loptičku až do spravodlivej remízy.` },
-                        { tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že remíza mu dokonale pristane.` }
+                        { tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že ani sety, ani gemy nechceli nikoho pustiť dopredu – spravodlivá remíza sadla ako uliata.` }
                     );
                 } else {
-                    closePool.push({ tag: "BITKA O KURT", text: `V dueli #${m.index} rozhodli až záverečné minúty a milimetrové auty – presne pre takéto zápasy sa hrá tenis.` });
+                    closePool.push({ tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} rozhodli až posledné nervy a pár centimetrov od čiary – presne pre takéto zápasy sa hrá tenis.` });
                 }
                 out.push(closePool[Math.floor(Math.random() * closePool.length)]);
             } else if (!isDraw && totalBagels === 0 && tiebreaks === 0 && totalG > 0 && diffG >= 7) {
-                out.push({ tag: "JEDNOZNAČNÝ PRIEBEH", text: `Zápas #${m.index} mal jednoznačný priebeh – ${isDoubles ? "víťazná dvojica na kurte nemusela zaradiť" : "víťaz na kurte nemusel zaradiť"} druhý prevodový stupeň.` });
+                out.push({ tag: "JEDNOZNAČNÝ PRIEBEH", text: `Zápas #${m.index} mal jednoznačný priebeh – ${isDoubles ? "víťazná dvojica na kurte takmer nezapla" : "víťaz na kurte takmer nezapol"} druhý prevodový stupeň.` });
             }
+            return out;
+        }
+
+        function computeWindowRankMapBeforeAndAfter(targetMatch, allMatches) {
+            const wm = Number(state.config.windowMonths) || 0;
+            const refDt = targetMatch && targetMatch.date ? parseIsoLocal(targetMatch.date) : getTodayMidnight();
+            const refTimeMs = refDt ? refDt.getTime() : getTodayMidnight().getTime();
+            const inactiveCutoffMs = 365 * 24 * 60 * 60 * 1000;
+
+            const rankSubset = (subset) => {
+                const statsById = {};
+                state.players.forEach(p => {
+                    statsById[p.id] = { id: p.id, name: p.name, points: 0, pts2H: 0, matches: 0, wins: 0, lastTime: null };
+                });
+
+                subset.forEach(pm => {
+                    const dt = parseIsoLocal(pm.date);
+                    const dtTime = dt ? dt.getTime() : 0;
+                    const expDt = wm > 0 ? getMatchValidUntilDate(pm.date, wm) : null;
+                    const expTime = expDt ? expDt.getTime() : Infinity;
+
+                    [...pm.team1, ...pm.team2].forEach(id => {
+                        const st = statsById[id];
+                        if (st && (st.lastTime === null || dtTime > st.lastTime)) st.lastTime = dtTime;
+                    });
+
+                    if (wm === 0 || expTime >= refTimeMs) {
+                        const s1 = Number(pm.sets1) || 0;
+                        const s2 = Number(pm.sets2) || 0;
+                        pm.team1.forEach(id => {
+                            const st = statsById[id];
+                            if (!st) return;
+                            st.points = Math.round((st.points + pm.ptsA) * 100) / 100;
+                            if (pm.type === "2H") st.pts2H = Math.round((st.pts2H + pm.ptsA) * 100) / 100;
+                            st.matches++;
+                            if (s1 > s2) st.wins++;
+                        });
+                        pm.team2.forEach(id => {
+                            const st = statsById[id];
+                            if (!st) return;
+                            st.points = Math.round((st.points + pm.ptsB) * 100) / 100;
+                            if (pm.type === "2H") st.pts2H = Math.round((st.pts2H + pm.ptsB) * 100) / 100;
+                            st.matches++;
+                            if (s2 > s1) st.wins++;
+                        });
+                    }
+                });
+
+                const list = Object.values(statsById)
+                    .filter(st => st.matches > 0)
+                    .map(st => ({
+                        ...st,
+                        isInactive: st.lastTime !== null ? ((refTimeMs - st.lastTime) >= inactiveCutoffMs) : false
+                    }))
+                    .sort((a, b) => {
+                        if (a.isInactive !== b.isInactive) return a.isInactive ? 1 : -1;
+                        if (b.points !== a.points) return b.points - a.points;
+                        if (a.matches !== b.matches) return a.matches - b.matches;
+                        if (b.wins !== a.wins) return b.wins - a.wins;
+                        if (b.pts2H !== a.pts2H) return b.pts2H - a.pts2H;
+                        return a.name.localeCompare(b.name, "sk");
+                    });
+
+                const rankMap = {};
+                let lastKey = null;
+                let lastRank = 1;
+                const ranked = list.map((p, idx) => {
+                    const tieKey = `${p.isInactive ? 1 : 0}|${p.points.toFixed(2)}|${p.matches}|${p.wins}|${p.pts2H.toFixed(2)}`;
+                    const rank = (tieKey === lastKey) ? lastRank : (idx + 1);
+                    lastKey = tieKey;
+                    lastRank = rank;
+                    rankMap[p.id] = rank;
+                    return { ...p, rank };
+                });
+                return { rankMap, ranked };
+            };
+
+            const priorMatches = (allMatches || []).filter(x => x.index < targetMatch.index);
+            const uptoMatches = (allMatches || []).filter(x => x.index <= targetMatch.index);
+            return {
+                before: rankSubset(priorMatches),
+                after: rankSubset(uptoMatches)
+            };
+        }
+
+        function buildMatchImpactItems(m, allMatches) {
+            const out = [];
+            if (!m || !Array.isArray(allMatches) || allMatches.length === 0) return out;
+
+            const s1 = Number(m.sets1) || 0;
+            const s2 = Number(m.sets2) || 0;
+            const isAWin = s1 > s2;
+            const isBWin = s2 > s1;
+            const isDraw = s1 === s2;
+            const participants = [...(m.team1 || []), ...(m.team2 || [])];
+
+            // 1. Posun v bodovom poradí (preskočenie súperov – 1. miesto už pokrýva zmena lídra)
+            const rankSnap = computeWindowRankMapBeforeAndAfter(m, allMatches);
+            const climbers = [];
+            participants.forEach(pid => {
+                const prevRank = rankSnap.before.rankMap[pid];
+                const curRank = rankSnap.after.rankMap[pid];
+                if (typeof prevRank === "number" && typeof curRank === "number" && curRank < prevRank && curRank > 1) {
+                    const gain = prevRank - curRank;
+                    const pl = state.players.find(p => p.id === pid);
+                    if (!pl) return;
+                    const overtakenList = rankSnap.before.ranked
+                        .filter(o => o.id !== pid && o.rank < prevRank && (rankSnap.after.rankMap[o.id] || 999) > curRank)
+                        .sort((a, b) => a.rank - b.rank);
+                    climbers.push({
+                        id: pid,
+                        name: pl.name,
+                        prevRank,
+                        curRank,
+                        gain,
+                        overtaken: overtakenList[0] || null
+                    });
+                }
+            });
+
+            if (climbers.length > 0) {
+                climbers.sort((a, b) => (b.gain - a.gain) || (a.curRank - b.curRank));
+                const bestC = climbers[0];
+                const sameClimb = climbers.filter(c => c.gain === bestC.gain && c.curRank === bestC.curRank);
+                const prieckyTxt = skCount(bestC.gain, "priečka", "priečky", "priečok");
+                if (sameClimb.length === 1) {
+                    const overPart = bestC.overtaken ? ` preskočil ${skName(bestC.overtaken.name, "acc")} a` : "";
+                    out.push({
+                        kind: "match",
+                        tag: "POSUN V TABUĽKE",
+                        text: `${bestC.name} po zápase #${m.index}${overPart} poskočil na ${bestC.curRank}. miesto tabuľky (+${prieckyTxt})!`
+                    });
+                } else {
+                    const namesTxt = skJoinNames(sameClimb, "nom");
+                    out.push({
+                        kind: "match",
+                        tag: "POSUN V TABUĽKE",
+                        text: `${namesTxt} sa po zápase #${m.index} posunuli zhodne na ${bestC.curRank}. miesto tabuľky (+${prieckyTxt})!`
+                    });
+                }
+            }
+
+            // 2. Prekvapenie kola (Upset – víťaz mal pred zápasom ELO šancu pod 35 %)
+            if (!isDraw && typeof m.eloProbA === "number" && typeof m.eloProbB === "number") {
+                const winProb = isAWin ? m.eloProbA : m.eloProbB;
+                const winDelta = isAWin ? m.eloDeltaA : m.eloDeltaB;
+                if (winProb < 0.35 && typeof winDelta === "number" && winDelta > 0) {
+                    const pct = Math.max(1, Math.round(winProb * 100));
+                    const dTxt = `+${skNum(winDelta, 1)}`;
+                    const winName = isAWin ? m.teamNameA : m.teamNameB;
+                    const loseName = isAWin ? m.teamNameB : m.teamNameA;
+                    if (m.type === "2H") {
+                        out.push({
+                            kind: "leader",
+                            tag: "PREKVAPENIE KOLA",
+                            text: `Papierové predpoklady roztrhané! ${winName} mal pred dvojhrou #${m.index} šancu len ${pct} %, no zdolal ${skName(loseName, "acc")} a bral ${dTxt} ELO!`
+                        });
+                    } else {
+                        out.push({
+                            kind: "leader",
+                            tag: "PREKVAPENIE KOLA",
+                            text: `Papierové predpoklady roztrhané! Pár ${winName} mal pred štvorhrou #${m.index} šancu len ${pct} %, no porazil ${loseName} a každý bral ${dTxt} ELO!`
+                        });
+                    }
+                }
+            }
+
+            // 3. Premiérový skalp (prvé víťazstvo nad konkrétnym súperom v histórii 2H)
+            if (m.type === "2H" && !isDraw && m.team1[0] && m.team2[0]) {
+                const winId = isAWin ? m.team1[0] : m.team2[0];
+                const loseId = isAWin ? m.team2[0] : m.team1[0];
+                const winName = isAWin ? m.teamNameA : m.teamNameB;
+                const loseName = isAWin ? m.teamNameB : m.teamNameA;
+
+                const prevMutual = allMatches.filter(x =>
+                    x.type === "2H" && x.index < m.index &&
+                    ((x.team1[0] === winId && x.team2[0] === loseId) || (x.team1[0] === loseId && x.team2[0] === winId))
+                );
+                let prevWins = 0;
+                let prevLossRun = 0;
+                prevMutual.forEach(x => {
+                    const xs1 = Number(x.sets1) || 0, xs2 = Number(x.sets2) || 0;
+                    const xWinId = xs1 > xs2 ? x.team1[0] : (xs2 > xs1 ? x.team2[0] : null);
+                    if (xWinId === winId) prevWins++;
+                });
+                for (let i = prevMutual.length - 1; i >= 0; i--) {
+                    const xm = prevMutual[i];
+                    const xs1 = Number(xm.sets1) || 0, xs2 = Number(xm.sets2) || 0;
+                    const xWinId = xs1 > xs2 ? xm.team1[0] : (xs2 > xs1 ? xm.team2[0] : null);
+                    if (xWinId === loseId) prevLossRun++; else break;
+                }
+
+                if (prevWins === 0) {
+                    if (prevMutual.length >= 1 && prevLossRun < 3) {
+                        out.push({
+                            kind: "match",
+                            tag: "PREMIÉROVÝ SKALP",
+                            text: `${winName} na ${prevMutual.length + 1}. pokus prvýkrát v histórii dvojhier zdolal ${skName(loseName, "acc")}!`
+                        });
+                    } else if (prevMutual.length === 0) {
+                        const loserPrior2H = allMatches.filter(x =>
+                            x.type === "2H" && x.index < m.index && (x.team1[0] === loseId || x.team2[0] === loseId)
+                        ).length;
+                        if (loserPrior2H >= 3) {
+                            out.push({
+                                kind: "match",
+                                tag: "PREMIÉROVÝ SKALP",
+                                text: `${winName} si hneď v prvom vzájomnom singli pripísal premiérový skalp nad ${skName(loseName, "ins")}!`
+                            });
+                        }
+                    }
+                }
+            }
+
+            // 4. Kariérne maximum ELO (min. 5 predchádzajúcich zápasov daného typu)
+            const eloEntries = [...(m.eloTeam1 || []), ...(m.eloTeam2 || [])];
+            const careerHighs = [];
+            eloEntries.forEach(entry => {
+                if (!entry || typeof entry.after !== "number" || typeof entry.before !== "number" || entry.after <= entry.before) return;
+                const priorSameType = allMatches.filter(x =>
+                    x.type === m.type && x.index < m.index &&
+                    ((x.team1 && x.team1.includes(entry.id)) || (x.team2 && x.team2.includes(entry.id)))
+                );
+                if (priorSameType.length < 5) return;
+                const rawP = state.players.find(p => p.id === entry.id);
+                let prevMax = getPlayerBaseElo(rawP);
+                priorSameType.forEach(pm => {
+                    const list = [...(pm.eloTeam1 || []), ...(pm.eloTeam2 || [])];
+                    const hit = list.find(e => e && e.id === entry.id);
+                    if (hit && typeof hit.after === "number" && hit.after > prevMax) prevMax = hit.after;
+                });
+                if (entry.after > prevMax + 0.05) {
+                    careerHighs.push({ id: entry.id, name: entry.name, after: entry.after });
+                }
+            });
+            if (careerHighs.length > 0) {
+                const eloLabel = m.type === "4H" ? "ELO 4H" : "ELO 2H";
+                if (careerHighs.length === 1) {
+                    out.push({
+                        kind: "leader",
+                        tag: "KARIÉRNE MAXIMUM ELO",
+                        text: `${careerHighs[0].name} prepísal vlastný historický rekord v ${eloLabel} – nové osobné maximum je ${skNum(careerHighs[0].after, 1)} ELO!`
+                    });
+                } else {
+                    const parts = careerHighs.map(c => `${c.name} (${skNum(c.after, 1)})`).join(" aj ");
+                    out.push({
+                        kind: "leader",
+                        tag: "KARIÉRNE MAXIMUM ELO",
+                        text: `${parts} prepísali v zápase #${m.index} svoje osobné maximá v ${eloLabel}!`
+                    });
+                }
+            }
+
+            // 5. Okrúhle jubileá (25., 50., 75., 100., 150., 200., 250., 300. zápas alebo víťazstvo)
+            const MILESTONES = new Set([25, 50, 75, 100, 150, 200, 250, 300]);
+            participants.forEach(pid => {
+                const pl = state.players.find(p => p.id === pid);
+                if (!pl) return;
+                let totalM = 0;
+                let totalW = 0;
+                allMatches.forEach(x => {
+                    if (x.index > m.index) return;
+                    const in1 = x.team1 && x.team1.includes(pid);
+                    const in2 = x.team2 && x.team2.includes(pid);
+                    if (!in1 && !in2) return;
+                    totalM++;
+                    const xs1 = Number(x.sets1) || 0, xs2 = Number(x.sets2) || 0;
+                    if ((in1 && xs1 > xs2) || (in2 && xs2 > xs1)) totalW++;
+                });
+                const wonThis = (isAWin && m.team1.includes(pid)) || (isBWin && m.team2.includes(pid));
+                if (MILESTONES.has(totalM)) {
+                    out.push({
+                        kind: "leader",
+                        tag: "JUBILEUM",
+                        text: `Okrúhly míľnik! ${pl.name} nastúpil v zápase #${m.index} na svoj ${totalM}. zápas v histórii TenisTAB!`
+                    });
+                } else if (wonThis && MILESTONES.has(totalW)) {
+                    out.push({
+                        kind: "leader",
+                        tag: "JUBILEJNÉ VÍŤAZSTVO",
+                        text: `Veľký míľnik! ${pl.name} si v zápase #${m.index} pripísal svoje jubilejné ${totalW}. víťazstvo v histórii TenisTAB!`
+                    });
+                }
+            });
+
             return out;
         }
 
@@ -16754,11 +17044,15 @@
                 ? buildRecentMatchPool4H(m, matches)
                 : buildRecentMatchPool2H(m, matches);
 
-            // 7 až 29 dní -> výsledok + poznámka (ak je) alebo 1 doplnková správa
+            // 7 až 29 dní -> výsledok + poznámka (ak je) + prípadný hlavný dopad zápasu
             if (lastAge > 6) {
                 const { resultItem, specialItems, jokeItems } = buildPool(lastM);
+                const impactItems = buildMatchImpactItems(lastM, matches);
                 const noteItem = buildReporterNoteItem(lastM);
-                if (noteItem) return [resultItem, noteItem];
+                if (noteItem) {
+                    return impactItems.length > 0 ? [resultItem, noteItem, impactItems[0]] : [resultItem, noteItem];
+                }
+                if (impactItems.length > 0) return [resultItem, impactItems[0]];
                 const extras = [...specialItems, ...jokeItems];
                 if (extras.length > 0) return [resultItem, extras[Math.floor(Math.random() * extras.length)]];
                 return [resultItem];
@@ -16778,19 +17072,25 @@
                 const noteItem = buildReporterNoteItem(m);
 
                 if (idx === 0) {
+                    const impactItems = buildMatchImpactItems(m, matches);
+                    const topImpacts = impactItems.slice(0, 2);
                     const pickCount = Math.random() < 0.5 ? 2 : 3;
                     const jokeTagSet = new Set(jokeItems.map(j => j.tag));
                     const extras = shuffleNewsArray([
                         ...shuffleNewsArray(specialItems).slice(0, 2),
                         ...shuffleNewsArray(jokeItems).slice(0, 2)
                     ]);
-                    const chosenExtras = extras.slice(0, Math.max(1, pickCount - 1));
+                    const extraSlots = topImpacts.length > 0 ? 1 : Math.max(1, pickCount - 1);
+                    const chosenExtras = extras.slice(0, extraSlots);
                     chosenExtras.forEach(it => {
                         if (jokeTagSet.has(it.tag)) usedJokeTags.add(it.tag);
                     });
-                    const picked = noteItem
-                        ? [resultItem, noteItem, ...chosenExtras]
-                        : [resultItem, ...chosenExtras];
+                    const picked = [
+                        resultItem,
+                        ...(noteItem ? [noteItem] : []),
+                        ...topImpacts,
+                        ...chosenExtras
+                    ];
                     picked.forEach(item => result.push(item));
                 } else {
                     const labeledResult = {
@@ -17312,7 +17612,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.56! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.57! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -17338,7 +17638,7 @@
                 add("BULVÁR", yearTpls[idx % yearTpls.length](p));
             });
 
-            // 2. Čerstvý navrátilec (v posledných 30 dňoch nastúpil po pauze >= 90 dní)
+            // 2. Čerstvý navrátilec (v posledných 30 dňoch nastúpil po pauze >= 90 dní) s reálnym dopadom
             if (matches.length >= 2) {
                 const comebackSeen = new Set();
                 matches.slice(-5).forEach(rm => {
@@ -17346,16 +17646,54 @@
                     if (rmAge < 0 || rmAge > 30) return;
                     const rmUtc = parseIsoToUtcDays(rm.date);
                     if (rmUtc === null) return;
+                    let rmRankSnap = null;
                     [...rm.team1, ...rm.team2].forEach(pid => {
                         if (comebackSeen.has(pid)) return;
                         const prevMatches = matches.filter(m => m.index < rm.index && (m.team1.includes(pid) || m.team2.includes(pid)) && m.date);
                         if (prevMatches.length > 0) {
                             const prevUtc = parseIsoToUtcDays(prevMatches[prevMatches.length - 1].date);
-                            if (prevUtc !== null && (rmUtc - prevUtc) >= 90) {
+                            const gapDays = prevUtc !== null ? (rmUtc - prevUtc) : 0;
+                            if (gapDays >= 90) {
                                 const pl = players.find(x => x.id === pid);
                                 if (pl) {
                                     comebackSeen.add(pid);
-                                    add("JE SPÄŤ", `${pl.name} sa po ${rmUtc - prevUtc}-dňovej pauze vrátil na kurt a hneď zamiešal kartami v tabuľke TenisTAB!`);
+                                    if (!rmRankSnap) rmRankSnap = computeWindowRankMapBeforeAndAfter(rm, matches);
+                                    const inT1 = rm.team1.includes(pid);
+                                    const s1 = Number(rm.sets1) || 0, s2 = Number(rm.sets2) || 0;
+                                    const myS = inT1 ? s1 : s2;
+                                    const oppS = inT1 ? s2 : s1;
+                                    const eloDelta = inT1 ? rm.eloDeltaA : rm.eloDeltaB;
+                                    const eloTag = rm.type === "4H" ? "ELO 4H" : "ELO 2H";
+                                    const hasElo = typeof eloDelta === "number" && !isNaN(eloDelta);
+                                    const eloTxt = hasElo
+                                        ? `${eloDelta > 0 ? "+" : ""}${skNum(eloDelta, 1)} ${eloTag}`
+                                        : "";
+                                    const prevRank = rmRankSnap.before.rankMap[pid];
+                                    const curRank = rmRankSnap.after.rankMap[pid];
+                                    const rankGain = (typeof prevRank === "number" && typeof curRank === "number") ? (prevRank - curRank) : 0;
+
+                                    if (myS > oppS) {
+                                        if (rankGain > 0) {
+                                            const pTxt = skCount(rankGain, "priečka", "priečky", "priečok");
+                                            const ePart = eloTxt ? ` a pripísal si ${eloTxt}` : "";
+                                            add("JE SPÄŤ", `Návrat po ${gapDays} dňoch nebol iba formalitou! ${pl.name} vyhral ${myS}:${oppS}, posunul sa na ${curRank}. miesto (+${pTxt})${ePart}!`);
+                                        } else {
+                                            const rPart = typeof curRank === "number" ? ` a drží ${curRank}. miesto v tabuľke` : "";
+                                            const ePart = eloTxt ? ` (${eloTxt})` : "";
+                                            add("JE SPÄŤ", `${pl.name} sa po ${gapDays}-dňovej pauze vrátil víťazne ${myS}:${oppS}${ePart}${rPart}!`);
+                                        }
+                                    } else if (myS === oppS) {
+                                        const rPart = typeof curRank === "number" ? ` a patrí mu ${curRank}. miesto` : "";
+                                        const ePart = eloTxt ? ` (${eloTxt})` : "";
+                                        add("JE SPÄŤ", `${pl.name} sa po ${gapDays}-dňovej pauze vrátil na kurt remízou ${myS}:${oppS}${ePart}${rPart}.`);
+                                    } else {
+                                        const ePart = eloTxt ? ` (${eloTxt})` : "";
+                                        if (rankGain < 0 && typeof curRank === "number") {
+                                            add("JE SPÄŤ", `Ťažký návrat po ${gapDays} dňoch: ${pl.name} v comebacku podľahol ${myS}:${oppS}${ePart} a klesol na ${curRank}. miesto.`);
+                                        } else {
+                                            add("JE SPÄŤ", `Návrat po ${gapDays}-dňovej pauze zatiaľ nevyšiel – ${pl.name} prehral ${myS}:${oppS}${ePart}, no na rozohranie to stačilo.`);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -17363,46 +17701,51 @@
                 });
             }
 
-            // 3. Líder, boj na čele, najtesnejší susedia a monopol
+            // 3. Líder, boj na čele, najtesnejší susedia a monopol (dynamické prahy bez duplicitného opakovania lídra)
             if (activeRanked.length >= 1) {
                 const top = activeRanked[0];
-                const rank1Tied = activeRanked.filter(p => p.rank === 1);
-                if (rank1Tied.length > 1) {
-                    add("NA TRÓNE", `O čelo TenisTAB v ${wmTxt} sa delia ${skJoinNames(rank1Tied, "nom")} so ziskom ${skPts(top.points, "gen")}.`);
+                const topPts = Math.max(0, Number(top.points) || 0);
+                const dramaThreshold = Math.min(3.0, Math.max(1.0, Math.round(topPts * 0.12 * 100) / 100));
+                const monopolyThreshold = Math.max(2.5, Math.round(topPts * 0.25 * 100) / 100);
+                const gap = activeRanked.length >= 2
+                    ? Math.round((activeRanked[0].points - activeRanked[1].points) * 100) / 100
+                    : 0;
+                const isTiedTop = activeRanked.length >= 2 && gap === 0;
+                const isMonopoly = activeRanked.length >= 2 && gap >= monopolyThreshold;
+
+                if (activeRanked.length === 1) {
+                    add("NA TRÓNE", `Lídrom TenisTAB v ${wmTxt} je ${top.name} so ziskom ${skPts(top.points, "gen")} (2H: ${skNum(top.pts2H, 2)} b · 4H: ${skNum(top.pts4H, 2)} b).`);
+                } else if (isTiedTop) {
+                    const topPtsTied = activeRanked.filter(p => Math.abs(p.points - top.points) < 0.001);
+                    add("DRÁMA NA ČELE", `${skJoinNames(topPtsTied, "nom")} majú na čele tabuľky v ${wmTxt} zhodne po ${skPts(top.points, "loc")} – boj o trón je úplne otvorený!`);
+                } else if (isMonopoly) {
+                    add("MONOPOL", `${top.name} kraľuje tabuľke (${skPts(top.points, "nom")}) s náskokom ${skPts(gap, "gen")} pred ${skName(activeRanked[1].name, "ins")}. Zvyšok ligy vraj tajne rokuje, či mu nepridelia drevenú raketu.`);
                 } else {
                     add("NA TRÓNE", `Lídrom TenisTAB v ${wmTxt} je ${top.name} so ziskom ${skPts(top.points, "gen")} (2H: ${skNum(top.pts2H, 2)} b · 4H: ${skNum(top.pts4H, 2)} b).`);
-                }
-            }
-            if (activeRanked.length >= 2) {
-                const gap = Math.round((activeRanked[0].points - activeRanked[1].points) * 100) / 100;
-                if (gap === 0) {
-                    const topPtsTied = activeRanked.filter(p => Math.abs(p.points - activeRanked[0].points) < 0.001);
-                    add("DRÁMA NA ČELE", `${skJoinNames(topPtsTied, "nom")} majú na čele tabuľky zhodne po ${skPts(activeRanked[0].points, "loc")} – boj o trón je úplne otvorený!`);
-                } else if (gap <= 1.5) {
-                    add("DRÁMA NA ČELE", `${activeRanked[1].name} dýcha na chrbát lídrovi ${skName(activeRanked[0].name, "dat")} – delí ich už len ${skPts(gap, "nom")}!`);
-                } else {
-                    add("BOJ O ČELO", `${activeRanked[1].name} stráca na prvého ${skName(activeRanked[0].name, "acc")} v ${wmTxt} presne ${skPts(gap, "nom")}.`);
-                }
-
-                if (gap >= 4) {
-                    add("MONOPOL", `${activeRanked[0].name} kraľuje tabuľke s náskokom ${skPts(gap, "gen")}. Zvyšok ligy vraj tajne rokuje, či mu do ďalších zápasov nepridelia drevenú raketu.`);
+                    if (gap <= dramaThreshold) {
+                        add("DRÁMA NA ČELE", `${activeRanked[1].name} dýcha na chrbát lídrovi ${skName(top.name, "dat")} – delí ich už len ${skPts(gap, "nom")}!`);
+                    } else {
+                        add("BOJ O ČELO", `${activeRanked[1].name} stráca na prvého ${skName(top.name, "acc")} v ${wmTxt} presne ${skPts(gap, "nom")}.`);
+                    }
                 }
 
                 // Najtesnejší susedia v tabuľke (mimo čela, ktoré už pokrýva DRÁMA NA ČELE)
-                const scoringActive = activeRanked.filter(p => p.points > 0);
-                if (scoringActive.length >= 2) {
-                    let minGap = Infinity, closePair = null;
-                    for (let i = 0; i < scoringActive.length - 1; i++) {
-                        if (gap <= 1.5 && i === 0) continue;
-                        if (gap === 0 && Math.abs(scoringActive[i].points - activeRanked[0].points) < 0.001) continue;
-                        const g = Math.round((scoringActive[i].points - scoringActive[i + 1].points) * 100) / 100;
-                        if (g < minGap) { minGap = g; closePair = [scoringActive[i], scoringActive[i + 1]]; }
-                    }
-                    if (closePair) {
-                        if (minGap === 0) {
-                            add("NA CHLP ROVNAKO", `${closePair[0].name} a ${closePair[1].name} majú v tabuľke zhodne ${skPts(closePair[0].points, "nom")} – rozhodujú až pomocné kritériá!`);
-                        } else {
-                            add("NA CHLP ROVNAKO", `${closePair[0].name} a ${closePair[1].name} sú v tabuľke natlačení na rozdiel iba ${skPts(minGap, "gen")}.`);
+                if (activeRanked.length >= 2) {
+                    const scoringActive = activeRanked.filter(p => p.points > 0);
+                    if (scoringActive.length >= 2) {
+                        let minGap = Infinity, closePair = null;
+                        for (let i = 0; i < scoringActive.length - 1; i++) {
+                            if (gap <= dramaThreshold && i === 0) continue;
+                            if (gap === 0 && Math.abs(scoringActive[i].points - top.points) < 0.001) continue;
+                            const g = Math.round((scoringActive[i].points - scoringActive[i + 1].points) * 100) / 100;
+                            if (g < minGap) { minGap = g; closePair = [scoringActive[i], scoringActive[i + 1]]; }
+                        }
+                        if (closePair) {
+                            if (minGap === 0) {
+                                add("NA CHLP ROVNAKO", `${closePair[0].name} a ${closePair[1].name} majú v tabuľke zhodne ${skPts(closePair[0].points, "nom")} – rozhodujú až pomocné kritériá!`);
+                            } else {
+                                add("NA CHLP ROVNAKO", `${closePair[0].name} a ${closePair[1].name} sú v tabuľke natlačení na rozdiel iba ${skPts(minGap, "gen")}.`);
+                            }
                         }
                     }
                 }
@@ -17516,7 +17859,8 @@
                     const lastActive = activeRanked[activeRanked.length - 1];
                     add("PIVNICA REBRÍČKA", `Aktívnu časť tabuľky zospodu statočne istí ${lastActive.name}. Výhoda? Hlbšie sa už padnúť nedá, cesta vedie len hore (alebo rovno na pivo).`);
                     const classGap = Math.round((topActive.points - lastActive.points) * 100) / 100;
-                    if (classGap >= 6) {
+                    const classGapThreshold = Math.max(4.0, Math.round(topActive.points * 0.55 * 100) / 100);
+                    if (classGap >= classGapThreshold) {
                         add("TRIEDNY ROZDIEL", `Medzi prvým (${topActive.name}) a posledným aktívnym (${lastActive.name}) v tabuľke je priepasť ${skPts(classGap, "gen")}. Na ich zápas by stávkovky vypísali kurz 1,01.`);
                     }
                 }
@@ -17988,6 +18332,79 @@
             }
         }
 
+        function spaceOutNewsByPlayers(items, prevText = "") {
+            if (!Array.isArray(items) || items.length <= 2) return items || [];
+            const isSkLetter = (ch) => !!ch && /[a-záčďéěíĺľňóôŕšťúýž]/i.test(ch);
+
+            const playerTokens = (state.players || []).map(p => {
+                const forms = new Set([
+                    p.name,
+                    skName(p.name, "gen"),
+                    skName(p.name, "dat"),
+                    skName(p.name, "acc"),
+                    skName(p.name, "ins")
+                ].map(f => String(f || "").trim().toLowerCase()).filter(f => f.length >= 3));
+                return { id: p.id, forms: [...forms] };
+            }).filter(pt => pt.forms.length > 0);
+
+            const extractPlayerIds = (text) => {
+                const found = [];
+                const lower = String(text || "").toLowerCase();
+                if (!lower) return found;
+                for (let i = 0; i < playerTokens.length; i++) {
+                    const pt = playerTokens[i];
+                    let matched = false;
+                    for (let j = 0; j < pt.forms.length; j++) {
+                        const tok = pt.forms[j];
+                        let from = 0;
+                        while (true) {
+                            const pos = lower.indexOf(tok, from);
+                            if (pos === -1) break;
+                            const beforeCh = pos > 0 ? lower[pos - 1] : "";
+                            const afterCh = pos + tok.length < lower.length ? lower[pos + tok.length] : "";
+                            if (!isSkLetter(beforeCh) && !isSkLetter(afterCh)) {
+                                matched = true;
+                                break;
+                            }
+                            from = pos + 1;
+                        }
+                        if (matched) break;
+                    }
+                    if (matched) found.push(pt.id);
+                }
+                return found;
+            };
+
+            const pool = items.map(item => ({ item, pids: extractPlayerIds(item.text) }));
+            const result = [];
+            let lastPids = new Set(extractPlayerIds(prevText));
+
+            while (pool.length > 0) {
+                let bestIdx = 0;
+                let bestOverlap = Infinity;
+                for (let i = 0; i < pool.length; i++) {
+                    const cand = pool[i];
+                    let overlap = 0;
+                    for (let k = 0; k < cand.pids.length; k++) {
+                        if (lastPids.has(cand.pids[k])) overlap++;
+                    }
+                    if (overlap === 0) {
+                        bestIdx = i;
+                        bestOverlap = 0;
+                        break;
+                    }
+                    if (overlap < bestOverlap) {
+                        bestOverlap = overlap;
+                        bestIdx = i;
+                    }
+                }
+                const picked = pool.splice(bestIdx, 1)[0];
+                result.push(picked.item);
+                lastPids = new Set(picked.pids);
+            }
+            return result;
+        }
+
         function renderNewsTicker(forceReshuffle = false) {
             const groupA = document.getElementById("news-ticker-group-a");
             const groupB = document.getElementById("news-ticker-group-b");
@@ -17996,8 +18413,16 @@
 
             const locSig = getWeatherLocSig();
             const wm = Number(state.config.windowMonths) || 0;
-            const dataSig = `${state.updatedAt || 0}_${wm}_${badgesScope}_${getEloK()}_${getEloD()}_${locSig}_${computedMatches.length}_${computedPlayers.map(p => p.id + ":" + p.points).join("|")}_${computedMatches.map(m => (m.date || "") + ":" + m.type + ":" + m.sets1 + "-" + m.sets2 + ":" + (m.gems || "") + ":" + (m.note || "")).join("~")}`;
-            const weatherSig = `${homeWeatherFetchedAt}_${homeWeatherFailed ? 1 : 0}_${weatherQuipSeed}`;
+            const dataSig = JSON.stringify({
+                updatedAt: state.updatedAt || 0,
+                wm,
+                badgesScope,
+                elo: { K: getEloK(), D: getEloD() },
+                locSig,
+                players: computedPlayers.map(p => ({ id: p.id, n: p.name, pts: p.points, r: p.rank, m: p.matches, e30: p.expiring30 })),
+                matches: computedMatches.map(m => ({ id: m.id, d: m.date || "", t: m.type, s1: m.sets1, s2: m.sets2, g: m.gems || "", sf: m.surface || "", n: m.note || "" }))
+            });
+            const weatherSig = JSON.stringify({ fetchedAt: homeWeatherFetchedAt, failed: homeWeatherFailed ? 1 : 0, seed: weatherQuipSeed });
             const fullSig = `${dataSig}__${weatherSig}`;
 
             const dataChanged = forceReshuffle || dataSig !== newsDataSignature || cachedOtherNewsItems.length === 0;
@@ -18029,18 +18454,23 @@
                 ...(elo4HReignItem ? [elo4HReignItem] : []),
                 ...(elo4HPairsReignItem ? [elo4HPairsReignItem] : [])
             ];
-            const mergedOther = extraDynamicOther.length > 0
-                ? (forceReshuffle || dataChanged ? shuffleNewsArray([...cachedOtherNewsItems, ...extraDynamicOther]) : [...extraDynamicOther, ...cachedOtherNewsItems])
-                : cachedOtherNewsItems;
-
-            cachedNewsItems = [
+            const headItems = [
                 ...(leaderChangeItem ? [leaderChangeItem] : []),
                 ...(elo2HLeaderChangeItem ? [elo2HLeaderChangeItem] : []),
                 ...(elo4HLeaderChangeItem ? [elo4HLeaderChangeItem] : []),
                 ...(elo4HPairsLeaderChangeItem ? [elo4HPairsLeaderChangeItem] : []),
                 ...cachedRecentNewsItems,
                 ...(weatherItem ? [weatherItem] : []),
-                ...(currentLeaderReignItem ? [currentLeaderReignItem] : []),
+                ...(currentLeaderReignItem ? [currentLeaderReignItem] : [])
+            ];
+            const prevAnchorText = headItems.length > 0 ? headItems[headItems.length - 1].text : "";
+            const rawOther = extraDynamicOther.length > 0
+                ? (forceReshuffle || dataChanged ? shuffleNewsArray([...cachedOtherNewsItems, ...extraDynamicOther]) : [...extraDynamicOther, ...cachedOtherNewsItems])
+                : cachedOtherNewsItems;
+            const mergedOther = spaceOutNewsByPlayers(rawOther, prevAnchorText);
+
+            cachedNewsItems = [
+                ...headItems,
                 ...mergedOther
             ];
 
