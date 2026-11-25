@@ -16477,19 +16477,19 @@
 
         function getMatchJokePool(matchIndex, isDraw = false) {
             const pool = [
-                { tag: "BEZ TV PRENOSU", text: `Zápas #${matchIndex} z technických príčin nevysielala žiadna TV – kameraman vraj zabudol nabiť batériu a sťažoval sa na slabý honorár.` },
+                { tag: "BEZ TV PRENOSU", text: `Zápas #${matchIndex} z technických príčin nevysielala žiadna TV.` },
                 { tag: "BEZ ROZHODCU", text: `Duel #${matchIndex} sa odohral aj napriek tomu, že hlavný rozhodca sa nedostavil. Podľa očitých svedkov ho videli v blízkej krčme s partiou miestnych štamgastov.` },
                 { tag: "ZÁKULISIE", text: `Zápas #${matchIndex} sa musel zaobísť bez rozhodcu – zákulisné správy tvrdia, že dal prednosť blízkej krčme v spoločnosti veselých slečien.` },
                 { tag: "HAWK-EYE", text: `V zápase #${matchIndex} opäť nefungoval systém Hawk-Eye – všetky sporné auty sa riešili ${getLocationContext().methodAdj}: kto zakričal hlasnejšie, mal pravdu.` },
-                { tag: "ANTIDOPING", text: `Antidopingový komisár po zápase #${matchIndex} odobral vzorky – v krvi hráčov sa našli len stopy horčíka, kofeínu a stopové množstvo etanolu.` },
-                { tag: "TRIBÚNA", text: `Zápas #${matchIndex} sledovala z tribúny napätá návšteva: jeden znudený holub a náhodný okoloidúci, ktorý hľadal skratku do obchodu.` },
+                { tag: "ANTIDOPING", text: `Antidopingový komisár po zápase #${matchIndex} odobral vzorky – v krvi hráčov sa našli len stopy horčíka, kofeínu a zanedbateľné množstvo etanolu.` },
+                { tag: "TRIBÚNA", text: `Zápas #${matchIndex} sledoval náhodný okoloidúci, ktorý hľadal skratku do obchodu.` },
                 { tag: "ZBERAČI", text: `Pre štrajk zberačov loptičiek si hráči v zápase #${matchIndex} museli po každý aut chodiť sami – najviac kilometrov tak nabehali mimo výmen.` },
                 { tag: "STÁVKOVKY", text: `Po výsledku zápasu #${matchIndex} musela jedna nemenovaná stávková kancelária dočasne pozastaviť kurzy na ďalšie kolo.` }
             ];
             if (isDraw) {
-                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po remízovom dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde všetci označili za hlavného vinníka vypršaný čas na kurte a krivé čiary.` });
+                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde všetci označili za hlavnú príčinu remízy vypršaný čas na kurte.` });
             } else {
-                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde porazený označil za hlavného vinníka zlé svetlo, krivé čiary a nový výplet.` });
+                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde porazený označil za hlavného vinníka zlé svetlo, starú omotávku a nový výplet.` });
             }
             return pool;
         }
@@ -16532,8 +16532,8 @@
                 out.push({
                     tag: "TIEBREAKOVÁ DRÁMA",
                     text: isDraw
-                        ? `V zápase #${m.index} sa bojovalo až do tiebreaku! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty až po lakte.`
-                        : `Zápas #${m.index} musel rozlúsknuť až tiebreak! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty až po lakte.`
+                        ? `V zápase #${m.index} sa bojovalo až do tiebreaku! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty na rukách aj na nohách.`
+                        : `Zápas #${m.index} musel rozlúsknuť až tiebreak! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty na rukách aj na nohách.`
                 });
             }
 
@@ -16547,14 +16547,14 @@
                 if (isDraw) {
                     closePool.push(
                         { tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} sa bojovalo o každú loptičku až do spravodlivej remízy.` },
-                        { tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že ani sety, ani gemy nechceli nikoho pustiť dopredu – spravodlivá remíza sadla ako uliata.` }
+                        { tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že remíza mu dokonale pristane.` }
                     );
                 } else {
-                    closePool.push({ tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} rozhodli až posledné nervy a pár centimetrov od čiary – presne pre takéto zápasy sa hrá tenis.` });
+                    closePool.push({ tag: "BITKA O KURT", text: `V dueli #${m.index} rozhodli až záverečné minúty a milimetrové auty – presne pre takéto zápasy sa hrá tenis.` });
                 }
                 out.push(closePool[Math.floor(Math.random() * closePool.length)]);
             } else if (!isDraw && totalBagels === 0 && tiebreaks === 0 && totalG > 0 && diffG >= 7) {
-                out.push({ tag: "JEDNOZNAČNÝ PRIEBEH", text: `Zápas #${m.index} mal jednoznačný priebeh – ${isDoubles ? "víťazná dvojica na kurte takmer nezapla" : "víťaz na kurte takmer nezapol"} druhý prevodový stupeň.` });
+                out.push({ tag: "JEDNOZNAČNÝ PRIEBEH", text: `Zápas #${m.index} mal jednoznačný priebeh – ${isDoubles ? "víťazná dvojica na kurte nemusela zaradiť" : "víťaz na kurte nemusel zaradiť"} druhý prevodový stupeň.` });
             }
             return out;
         }
