@@ -3051,6 +3051,572 @@
                 height: 120px;
             }
         }
+        /* KLUBOVŇA – ZLATÁ DLAŽDICA & ČIERNA VITRÍNA SIENE SLÁVY (v1.60) */
+        .klubovna-card {
+            --ach-glow: rgba(234, 179, 8, 0.78);
+            position: relative;
+            overflow: hidden;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #fffdf0 0%, #fef3c7 46%, #fde047 100%);
+            border: 1.8px solid rgba(217, 119, 6, 0.78);
+            box-shadow: 0 10px 26px rgba(120, 53, 15, 0.26), 0 0 22px rgba(250, 204, 21, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.96);
+            transition: transform 0.18s ease, background 0.30s ease, border-color 0.30s ease, box-shadow 0.30s ease;
+        }
+
+        .klubovna-card::before {
+            content: "";
+            position: absolute;
+            top: -40px;
+            left: -40px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.52) 0%, transparent 72%);
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .klubovna-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 20%,
+                rgba(255, 255, 255, 0.65) 50%,
+                rgba(255, 255, 255, 0) 80%
+            );
+            transform: translateX(-130%) skewX(-18deg);
+            pointer-events: none;
+            z-index: 6;
+            opacity: 0;
+        }
+
+        .klubovna-card.ach-flash::after {
+            animation: achLightSweep 0.58s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .klubovna-card.ach-flash {
+            box-shadow: 0 0 0 2px rgba(254, 240, 138, 0.85), 0 0 28px rgba(250, 204, 21, 0.72), 0 12px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .klubovna-card:not(.is-open) {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .klubovna-card:not(.is-open):hover {
+            transform: translateY(-2px);
+            border-color: #eab308;
+            box-shadow: 0 12px 28px rgba(120, 53, 15, 0.32), 0 0 26px rgba(250, 204, 21, 0.40), inset 0 1px 1px rgba(255, 255, 255, 0.98);
+        }
+
+        .klubovna-card.is-open {
+            background: linear-gradient(160deg, #0b0d12 0%, #050608 100%);
+            border-color: rgba(250, 204, 21, 0.74);
+            box-shadow: 0 16px 38px rgba(0, 0, 0, 0.65), 0 0 24px rgba(250, 204, 21, 0.18), inset 0 1px 0 rgba(254, 240, 138, 0.25);
+        }
+
+        .klubovna-card.is-open::before {
+            opacity: 0.10;
+        }
+
+        .klubovna-front {
+            position: relative;
+            z-index: 1;
+            padding: 16px 18px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .klubovna-card.is-open .klubovna-front {
+            display: none;
+        }
+
+        .klubovna-banner-box {
+            width: 100%;
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .klubovna-banner-img {
+            max-width: 100%;
+            max-height: 112px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 5px 12px rgba(120, 53, 15, 0.30));
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+
+        .klubovna-card:not(.is-open):hover .klubovna-banner-img {
+            transform: scale(1.03);
+        }
+
+        .klubovna-banner-fallback {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 4px;
+            padding: 6px 10px;
+        }
+
+        .klubovna-fallback-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.55rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            color: #422006;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85), 0 4px 12px rgba(161, 98, 7, 0.24);
+        }
+
+        .klubovna-fallback-title i {
+            color: #b45309;
+            font-size: 1.45rem;
+        }
+
+        .klubovna-fallback-sub {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #78350f;
+            letter-spacing: 0.4px;
+        }
+
+        .klubovna-front-foot {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-top: 9px;
+            border-top: 1px solid rgba(180, 83, 9, 0.24);
+        }
+
+        .klubovna-front-meta {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: #78350f;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .klubovna-open-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #92400e 0%, #713f12 100%);
+            border: 1px solid rgba(254, 240, 138, 0.55);
+            color: #fef9c3;
+            font-size: 0.71rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 6px rgba(66, 32, 6, 0.30);
+        }
+
+        /* Otvorená čierna vitrína */
+        .klubovna-back {
+            display: none;
+            position: relative;
+            z-index: 1;
+            padding: 16px 15px 18px;
+            flex-direction: column;
+            gap: 16px;
+            color: #ffffff;
+        }
+
+        .klubovna-card.is-open .klubovna-back {
+            display: flex;
+            animation: fadeIn 0.24s ease-out;
+        }
+
+        .klubovna-back-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 11px;
+            border-bottom: 1px solid rgba(250, 204, 21, 0.30);
+            cursor: pointer;
+            flex-wrap: wrap;
+        }
+
+        .klubovna-back-title-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .klubovna-back-title {
+            font-size: 1.05rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #fde047;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        .klubovna-back-sub {
+            font-size: 0.72rem;
+            color: rgba(226, 232, 240, 0.76);
+            font-weight: 600;
+        }
+
+        .klubovna-close-btn {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(250, 204, 21, 0.14);
+            border: 1px solid rgba(250, 204, 21, 0.55);
+            color: #fef08a;
+            font-size: 0.74rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.16s ease, transform 0.1s ease;
+        }
+
+        .klubovna-close-btn:hover {
+            background: rgba(250, 204, 21, 0.26);
+            color: #ffffff;
+        }
+
+        .klubovna-close-btn:active {
+            transform: scale(0.96);
+        }
+
+        .klubovna-sec-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #fde047;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .klubovna-sec-note {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: rgba(203, 213, 225, 0.76);
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .klubovna-gs-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+            padding: 9px 11px;
+            border-radius: 12px;
+            background: rgba(250, 204, 21, 0.08);
+            border: 1px solid rgba(250, 204, 21, 0.28);
+            align-items: center;
+        }
+
+        .klubovna-gs-label {
+            font-size: 0.70rem;
+            font-weight: 800;
+            color: #fde047;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 4px;
+        }
+
+        .klubovna-year-block {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(250, 204, 21, 0.24);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .klubovna-year-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .klubovna-year-block.is-ongoing {
+            border-style: dashed;
+            border-color: rgba(190, 242, 100, 0.45);
+            background: rgba(190, 242, 100, 0.04);
+        }
+
+        .klubovna-year-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+            flex-wrap: wrap;
+        }
+
+        .klubovna-year-num {
+            font-size: 0.98rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 0.6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .klubovna-year-pill {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .klubovna-year-pill.closed {
+            background: rgba(250, 204, 21, 0.16);
+            border: 1px solid rgba(250, 204, 21, 0.45);
+            color: #fde047;
+        }
+
+        .klubovna-year-pill.ongoing {
+            background: rgba(190, 242, 100, 0.15);
+            border: 1px solid rgba(190, 242, 100, 0.48);
+            color: var(--tennis-lime);
+        }
+
+        .klubovna-trophies-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .klubovna-trophy-item {
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            padding: 10px 9px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+        }
+
+        .klubovna-trophy-item.t-overall { border-color: rgba(250, 204, 21, 0.45); background: linear-gradient(180deg, rgba(250, 204, 21, 0.10), rgba(10, 14, 22, 0.82)); }
+        .klubovna-trophy-item.t-2h      { border-color: rgba(56, 189, 248, 0.42); background: linear-gradient(180deg, rgba(56, 189, 248, 0.10), rgba(10, 14, 22, 0.82)); }
+        .klubovna-trophy-item.t-4h      { border-color: rgba(192, 132, 252, 0.42); background: linear-gradient(180deg, rgba(192, 132, 252, 0.10), rgba(10, 14, 22, 0.82)); }
+
+        .klubovna-trophy-ico-box {
+            width: 68px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .klubovna-trophy-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+
+        .klubovna-trophy-fallback {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.55rem;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+        }
+
+        .klubovna-trophy-cat {
+            font-size: 0.67rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            color: rgba(226, 232, 240, 0.82);
+        }
+
+        .klubovna-trophy-item.t-overall .klubovna-trophy-cat { color: #fde047; }
+        .klubovna-trophy-item.t-2h .klubovna-trophy-cat      { color: #7dd3fc; }
+        .klubovna-trophy-item.t-4h .klubovna-trophy-cat      { color: #e9d5ff; }
+
+        .klubovna-trophy-val {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: rgba(203, 213, 225, 0.84);
+        }
+
+        .klubovna-chips {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .klubovna-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            color: #ffffff;
+            font-size: 0.73rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+        }
+
+        .klubovna-chip:hover {
+            background: rgba(250, 204, 21, 0.22);
+            border-color: #fde047;
+            color: #fef9c3;
+        }
+
+        .klubovna-chip:active {
+            transform: scale(0.96);
+        }
+
+        .klubovna-chip-sub {
+            font-size: 0.66rem;
+            font-weight: 700;
+            color: rgba(226, 232, 240, 0.72);
+        }
+
+        /* Špeciálne trofeje – Klub 5 / 10 / 20 / 50 / 100 */
+        .klubovna-milestones-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .klubovna-milestone-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 13px;
+            padding: 11px 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+        }
+
+        .klubovna-milestone-card.is-wide {
+            grid-column: 1 / -1;
+        }
+
+        .klubovna-milestone-ico {
+            width: 64px;
+            height: 64px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .klubovna-milestone-fallback {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            border: 1.5px solid rgba(255, 255, 255, 0.28);
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .klubovna-milestone-body {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .klubovna-milestone-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .klubovna-milestone-title {
+            font-size: 0.88rem;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .klubovna-milestone-rule {
+            font-size: 0.69rem;
+            color: rgba(203, 213, 225, 0.76);
+            font-weight: 600;
+        }
+
+        .klubovna-milestone-body .klubovna-chips {
+            justify-content: flex-start;
+        }
+
+        @media (max-width: 640px) {
+            .klubovna-trophies-grid {
+                grid-template-columns: 1fr;
+            }
+            .klubovna-trophy-item {
+                flex-direction: row;
+                text-align: left;
+                padding: 9px 11px;
+                gap: 11px;
+            }
+            .klubovna-trophy-ico-box {
+                width: 58px;
+                height: 58px;
+            }
+            .klubovna-trophy-item .klubovna-chips {
+                justify-content: flex-start;
+            }
+            .klubovna-milestones-grid {
+                grid-template-columns: 1fr;
+            }
+            .klubovna-milestone-card.is-wide {
+                grid-column: auto;
+            }
+            .klubovna-fallback-title {
+                font-size: 1.32rem;
+                letter-spacing: 2px;
+            }
+        }
+
 
         @media (max-width: 370px) {
             .ach-crest {
@@ -4224,7 +4790,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.58</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.60</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -4258,7 +4824,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.58</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.60</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -4717,6 +5283,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- KLUBOVŇA (SIEŇ SLÁVY – ROČNÍKY & KLUBY MÍĽNIKOV) -->
+            <div id="klubovna-wrap" style="margin-bottom: 14px;"></div>
 
             <!-- KATEGÓRIA 1 -->
             <div class="card">
@@ -10207,7 +10776,10 @@
 
         const ACH_ICON_LEGACY_FALLBACKS = {
             "terminator.png": "zelezny_muz.png",
-            "rocky_balboa.png": "krv_pot.png"
+            "rocky_balboa.png": "krv_pot.png",
+            "trofej_celkovo.png": "trofej.png",
+            "trofej_2h.png": "trofej.png",
+            "trofej_4h.png": "trofej.png"
         };
 
         function handleAchIconError(imgEl) {
@@ -11436,8 +12008,383 @@
             ];
         }
 
+        let klubovnaOpen = false;
+
+        function buildKlubovnaData() {
+            const allMatches = computedMatches || [];
+            const playersById = {};
+            state.players.forEach((p, idx) => {
+                playersById[p.id] = {
+                    id: p.id,
+                    name: p.name,
+                    color: p.color || PLAYER_COLORS[idx % PLAYER_COLORS.length]
+                };
+            });
+
+            // 1. Ročníky (kalendárny rok 1. 1. – 31. 12.)
+            const currentYear = getTodayMidnight().getFullYear();
+            const yearsMap = {};
+            allMatches.forEach(m => {
+                const dt = parseIsoLocal(m.date);
+                if (!dt) return;
+                const yr = dt.getFullYear();
+                if (!yearsMap[yr]) yearsMap[yr] = [];
+                yearsMap[yr].push(m);
+            });
+
+            const sortedYears = Object.keys(yearsMap).map(Number).sort((a, b) => b - a);
+            const seasons = sortedYears.map(yr => {
+                const yMatches = yearsMap[yr];
+                const stMap = {};
+                const ensureSt = (pid) => {
+                    if (!stMap[pid]) {
+                        const info = playersById[pid] || { id: pid, name: pid, color: "#94a3b8" };
+                        stMap[pid] = {
+                            id: info.id, name: info.name, color: info.color,
+                            points: 0, matches: 0, wins: 0, draws: 0, losses: 0,
+                            pts2H: 0, m2H: 0, w2H: 0, d2H: 0, l2H: 0,
+                            pts4H: 0, m4H: 0, w4H: 0, d4H: 0, l4H: 0
+                        };
+                    }
+                    return stMap[pid];
+                };
+
+                let count2H = 0, count4H = 0;
+                yMatches.forEach(m => {
+                    const s1 = Number(m.sets1) || 0;
+                    const s2 = Number(m.sets2) || 0;
+                    const is4H = m.type === "4H";
+                    if (is4H) count4H++; else count2H++;
+
+                    const applySide = (teamIds, ptsEarned, myS, oppS) => {
+                        teamIds.forEach(pid => {
+                            const st = ensureSt(pid);
+                            st.matches++;
+                            st.points = Math.round((st.points + ptsEarned) * 100) / 100;
+                            if (myS > oppS) st.wins++;
+                            else if (myS < oppS) st.losses++;
+                            else st.draws++;
+
+                            if (is4H) {
+                                st.m4H++;
+                                st.pts4H = Math.round((st.pts4H + ptsEarned) * 100) / 100;
+                                if (myS > oppS) st.w4H++;
+                                else if (myS < oppS) st.l4H++;
+                                else st.d4H++;
+                            } else {
+                                st.m2H++;
+                                st.pts2H = Math.round((st.pts2H + ptsEarned) * 100) / 100;
+                                if (myS > oppS) st.w2H++;
+                                else if (myS < oppS) st.l2H++;
+                                else st.d2H++;
+                            }
+                        });
+                    };
+
+                    applySide(m.team1 || [], m.ptsA || 0, s1, s2);
+                    applySide(m.team2 || [], m.ptsB || 0, s2, s1);
+                });
+
+                const list = Object.values(stMap);
+
+                const pickSeasonWinners = (arr, filterFn, cmpFn, tieKeyFn) => {
+                    const cand = arr.filter(filterFn).sort(cmpFn);
+                    if (cand.length === 0) return [];
+                    const topKey = tieKeyFn(cand[0]);
+                    return cand.filter(x => tieKeyFn(x) === topKey);
+                };
+
+                const overallWinners = pickSeasonWinners(
+                    list,
+                    p => p.matches > 0 && p.points > 0,
+                    (a, b) => (b.points - a.points) || (a.matches - b.matches) || (b.wins - a.wins) || (b.pts2H - a.pts2H) || a.name.localeCompare(b.name, "sk"),
+                    p => `${p.points.toFixed(2)}|${p.matches}|${p.wins}|${p.pts2H.toFixed(2)}`
+                );
+
+                const singlesWinners = pickSeasonWinners(
+                    list,
+                    p => p.m2H > 0 && p.pts2H > 0,
+                    (a, b) => (b.pts2H - a.pts2H) || (a.m2H - b.m2H) || (b.w2H - a.w2H) || a.name.localeCompare(b.name, "sk"),
+                    p => `${p.pts2H.toFixed(2)}|${p.m2H}|${p.w2H}`
+                );
+
+                const doublesWinners = pickSeasonWinners(
+                    list,
+                    p => p.m4H > 0 && p.pts4H > 0,
+                    (a, b) => (b.pts4H - a.pts4H) || (a.m4H - b.m4H) || (b.w4H - a.w4H) || a.name.localeCompare(b.name, "sk"),
+                    p => `${p.pts4H.toFixed(2)}|${p.m4H}|${p.w4H}`
+                );
+
+                return {
+                    year: yr,
+                    isOngoing: yr >= currentYear,
+                    totalMatches: yMatches.length,
+                    count2H,
+                    count4H,
+                    overallWinners,
+                    singlesWinners,
+                    doublesWinners
+                };
+            });
+
+            // Súhrn uzavretých ročníkových trofejí ("Grand Slam" klubu)
+            const closedTally = {};
+            seasons.forEach(s => {
+                if (s.isOngoing) return;
+                const addTrophy = (winners, field) => {
+                    winners.forEach(w => {
+                        if (!closedTally[w.id]) {
+                            closedTally[w.id] = { id: w.id, name: w.name, color: w.color, overall: 0, singles: 0, doubles: 0, total: 0 };
+                        }
+                        closedTally[w.id][field]++;
+                        closedTally[w.id].total++;
+                    });
+                };
+                addTrophy(s.overallWinners, "overall");
+                addTrophy(s.singlesWinners, "singles");
+                addTrophy(s.doublesWinners, "doubles");
+            });
+            const trophyLeaders = Object.values(closedTally).sort((a, b) =>
+                (b.total - a.total) || (b.overall - a.overall) || a.name.localeCompare(b.name, "sk")
+            );
+
+            // 2. Špeciálne trofeje: Klub 100, Klub 50, Klub 20, Klub 10, Klub 5 (vždy len najvyšší dosiahnutý míľnik)
+            const MILESTONE_TIERS = [
+                { id: "klub_100", min: 100, title: "Klub 100", rule: "100+ odohratých zápasov", iconFile: "klub_100.png", accent: "#facc15", bg: "rgba(250, 204, 21, 0.14)", border: "rgba(250, 204, 21, 0.52)", fa: "fa-solid fa-crown", isWide: true },
+                { id: "klub_50",  min: 50,  title: "Klub 50",  rule: "50 – 99 odohratých zápasov", iconFile: "klub_50.png", accent: "#c084fc", bg: "rgba(192, 132, 252, 0.14)", border: "rgba(192, 132, 252, 0.48)", fa: "fa-solid fa-trophy", isWide: false },
+                { id: "klub_20",  min: 20,  title: "Klub 20",  rule: "20 – 49 odohratých zápasov", iconFile: "klub_20.png", accent: "#38bdf8", bg: "rgba(56, 189, 248, 0.14)", border: "rgba(56, 189, 248, 0.48)", fa: "fa-solid fa-medal", isWide: false },
+                { id: "klub_10",  min: 10,  title: "Klub 10",  rule: "10 – 19 odohratých zápasov", iconFile: "klub_10.png", accent: "#4ade80", bg: "rgba(74, 222, 128, 0.14)", border: "rgba(74, 222, 128, 0.48)", fa: "fa-solid fa-award", isWide: false },
+                { id: "klub_5",   min: 5,   title: "Klub 5",   rule: "5 – 9 odohratých zápasov",   iconFile: "klub_5.png",  accent: "#fb923c", bg: "rgba(251, 146, 60, 0.14)", border: "rgba(251, 146, 60, 0.48)", fa: "fa-solid fa-star", isWide: false }
+            ];
+
+            const careerCounts = {};
+            allMatches.forEach(m => {
+                [...(m.team1 || []), ...(m.team2 || [])].forEach(pid => {
+                    if (!careerCounts[pid]) {
+                        const info = playersById[pid] || { id: pid, name: pid, color: "#94a3b8" };
+                        careerCounts[pid] = { id: info.id, name: info.name, color: info.color, matches: 0, reachedDates: {} };
+                    }
+                    const rec = careerCounts[pid];
+                    rec.matches++;
+                    if (rec.matches === 5 || rec.matches === 10 || rec.matches === 20 || rec.matches === 50 || rec.matches === 100) {
+                        rec.reachedDates[rec.matches] = m.date || "";
+                    }
+                });
+            });
+
+            const buckets = Object.fromEntries(MILESTONE_TIERS.map(t => [t.min, []]));
+            Object.values(careerCounts).forEach(rec => {
+                // Exkluzívne priradenie len do najvyššieho dosiahnutého míľnika (nižšie zaniknú)
+                const highestTier = MILESTONE_TIERS.find(t => rec.matches >= t.min);
+                if (highestTier) {
+                    buckets[highestTier.min].push({
+                        id: rec.id,
+                        name: rec.name,
+                        color: rec.color,
+                        matches: rec.matches,
+                        reachedDate: rec.reachedDates[highestTier.min] || ""
+                    });
+                }
+            });
+
+            const milestones = MILESTONE_TIERS.map(t => ({
+                ...t,
+                members: buckets[t.min].sort((a, b) => (b.matches - a.matches) || a.name.localeCompare(b.name, "sk"))
+            }));
+
+            const totalMilestoneMembers = milestones.reduce((sum, t) => sum + t.members.length, 0);
+            return { seasons, trophyLeaders, milestones, totalMilestoneMembers };
+        }
+
+        function toggleKlubovnaCard(forceState = null) {
+            const cardEl = document.getElementById("klubovna-card");
+            if (!cardEl) return;
+            const nextOpen = (typeof forceState === "boolean") ? forceState : !klubovnaOpen;
+            if (nextOpen === klubovnaOpen && cardEl.classList.contains("is-open") === nextOpen) return;
+            klubovnaOpen = nextOpen;
+            cardEl.classList.toggle("is-open", klubovnaOpen);
+            cardEl.setAttribute("aria-expanded", klubovnaOpen ? "true" : "false");
+            triggerAchLightFlash(cardEl);
+        }
+
+        function renderKlubovna() {
+            const wrap = document.getElementById("klubovna-wrap");
+            if (!wrap) return;
+
+            const data = buildKlubovnaData();
+            const closedCount = data.seasons.filter(s => !s.isOngoing).length;
+            const seasonsCount = data.seasons.length;
+
+            const trophyIconHtml = (iconFile, altText, faClass, accentColor, bgColor) => `
+                <div class="klubovna-trophy-ico-box">
+                    <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altText)}" width="68" height="68" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                    <div class="klubovna-trophy-fallback" data-fallback-display="flex" style="display:none; background:${bgColor}; border-color:${accentColor}; color:${accentColor};">
+                        <i class="${faClass}" aria-hidden="true"></i>
+                    </div>
+                </div>
+            `;
+
+            const renderSeasonTrophy = (cls, catLabel, iconFile, faClass, accentColor, bgColor, winners, valFn) => {
+                const winnersHtml = winners.length === 0
+                    ? `<span style="font-size:0.72rem; color:rgba(148,163,184,0.75);">Zatiaľ bez víťaza</span>`
+                    : `<div class="klubovna-chips">${winners.map(w => `
+                        <span class="klubovna-chip" data-player-id="${escapeHtml(w.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="Otvoriť profil hráča ${escapeHtml(w.name)}">
+                            <span style="width:7px; height:7px; border-radius:50%; background:${w.color}; display:inline-block;"></span>
+                            ${escapeHtml(w.name)}
+                        </span>
+                    `).join("")}</div>`;
+                const valHtml = winners.length > 0 ? `<div class="klubovna-trophy-val">${valFn(winners[0])}</div>` : "";
+                return `
+                    <div class="klubovna-trophy-item ${cls}">
+                        ${trophyIconHtml(iconFile, catLabel, faClass, accentColor, bgColor)}
+                        <div style="display:flex; flex-direction:column; gap:4px; min-width:0; flex:1;">
+                            <div class="klubovna-trophy-cat">${escapeHtml(catLabel)}</div>
+                            ${winnersHtml}
+                            ${valHtml}
+                        </div>
+                    </div>
+                `;
+            };
+
+            const gsHtml = data.trophyLeaders.length > 0 ? `
+                <div class="klubovna-gs-strip">
+                    <span class="klubovna-gs-label">🏅 Uzavreté tituly:</span>
+                    ${data.trophyLeaders.map(tl => `
+                        <span class="klubovna-chip" data-player-id="${escapeHtml(tl.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="Celkovo: ${tl.overall}× · 2H: ${tl.singles}× · 4H: ${tl.doubles}×">
+                            <span style="width:7px; height:7px; border-radius:50%; background:${tl.color}; display:inline-block;"></span>
+                            ${escapeHtml(tl.name)} <span class="klubovna-chip-sub">${tl.total}× 🏆</span>
+                        </span>
+                    `).join("")}
+                </div>
+            ` : "";
+
+            const seasonsHtml = data.seasons.length === 0
+                ? `<div style="font-size:0.78rem; color:rgba(203,213,225,0.72); padding:8px 2px;">Zatiaľ nie sú zapísané žiadne zápasy pre vyhodnotenie ročníkov.</div>`
+                : data.seasons.map(s => `
+                    <div class="klubovna-year-block ${s.isOngoing ? 'is-ongoing' : ''}">
+                        <div class="klubovna-year-head">
+                            <div class="klubovna-year-num">
+                                <span>Ročník ${s.year}</span>
+                                <span class="klubovna-year-pill ${s.isOngoing ? 'ongoing' : 'closed'}">
+                                    ${s.isOngoing ? 'Priebežne · do 31.12.' : 'Uzavretý · 1.1. – 31.12.'}
+                                </span>
+                            </div>
+                            <span style="font-size:0.70rem; color:rgba(203,213,225,0.76); font-weight:700;">
+                                ${s.totalMatches} záp. (${s.count2H}× 2H · ${s.count4H}× 4H)
+                            </span>
+                        </div>
+                        <div class="klubovna-trophies-grid">
+                            ${renderSeasonTrophy(
+                                "t-overall", "Celkovo (2H + 4H)", "trofej_celkovo.png", "fa-solid fa-trophy", "#facc15", "rgba(250, 204, 21, 0.16)",
+                                s.overallWinners, w => `${formatPts(w.points)} b · ${w.wins}V-${w.draws}R-${w.losses}P`
+                            )}
+                            ${renderSeasonTrophy(
+                                "t-2h", "Dvojhra (2H)", "trofej_2h.png", "fa-solid fa-award", "#38bdf8", "rgba(56, 189, 248, 0.16)",
+                                s.singlesWinners, w => `${formatPts(w.pts2H)} b · ${w.w2H}V-${w.d2H}R-${w.l2H}P`
+                            )}
+                            ${renderSeasonTrophy(
+                                "t-4h", "Štvorhra (4H)", "trofej_4h.png", "fa-solid fa-medal", "#c084fc", "rgba(192, 132, 252, 0.16)",
+                                s.doublesWinners, w => `${formatPts(w.pts4H)} b · ${w.w4H}V-${w.d4H}R-${w.l4H}P`
+                            )}
+                        </div>
+                    </div>
+                `).join("");
+
+            const milestonesHtml = data.milestones.map(t => {
+                const membersHtml = t.members.length === 0
+                    ? `<span style="font-size:0.72rem; color:rgba(148,163,184,0.70);">Zatiaľ bez člena</span>`
+                    : `<div class="klubovna-chips">${t.members.map(m => {
+                        const dateTip = m.reachedDate ? ` · dosiahnuté ${formatDateSk(m.reachedDate)}` : "";
+                        return `
+                            <span class="klubovna-chip" data-player-id="${escapeHtml(m.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="${escapeHtml(m.name)}: ${m.matches} zápasov spolu${dateTip}">
+                                <span style="width:7px; height:7px; border-radius:50%; background:${m.color}; display:inline-block;"></span>
+                                ${escapeHtml(m.name)} <span class="klubovna-chip-sub">(${m.matches})</span>
+                            </span>
+                        `;
+                    }).join("")}</div>`;
+
+                return `
+                    <div class="klubovna-milestone-card ${t.isWide ? 'is-wide' : ''}" style="border-color:${t.border}; background:linear-gradient(145deg, ${t.bg}, rgba(10, 14, 22, 0.85));">
+                        <div class="klubovna-milestone-ico">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(t.iconFile)}" alt="${escapeHtml(t.title)}" width="64" height="64" loading="lazy" decoding="async" data-icon-file="${escapeHtml(t.iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <div class="klubovna-milestone-fallback" data-fallback-display="flex" style="display:none; background:${t.bg}; border-color:${t.border}; color:${t.accent};">
+                                <i class="${t.fa}" style="font-size:1.15rem;" aria-hidden="true"></i>
+                                <span style="font-size:0.82rem; margin-top:2px;">${t.min}</span>
+                            </div>
+                        </div>
+                        <div class="klubovna-milestone-body">
+                            <div class="klubovna-milestone-head">
+                                <span class="klubovna-milestone-title" style="color:${t.accent};">${escapeHtml(t.title)}</span>
+                                <span class="klubovna-milestone-rule">${escapeHtml(t.rule)}</span>
+                            </div>
+                            ${membersHtml}
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            const metaSummary = seasonsCount > 0
+                ? `${skCount(seasonsCount, "ročník", "ročníky", "ročníkov")}${closedCount > 0 ? ` (${closedCount} uzavret.)` : ""} · ${skCount(data.totalMilestoneMembers, "hráč", "hráči", "hráčov")} v kluboch 5–100`
+                : "Víťazi ročníkov (1.1. – 31.12.) & Kluby 5 / 10 / 20 / 50 / 100";
+
+            wrap.innerHTML = `
+                <div class="klubovna-card ${klubovnaOpen ? 'is-open' : ''}" id="klubovna-card" role="region" aria-label="Klubovňa – Sieň slávy" aria-expanded="${klubovnaOpen ? 'true' : 'false'}"
+                     onclick="if(!klubovnaOpen) toggleKlubovnaCard(true);"
+                     onkeydown="if(!klubovnaOpen && (event.key==='Enter'||event.key===' ')){event.preventDefault(); toggleKlubovnaCard(true);}"
+                     tabindex="0">
+                    <div class="klubovna-front">
+                        <div class="klubovna-banner-box">
+                            <img class="klubovna-banner-img" src="${ACHIEVEMENT_ICON_DIRS[0]}klubovna.png" alt="KLUBOVŇA" loading="lazy" decoding="async" data-icon-file="klubovna.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <div class="klubovna-banner-fallback" data-fallback-display="flex" style="display:none;">
+                                <div class="klubovna-fallback-title">
+                                    <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+                                    <span>KLUBOVŇA</span>
+                                    <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+                                </div>
+                                <div class="klubovna-fallback-sub">Sieň slávy · Víťazi ročníkov &amp; Kluby míľnikov</div>
+                            </div>
+                        </div>
+                        <div class="klubovna-front-foot">
+                            <span class="klubovna-front-meta"><i class="fa-solid fa-crown" style="color:#b45309;"></i> ${metaSummary}</span>
+                            <span class="klubovna-open-pill">Otvoriť vitrínu ▼</span>
+                        </div>
+                    </div>
+
+                    <div class="klubovna-back" onclick="event.stopPropagation()">
+                        <div class="klubovna-back-head" onclick="toggleKlubovnaCard(false)" title="Kliknutím zavrieš Klubovňu">
+                            <div class="klubovna-back-title-wrap">
+                                <div class="klubovna-back-title"><i class="fa-solid fa-trophy"></i> KLUBOVŇA · SIEŇ SLÁVY</div>
+                                <div class="klubovna-back-sub">Ročníky (1. 1. – 31. 12.) a trvalé klubové míľniky · vždy z celej histórie</div>
+                            </div>
+                            <button type="button" class="klubovna-close-btn" onclick="event.stopPropagation(); toggleKlubovnaCard(false);">Zavrieť ✕</button>
+                        </div>
+
+                        <div>
+                            <div class="klubovna-sec-title">
+                                <span>🏆 Víťazi ročníkov</span>
+                                <span class="klubovna-sec-note">Body získané v kalendárnom roku · klikni na meno pre profil</span>
+                            </div>
+                            ${gsHtml}
+                            ${seasonsHtml}
+                        </div>
+
+                        <div>
+                            <div class="klubovna-sec-title">
+                                <span>🎖️ Klubové míľniky (počet zápasov)</span>
+                                <span class="klubovna-sec-note">Zobrazuje sa vždy najvyšší dosiahnutý klub (nižší zaniká)</span>
+                            </div>
+                            <div class="klubovna-milestones-grid">
+                                ${milestonesHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderAchievements() {
             clearAllAchTimers();
+            renderKlubovna();
 
             const renderCat = (catNum, containerId) => {
                 const el = document.getElementById(containerId);
@@ -15580,7 +16527,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.58${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.60${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -17805,7 +18752,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.58! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.60! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -18824,6 +19771,7 @@
                 ["#profile-select", "Výber profilu hráča", "Zobrazí kompletnú kartu hráča: rozpad 2H/4H, ELO, kalendár expirácie, odznaky, chémiu a súperov.", ""],
                 ["#prof-scope-window, #prof-scope-alltime", "Rozsah profilu hráča", "Prepína štatistiky na karte hráča medzi aktuálnou lehotou a celou históriou.", ""],
                 ["#ach-scope-alltime, #ach-scope-window", "Rozsah výpočtu odznakov", "Prepína držiteľov odznakov medzi historickými rekordmi a aktuálnou lehotou.", ""],
+                ["#klubovna-card:not(.is-open)", "Klubovňa – Sieň slávy", "Kliknutím otvoríš čiernu vitrínu s víťazmi jednotlivých ročníkov (1.1.–31.12.) a klubmi míľnikov (5, 10, 20, 50, 100 zápasov).", "Vždy sa počíta z celej histórie databázy."],
 
                 ["#history-sort-order", "Zoradenie histórie", "Zobrazí zoznam zápasov od najnovšieho alebo chronologicky od zápasu #1.", ""],
                 ["#history-filter-player", "Filter podľa hráča", "Zobrazí iba zápasy, v ktorých nastúpil vybraný tenista.", ""],
