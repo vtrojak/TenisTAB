@@ -3051,7 +3051,7 @@
                 height: 120px;
             }
         }
-        /* KLUBOVŇA – ZLATÁ DLAŽDICA & BIELO-ZLATÁ VITRÍNA SIENE SLÁVY (v1.62) */
+        /* KLUBOVŇA – ZLATÁ DLAŽDICA & BIELO-ZLATÁ VITRÍNA SIENE SLÁVY (v1.63) */
         .klubovna-card {
             --ach-glow: rgba(234, 179, 8, 0.78);
             position: relative;
@@ -3546,7 +3546,7 @@
 
         .kt-face {
             grid-area: 1 / 1;
-            padding: 11px 10px;
+            padding: 14px 11px 12px;
             position: relative;
             z-index: 1;
             min-width: 0;
@@ -3559,7 +3559,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            gap: 6px;
+            gap: 9px;
             opacity: 1;
             visibility: visible;
             transform: scale(1);
@@ -3730,8 +3730,8 @@
         }
 
         .klubovna-trophy-ico-box {
-            width: 68px;
-            height: 68px;
+            width: 112px;
+            height: 112px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -3743,19 +3743,28 @@
             height: 100%;
             object-fit: contain;
             display: block;
-            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.36));
+            transform: scale(1.14);
+            transform-origin: center center;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.38));
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
             user-select: none;
             -webkit-user-drag: none;
             pointer-events: none;
         }
 
+        .klubovna-trophy-item:hover .klubovna-trophy-img,
+        .klubovna-milestone-card:hover .klubovna-trophy-img {
+            transform: scale(1.20);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.44));
+        }
+
         .klubovna-trophy-fallback {
-            width: 58px;
-            height: 58px;
+            width: 86px;
+            height: 86px;
             border-radius: 50%;
             align-items: center;
             justify-content: center;
-            font-size: 1.55rem;
+            font-size: 2.15rem;
             border: 1.5px solid rgba(255, 255, 255, 0.35);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
         }
@@ -3860,10 +3869,10 @@
 
         .klubovna-milestone-card {
             border-radius: 13px;
-            padding: 12px 13px;
+            padding: 14px 14px 14px 16px;
             display: flex;
-            align-items: flex-start;
-            gap: 11px;
+            align-items: center;
+            gap: 17px;
             cursor: default;
             color: #ffffff;
         }
@@ -3909,8 +3918,8 @@
         }
 
         .klubovna-milestone-ico {
-            width: 64px;
-            height: 64px;
+            width: 96px;
+            height: 96px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -3918,13 +3927,13 @@
         }
 
         .klubovna-milestone-fallback {
-            width: 58px;
-            height: 58px;
-            border-radius: 14px;
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1px;
+            gap: 2px;
             border: 1.5px solid rgba(255, 255, 255, 0.35);
             font-weight: 900;
             line-height: 1;
@@ -3976,20 +3985,39 @@
             }
             .klubovna-trophy-item .kt-face-front {
                 flex-direction: row;
+                align-items: center;
                 text-align: left;
                 justify-content: flex-start;
-                padding: 10px 28px 10px 11px;
-                gap: 11px;
+                padding: 13px 30px 13px 15px;
+                gap: 20px;
             }
             .klubovna-trophy-ico-box {
-                width: 58px;
-                height: 58px;
+                width: 124px;
+                height: 124px;
+            }
+            .klubovna-trophy-cat {
+                font-size: 0.78rem;
+            }
+            .klubovna-trophy-val {
+                font-size: 0.78rem;
+            }
+            .klubovna-trophy-item .klubovna-chip {
+                font-size: 0.78rem;
+                padding: 4px 10px;
             }
             .klubovna-trophy-item .klubovna-chips {
                 justify-content: flex-start;
             }
             .klubovna-milestones-grid {
                 grid-template-columns: 1fr;
+            }
+            .klubovna-milestone-card {
+                padding: 14px 14px 14px 15px;
+                gap: 18px;
+            }
+            .klubovna-milestone-ico {
+                width: 108px;
+                height: 108px;
             }
             .klubovna-milestone-card.is-wide {
                 grid-column: auto;
@@ -4001,13 +4029,28 @@
         }
 
 
-        @media (max-width: 370px) {
+        @media (max-width: 380px) {
             .ach-crest {
                 width: 102px;
                 height: 102px;
             }
             .ach-front-top {
                 gap: 10px;
+            }
+            .klubovna-trophy-item .kt-face-front {
+                padding: 12px 26px 12px 12px;
+                gap: 14px;
+            }
+            .klubovna-trophy-ico-box {
+                width: 104px;
+                height: 104px;
+            }
+            .klubovna-milestone-card {
+                gap: 14px;
+            }
+            .klubovna-milestone-ico {
+                width: 92px;
+                height: 92px;
             }
         }
 
@@ -5173,7 +5216,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.62</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.63</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5207,7 +5250,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.62</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.63</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -12711,7 +12754,7 @@
 
             const trophyIconHtml = (iconFile, altText, faClass, accentColor, bgColor) => `
                 <div class="klubovna-trophy-ico-box">
-                    <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altText)}" width="68" height="68" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                    <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altText)}" width="124" height="124" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
                     <div class="klubovna-trophy-fallback" data-fallback-display="flex" style="display:none; background:${bgColor}; border-color:${accentColor}; color:${accentColor};">
                         <i class="${faClass}" aria-hidden="true"></i>
                     </div>
@@ -12830,7 +12873,7 @@
                 return `
                     <div class="klubovna-milestone-card ${t.cls} ${t.isWide ? 'is-wide' : ''}">
                         <div class="klubovna-milestone-ico">
-                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(t.iconFile)}" alt="${escapeHtml(t.title)}" width="64" height="64" loading="lazy" decoding="async" data-icon-file="${escapeHtml(t.iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(t.iconFile)}" alt="${escapeHtml(t.title)}" width="108" height="108" loading="lazy" decoding="async" data-icon-file="${escapeHtml(t.iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
                             <div class="klubovna-milestone-fallback" data-fallback-display="flex" style="display:none; background:${t.fbBg}; border-color:${t.fbBorder}; color:${t.fbFg};">
                                 <i class="${t.fa}" style="font-size:1.15rem;" aria-hidden="true"></i>
                                 <span style="font-size:0.82rem; margin-top:2px;">${t.min}</span>
@@ -17056,7 +17099,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.62${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.63${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -19281,7 +19324,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.62! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.63! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
