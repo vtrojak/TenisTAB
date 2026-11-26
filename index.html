@@ -2728,8 +2728,9 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            z-index: 1;
+            z-index: 2;
             background: transparent;
+            cursor: zoom-in;
         }
 
         .ach-icon-img {
@@ -3029,6 +3030,116 @@
             font-size: 0.74rem;
             font-weight: 700;
             color: var(--text-main);
+            cursor: zoom-in;
+            transition: transform 0.12s ease, background 0.16s ease, border-color 0.16s ease;
+        }
+
+        .profile-mini-badge:hover {
+            background: rgba(15, 34, 54, 0.94);
+            transform: translateY(-1px);
+        }
+
+        /* DETAILNÁ CELOOBRAZOVKOVÁ KARTA PNG ODZNAKU NA BIELOM POZADÍ (v1.66) */
+        .modal-backdrop.badge-zoom-backdrop {
+            padding: 0;
+            background: #ffffff;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            z-index: 1850;
+            overflow: hidden;
+        }
+
+        .badge-zoom-card {
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: #ffffff;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: max(58px, calc(env(safe-area-inset-top) + 48px)) 20px max(26px, calc(env(safe-area-inset-bottom) + 18px));
+            gap: 16px;
+            position: relative;
+            cursor: zoom-out;
+            animation: fadeIn 0.18s ease-out;
+        }
+
+        .badge-zoom-close {
+            position: absolute;
+            top: max(14px, env(safe-area-inset-top));
+            right: max(14px, env(safe-area-inset-right));
+            padding: 8px 15px;
+            border-radius: 999px;
+            background: #0f172a;
+            color: #ffffff;
+            border: 1.5px solid #334155;
+            font-size: 0.80rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
+            transition: background 0.16s ease, transform 0.1s ease;
+            z-index: 2;
+        }
+
+        .badge-zoom-close:hover {
+            background: #1e293b;
+        }
+
+        .badge-zoom-close:active {
+            transform: scale(0.95);
+        }
+
+        .badge-zoom-img {
+            max-width: min(88vw, 520px);
+            max-height: 64vh;
+            max-height: 64dvh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            background: transparent;
+            user-select: none;
+            -webkit-user-drag: none;
+            filter: drop-shadow(0 14px 30px rgba(15, 23, 42, 0.16));
+            animation: badgeZoomPop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes badgeZoomPop {
+            from { opacity: 0; transform: scale(0.86); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        .badge-zoom-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 5px;
+            max-width: 480px;
+        }
+
+        .badge-zoom-title {
+            font-size: 1.28rem;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1.24;
+        }
+
+        .badge-zoom-desc {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: #475569;
+            line-height: 1.42;
+        }
+
+        .badge-zoom-hint {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-top: 4px;
         }
 
         .profile-mini-badge-img {
@@ -3901,6 +4012,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            cursor: zoom-in;
         }
 
         .klubovna-trophy-img {
@@ -3961,7 +4073,7 @@
         }
 
         .klubovna-trophy-item.t-overall .klubovna-empty-note,
-        .klubovna-milestone-card.km-100 .klubovna-empty-note {
+        .klubovna-milestone-card.km-10 .klubovna-empty-note {
             color: rgba(41, 21, 2, 0.78);
         }
 
@@ -4004,9 +4116,9 @@
             color: rgba(255, 255, 255, 0.84);
         }
 
-        /* Na sýto zlatých dlaždiciach tmavý kontrastný čip s bielym písmom */
+        /* Na zlatých a žltých dlaždiciach tmavý kontrastný čip s bielym písmom */
         .klubovna-trophy-item.t-overall .klubovna-chip,
-        .klubovna-milestone-card.km-100 .klubovna-chip {
+        .klubovna-milestone-card.km-10 .klubovna-chip {
             background: #291502;
             border-color: rgba(41, 21, 2, 0.65);
             color: #ffffff;
@@ -4014,14 +4126,14 @@
         }
 
         .klubovna-trophy-item.t-overall .klubovna-chip:hover,
-        .klubovna-milestone-card.km-100 .klubovna-chip:hover {
+        .klubovna-milestone-card.km-10 .klubovna-chip:hover {
             background: #0f172a;
             border-color: #fef08a;
             color: #fef08a;
         }
 
         .klubovna-trophy-item.t-overall .klubovna-chip-sub,
-        .klubovna-milestone-card.km-100 .klubovna-chip-sub {
+        .klubovna-milestone-card.km-10 .klubovna-chip-sub {
             color: #fde047;
         }
 
@@ -4046,40 +4158,49 @@
             grid-column: 1 / -1;
         }
 
-        /* Klub 100 – sýta zlatá */
+        /* Klub 100 – purpurová */
         .klubovna-milestone-card.km-100 {
-            background: linear-gradient(145deg, #facc15 0%, #eab308 52%, #ca8a04 100%);
-            border: 1.5px solid #a16207;
-            color: #291502;
-            box-shadow: 0 5px 14px rgba(161, 98, 7, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.50);
-        }
-
-        /* Klub 50 – purpurová */
-        .klubovna-milestone-card.km-50 {
             background: linear-gradient(145deg, #86198f 0%, #6b21a8 56%, #4a044e 100%);
             border: 1.5px solid #c026d3;
+            color: #ffffff;
             box-shadow: 0 5px 14px rgba(74, 4, 78, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.22);
         }
 
-        /* Klub 25 – tmavá oranžová */
+        /* Klub 50 – bordová */
+        .klubovna-milestone-card.km-50 {
+            background: linear-gradient(145deg, #9f1239 0%, #7f1030 55%, #580a20 100%);
+            border: 1.5px solid #be123c;
+            color: #ffffff;
+            box-shadow: 0 5px 14px rgba(88, 10, 32, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+        }
+
+        /* Klub 25 – oranžová */
         .klubovna-milestone-card.km-25 {
-            background: linear-gradient(145deg, #c2410c 0%, #9a3412 58%, #7c2d12 100%);
-            border: 1.5px solid #ea580c;
-            box-shadow: 0 5px 14px rgba(124, 45, 18, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+            background: linear-gradient(145deg, #f97316 0%, #ea580c 54%, #c2410c 100%);
+            border: 1.5px solid #fb923c;
+            color: #ffffff;
+            box-shadow: 0 5px 14px rgba(154, 52, 18, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.28);
         }
 
-        /* Klub 10 – tmavá tyrkysová */
+        .klubovna-milestone-card.km-25 .klubovna-milestone-title,
+        .klubovna-milestone-card.km-25 .klubovna-milestone-rule {
+            text-shadow: 0 1px 2px rgba(67, 20, 7, 0.32);
+        }
+
+        /* Klub 10 – žltá */
         .klubovna-milestone-card.km-10 {
-            background: linear-gradient(145deg, #0f766e 0%, #115e59 58%, #134e4a 100%);
-            border: 1.5px solid #14b8a6;
-            box-shadow: 0 5px 14px rgba(19, 78, 74, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+            background: linear-gradient(145deg, #fef08a 0%, #facc15 52%, #eab308 100%);
+            border: 1.5px solid #ca8a04;
+            color: #291502;
+            box-shadow: 0 5px 14px rgba(161, 98, 7, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.58);
         }
 
-        /* Klub 5 – tmavá šedá */
+        /* Klub 5 – sýta zelená */
         .klubovna-milestone-card.km-5 {
-            background: linear-gradient(145deg, #475569 0%, #334155 58%, #1e293b 100%);
-            border: 1.5px solid #64748b;
-            box-shadow: 0 5px 14px rgba(30, 41, 59, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+            background: linear-gradient(145deg, #16a34a 0%, #15803d 55%, #14532d 100%);
+            border: 1.5px solid #4ade80;
+            color: #ffffff;
+            box-shadow: 0 5px 14px rgba(20, 83, 45, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.24);
         }
 
         .klubovna-milestone-ico {
@@ -4089,6 +4210,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: zoom-in;
         }
 
         .klubovna-milestone-fallback {
@@ -4132,11 +4254,11 @@
             font-weight: 600;
         }
 
-        .klubovna-milestone-card.km-100 .klubovna-milestone-title {
+        .klubovna-milestone-card.km-10 .klubovna-milestone-title {
             color: #291502;
         }
 
-        .klubovna-milestone-card.km-100 .klubovna-milestone-rule {
+        .klubovna-milestone-card.km-10 .klubovna-milestone-rule {
             color: #3f2003;
         }
 
@@ -5381,7 +5503,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.65</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.66</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5415,7 +5537,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.65</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.66</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -6613,6 +6735,19 @@
                     <button type="button" id="btn-report-custom-bg" class="btn btn-primary" onclick="triggerCustomTvBgPicker()">Vložiť pozadie</button>
                     <button type="button" id="btn-report-close" class="btn btn-secondary" onclick="closeMatchReportModal()">Zavrieť</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DETAILNÝ NÁHĽAD PNG ODZNAKU NA CELÚ OBRAZOVKU (v1.66) -->
+    <div class="modal-backdrop badge-zoom-backdrop" id="badge-zoom-modal" role="dialog" aria-modal="true" aria-labelledby="badge-zoom-title" onclick="closeBadgeZoomModal()">
+        <div class="badge-zoom-card">
+            <button type="button" class="badge-zoom-close" onclick="event.stopPropagation(); closeBadgeZoomModal();" aria-label="Zavrieť detail odznaku">Zavrieť ✕</button>
+            <img id="badge-zoom-img" class="badge-zoom-img" src="" alt="">
+            <div class="badge-zoom-meta">
+                <div id="badge-zoom-title" class="badge-zoom-title"></div>
+                <div id="badge-zoom-desc" class="badge-zoom-desc"></div>
+                <div class="badge-zoom-hint">Kliknutím kdekoľvek zavrieš detail</div>
             </div>
         </div>
     </div>
@@ -11332,7 +11467,7 @@
                         </div>
                         <div class="profile-badges-wrap">
                             ${owned.map(b => `
-                                <span class="profile-mini-badge" style="border-color:${b.accent}88;">
+                                <span class="profile-mini-badge" style="border-color:${b.accent}88;" data-zoom-title="${escapeHtml(b.title)}" data-zoom-desc="${escapeHtml(b.desc || '')}" onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detail odznaku">
                                     <img class="profile-mini-badge-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(b.iconFile)}" alt="${escapeHtml(b.title)}" width="22" height="22" loading="lazy" data-icon-file="${escapeHtml(b.iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
                                     <span data-fallback-display="inline" style="display:none; color:${b.accent};">🏆</span>
                                     <strong>${escapeHtml(b.title)}</strong> <span style="color:var(--text-muted); font-weight:600;">(${b.valueText})</span>
@@ -11392,6 +11527,47 @@
                 const fallback = imgEl.nextElementSibling;
                 if (fallback) fallback.style.display = fallback.dataset.fallbackDisplay || "flex";
             }
+        }
+
+        function openBadgeZoomModal(imgSrc, titleText, descText) {
+            const modal = document.getElementById("badge-zoom-modal");
+            const imgEl = document.getElementById("badge-zoom-img");
+            const titleEl = document.getElementById("badge-zoom-title");
+            const descEl = document.getElementById("badge-zoom-desc");
+            if (!modal || !imgEl || !imgSrc) return;
+
+            imgEl.src = imgSrc;
+            imgEl.alt = titleText || "Detail odznaku";
+            if (titleEl) {
+                titleEl.textContent = titleText || "";
+                titleEl.style.display = titleText ? "block" : "none";
+            }
+            if (descEl) {
+                descEl.textContent = descText || "";
+                descEl.style.display = descText ? "block" : "none";
+            }
+            modal.classList.add("open");
+            syncModalBodyScrollLock();
+        }
+
+        function openBadgeZoomFromEl(ev, containerEl) {
+            if (!containerEl) return;
+            const imgEl = containerEl.querySelector("img");
+            if (!imgEl || imgEl.style.display === "none") return;
+            const src = imgEl.currentSrc || imgEl.getAttribute("src") || "";
+            if (!src || (imgEl.complete && imgEl.naturalWidth === 0)) return;
+            if (ev) ev.stopPropagation();
+            const titleText = containerEl.dataset.zoomTitle || imgEl.alt || "";
+            const descText = containerEl.dataset.zoomDesc || "";
+            openBadgeZoomModal(src, titleText, descText);
+        }
+
+        function closeBadgeZoomModal() {
+            const modal = document.getElementById("badge-zoom-modal");
+            const imgEl = document.getElementById("badge-zoom-img");
+            if (modal) modal.classList.remove("open");
+            if (imgEl) imgEl.removeAttribute("src");
+            syncModalBodyScrollLock();
         }
 
         function getAchievementIconHtml(iconFile, title, faClass, themeKey) {
@@ -12820,11 +12996,11 @@
 
             // 2. Špeciálne trofeje: Klub 100, Klub 50, Klub 25, Klub 10, Klub 5 (vždy len najvyšší dosiahnutý míľnik)
             const MILESTONE_TIERS = [
-                { id: "klub_100", cls: "km-100", min: 100, title: "Klub 100", rule: "100+ odohratých zápasov",    iconFile: "klub_100.png", fbBg: "rgba(41, 21, 2, 0.15)",    fbBorder: "rgba(41, 21, 2, 0.42)",    fbFg: "#291502", fa: "fa-solid fa-crown",  isWide: true },
-                { id: "klub_50",  cls: "km-50",  min: 50,  title: "Klub 50",  rule: "50 – 99 odohratých zápasov", iconFile: "klub_50.png",  fbBg: "rgba(255, 255, 255, 0.14)", fbBorder: "rgba(245, 208, 254, 0.55)", fbFg: "#fae8ff", fa: "fa-solid fa-trophy", isWide: false },
-                { id: "klub_25",  cls: "km-25",  min: 25,  title: "Klub 25",  rule: "25 – 49 odohratých zápasov", iconFile: "klub_25.png",  fbBg: "rgba(255, 255, 255, 0.14)", fbBorder: "rgba(254, 215, 170, 0.55)", fbFg: "#ffedd5", fa: "fa-solid fa-medal",  isWide: false },
-                { id: "klub_10",  cls: "km-10",  min: 10,  title: "Klub 10",  rule: "10 – 24 odohratých zápasov", iconFile: "klub_10.png",  fbBg: "rgba(255, 255, 255, 0.14)", fbBorder: "rgba(153, 246, 228, 0.55)", fbFg: "#ccfbf1", fa: "fa-solid fa-award",  isWide: false },
-                { id: "klub_5",   cls: "km-5",   min: 5,   title: "Klub 5",   rule: "5 – 9 odohratých zápasov",   iconFile: "klub_5.png",   fbBg: "rgba(255, 255, 255, 0.14)", fbBorder: "rgba(203, 213, 225, 0.50)", fbFg: "#f1f5f9", fa: "fa-solid fa-star",   isWide: false }
+                { id: "klub_100", cls: "km-100", min: 100, title: "Klub 100", rule: "100+ odohratých zápasov",    iconFile: "klub_100.png", fbBg: "rgba(255, 255, 255, 0.14)", fbBorder: "rgba(245, 208, 254, 0.55)", fbFg: "#fae8ff", fa: "fa-solid fa-crown",  isWide: true },
+                { id: "klub_50",  cls: "km-50",  min: 50,  title: "Klub 50",  rule: "50 – 99 odohratých zápasov", iconFile: "klub_50.png",  fbBg: "rgba(255, 255, 255, 0.14)", fbBorder: "rgba(253, 164, 175, 0.55)", fbFg: "#ffe4e6", fa: "fa-solid fa-trophy", isWide: false },
+                { id: "klub_25",  cls: "km-25",  min: 25,  title: "Klub 25",  rule: "25 – 49 odohratých zápasov", iconFile: "klub_25.png",  fbBg: "rgba(255, 255, 255, 0.16)", fbBorder: "rgba(255, 237, 213, 0.60)", fbFg: "#fff7ed", fa: "fa-solid fa-medal",  isWide: false },
+                { id: "klub_10",  cls: "km-10",  min: 10,  title: "Klub 10",  rule: "10 – 24 odohratých zápasov", iconFile: "klub_10.png",  fbBg: "rgba(41, 21, 2, 0.15)",     fbBorder: "rgba(41, 21, 2, 0.42)",     fbFg: "#291502", fa: "fa-solid fa-award",  isWide: false },
+                { id: "klub_5",   cls: "km-5",   min: 5,   title: "Klub 5",   rule: "5 – 9 odohratých zápasov",   iconFile: "klub_5.png",   fbBg: "rgba(255, 255, 255, 0.14)", fbBorder: "rgba(187, 247, 208, 0.55)", fbFg: "#dcfce7", fa: "fa-solid fa-star",   isWide: false }
             ];
 
             const careerCounts = {};
@@ -12960,8 +13136,8 @@
             const closedCount = data.seasons.filter(s => !s.isOngoing).length;
             const seasonsCount = data.seasons.length;
 
-            const trophyIconHtml = (iconFile, altText, faClass, accentColor, bgColor) => `
-                <div class="klubovna-trophy-ico-box">
+            const trophyIconHtml = (iconFile, altText, descText, faClass, accentColor, bgColor) => `
+                <div class="klubovna-trophy-ico-box" data-zoom-title="${escapeHtml(altText)}" data-zoom-desc="${escapeHtml(descText)}" onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
                     <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altText)}" width="124" height="124" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
                     <div class="klubovna-trophy-fallback" data-fallback-display="flex" style="display:none; background:${bgColor}; border-color:${accentColor}; color:${accentColor};">
                         <i class="${faClass}" aria-hidden="true"></i>
@@ -12998,7 +13174,7 @@
                          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); event.stopPropagation(); toggleKlubovnaTrophyCard(this.dataset.ktId);}">
                         <div class="kt-face kt-face-front">
                             <span class="kt-info-dot" title="Kliknutím zobrazíš poradie Top 3">i</span>
-                            ${trophyIconHtml(iconFile, catLabel, faClass, accentColor, bgColor)}
+                            ${trophyIconHtml(iconFile, `${catLabel} · Ročník ${seasonYear}`, winners.length > 0 ? `Víťaz: ${winners.map(w => w.name).join(", ")}` : "Ročníková trofej", faClass, accentColor, bgColor)}
                             <div style="display:flex; flex-direction:column; gap:4px; min-width:0; flex:1;">
                                 <div class="klubovna-trophy-cat">${escapeHtml(catLabel)}</div>
                                 ${winnersHtml}
@@ -13126,7 +13302,7 @@
 
                 return `
                     <div class="klubovna-milestone-card ${t.cls} ${t.isWide ? 'is-wide' : ''}">
-                        <div class="klubovna-milestone-ico">
+                        <div class="klubovna-milestone-ico" data-zoom-title="${escapeHtml(t.title)}" data-zoom-desc="${escapeHtml(t.rule)}" onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
                             <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(t.iconFile)}" alt="${escapeHtml(t.title)}" width="108" height="108" loading="lazy" decoding="async" data-icon-file="${escapeHtml(t.iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
                             <div class="klubovna-milestone-fallback" data-fallback-display="flex" style="display:none; background:${t.fbBg}; border-color:${t.fbBorder}; color:${t.fbFg};">
                                 <i class="${t.fa}" style="font-size:1.15rem;" aria-hidden="true"></i>
@@ -13254,7 +13430,7 @@
                             <div class="ach-face ach-face-front">
                                 <span class="ach-info-dot" title="Kliknutím zobrazíš pravidlá a poradie Top 3">i</span>
                                 <div class="ach-front-top">
-                                    <div class="ach-crest">
+                                    <div class="ach-crest" data-zoom-title="${escapeHtml(ach.title)}" data-zoom-desc="${escapeHtml(ach.desc)}" onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detail odznaku na celú obrazovku">
                                         ${getAchievementIconHtml(ach.iconFile, ach.title, ach.faClass, ach.theme)}
                                     </div>
                                     <div class="ach-body">
@@ -17353,7 +17529,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.65${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.66${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -19578,7 +19754,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.65! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.66! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -20782,6 +20958,7 @@
 
             document.addEventListener("keydown", e => {
                 if (e.key === "Escape") {
+                    closeBadgeZoomModal();
                     closeSettingsModal();
                     closeEditMatchModal();
                     closeTvModal();
