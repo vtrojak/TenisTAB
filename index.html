@@ -3039,7 +3039,7 @@
             transform: translateY(-1px);
         }
 
-        /* DETAILNÁ CELOOBRAZOVKOVÁ KARTA PNG ODZNAKU NA BIELOM POZADÍ (v1.66) */
+        /* DETAILNÁ CELOOBRAZOVKOVÁ KARTA PNG ODZNAKU NA BIELOM POZADÍ + SWIPE (v1.67) */
         .modal-backdrop.badge-zoom-backdrop {
             padding: 0;
             background: #ffffff;
@@ -3060,11 +3060,30 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: max(58px, calc(env(safe-area-inset-top) + 48px)) 20px max(26px, calc(env(safe-area-inset-bottom) + 18px));
-            gap: 16px;
+            padding: max(60px, calc(env(safe-area-inset-top) + 48px)) 20px max(26px, calc(env(safe-area-inset-bottom) + 18px));
             position: relative;
             cursor: zoom-out;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow: hidden;
             animation: fadeIn 0.18s ease-out;
+        }
+
+        .badge-zoom-counter {
+            position: absolute;
+            top: max(15px, env(safe-area-inset-top));
+            left: max(14px, env(safe-area-inset-left));
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            z-index: 3;
+            pointer-events: none;
         }
 
         .badge-zoom-close {
@@ -3081,7 +3100,7 @@
             cursor: pointer;
             box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
             transition: background 0.16s ease, transform 0.1s ease;
-            z-index: 2;
+            z-index: 3;
         }
 
         .badge-zoom-close:hover {
@@ -3092,10 +3111,82 @@
             transform: scale(0.95);
         }
 
+        .badge-zoom-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.08);
+            border: 1.5px solid rgba(15, 23, 42, 0.16);
+            color: #0f172a;
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 3;
+            transition: background 0.16s ease, border-color 0.16s ease, transform 0.1s ease;
+        }
+
+        .badge-zoom-nav.prev {
+            left: max(12px, env(safe-area-inset-left));
+        }
+
+        .badge-zoom-nav.next {
+            right: max(12px, env(safe-area-inset-right));
+        }
+
+        .badge-zoom-nav:hover {
+            background: rgba(15, 23, 42, 0.16);
+            border-color: rgba(15, 23, 42, 0.34);
+        }
+
+        .badge-zoom-nav:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        .badge-zoom-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            max-width: 560px;
+            will-change: transform, opacity;
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+        }
+
+        .badge-zoom-stage.is-swiping {
+            transition: none;
+        }
+
+        .badge-zoom-stage.slide-from-right {
+            animation: badgeSlideFromRight 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .badge-zoom-stage.slide-from-left {
+            animation: badgeSlideFromLeft 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes badgeSlideFromRight {
+            from { opacity: 0.25; transform: translateX(48px) scale(0.96); }
+            to   { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        @keyframes badgeSlideFromLeft {
+            from { opacity: 0.25; transform: translateX(-48px) scale(0.96); }
+            to   { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
         .badge-zoom-img {
-            max-width: min(88vw, 520px);
-            max-height: 64vh;
-            max-height: 64dvh;
+            max-width: min(84vw, 500px);
+            max-height: 62vh;
+            max-height: 62dvh;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -3103,12 +3194,13 @@
             background: transparent;
             user-select: none;
             -webkit-user-drag: none;
+            pointer-events: none;
             filter: drop-shadow(0 14px 30px rgba(15, 23, 42, 0.16));
             animation: badgeZoomPop 0.24s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes badgeZoomPop {
-            from { opacity: 0; transform: scale(0.86); }
+            from { opacity: 0; transform: scale(0.88); }
             to   { opacity: 1; transform: scale(1); }
         }
 
@@ -3119,6 +3211,7 @@
             text-align: center;
             gap: 5px;
             max-width: 480px;
+            padding: 0 12px;
         }
 
         .badge-zoom-title {
@@ -3140,6 +3233,17 @@
             font-weight: 600;
             color: #94a3b8;
             margin-top: 4px;
+        }
+
+        @media (max-width: 540px) {
+            .badge-zoom-nav {
+                width: 38px;
+                height: 38px;
+                font-size: 1.25rem;
+                background: rgba(15, 23, 42, 0.06);
+            }
+            .badge-zoom-nav.prev { left: 6px; }
+            .badge-zoom-nav.next { right: 6px; }
         }
 
         .profile-mini-badge-img {
@@ -5503,7 +5607,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.66</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.67</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5537,7 +5641,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.66</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.67</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -6739,15 +6843,20 @@
         </div>
     </div>
 
-    <!-- MODAL: DETAILNÝ NÁHĽAD PNG ODZNAKU NA CELÚ OBRAZOVKU (v1.66) -->
-    <div class="modal-backdrop badge-zoom-backdrop" id="badge-zoom-modal" role="dialog" aria-modal="true" aria-labelledby="badge-zoom-title" onclick="closeBadgeZoomModal()">
-        <div class="badge-zoom-card">
+    <!-- MODAL: DETAILNÝ NÁHĽAD PNG ODZNAKU NA CELÚ OBRAZOVKU + SWIPE (v1.67) -->
+    <div class="modal-backdrop badge-zoom-backdrop" id="badge-zoom-modal" role="dialog" aria-modal="true" aria-labelledby="badge-zoom-title" onclick="handleBadgeZoomBackdropClick(event)">
+        <div class="badge-zoom-card" id="badge-zoom-card">
+            <span id="badge-zoom-counter" class="badge-zoom-counter" style="display:none;"></span>
             <button type="button" class="badge-zoom-close" onclick="event.stopPropagation(); closeBadgeZoomModal();" aria-label="Zavrieť detail odznaku">Zavrieť ✕</button>
-            <img id="badge-zoom-img" class="badge-zoom-img" src="" alt="">
-            <div class="badge-zoom-meta">
-                <div id="badge-zoom-title" class="badge-zoom-title"></div>
-                <div id="badge-zoom-desc" class="badge-zoom-desc"></div>
-                <div class="badge-zoom-hint">Kliknutím kdekoľvek zavrieš detail</div>
+            <button type="button" id="badge-zoom-prev" class="badge-zoom-nav prev" onclick="event.stopPropagation(); stepBadgeZoom(-1);" aria-label="Predchádzajúci odznak" title="Predchádzajúci odznak (←)" style="display:none;">‹</button>
+            <button type="button" id="badge-zoom-next" class="badge-zoom-nav next" onclick="event.stopPropagation(); stepBadgeZoom(1);" aria-label="Ďalší odznak" title="Ďalší odznak (→)" style="display:none;">›</button>
+            <div class="badge-zoom-stage" id="badge-zoom-stage">
+                <img id="badge-zoom-img" class="badge-zoom-img" src="" alt="" onerror="handleBadgeZoomImgError(this)">
+                <div class="badge-zoom-meta">
+                    <div id="badge-zoom-title" class="badge-zoom-title"></div>
+                    <div id="badge-zoom-desc" class="badge-zoom-desc"></div>
+                    <div id="badge-zoom-hint" class="badge-zoom-hint">Kliknutím kdekoľvek zavrieš detail</div>
+                </div>
             </div>
         </div>
     </div>
@@ -11529,44 +11638,305 @@
             }
         }
 
-        function openBadgeZoomModal(imgSrc, titleText, descText) {
-            const modal = document.getElementById("badge-zoom-modal");
+        const badgeZoomState = {
+            items: [],
+            index: 0,
+            lastDir: 1,
+            suppressClickUntil: 0,
+            gesturesBound: false
+        };
+
+        function handleBadgeZoomBackdropClick(ev) {
+            if (Date.now() < badgeZoomState.suppressClickUntil) return;
+            closeBadgeZoomModal();
+        }
+
+        function handleBadgeZoomImgError(imgEl) {
+            if (!imgEl || !imgEl.getAttribute("src")) return;
+            const file = imgEl.getAttribute("data-icon-file");
+            const nextIdx = (parseInt(imgEl.getAttribute("data-dir-idx") || "0", 10)) + 1;
+            if (file && nextIdx < ACHIEVEMENT_ICON_DIRS.length) {
+                imgEl.setAttribute("data-dir-idx", String(nextIdx));
+                imgEl.src = ACHIEVEMENT_ICON_DIRS[nextIdx] + file;
+                return;
+            }
+            if (file && ACH_ICON_LEGACY_FALLBACKS[file] && imgEl.getAttribute("data-legacy-tried") !== "1") {
+                const legacyFile = ACH_ICON_LEGACY_FALLBACKS[file];
+                imgEl.setAttribute("data-legacy-tried", "1");
+                imgEl.setAttribute("data-icon-file", legacyFile);
+                imgEl.setAttribute("data-dir-idx", "0");
+                imgEl.src = ACHIEVEMENT_ICON_DIRS[0] + legacyFile;
+                return;
+            }
+            // Ak obrázok neexistuje v žiadnom priečinku, vynecháme ho z galérie a posunieme sa na ďalší
+            if (badgeZoomState.items.length > 1) {
+                badgeZoomState.items.splice(badgeZoomState.index, 1);
+                if (badgeZoomState.lastDir < 0) {
+                    badgeZoomState.index = (badgeZoomState.index - 1 + badgeZoomState.items.length) % badgeZoomState.items.length;
+                } else if (badgeZoomState.index >= badgeZoomState.items.length) {
+                    badgeZoomState.index = 0;
+                }
+                renderBadgeZoomCurrent(badgeZoomState.lastDir);
+            } else {
+                closeBadgeZoomModal();
+            }
+        }
+
+        function renderBadgeZoomCurrent(slideDir = 0) {
+            const item = badgeZoomState.items[badgeZoomState.index];
             const imgEl = document.getElementById("badge-zoom-img");
+            const stageEl = document.getElementById("badge-zoom-stage");
             const titleEl = document.getElementById("badge-zoom-title");
             const descEl = document.getElementById("badge-zoom-desc");
-            if (!modal || !imgEl || !imgSrc) return;
+            const hintEl = document.getElementById("badge-zoom-hint");
+            const counterEl = document.getElementById("badge-zoom-counter");
+            const prevBtn = document.getElementById("badge-zoom-prev");
+            const nextBtn = document.getElementById("badge-zoom-next");
+            if (!item || !imgEl) return;
 
-            imgEl.src = imgSrc;
-            imgEl.alt = titleText || "Detail odznaku";
+            imgEl.setAttribute("data-icon-file", item.iconFile || "");
+            imgEl.setAttribute("data-dir-idx", String(item.dirIdx || 0));
+            imgEl.setAttribute("data-legacy-tried", item.legacyTried ? "1" : "0");
+            imgEl.src = item.src;
+            imgEl.alt = item.title || "Detail odznaku";
+
             if (titleEl) {
-                titleEl.textContent = titleText || "";
-                titleEl.style.display = titleText ? "block" : "none";
+                titleEl.textContent = item.title || "";
+                titleEl.style.display = item.title ? "block" : "none";
             }
             if (descEl) {
-                descEl.textContent = descText || "";
-                descEl.style.display = descText ? "block" : "none";
+                descEl.textContent = item.desc || "";
+                descEl.style.display = item.desc ? "block" : "none";
             }
+
+            const total = badgeZoomState.items.length;
+            const hasMany = total > 1;
+            if (counterEl) {
+                counterEl.textContent = `${badgeZoomState.index + 1} / ${total}`;
+                counterEl.style.display = hasMany ? "inline-block" : "none";
+            }
+            if (prevBtn) prevBtn.style.display = hasMany ? "inline-flex" : "none";
+            if (nextBtn) nextBtn.style.display = hasMany ? "inline-flex" : "none";
+            if (hintEl) {
+                hintEl.textContent = hasMany
+                    ? "Posúvaj prstom do strán · kliknutím zavrieš"
+                    : "Kliknutím kdekoľvek zavrieš detail";
+            }
+
+            if (stageEl) {
+                stageEl.classList.remove("is-swiping", "slide-from-right", "slide-from-left");
+                stageEl.style.transform = "";
+                stageEl.style.opacity = "";
+                if (slideDir !== 0) {
+                    void stageEl.offsetWidth;
+                    stageEl.classList.add(slideDir > 0 ? "slide-from-right" : "slide-from-left");
+                }
+            }
+        }
+
+        function stepBadgeZoom(delta) {
+            const total = badgeZoomState.items.length;
+            if (total <= 1) return;
+            badgeZoomState.lastDir = delta >= 0 ? 1 : -1;
+            badgeZoomState.index = (badgeZoomState.index + badgeZoomState.lastDir + total) % total;
+            renderBadgeZoomCurrent(badgeZoomState.lastDir);
+        }
+
+        function bindBadgeZoomSwipeGestures() {
+            if (badgeZoomState.gesturesBound) return;
+            const cardEl = document.getElementById("badge-zoom-card");
+            const stageEl = document.getElementById("badge-zoom-stage");
+            if (!cardEl || !stageEl) return;
+            badgeZoomState.gesturesBound = true;
+
+            let tracking = false;
+            let isHorizontal = false;
+            let startX = 0;
+            let startY = 0;
+            let lastDx = 0;
+            let startTime = 0;
+
+            const onStart = (x, y) => {
+                if (badgeZoomState.items.length <= 1) return;
+                tracking = true;
+                isHorizontal = false;
+                startX = x;
+                startY = y;
+                lastDx = 0;
+                startTime = Date.now();
+            };
+
+            const onMove = (x, y, ev) => {
+                if (!tracking) return;
+                const dx = x - startX;
+                const dy = y - startY;
+                if (!isHorizontal) {
+                    if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        isHorizontal = true;
+                        stageEl.classList.remove("slide-from-right", "slide-from-left");
+                        stageEl.classList.add("is-swiping");
+                    } else {
+                        tracking = false;
+                        return;
+                    }
+                }
+                if (ev && ev.cancelable) ev.preventDefault();
+                lastDx = dx;
+                const damped = Math.max(-180, Math.min(180, dx));
+                stageEl.style.transform = `translate3d(${damped}px, 0, 0)`;
+                stageEl.style.opacity = String(Math.max(0.45, 1 - Math.abs(damped) / 340));
+            };
+
+            const onEnd = () => {
+                if (!tracking) return;
+                const wasHoriz = isHorizontal;
+                const dx = lastDx;
+                const dt = Date.now() - startTime;
+                tracking = false;
+                isHorizontal = false;
+                lastDx = 0;
+                stageEl.classList.remove("is-swiping");
+
+                if (!wasHoriz) {
+                    stageEl.style.transform = "";
+                    stageEl.style.opacity = "";
+                    return;
+                }
+
+                badgeZoomState.suppressClickUntil = Date.now() + 340;
+                const passedThreshold = Math.abs(dx) >= 48 || (Math.abs(dx) >= 24 && dt < 240);
+                if (passedThreshold) {
+                    stepBadgeZoom(dx < 0 ? 1 : -1);
+                } else {
+                    stageEl.style.transform = "";
+                    stageEl.style.opacity = "";
+                }
+            };
+
+            cardEl.addEventListener("touchstart", e => {
+                if (e.touches.length !== 1) return;
+                if (e.target.closest("button")) return;
+                onStart(e.touches[0].clientX, e.touches[0].clientY);
+            }, { passive: true });
+
+            cardEl.addEventListener("touchmove", e => {
+                if (!tracking || e.touches.length !== 1) return;
+                onMove(e.touches[0].clientX, e.touches[0].clientY, e);
+            }, { passive: false });
+
+            cardEl.addEventListener("touchend", onEnd, { passive: true });
+            cardEl.addEventListener("touchcancel", onEnd, { passive: true });
+
+            // Podpora ťahania myšou na PC
+            let mouseDown = false;
+            cardEl.addEventListener("mousedown", e => {
+                if (e.button !== 0 || e.target.closest("button")) return;
+                mouseDown = true;
+                onStart(e.clientX, e.clientY);
+            });
+            window.addEventListener("mousemove", e => {
+                if (!mouseDown) return;
+                onMove(e.clientX, e.clientY, e);
+            });
+            window.addEventListener("mouseup", () => {
+                if (!mouseDown) return;
+                mouseDown = false;
+                onEnd();
+            });
+        }
+
+        function extractBadgeZoomItem(el) {
+            if (!el) return null;
+            const imgEl = el.querySelector("img");
+            if (!imgEl || imgEl.style.display === "none") return null;
+            const src = imgEl.currentSrc || imgEl.getAttribute("src") || "";
+            if (!src || (imgEl.complete && imgEl.naturalWidth === 0)) return null;
+            return {
+                el,
+                src,
+                iconFile: imgEl.getAttribute("data-icon-file") || "",
+                dirIdx: parseInt(imgEl.getAttribute("data-dir-idx") || "0", 10) || 0,
+                legacyTried: imgEl.getAttribute("data-legacy-tried") === "1",
+                title: el.dataset.zoomTitle || imgEl.alt || "",
+                desc: el.dataset.zoomDesc || ""
+            };
+        }
+
+        function collectBadgeZoomGroup(clickedEl) {
+            let nodes = [clickedEl];
+            if (clickedEl.classList.contains("ach-crest")) {
+                const sec = clickedEl.closest("#sec-badges") || document;
+                nodes = Array.from(sec.querySelectorAll(".ach-crest"));
+            } else if (clickedEl.classList.contains("klubovna-trophy-ico-box") || clickedEl.classList.contains("klubovna-milestone-ico")) {
+                const kw = clickedEl.closest("#klubovna-wrap") || document;
+                nodes = Array.from(kw.querySelectorAll(".klubovna-trophy-ico-box, .klubovna-milestone-ico"));
+            } else if (clickedEl.classList.contains("profile-mini-badge")) {
+                const wrap = clickedEl.closest(".profile-badges-wrap") || document;
+                nodes = Array.from(wrap.querySelectorAll(".profile-mini-badge"));
+            }
+            const items = [];
+            let startIndex = 0;
+            nodes.forEach(node => {
+                const parsed = extractBadgeZoomItem(node);
+                if (!parsed) return;
+                if (node === clickedEl) startIndex = items.length;
+                items.push(parsed);
+            });
+            return { items, startIndex };
+        }
+
+        function openBadgeZoomModal(itemsOrSrc, startIndexOrTitle = 0, descText = "") {
+            const modal = document.getElementById("badge-zoom-modal");
+            if (!modal) return;
+            bindBadgeZoomSwipeGestures();
+
+            if (Array.isArray(itemsOrSrc)) {
+                if (itemsOrSrc.length === 0) return;
+                badgeZoomState.items = itemsOrSrc;
+                badgeZoomState.index = Math.max(0, Math.min(itemsOrSrc.length - 1, Number(startIndexOrTitle) || 0));
+            } else if (typeof itemsOrSrc === "string" && itemsOrSrc) {
+                badgeZoomState.items = [{
+                    src: itemsOrSrc,
+                    iconFile: "",
+                    dirIdx: 0,
+                    legacyTried: false,
+                    title: String(startIndexOrTitle || ""),
+                    desc: String(descText || "")
+                }];
+                badgeZoomState.index = 0;
+            } else {
+                return;
+            }
+
+            badgeZoomState.lastDir = 1;
+            renderBadgeZoomCurrent(0);
             modal.classList.add("open");
             syncModalBodyScrollLock();
         }
 
         function openBadgeZoomFromEl(ev, containerEl) {
             if (!containerEl) return;
-            const imgEl = containerEl.querySelector("img");
-            if (!imgEl || imgEl.style.display === "none") return;
-            const src = imgEl.currentSrc || imgEl.getAttribute("src") || "";
-            if (!src || (imgEl.complete && imgEl.naturalWidth === 0)) return;
+            const clickedItem = extractBadgeZoomItem(containerEl);
+            if (!clickedItem) return;
             if (ev) ev.stopPropagation();
-            const titleText = containerEl.dataset.zoomTitle || imgEl.alt || "";
-            const descText = containerEl.dataset.zoomDesc || "";
-            openBadgeZoomModal(src, titleText, descText);
+            const { items, startIndex } = collectBadgeZoomGroup(containerEl);
+            openBadgeZoomModal(items.length > 0 ? items : [clickedItem], startIndex);
         }
 
         function closeBadgeZoomModal() {
             const modal = document.getElementById("badge-zoom-modal");
             const imgEl = document.getElementById("badge-zoom-img");
+            const stageEl = document.getElementById("badge-zoom-stage");
             if (modal) modal.classList.remove("open");
             if (imgEl) imgEl.removeAttribute("src");
+            if (stageEl) {
+                stageEl.classList.remove("is-swiping", "slide-from-right", "slide-from-left");
+                stageEl.style.transform = "";
+                stageEl.style.opacity = "";
+            }
+            badgeZoomState.items = [];
+            badgeZoomState.index = 0;
             syncModalBodyScrollLock();
         }
 
@@ -17529,7 +17899,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.66${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.67${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -19754,7 +20124,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.66! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.67! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -20957,6 +21327,19 @@
             });
 
             document.addEventListener("keydown", e => {
+                const zoomModal = document.getElementById("badge-zoom-modal");
+                if (zoomModal && zoomModal.classList.contains("open")) {
+                    if (e.key === "ArrowRight") {
+                        e.preventDefault();
+                        stepBadgeZoom(1);
+                        return;
+                    }
+                    if (e.key === "ArrowLeft") {
+                        e.preventDefault();
+                        stepBadgeZoom(-1);
+                        return;
+                    }
+                }
                 if (e.key === "Escape") {
                     closeBadgeZoomModal();
                     closeSettingsModal();
