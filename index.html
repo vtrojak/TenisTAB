@@ -3051,7 +3051,7 @@
                 height: 120px;
             }
         }
-        /* KLUBOVŇA – ZLATÁ DLAŽDICA & BIELO-ZLATÁ VITRÍNA SIENE SLÁVY (v1.63) */
+        /* KLUBOVŇA – ZLATÁ DLAŽDICA & BIELO-ZLATÁ VITRÍNA SIENE SLÁVY (v1.64) */
         .klubovna-card {
             --ach-glow: rgba(234, 179, 8, 0.78);
             position: relative;
@@ -3345,41 +3345,206 @@
             letter-spacing: 0;
         }
 
-        .klubovna-gs-strip {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
+        /* Tabuľka celkovej úspešnosti z uzavretých ročníkov (v1.64) */
+        .klubovna-gs-box {
             margin-bottom: 12px;
-            padding: 9px 11px;
-            border-radius: 12px;
-            background: rgba(254, 243, 199, 0.76);
-            border: 1px solid rgba(217, 119, 6, 0.36);
-            align-items: center;
+            padding: 6px 9px 8px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1.5px solid rgba(217, 119, 6, 0.34);
+            box-shadow: 0 3px 10px rgba(120, 53, 15, 0.08);
+            overflow-x: auto;
         }
 
-        .klubovna-gs-label {
+        table.klubovna-gs-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.79rem;
+            color: #1c1917;
+        }
+
+        table.klubovna-gs-table th {
+            padding: 6px 5px 7px;
+            font-size: 0.68rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            color: #78350f;
+            border-bottom: 1.5px solid rgba(180, 83, 9, 0.22);
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        table.klubovna-gs-table th:first-child {
+            text-align: left;
+        }
+
+        table.klubovna-gs-table th.kgs-th-2h { color: #881337; }
+        table.klubovna-gs-table th.kgs-th-4h { color: #1e3a8a; }
+
+        table.klubovna-gs-table td {
+            padding: 7px 5px;
+            border-bottom: 1px solid rgba(180, 83, 9, 0.13);
+            vertical-align: middle;
+        }
+
+        table.klubovna-gs-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .kgs-player-cell {
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .kgs-player-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .kgs-rank {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 4px;
+            border-radius: 6px;
             font-size: 0.70rem;
             font-weight: 900;
-            color: #78350f;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-right: 4px;
+            background: rgba(120, 53, 15, 0.12);
+            color: #57534e;
+            flex-shrink: 0;
         }
 
-        .klubovna-gs-strip .klubovna-chip {
-            background: #1e293b;
-            border-color: rgba(15, 23, 42, 0.32);
+        .kgs-rank.r-1 {
+            background: linear-gradient(135deg, #facc15, #d97706);
+            color: #291502;
+            box-shadow: 0 1px 4px rgba(180, 83, 9, 0.30);
+        }
+
+        .kgs-rank.r-2 {
+            background: linear-gradient(135deg, #e2e8f0, #94a3b8);
+            color: #0f172a;
+        }
+
+        .kgs-rank.r-3 {
+            background: linear-gradient(135deg, #fb923c, #c2410c);
             color: #ffffff;
         }
 
-        .klubovna-gs-strip .klubovna-chip:hover {
-            background: #0f172a;
-            border-color: #d97706;
-            color: #fef08a;
+        .kgs-player-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 7px 2px 5px;
+            border-radius: 999px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #1c1917;
+            font-size: 0.80rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
         }
 
-        .klubovna-gs-strip .klubovna-chip-sub {
-            color: #fde047;
+        .kgs-player-btn:hover {
+            background: rgba(254, 243, 199, 0.92);
+            border-color: rgba(217, 119, 6, 0.45);
+            color: #78350f;
+        }
+
+        .kgs-trophy-cell {
+            text-align: center;
+        }
+
+        .kgs-icons-wrap {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            min-height: 26px;
+        }
+
+        .kgs-trophy-img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+            display: inline-block;
+            vertical-align: middle;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.28));
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+
+        .kgs-trophy-fb {
+            width: 22px;
+            height: 22px;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        .kgs-bundle {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: rgba(250, 204, 21, 0.24);
+            border: 1px solid rgba(202, 138, 4, 0.50);
+        }
+
+        .kgs-bundle.is-silver {
+            background: rgba(148, 163, 184, 0.22);
+            border-color: rgba(100, 116, 139, 0.48);
+        }
+
+        .kgs-mult {
+            font-size: 0.72rem;
+            font-weight: 900;
+            color: #78350f;
+            line-height: 1;
+        }
+
+        .kgs-bundle.is-silver .kgs-mult {
+            color: #334155;
+        }
+
+        .kgs-zero {
+            color: #a8a29e;
+            font-weight: 700;
+            font-size: 0.74rem;
+        }
+
+        @media (max-width: 640px) {
+            .klubovna-gs-box {
+                padding: 5px 6px 6px;
+            }
+            table.klubovna-gs-table th {
+                padding: 5px 3px 6px;
+                font-size: 0.64rem;
+            }
+            table.klubovna-gs-table td {
+                padding: 6px 3px;
+            }
+            .kgs-player-btn {
+                font-size: 0.75rem;
+                padding: 2px 5px 2px 4px;
+            }
+            .kgs-trophy-img {
+                width: 22px;
+                height: 22px;
+            }
+            .kgs-trophy-fb {
+                width: 19px;
+                height: 19px;
+                font-size: 0.84rem;
+            }
         }
 
         .klubovna-year-block {
@@ -5216,7 +5381,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.63</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.64</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5250,7 +5415,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.63</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.64</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -12589,14 +12754,32 @@
                 };
             });
 
-            // Súhrn uzavretých ročníkových trofejí ("Grand Slam" klubu)
+            // Súhrn uzavretých ročníkových trofejí (iba dokončené sezóny + počet zápasov v uzavretých sezónach)
+            const closedMatchesByPlayer = {};
+            allMatches.forEach(m => {
+                const dt = parseIsoLocal(m.date);
+                if (!dt || dt.getFullYear() >= currentYear) return;
+                [...(m.team1 || []), ...(m.team2 || [])].forEach(pid => {
+                    closedMatchesByPlayer[pid] = (closedMatchesByPlayer[pid] || 0) + 1;
+                });
+            });
+
             const closedTally = {};
             seasons.forEach(s => {
                 if (s.isOngoing) return;
                 const addTrophy = (winners, field) => {
                     winners.forEach(w => {
                         if (!closedTally[w.id]) {
-                            closedTally[w.id] = { id: w.id, name: w.name, color: w.color, overall: 0, singles: 0, doubles: 0, total: 0 };
+                            closedTally[w.id] = {
+                                id: w.id,
+                                name: w.name,
+                                color: w.color,
+                                overall: 0,
+                                singles: 0,
+                                doubles: 0,
+                                total: 0,
+                                closedMatches: closedMatchesByPlayer[w.id] || 0
+                            };
                         }
                         closedTally[w.id][field]++;
                         closedTally[w.id].total++;
@@ -12606,9 +12789,34 @@
                 addTrophy(s.singlesWinners, "singles");
                 addTrophy(s.doublesWinners, "doubles");
             });
-            const trophyLeaders = Object.values(closedTally).sort((a, b) =>
-                (b.total - a.total) || (b.overall - a.overall) || a.name.localeCompare(b.name, "sk")
-            );
+
+            const sortedTrophyLeaders = Object.values(closedTally).sort((a, b) => {
+                if (b.overall !== a.overall) return b.overall - a.overall;
+                const subA = a.singles + a.doubles;
+                const subB = b.singles + b.doubles;
+                if (subB !== subA) return subB - subA;
+                if (b.singles !== a.singles) return b.singles - a.singles;
+                if (b.doubles !== a.doubles) return b.doubles - a.doubles;
+                if (a.closedMatches !== b.closedMatches) return a.closedMatches - b.closedMatches;
+                return a.name.localeCompare(b.name, "sk");
+            });
+
+            let lastTKey = null;
+            let lastTRank = 1;
+            const rankedTrophyLeaders = sortedTrophyLeaders.map((tl, idx) => {
+                const tk = `${tl.overall}|${tl.singles + tl.doubles}|${tl.singles}|${tl.doubles}|${tl.closedMatches}`;
+                const rank = (tk === lastTKey) ? lastTRank : (idx + 1);
+                lastTKey = tk;
+                lastTRank = rank;
+                return { ...tl, rank };
+            });
+            const tRankCounts = {};
+            rankedTrophyLeaders.forEach(tl => { tRankCounts[tl.rank] = (tRankCounts[tl.rank] || 0) + 1; });
+            const trophyLeaders = rankedTrophyLeaders.map(tl => ({
+                ...tl,
+                isTied: tRankCounts[tl.rank] > 1,
+                rankLabel: tRankCounts[tl.rank] > 1 ? `${tl.rank}.=` : `${tl.rank}.`
+            }));
 
             // 2. Špeciálne trofeje: Klub 100, Klub 50, Klub 25, Klub 10, Klub 5 (vždy len najvyšší dosiahnutý míľnik)
             const MILESTONE_TIERS = [
@@ -12737,7 +12945,7 @@
 
         function handleKlubovnaBackClick(ev) {
             if (!klubovnaOpen) return;
-            if (ev && ev.target && ev.target.closest(".klubovna-trophy-item, .klubovna-milestone-card, .klubovna-chip")) {
+            if (ev && ev.target && ev.target.closest(".klubovna-trophy-item, .klubovna-milestone-card, .klubovna-chip, .kgs-player-btn")) {
                 return;
             }
             toggleKlubovnaCard(false);
@@ -12813,15 +13021,61 @@
                 `;
             };
 
+            const renderMiniTrophyStack = (count, iconFile, altLabel, faClass, fbColor, isSilver) => {
+                const n = Number(count) || 0;
+                if (n <= 0) return `<span class="kgs-zero">—</span>`;
+
+                const oneIcon = () => `
+                    <img class="kgs-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="26" height="26" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                    <i class="kgs-trophy-fb ${faClass}" data-fallback-display="inline-flex" style="display:none; color:${fbColor};" aria-hidden="true"></i>
+                `;
+
+                const fives = Math.floor(n / 5) * 5;
+                const rem = n % 5;
+                let parts = "";
+                if (fives >= 5) {
+                    parts += `<span class="kgs-bundle ${isSilver ? 'is-silver' : ''}"><span class="kgs-mult">${fives}×</span>${oneIcon()}</span>`;
+                }
+                for (let i = 0; i < rem; i++) {
+                    parts += oneIcon();
+                }
+                return `<div class="kgs-icons-wrap" title="${escapeHtml(altLabel)}: ${n}×">${parts}</div>`;
+            };
+
             const gsHtml = data.trophyLeaders.length > 0 ? `
-                <div class="klubovna-gs-strip">
-                    <span class="klubovna-gs-label">🏅 Uzavreté tituly:</span>
-                    ${data.trophyLeaders.map(tl => `
-                        <span class="klubovna-chip" data-player-id="${escapeHtml(tl.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="Celkovo: ${tl.overall}× · 2H: ${tl.singles}× · 4H: ${tl.doubles}×">
-                            <span style="width:7px; height:7px; border-radius:50%; background:${tl.color}; display:inline-block;"></span>
-                            ${escapeHtml(tl.name)} <span class="klubovna-chip-sub">${tl.total}× 🏆</span>
-                        </span>
-                    `).join("")}
+                <div class="klubovna-gs-box">
+                    <table class="klubovna-gs-table">
+                        <thead>
+                            <tr>
+                                <th>Meno</th>
+                                <th>Celkovo</th>
+                                <th class="kgs-th-2h">2H</th>
+                                <th class="kgs-th-4h">4H</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.trophyLeaders.map(tl => {
+                                const rCls = tl.rank === 1 ? "r-1" : (tl.rank === 2 ? "r-2" : (tl.rank === 3 ? "r-3" : ""));
+                                const rowTip = `${tl.name} · Celkovo: ${tl.overall}× · 2H: ${tl.singles}× · 4H: ${tl.doubles}× (${tl.closedMatches} záp. v uzavretých sezónach)`;
+                                return `
+                                    <tr title="${escapeHtml(rowTip)}">
+                                        <td class="kgs-player-cell">
+                                            <div class="kgs-player-wrap">
+                                                <span class="kgs-rank ${rCls}">${escapeHtml(tl.rankLabel)}</span>
+                                                <button type="button" class="kgs-player-btn" data-player-id="${escapeHtml(tl.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="Otvoriť profil hráča ${escapeHtml(tl.name)}">
+                                                    <span style="width:7px; height:7px; border-radius:50%; background:${tl.color}; display:inline-block; flex-shrink:0;"></span>
+                                                    <span>${escapeHtml(tl.name)}</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(tl.overall, "trofej_celkovo.png", "Celkovo", "fa-solid fa-trophy", "#ca8a04", false)}</td>
+                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(tl.singles, "trofej_2h.png", "Dvojhra 2H", "fa-solid fa-trophy", "#64748b", true)}</td>
+                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(tl.doubles, "trofej_4h.png", "Štvorhra 4H", "fa-solid fa-trophy", "#64748b", true)}</td>
+                                    </tr>
+                                `;
+                            }).join("")}
+                        </tbody>
+                    </table>
                 </div>
             ` : "";
 
@@ -17099,7 +17353,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.63${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.64${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -18234,7 +18488,7 @@
             } else if (totalBagels >= 1) {
                 const bagelPool = [
                     { tag: "POZOR NA KANÁRA", text: `V zápase #${m.index} padol čistý kanár 6:0 – ornitológovia ${getLocationContext().inPlace} hlásia výskyt vzácneho vtáctva priamo na kurte.` },
-                    { tag: "NULA NA TANIERI", text: `V dueli #${m.index} sa podávala nula na tanieri (6:0) – podľa svedkov bol v tomto sete čas aj na krátku kávu medzi gemami.` }
+                    { tag: "OPERENEC NAD KURTOM", text: `V dueli #${m.index} nad kurtom dlho krúžil kanárik (6:0) – nakoniec aj pristál a majiteľ si ho odnáša v klietke domov.` }
                 ];
                 if (!isDraw) {
                     bagelPool.push(
@@ -18249,8 +18503,8 @@
                 out.push({
                     tag: "TIEBREAKOVÁ DRÁMA",
                     text: isDraw
-                        ? `V zápase #${m.index} sa bojovalo až do tiebreaku! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty až po lakte.`
-                        : `Zápas #${m.index} musel rozlúsknuť až tiebreak! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty až po lakte.`
+                        ? `V zápase #${m.index} sa bojovalo až do tiebreaku! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty aj na nohách.`
+                        : `Zápas #${m.index} musel rozlúsknuť až tiebreak! Diváci (ak by tam nejakí boli) by si od nervov obhrýzli nechty aj na nohách.`
                 });
             }
 
@@ -18259,19 +18513,19 @@
             const totalSets = s1 + s2;
             if (totalG > 0 && (diffG <= 3 || (totalSets >= 3 && diffG <= 4))) {
                 const closePool = [
-                    { tag: "INFARKTOVÝ ZÁVER", text: `Zápas #${m.index} bol čistý triler o každý jeden gem – pri záverečných loptičkách by sa napätie dalo krájať výpletom.` }
+                    { tag: "INFARKTOVÝ ZÁVER", text: `Zápas #${m.index} bol obrovský triler – pri dôležitých momentoch rozhodovali tesné auty.` }
                 ];
                 if (isDraw) {
                     closePool.push(
-                        { tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} sa bojovalo o každú loptičku až do spravodlivej remízy.` },
-                        { tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že ani sety, ani gemy nechceli nikoho pustiť dopredu – spravodlivá remíza sadla ako uliata.` }
+                        { tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} sa bojovalo o každú loptičku!` },
+                        { tag: "VYROVNANÝ DUEL", text: `Zápas #${m.index} bol taký tesný, že s remízou sú obe strany napokon spokojné.` }
                     );
                 } else {
-                    closePool.push({ tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} rozhodli až posledné nervy a pár centimetrov od čiary – presne pre takéto zápasy sa hrá tenis.` });
+                    closePool.push({ tag: "BITKA O KURT", text: `Žiadny bod zadarmo! V dueli #${m.index} rozhodli milimetrové auty – pre takéto zápasy sa hrá tenis.` });
                 }
                 out.push(closePool[Math.floor(Math.random() * closePool.length)]);
             } else if (!isDraw && totalBagels === 0 && tiebreaks === 0 && totalG > 0 && diffG >= 7) {
-                out.push({ tag: "JEDNOZNAČNÝ PRIEBEH", text: `Zápas #${m.index} mal jednoznačný priebeh – ${isDoubles ? "víťazná dvojica na kurte takmer nezapla" : "víťaz na kurte takmer nezapol"} druhý prevodový stupeň.` });
+                out.push({ tag: "JEDNOZNAČNÝ PRIEBEH", text: `Zápas #${m.index} mal jednoznačný priebeh – ${isDoubles ? "víťazná dvojica na kurte takmer nezaradila" : "víťaz na kurte takmer nezaradil"} druhý prevodový stupeň.` });
             }
             return out;
         }
@@ -19324,7 +19578,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.63! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.64! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
