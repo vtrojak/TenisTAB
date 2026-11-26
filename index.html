@@ -50,13 +50,13 @@
             --btn-3d-shadow-sm: 0 2px 0 var(--btn-edge), 0 4px 10px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.32);
             --btn-3d-shadow-muted: 0 2px 0 var(--btn-muted-edge), 0 4px 9px rgba(0, 0, 0, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.18);
             --btn-3d-active-shadow: 0 1px 0 var(--btn-edge), 0 2px 5px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.22);
-            --tmode-flash-top: #008f7c;
-            --tmode-flash-bot: #005e51;
-            --tmode-flash-text: #ffffff;
-            --tmode-active-top: #5eead4;
-            --tmode-active-bot: #2dd4bf;
-            --tmode-active-edge: #0f766e;
-            --tmode-active-text: #042f2e;
+            --tmode-active-bg: linear-gradient(145deg, #ffffff 0%, #e7faf7 52%, #cef3ee 100%);
+            --tmode-active-border: #8be4d8;
+            --tmode-active-edge: #53d5c4;
+            --tmode-active-text: #0e3934;
+            --tmode-active-glow: rgba(74, 217, 198, 0.78);
+            --tmode-active-outer-glow: rgba(74, 217, 198, 0.42);
+            --tmode-active-tint: rgba(74, 217, 198, 0.24);
         }
 
         * {
@@ -1121,6 +1121,7 @@
             }
         }
 
+        /* Čierne prepínacie tlačidlá – svetelný prechod ako karty odznakov + rozsvietená bielo-pastelová aktívna farba (v1.68) */
         .table-mode-btn {
             background: linear-gradient(180deg, #1c1c1e 0%, #050505 100%);
             color: #ffffff;
@@ -1133,11 +1134,49 @@
             text-align: center;
             letter-spacing: 0.2px;
             box-shadow: 0 3px 0 #000000, 0 6px 15px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.22);
-            transition: transform 0.12s ease, background 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            transition: transform 0.14s ease, border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease, color 0.28s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .table-mode-btn::before {
+            content: "";
+            position: absolute;
+            top: -22px;
+            left: -22px;
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle, var(--tmode-active-tint) 0%, transparent 72%);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.28s ease;
+        }
+
+        .table-mode-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                115deg,
+                rgba(255, 255, 255, 0) 20%,
+                rgba(255, 255, 255, 0.68) 50%,
+                rgba(255, 255, 255, 0) 80%
+            );
+            transform: translateX(-130%) skewX(-18deg);
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+        }
+
+        .table-mode-btn > * {
+            position: relative;
+            z-index: 1;
         }
 
         .table-mode-btn:hover {
@@ -1152,46 +1191,57 @@
         }
 
         .table-mode-btn.active {
-            background: linear-gradient(180deg, var(--tmode-active-top) 0%, var(--tmode-active-bot) 100%);
+            background: var(--tmode-active-bg);
             color: var(--tmode-active-text);
-            border-color: var(--tmode-active-top);
-            box-shadow: 0 3px 0 var(--tmode-active-edge), 0 6px 18px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+            border-color: var(--tmode-active-border);
+            box-shadow:
+                0 3px 0 var(--tmode-active-edge),
+                0 0 0 1.5px rgba(255, 255, 255, 0.90),
+                0 0 18px var(--tmode-active-glow),
+                0 0 34px var(--tmode-active-outer-glow),
+                inset 0 0 14px rgba(255, 255, 255, 0.92),
+                inset 0 1px 0 #ffffff;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.72);
+        }
+
+        .table-mode-btn.active::before {
+            opacity: 1;
         }
 
         .table-mode-btn.active:hover {
-            background: linear-gradient(180deg, var(--tmode-active-top) 0%, var(--tmode-active-bot) 100%);
+            background: var(--tmode-active-bg);
             color: var(--tmode-active-text);
-            filter: brightness(1.05);
+            border-color: #ffffff;
+            filter: brightness(1.03);
+            box-shadow:
+                0 3px 0 var(--tmode-active-edge),
+                0 0 0 1.5px #ffffff,
+                0 0 22px var(--tmode-active-glow),
+                0 0 38px var(--tmode-active-outer-glow),
+                inset 0 0 16px rgba(255, 255, 255, 0.96),
+                inset 0 1px 0 #ffffff;
         }
 
         .table-mode-btn.active:active {
             transform: translateY(2px);
-            box-shadow: 0 1px 0 var(--tmode-active-edge), 0 2px 8px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+            box-shadow:
+                0 1px 0 var(--tmode-active-edge),
+                0 0 0 1px rgba(255, 255, 255, 0.85),
+                0 0 14px var(--tmode-active-glow),
+                inset 0 0 10px rgba(255, 255, 255, 0.85);
         }
 
-        @keyframes tableModeThemeFlash {
-            0% {
-                background: linear-gradient(180deg, #1c1c1e 0%, #050505 100%);
-                color: #ffffff;
-                border-color: #ffffff;
-                box-shadow: 0 3px 0 #000000, 0 0 10px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-            }
-            42% {
-                background: linear-gradient(180deg, var(--tmode-flash-top) 0%, var(--tmode-flash-bot) 100%);
-                color: var(--tmode-flash-text);
-                border-color: var(--btn-border);
-                box-shadow: 0 3px 0 var(--btn-edge), 0 0 18px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-            }
-            100% {
-                background: linear-gradient(180deg, var(--tmode-active-top) 0%, var(--tmode-active-bot) 100%);
-                color: var(--tmode-active-text);
-                border-color: var(--tmode-active-top);
-                box-shadow: 0 3px 0 var(--tmode-active-edge), 0 6px 18px var(--btn-glow), inset 0 1px 0 rgba(255, 255, 255, 0.65);
-            }
+        .table-mode-btn.ach-flash::after {
+            animation: achLightSweep 0.58s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        .table-mode-btn.flash-green {
-            animation: tableModeThemeFlash 0.52s cubic-bezier(0.22, 1, 0.36, 1);
+        .table-mode-btn.ach-flash {
+            box-shadow:
+                0 3px 0 var(--tmode-active-edge),
+                0 0 0 2px #ffffff,
+                0 0 28px var(--tmode-active-glow),
+                0 0 46px var(--tmode-active-outer-glow),
+                inset 0 0 16px rgba(255, 255, 255, 0.96);
         }
 
         .delta-tag {
@@ -1234,8 +1284,8 @@
         }
 
         .tmode-4h-opt {
-            border: 1px solid rgba(0, 0, 0, 0.22);
-            background: rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(15, 23, 42, 0.20);
+            background: rgba(15, 23, 42, 0.08);
             color: var(--tmode-active-text);
             border-radius: 8px;
             padding: 5px 4px;
@@ -1252,7 +1302,7 @@
         }
 
         .tmode-4h-opt:hover {
-            background: rgba(0, 0, 0, 0.24);
+            background: rgba(15, 23, 42, 0.16);
         }
 
         .tmode-4h-opt.active {
@@ -5607,7 +5657,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.67</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.68</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5641,7 +5691,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.67</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.68</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -7334,6 +7384,72 @@
             return currentSeason;
         }
 
+        function getHexRelativeLuminance(hex) {
+            const { r, g, b } = hexToRgb(hex);
+            const lin = (v) => {
+                const c = v / 255;
+                return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+            };
+            return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+        }
+
+        function computeTmodePastelFromTheme(theme) {
+            const stops = (theme && Array.isArray(theme.colors) && theme.colors.length > 0)
+                ? theme.colors
+                : ((theme && typeof theme.gradient === "string") ? (theme.gradient.match(/#[0-9a-fA-F]{6}/g) || []) : []);
+            const thirdColor = stops.length >= 3 ? stops[2] : (stops[stops.length - 1] || "#40d0be");
+
+            const rgb = hexToRgb(thirdColor);
+            const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            const lum = getHexRelativeLuminance(thirdColor);
+            const isDark = lum < 0.14 || hsl.l < 30;
+            const isAchromatic = hsl.s < 14;
+
+            let useH = hsl.h;
+            let useS = hsl.s;
+
+            if (isAchromatic) {
+                // Čierna, biela alebo neutrálna tmavosivá -> zoberieme tón z 2. alebo 1. farby, inak jasná ľadová azúrová
+                let fallbackH = null;
+                for (let i = stops.length - 2; i >= 0; i--) {
+                    const cRgb = hexToRgb(stops[i]);
+                    const cHsl = rgbToHsl(cRgb.r, cRgb.g, cRgb.b);
+                    if (cHsl.s >= 18) {
+                        fallbackH = cHsl.h;
+                        break;
+                    }
+                }
+                useH = fallbackH !== null ? fallbackH : 198;
+                useS = 74;
+            } else if (isDark) {
+                // Tmavá farebná (napr. Antuka #3a1308, Smoke #28343c, Hala #1334e6, vlastná tmavá) -> zosvetlíme do jasného kontrastného pastelu
+                useH = hsl.h;
+                useS = Math.max(56, Math.min(88, hsl.s + 22));
+            } else {
+                // Svetlá / živá tretia farba -> jemný pastelový tón jej odtieňa
+                useH = hsl.h;
+                useS = Math.max(48, Math.min(92, hsl.s));
+            }
+
+            const pastelMid = hslToHex(useH, Math.min(88, useS), 95);
+            const pastelBot = hslToHex(useH, Math.min(92, useS), 88);
+            const borderHex = hslToHex(useH, Math.min(94, Math.max(62, useS)), 72);
+            const edgeHex   = hslToHex(useH, Math.min(78, Math.max(45, useS)), 58);
+            const textHex   = hslToHex(useH, Math.min(75, Math.max(35, useS)), 14);
+            const glowHex   = hslToHex(useH, Math.min(96, Math.max(72, useS)), 64);
+            const gRgb = hexToRgb(glowHex);
+
+            return {
+                bg: `linear-gradient(145deg, #ffffff 0%, ${pastelMid} 52%, ${pastelBot} 100%)`,
+                border: borderHex,
+                edge: edgeHex,
+                text: textHex,
+                glow: `rgba(${gRgb.r}, ${gRgb.g}, ${gRgb.b}, 0.78)`,
+                outerGlow: `rgba(${gRgb.r}, ${gRgb.g}, ${gRgb.b}, 0.42)`,
+                tint: `rgba(${gRgb.r}, ${gRgb.g}, ${gRgb.b}, 0.24)`
+            };
+        }
+
         function applySeasonTheme(themeKey, showNotification = false, persist = false) {
             const idx = SEASON_THEMES.findIndex(t => t.key === themeKey);
             currentSeasonThemeIndex = idx !== -1 ? idx : 0;
@@ -7355,14 +7471,15 @@
                 rootStyle.setProperty("--btn-accent", theme.btn.accent);
                 rootStyle.setProperty("--btn-glow", theme.btn.glow);
             }
-            if (theme.tmode) {
-                rootStyle.setProperty("--tmode-flash-top", theme.tmode.flashTop);
-                rootStyle.setProperty("--tmode-flash-bot", theme.tmode.flashBot);
-                rootStyle.setProperty("--tmode-flash-text", theme.tmode.flashText);
-                rootStyle.setProperty("--tmode-active-top", theme.tmode.activeTop);
-                rootStyle.setProperty("--tmode-active-bot", theme.tmode.activeBot);
-                rootStyle.setProperty("--tmode-active-edge", theme.tmode.activeEdge);
-                rootStyle.setProperty("--tmode-active-text", theme.tmode.activeText);
+            const tmodePastel = computeTmodePastelFromTheme(theme);
+            if (tmodePastel) {
+                rootStyle.setProperty("--tmode-active-bg", tmodePastel.bg);
+                rootStyle.setProperty("--tmode-active-border", tmodePastel.border);
+                rootStyle.setProperty("--tmode-active-edge", tmodePastel.edge);
+                rootStyle.setProperty("--tmode-active-text", tmodePastel.text);
+                rootStyle.setProperty("--tmode-active-glow", tmodePastel.glow);
+                rootStyle.setProperty("--tmode-active-outer-glow", tmodePastel.outerGlow);
+                rootStyle.setProperty("--tmode-active-tint", tmodePastel.tint);
             }
             const metaTheme = document.querySelector('meta[name="theme-color"]');
             if (metaTheme) metaTheme.setAttribute("content", theme.themeColor);
@@ -8830,11 +8947,11 @@
         /* ==================== RENDER TABUĽKY & POSLEDNÉHO ZÁPASU ==================== */
         function triggerGreenBtnFlash(btnEl) {
             if (!btnEl) return;
-            btnEl.classList.remove("flash-green");
+            btnEl.classList.remove("ach-flash");
             void btnEl.offsetWidth;
-            btnEl.classList.add("flash-green");
+            btnEl.classList.add("ach-flash");
             clearTimeout(btnEl._flashTimer);
-            btnEl._flashTimer = setTimeout(() => btnEl.classList.remove("flash-green"), 540);
+            btnEl._flashTimer = setTimeout(() => btnEl.classList.remove("ach-flash"), 620);
         }
 
         function triggerThemedBtnSheen(btnEl) {
@@ -17899,7 +18016,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.67${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.68${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -20124,7 +20241,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.67! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.68! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
