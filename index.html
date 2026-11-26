@@ -582,7 +582,7 @@
             font-weight: 600;
         }
 
-        /* LAST MATCH TV GLASS-NEON SCOREBOARD */
+        /* LAST MATCH TV GLASS-NEON SCOREBOARD (FARBY PODĽA POVRCHU KURTU · v1.69) */
         .lm-board-wrap {
             --lm-sets-w: 48px;
             --lm-gem-w: 42px;
@@ -590,26 +590,85 @@
         }
 
         .lm-scoreboard {
+            --lm-win-bg: linear-gradient(135deg, rgba(114, 124, 136, 0.90), rgba(80, 90, 102, 0.84));
+            --lm-draw-bg: linear-gradient(135deg, rgba(90, 100, 112, 0.84), rgba(62, 70, 82, 0.78));
+            --lm-loss-bg: linear-gradient(135deg, rgba(64, 72, 82, 0.78), rgba(42, 48, 56, 0.74));
+            --lm-border: rgba(203, 213, 225, 0.46);
+            --lm-glow: rgba(203, 213, 225, 0.16);
+            --lm-win-text-glow: rgba(226, 232, 240, 0.36);
+
             display: grid;
             width: 100%;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid rgba(217, 249, 40, 0.36);
+            border: 1px solid var(--lm-border);
             background: rgba(0, 18, 26, 0.42);
             backdrop-filter: blur(14px) saturate(165%);
             -webkit-backdrop-filter: blur(14px) saturate(165%);
             box-shadow:
                 0 8px 24px rgba(0, 14, 20, 0.42),
-                0 0 18px rgba(190, 242, 100, 0.14),
+                0 0 18px var(--lm-glow),
                 inset 0 1px 1px rgba(255, 255, 255, 0.24);
         }
 
-        .lm-scoreboard.is-draw {
-            border-color: rgba(125, 211, 252, 0.40);
-            box-shadow:
-                0 8px 24px rgba(0, 14, 20, 0.42),
-                0 0 16px rgba(125, 211, 252, 0.14),
-                inset 0 1px 1px rgba(255, 255, 255, 0.24);
+        /* Tvrdý / Hala – turnajová modrá */
+        .lm-scoreboard.lm-surf-tvrdy {
+            --lm-win-bg: linear-gradient(135deg, rgba(0, 104, 216, 0.90), rgba(0, 66, 160, 0.84));
+            --lm-draw-bg: linear-gradient(135deg, rgba(0, 82, 180, 0.84), rgba(0, 52, 130, 0.78));
+            --lm-loss-bg: linear-gradient(135deg, rgba(0, 52, 124, 0.78), rgba(0, 32, 84, 0.74));
+            --lm-border: rgba(125, 211, 252, 0.50);
+            --lm-glow: rgba(56, 189, 248, 0.20);
+            --lm-win-text-glow: rgba(125, 211, 252, 0.45);
+        }
+
+        /* Antuka – tmavá oranžová až do bordova */
+        .lm-scoreboard.lm-surf-antuka {
+            --lm-win-bg: linear-gradient(135deg, rgba(196, 68, 26, 0.92), rgba(144, 32, 26, 0.86));
+            --lm-draw-bg: linear-gradient(135deg, rgba(168, 52, 22, 0.86), rgba(120, 24, 24, 0.80));
+            --lm-loss-bg: linear-gradient(135deg, rgba(122, 34, 18, 0.80), rgba(84, 14, 18, 0.76));
+            --lm-border: rgba(251, 146, 60, 0.52);
+            --lm-glow: rgba(234, 88, 12, 0.22);
+            --lm-win-text-glow: rgba(253, 186, 116, 0.42);
+        }
+
+        /* Umelá tráva – tmavá zelená */
+        .lm-scoreboard.lm-surf-umela_trava {
+            --lm-win-bg: linear-gradient(135deg, rgba(22, 138, 66, 0.92), rgba(14, 96, 48, 0.86));
+            --lm-draw-bg: linear-gradient(135deg, rgba(16, 114, 56, 0.86), rgba(10, 78, 38, 0.80));
+            --lm-loss-bg: linear-gradient(135deg, rgba(10, 80, 40, 0.80), rgba(6, 52, 26, 0.76));
+            --lm-border: rgba(74, 222, 128, 0.48);
+            --lm-glow: rgba(34, 197, 94, 0.20);
+            --lm-win-text-glow: rgba(134, 239, 172, 0.40);
+        }
+
+        /* Koberec – hlboká fialovo-indigová */
+        .lm-scoreboard.lm-surf-koberec {
+            --lm-win-bg: linear-gradient(135deg, rgba(108, 56, 206, 0.90), rgba(72, 34, 156, 0.84));
+            --lm-draw-bg: linear-gradient(135deg, rgba(90, 44, 178, 0.84), rgba(58, 26, 130, 0.78));
+            --lm-loss-bg: linear-gradient(135deg, rgba(64, 30, 134, 0.78), rgba(40, 18, 92, 0.74));
+            --lm-border: rgba(196, 181, 253, 0.50);
+            --lm-glow: rgba(139, 92, 246, 0.22);
+            --lm-win-text-glow: rgba(221, 214, 254, 0.42);
+        }
+
+        /* Iné – purpurová */
+        .lm-scoreboard.lm-surf-ine {
+            --lm-win-bg: linear-gradient(135deg, rgba(166, 36, 146, 0.92), rgba(114, 18, 108, 0.86));
+            --lm-draw-bg: linear-gradient(135deg, rgba(140, 26, 124, 0.86), rgba(94, 14, 90, 0.80));
+            --lm-loss-bg: linear-gradient(135deg, rgba(100, 18, 90, 0.80), rgba(64, 8, 62, 0.76));
+            --lm-border: rgba(232, 121, 249, 0.52);
+            --lm-glow: rgba(192, 38, 211, 0.22);
+            --lm-win-text-glow: rgba(245, 208, 254, 0.42);
+        }
+
+        /* Neznámy / nezadaný povrch – neutrálna sivá */
+        .lm-scoreboard.lm-surf-none {
+            --lm-win-bg: linear-gradient(135deg, rgba(114, 124, 136, 0.90), rgba(80, 90, 102, 0.84));
+            --lm-draw-bg: linear-gradient(135deg, rgba(90, 100, 112, 0.84), rgba(62, 70, 82, 0.78));
+            --lm-loss-bg: linear-gradient(135deg, rgba(64, 72, 82, 0.78), rgba(42, 48, 56, 0.74));
+            --lm-border: rgba(203, 213, 225, 0.46);
+            --lm-glow: rgba(203, 213, 225, 0.16);
+            --lm-win-text-glow: rgba(226, 232, 240, 0.36);
         }
 
         .lm-cell {
@@ -639,19 +698,19 @@
         }
 
         .lm-team-win {
-            background: linear-gradient(135deg, rgba(0, 88, 192, 0.84), rgba(0, 56, 140, 0.74));
+            background: var(--lm-win-bg);
             color: #ffffff;
-            text-shadow: 0 0 10px rgba(125, 211, 252, 0.45), 0 1px 2px rgba(0, 0, 0, 0.45);
+            text-shadow: 0 0 10px var(--lm-win-text-glow), 0 1px 2px rgba(0, 0, 0, 0.45);
         }
 
         .lm-team-loss {
-            background: linear-gradient(135deg, rgba(0, 74, 166, 0.72), rgba(0, 48, 122, 0.66));
-            color: rgba(255, 255, 255, 0.68);
+            background: var(--lm-loss-bg);
+            color: rgba(255, 255, 255, 0.70);
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
         }
 
         .lm-team-draw {
-            background: linear-gradient(135deg, rgba(0, 82, 180, 0.78), rgba(0, 52, 130, 0.70));
+            background: var(--lm-draw-bg);
             color: #ffffff;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
         }
@@ -2194,36 +2253,87 @@
             line-height: 1.35;
         }
 
-        /* MATCH ITEMS */
+        /* MATCH ITEMS – NEPRIESVITNÉ KARTY PODĽA POVRCHU + INTERAKTÍVNY PNG REPORT (v1.70) */
         .match-card {
-            background: rgba(10, 22, 36, 0.80);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
+            background: linear-gradient(135deg, #3c4552 0%, #2a313c 58%, #1d232c 100%);
+            border: 1px solid rgba(203, 213, 225, 0.34);
             border-left: 4px solid #ff6b6b;
-            border-radius: 11px;
+            border-radius: 12px;
             padding: 11px 12px;
             margin-bottom: 9px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+            transition: transform 0.14s ease, box-shadow 0.2s ease, border-color 0.2s ease, filter 0.18s ease;
+        }
+
+        .match-card:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.07);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        }
+
+        .match-card:active {
+            transform: scale(0.992);
+        }
+
+        /* Nepriesvitné jemné gradienty podľa povrchu kurtu */
+        .match-card.mc-surf-tvrdy {
+            background: linear-gradient(135deg, #0d3a78 0%, #07224d 58%, #041634 100%);
+            border-color: rgba(125, 211, 252, 0.42);
+        }
+
+        .match-card.mc-surf-antuka {
+            background: linear-gradient(135deg, #7c2d12 0%, #5b1b14 58%, #3c0f12 100%);
+            border-color: rgba(251, 146, 60, 0.44);
+        }
+
+        .match-card.mc-surf-umela_trava {
+            background: linear-gradient(135deg, #0f5c31 0%, #0a3f22 58%, #062916 100%);
+            border-color: rgba(74, 222, 128, 0.42);
+        }
+
+        .match-card.mc-surf-koberec {
+            background: linear-gradient(135deg, #43228a 0%, #2e1664 58%, #1d0d42 100%);
+            border-color: rgba(196, 181, 253, 0.42);
+        }
+
+        .match-card.mc-surf-ine {
+            background: linear-gradient(135deg, #6b1562 0%, #4b0e47 58%, #310830 100%);
+            border-color: rgba(232, 121, 249, 0.44);
+        }
+
+        .match-card.mc-surf-none {
+            background: linear-gradient(135deg, #3c4552 0%, #2a313c 58%, #1d232c 100%);
+            border-color: rgba(203, 213, 225, 0.36);
         }
 
         .match-card.draw-border {
             border-left-color: var(--draw);
         }
 
-        .match-card.res-win {
-            border-left-color: var(--win);
+        .mc-report-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(190, 242, 100, 0.45);
+            color: var(--tennis-lime);
+            font-size: 0.61rem;
+            font-weight: 800;
+            letter-spacing: 0.35px;
+            margin-left: auto;
+            transition: background 0.16s ease, border-color 0.16s ease;
         }
 
-        .match-card.res-draw {
-            border-left-color: var(--draw);
-        }
-
-        .match-card.res-loss {
-            border-left-color: var(--loss);
+        .match-card:hover .mc-report-pill {
+            background: rgba(190, 242, 100, 0.20);
+            border-color: rgba(190, 242, 100, 0.78);
         }
 
         .profile-matches-actions {
@@ -2283,13 +2393,62 @@
         .profile-res-L { background: #f87171; color: #450a0a; }
 
         .match-card.is-expired {
-            opacity: 0.68;
-            border-left-color: rgba(148, 163, 184, 0.55);
+            filter: saturate(0.46) brightness(0.84);
+            opacity: 0.88;
+            border-left-color: rgba(148, 163, 184, 0.62);
+        }
+
+        .match-card.is-expired:hover {
+            filter: saturate(0.62) brightness(0.95);
+            opacity: 0.96;
+        }
+
+        .match-card.res-win {
+            border-left-color: var(--win);
+        }
+
+        .match-card.res-draw {
+            border-left-color: var(--draw);
+        }
+
+        .match-card.res-loss {
+            border-left-color: var(--loss);
+        }
+
+        .match-card .type-badge,
+        .match-card .surface-badge,
+        .match-card .validity-badge {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+        }
+
+        .match-card .validity-badge.val-active {
+            background: rgba(5, 46, 22, 0.55);
+        }
+
+        .match-card .validity-badge.val-soon {
+            background: rgba(67, 20, 7, 0.58);
+        }
+
+        .match-card .validity-badge.val-expired {
+            background: rgba(15, 23, 42, 0.56);
+            color: rgba(226, 232, 240, 0.86);
+        }
+
+        .match-card .surface-badge {
+            background: rgba(0, 0, 0, 0.34);
+        }
+
+        .match-card .type-badge.type-2H {
+            background: rgba(8, 47, 73, 0.64);
+        }
+
+        .match-card .type-badge.type-4H {
+            background: rgba(59, 7, 100, 0.62);
         }
 
         .match-meta {
             font-size: 0.72rem;
-            color: var(--text-muted);
+            color: rgba(241, 245, 249, 0.90);
             margin-bottom: 4px;
             display: flex;
             align-items: center;
@@ -2361,7 +2520,7 @@
             margin-top: 5px;
             padding: 5px 8px;
             border-radius: 7px;
-            background: rgba(190, 242, 100, 0.10);
+            background: rgba(0, 0, 0, 0.28);
             border-left: 2px solid var(--tennis-lime);
             font-size: 0.74rem;
             color: var(--text-main);
@@ -5657,7 +5816,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.68</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.70</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5691,7 +5850,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.68</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.70</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -6786,7 +6945,7 @@
                 <div class="tv-modal-head-top">
                     <div class="card-title">
                         <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
-                        <span>Report posledného zápasu (PNG)</span>
+                        <span id="report-modal-title">Report posledného zápasu (PNG)</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:6px;">
                         <span class="chart-range-pill" id="report-dim-pill">900 × 1600 (9:16)</span>
@@ -6970,6 +7129,62 @@
             { key: "ine",         label: "Iné",         color: "#cbd5e1", barGrad: "linear-gradient(90deg, #64748b, #cbd5e1)" }
         ];
         const COURT_SURFACE_MAP = Object.fromEntries(COURT_SURFACES.map(s => [s.key, s]));
+
+        // Jednotná farebná paleta bannerov posledného zápasu (dlaždica + PNG report + TV grafika · v1.69)
+        const SCOREBOARD_SURFACE_PALETTES = {
+            tvrdy: {
+                cls: "lm-surf-tvrdy",
+                win:  ["rgba(0, 104, 216, 0.92)", "rgba(0, 66, 160, 0.86)"],
+                draw: ["rgba(0, 82, 180, 0.86)",  "rgba(0, 52, 130, 0.82)"],
+                loss: ["rgba(0, 52, 124, 0.80)",  "rgba(0, 32, 84, 0.76)"],
+                border: "rgba(125, 211, 252, 0.68)"
+            },
+            antuka: {
+                cls: "lm-surf-antuka",
+                win:  ["rgba(196, 68, 26, 0.94)", "rgba(144, 32, 26, 0.88)"],
+                draw: ["rgba(168, 52, 22, 0.88)", "rgba(120, 24, 24, 0.84)"],
+                loss: ["rgba(122, 34, 18, 0.82)", "rgba(84, 14, 18, 0.78)"],
+                border: "rgba(251, 146, 60, 0.68)"
+            },
+            umela_trava: {
+                cls: "lm-surf-umela_trava",
+                win:  ["rgba(22, 138, 66, 0.94)", "rgba(14, 96, 48, 0.88)"],
+                draw: ["rgba(16, 114, 56, 0.88)", "rgba(10, 78, 38, 0.84)"],
+                loss: ["rgba(10, 80, 40, 0.82)",  "rgba(6, 52, 26, 0.78)"],
+                border: "rgba(74, 222, 128, 0.66)"
+            },
+            koberec: {
+                cls: "lm-surf-koberec",
+                win:  ["rgba(108, 56, 206, 0.92)", "rgba(72, 34, 156, 0.86)"],
+                draw: ["rgba(90, 44, 178, 0.86)",  "rgba(58, 26, 130, 0.82)"],
+                loss: ["rgba(64, 30, 134, 0.80)",  "rgba(40, 18, 92, 0.76)"],
+                border: "rgba(196, 181, 253, 0.68)"
+            },
+            ine: {
+                cls: "lm-surf-ine",
+                win:  ["rgba(166, 36, 146, 0.94)", "rgba(114, 18, 108, 0.88)"],
+                draw: ["rgba(140, 26, 124, 0.88)", "rgba(94, 14, 90, 0.84)"],
+                loss: ["rgba(100, 18, 90, 0.82)",  "rgba(64, 8, 62, 0.78)"],
+                border: "rgba(232, 121, 249, 0.68)"
+            },
+            none: {
+                cls: "lm-surf-none",
+                win:  ["rgba(114, 124, 136, 0.92)", "rgba(80, 90, 102, 0.86)"],
+                draw: ["rgba(90, 100, 112, 0.86)",  "rgba(62, 70, 82, 0.82)"],
+                loss: ["rgba(64, 72, 82, 0.80)",    "rgba(42, 48, 56, 0.76)"],
+                border: "rgba(203, 213, 225, 0.62)"
+            }
+        };
+
+        function getScoreboardSurfacePalette(rawSurface) {
+            const key = normalizeSurfaceValue(rawSurface);
+            return SCOREBOARD_SURFACE_PALETTES[key] || SCOREBOARD_SURFACE_PALETTES.none;
+        }
+
+        function getMatchCardSurfaceClass(rawSurface) {
+            const key = normalizeSurfaceValue(rawSurface);
+            return key ? `mc-surf-${key}` : "mc-surf-none";
+        }
 
         function normalizeSurfaceValue(raw) {
             const s = String(raw ?? "").trim();
@@ -9172,10 +9387,11 @@
 
             const typeTxt = lastM.type === "4H" ? "Štvorhra 4H" : "Dvojhra 2H";
             const lastSurfMeta = getSurfaceMeta(lastM.surface);
+            const lastSurfPal = getScoreboardSurfacePalette(lastM.surface);
             const surfSuffix = lastSurfMeta ? ` · ${escapeHtml(lastSurfMeta.label)}` : "";
             lmLabel.innerHTML = `Posledný zápas (#${lastM.index} · ${typeTxt}${surfSuffix}) · ${formatDateSk(lastM.date)} <span class="lm-report-pill"><i class="fa-regular fa-image"></i> PNG</span>`;
             lmBoard.innerHTML = `
-                <div class="lm-scoreboard ${isDraw ? 'is-draw' : ''}" style="grid-template-columns: ${gridCols};">
+                <div class="lm-scoreboard ${lastSurfPal.cls} ${isDraw ? 'is-draw' : ''}" style="grid-template-columns: ${gridCols};">
                     <div class="lm-cell lm-cell-team ${topTeamCls}" title="${escapeHtml(topTeam)}">${escapeHtml(topTeam)}</div>
                     <div class="lm-cell lm-cell-sets ${topSetsCls}">${topSets}</div>
                     ${topGemCells}
@@ -10994,14 +11210,16 @@
                             ? (m.isValid ? `<span class="validity-badge val-active">Platí</span>` : `<span class="validity-badge val-expired">Expirovalo</span>`)
                             : "";
 
+                        const surfCls = getMatchCardSurfaceClass(m.surface);
                         return `
-                            <div class="match-card ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" style="margin-top:8px; padding:9px 11px;">
+                            <div class="match-card ${surfCls} ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" style="margin-top:8px; padding:9px 11px;" role="button" tabindex="0" data-match-id="${escapeHtml(m.id)}" onclick="openMatchReportModal(this.dataset.matchId)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); openMatchReportModal(this.dataset.matchId);}" title="Kliknutím vytvoríš PNG report tohto zápasu">
                                 <div style="min-width:0; flex:1;">
                                     <div class="match-meta">
                                         <span>#${m.index} · ${formatDateSk(m.date)}</span>
                                         <span class="type-badge type-${m.type}">${m.type}</span>
                                         ${renderSurfaceBadgeHtml(m.surface)}
                                         ${valTag}
+                                        <span class="mc-report-pill"><i class="fa-regular fa-image"></i> PNG</span>
                                     </div>
                                     <div class="match-title">
                                         ${escapeHtml(teamA)} <span style="color:var(--text-muted); font-weight:400;">vs</span> ${escapeHtml(teamB)}
@@ -11127,10 +11345,11 @@
                         const gemsFormatted = formatGemsForOrder(m.gems, isFirst);
                         const isDraw = sA === sB;
                         const col = sA > sB ? "var(--win)" : (sB > sA ? "var(--loss)" : "var(--draw)");
+                        const surfCls = getMatchCardSurfaceClass(m.surface);
                         return `
-                            <div class="match-card ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" style="margin-top:8px; padding:9px 11px;">
+                            <div class="match-card ${surfCls} ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" style="margin-top:8px; padding:9px 11px;" role="button" tabindex="0" data-match-id="${escapeHtml(m.id)}" onclick="openMatchReportModal(this.dataset.matchId)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); openMatchReportModal(this.dataset.matchId);}" title="Kliknutím vytvoríš PNG report tohto zápasu">
                                 <div style="min-width:0; flex:1;">
-                                    <div class="match-meta"><span>Zápas #${m.index} · ${formatDateSk(m.date)}</span> <span class="type-badge type-4H">4H</span> ${renderSurfaceBadgeHtml(m.surface)}</div>
+                                    <div class="match-meta"><span>Zápas #${m.index} · ${formatDateSk(m.date)}</span> <span class="type-badge type-4H">4H</span> ${renderSurfaceBadgeHtml(m.surface)} <span class="mc-report-pill"><i class="fa-regular fa-image"></i> PNG</span></div>
                                     <div class="match-title">${escapeHtml(teamTitleA)} vs ${escapeHtml(teamTitleB)} <span class="match-score-pill">${sA}:${sB}</span> <span class="match-gems">${gemsFormatted ? '(' + escapeHtml(gemsFormatted) + ')' : ''}</span></div>
                                 </div>
                                 <div style="text-align:right; font-size:0.77rem; font-weight:800; color:${col}; white-space:nowrap;">
@@ -11537,8 +11756,9 @@
                             ? (m.isValid ? `<span class="validity-badge val-active">Platí</span>` : `<span class="validity-badge val-expired">Expirovalo</span>`)
                             : "";
                         const noteHtml = m.note ? `<div class="match-note-line">📝 ${escapeHtml(m.note)}</div>` : "";
+                        const surfCls = getMatchCardSurfaceClass(m.surface);
                         return `
-                            <div class="match-card ${resCls} ${!m.isValid ? 'is-expired' : ''}" style="margin-bottom:7px; padding:9px 11px;">
+                            <div class="match-card ${surfCls} ${resCls} ${!m.isValid ? 'is-expired' : ''}" style="margin-bottom:7px; padding:9px 11px;" role="button" tabindex="0" data-match-id="${escapeHtml(m.id)}" onclick="openMatchReportModal(this.dataset.matchId)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); openMatchReportModal(this.dataset.matchId);}" title="Kliknutím vytvoríš PNG report tohto zápasu">
                                 <div style="min-width:0; flex:1;">
                                     <div class="match-meta">
                                         <span class="profile-res-pill profile-res-${res}">${resLbl}</span>
@@ -11546,6 +11766,7 @@
                                         <span class="type-badge type-${m.type}">${m.type}</span>
                                         ${renderSurfaceBadgeHtml(m.surface)}
                                         ${valTag}
+                                        <span class="mc-report-pill"><i class="fa-regular fa-image"></i> PNG</span>
                                     </div>
                                     <div class="match-title">
                                         ${formatPlayerTeamHtml(myTeamIds)} <span style="color:var(--text-muted); font-weight:400;">vs</span> ${escapeHtml(oppTeamName)}
@@ -14150,20 +14371,22 @@
                 const hasSameDatePrev = rawIdx > 0 && state.matches[rawIdx - 1].date === m.date;
                 const hasSameDateNext = rawIdx < state.matches.length - 1 && state.matches[rawIdx + 1].date === m.date;
                 let orderBtns = "";
-                if (hasSameDatePrev) orderBtns += `<button class="icon-btn-alt" data-match-id="${escapeHtml(m.id)}" onclick="moveMatchOrder(this.dataset.matchId, -1)" title="Posunúť skôr v rámci dňa">↑</button>`;
-                if (hasSameDateNext) orderBtns += `<button class="icon-btn-alt" data-match-id="${escapeHtml(m.id)}" onclick="moveMatchOrder(this.dataset.matchId, 1)" title="Posunúť neskôr v rámci dňa">↓</button>`;
+                if (hasSameDatePrev) orderBtns += `<button type="button" class="icon-btn-alt" data-match-id="${escapeHtml(m.id)}" onclick="event.stopPropagation(); moveMatchOrder(this.dataset.matchId, -1)" title="Posunúť skôr v rámci dňa">↑</button>`;
+                if (hasSameDateNext) orderBtns += `<button type="button" class="icon-btn-alt" data-match-id="${escapeHtml(m.id)}" onclick="event.stopPropagation(); moveMatchOrder(this.dataset.matchId, 1)" title="Posunúť neskôr v rámci dňa">↓</button>`;
 
                 const colA = m.ptsA > 0 ? (isDraw ? "var(--draw)" : "var(--win)") : "var(--text-muted)";
                 const colB = m.ptsB > 0 ? (isDraw ? "var(--draw)" : "var(--win)") : "var(--text-muted)";
+                const surfCls = getMatchCardSurfaceClass(m.surface);
 
                 return `
-                    <div class="match-card ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}">
+                    <div class="match-card ${surfCls} ${isDraw ? 'draw-border' : ''} ${!m.isValid ? 'is-expired' : ''}" role="button" tabindex="0" data-match-id="${escapeHtml(m.id)}" onclick="openMatchReportModal(this.dataset.matchId)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); openMatchReportModal(this.dataset.matchId);}" title="Kliknutím vytvoríš PNG report tohto zápasu">
                         <div style="min-width:0; flex:1;">
                             <div class="match-meta">
                                 <span>#${m.index} · ${formatDateSk(m.date)}</span>
                                 <span class="type-badge type-${m.type}">${m.type}</span>
                                 ${renderSurfaceBadgeHtml(m.surface)}
                                 ${validityHtml}
+                                <span class="mc-report-pill"><i class="fa-regular fa-image"></i> PNG</span>
                             </div>
                             <div class="match-title">
                                 ${escapeHtml(m.teamNameA)} <span style="color:var(--text-muted); font-weight:400;">vs</span> ${escapeHtml(m.teamNameB)}
@@ -14176,10 +14399,10 @@
                             </div>
                             ${m.note ? `<div class="match-note-line">🎙️ ${escapeHtml(m.note)}</div>` : ''}
                         </div>
-                        <div class="match-actions">
+                        <div class="match-actions" onclick="event.stopPropagation()">
                             ${orderBtns}
-                            <button class="icon-btn-alt" data-match-id="${escapeHtml(m.id)}" onclick="openEditMatchModal(this.dataset.matchId)" title="Upraviť zápas">✎</button>
-                            <button class="icon-btn" data-match-id="${escapeHtml(m.id)}" onclick="deleteMatch(this.dataset.matchId)" title="Vymazať zápas">✕</button>
+                            <button type="button" class="icon-btn-alt" data-match-id="${escapeHtml(m.id)}" onclick="event.stopPropagation(); openEditMatchModal(this.dataset.matchId)" title="Upraviť zápas">✎</button>
+                            <button type="button" class="icon-btn" data-match-id="${escapeHtml(m.id)}" onclick="event.stopPropagation(); deleteMatch(this.dataset.matchId)" title="Vymazať zápas">✕</button>
                         </div>
                     </div>
                 `;
@@ -15779,16 +16002,13 @@
             drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
             ctx.clip();
 
+            const tvSurfPal = getScoreboardSurfacePalette(m.surface);
             const drawRow = (rowIdx, labelName, colorsArr, setsVal, isWinnerRow) => {
                 const ry = sbY + rowIdx * rowH;
                 const teamGrad = ctx.createLinearGradient(sbX, ry, sbX + teamColW, ry + rowH);
-                if (isDraw) {
-                    teamGrad.addColorStop(0, "rgba(0, 86, 188, 0.90)"); teamGrad.addColorStop(1, "rgba(0, 48, 126, 0.86)");
-                } else if (isWinnerRow) {
-                    teamGrad.addColorStop(0, "rgba(0, 96, 208, 0.94)"); teamGrad.addColorStop(1, "rgba(0, 52, 138, 0.88)");
-                } else {
-                    teamGrad.addColorStop(0, "rgba(0, 68, 152, 0.84)"); teamGrad.addColorStop(1, "rgba(0, 38, 102, 0.82)");
-                }
+                const rowStops = isDraw ? tvSurfPal.draw : (isWinnerRow ? tvSurfPal.win : tvSurfPal.loss);
+                teamGrad.addColorStop(0, rowStops[0]);
+                teamGrad.addColorStop(1, rowStops[1]);
                 ctx.fillStyle = teamGrad;
                 ctx.fillRect(sbX, ry, teamColW, rowH);
 
@@ -15886,7 +16106,7 @@
 
             ctx.save();
             drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
-            ctx.strokeStyle = isDraw ? "rgba(125, 211, 252, 0.72)" : "rgba(217, 249, 40, 0.72)";
+            ctx.strokeStyle = tvSurfPal.border;
             ctx.lineWidth = 2.5;
             ctx.stroke();
             ctx.restore();
@@ -17412,8 +17632,12 @@
                 ? buildRecentMatchPool4H(m, computedMatches)
                 : buildRecentMatchPool2H(m, computedMatches);
 
+            const isLatestForReport = computedMatches.length > 0 && computedMatches[computedMatches.length - 1].id === m.id;
             if (pool.resultItem) {
-                pushUnique("result", "match", pool.resultItem.tag, pool.resultItem.text);
+                const resTag = isLatestForReport
+                    ? pool.resultItem.tag
+                    : (m.type === "4H" ? "VÝSLEDOK ŠTVORHRY" : "VÝSLEDOK DVOJHRY");
+                pushUnique("result", "match", resTag, pool.resultItem.text);
             }
 
             // 3b. NEWS IMPACT v2 – posun v poradí, prekvapenie kola, premiérový skalp, rekord ELO a jubileá
@@ -17682,11 +17906,20 @@
             return lines.length > 0 ? lines : [""];
         }
 
+        function getSelectedMatchReportMatch() {
+            if (computedMatches.length === 0) return null;
+            if (matchReportMatchId) {
+                const found = computedMatches.find(x => x.id === matchReportMatchId);
+                if (found) return found;
+            }
+            return computedMatches[computedMatches.length - 1];
+        }
+
         function renderMatchReportCanvas(targetCanvas = null, forceFallbackBg = false) {
             const canvas = targetCanvas || document.getElementById("reportCanvas");
-            if (!canvas || computedMatches.length === 0) return;
-
-            const m = computedMatches[computedMatches.length - 1];
+            const m = getSelectedMatchReportMatch();
+            if (!canvas || !m) return;
+            const isLatestMatch = computedMatches.length > 0 && computedMatches[computedMatches.length - 1].id === m.id;
             const activeItems = matchReportItems.filter(it => !it.removed && String(it.text || "").trim().length > 0);
             const effBgMode = getEffectiveReportBgMode();
 
@@ -17792,7 +18025,8 @@
             ctx.textAlign = "center";
             const repSurfMeta = getSurfaceMeta(m.surface);
             const repSurfTxt = repSurfMeta ? ` · ${repSurfMeta.label.toUpperCase()}` : "";
-            ctx.fillText(`POSLEDNÝ ZÁPAS (#${m.index} · ${typeTxt}${repSurfTxt}) · ${formatDateSk(m.date)}`, W / 2, curY + Math.round(lay.labelH * 0.72), innerW);
+            const repHeadPrefix = isLatestMatch ? "POSLEDNÝ ZÁPAS" : "REPORT ZÁPASU";
+            ctx.fillText(`${repHeadPrefix} (#${m.index} · ${typeTxt}${repSurfTxt}) · ${formatDateSk(m.date)}`, W / 2, curY + Math.round(lay.labelH * 0.72), innerW);
             curY += lay.labelH + 12;
 
             // 3. TV Glass-Neon Scoreboard
@@ -17810,19 +18044,13 @@
             const teamFontPx = Math.max(24, Math.round(31 * lay.sc));
             const setsFontPx = Math.max(28, Math.round(35 * lay.sc));
 
+            const repSurfPal = getScoreboardSurfacePalette(m.surface);
             const drawSbRow = (rowIdx, teamLabel, setsVal, isWinnerRow) => {
                 const ry = sbY + rowIdx * sbRowH;
                 const teamGrad = ctx.createLinearGradient(sbX, ry, sbX + teamColW, ry + sbRowH);
-                if (isDraw) {
-                    teamGrad.addColorStop(0, "rgba(0, 82, 180, 0.86)");
-                    teamGrad.addColorStop(1, "rgba(0, 52, 130, 0.82)");
-                } else if (isWinnerRow) {
-                    teamGrad.addColorStop(0, "rgba(0, 88, 192, 0.90)");
-                    teamGrad.addColorStop(1, "rgba(0, 56, 140, 0.84)");
-                } else {
-                    teamGrad.addColorStop(0, "rgba(0, 74, 166, 0.78)");
-                    teamGrad.addColorStop(1, "rgba(0, 48, 122, 0.74)");
-                }
+                const rowStops = isDraw ? repSurfPal.draw : (isWinnerRow ? repSurfPal.win : repSurfPal.loss);
+                teamGrad.addColorStop(0, rowStops[0]);
+                teamGrad.addColorStop(1, rowStops[1]);
                 ctx.fillStyle = teamGrad;
                 ctx.fillRect(sbX, ry, teamColW, sbRowH);
 
@@ -17888,7 +18116,7 @@
 
             ctx.save();
             drawRoundedRectPath(ctx, sbX, sbY, sbW, sbH, sbRadius);
-            ctx.strokeStyle = isDraw ? "rgba(125, 211, 252, 0.65)" : "rgba(217, 249, 40, 0.65)";
+            ctx.strokeStyle = repSurfPal.border;
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.restore();
@@ -18016,7 +18244,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.68${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.70${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -18153,7 +18381,7 @@
             }, { passive: true });
         }
 
-        function openMatchReportModal() {
+        function openMatchReportModal(matchId = null) {
             if (computedMatches.length === 0) {
                 showToast("Zatiaľ nie je zapísaný žiaden zápas pre vytvorenie reportu.", true);
                 return;
@@ -18161,9 +18389,20 @@
             const modal = document.getElementById("match-report-modal");
             if (!modal) return;
 
-            const lastM = computedMatches[computedMatches.length - 1];
-            matchReportMatchId = lastM.id;
-            matchReportItems = buildMatchReportItems(lastM);
+            const latestM = computedMatches[computedMatches.length - 1];
+            const targetM = matchId
+                ? (computedMatches.find(x => x.id === matchId) || latestM)
+                : latestM;
+            const isLatest = targetM.id === latestM.id;
+            matchReportMatchId = targetM.id;
+            matchReportItems = buildMatchReportItems(targetM);
+
+            const titleEl = document.getElementById("report-modal-title");
+            if (titleEl) {
+                titleEl.textContent = isLatest
+                    ? "Report posledného zápasu (PNG)"
+                    : `Report zápasu #${targetM.index} · ${formatDateSk(targetM.date)} (PNG)`;
+            }
 
             syncTvControlsUI();
             syncReportBgButtonsUI();
@@ -18181,8 +18420,8 @@
             // Asynchrónne dotiahnutie počasia pre presný deň zápasu (aj spätne)
             const wStatus = document.getElementById("report-weather-status");
             if (wStatus) wStatus.textContent = "· načítavam počasie…";
-            const reqMatchId = lastM.id;
-            fetchWeatherForMatchDate(lastM.date).then(wRes => {
+            const reqMatchId = targetM.id;
+            fetchWeatherForMatchDate(targetM.date).then(wRes => {
                 const modNow = document.getElementById("match-report-modal");
                 if (!modNow || !modNow.classList.contains("open") || matchReportMatchId !== reqMatchId) return;
                 if (wRes && wRes.tag && wRes.text) {
@@ -18219,9 +18458,9 @@
 
         function downloadMatchReportGraphic() {
             const canvas = document.getElementById("reportCanvas");
-            const lastM = computedMatches.length > 0 ? computedMatches[computedMatches.length - 1] : null;
-            const datePart = lastM ? lastM.date : getTodayIso();
-            const idxPart = lastM ? `_Zapas${lastM.index}` : "";
+            const targetM = getSelectedMatchReportMatch();
+            const datePart = targetM ? targetM.date : getTodayIso();
+            const idxPart = targetM ? `_Zapas${targetM.index}` : "";
             exportCanvasImage(canvas, `TenisTAB_Report${idxPart}_${datePart}`, "png", renderMatchReportCanvas);
         }
 
@@ -20241,7 +20480,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.68! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.70! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
