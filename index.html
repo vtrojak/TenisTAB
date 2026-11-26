@@ -4450,6 +4450,409 @@
             color: #fde047;
         }
 
+        /* SAMOSTATNÉ VITRÍNY V KLUBOVNI: KLIETKA KANÁRIKOV (RUŽOVÁ) & SEZÓNNY GRAND SLAM (CHRÓMOVO SIVÁ) · v1.71 */
+        .klubovna-showcase {
+            border-radius: 16px;
+            padding: 14px 13px 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Klietka kanárikov – nepriesvitná ružová s jemným gradientom */
+        .klubovna-showcase.ks-canaries {
+            background: linear-gradient(145deg, #ec4899 0%, #db2777 54%, #a61458 100%);
+            border: 1.8px solid #f9a8d4;
+            color: #ffffff;
+            box-shadow: 0 8px 22px rgba(131, 24, 67, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.36);
+        }
+
+        /* Sezónny Grand Slam – nepriesvitná chrómovo sivá s kovovým leskom */
+        .klubovna-showcase.ks-grandslam {
+            background: linear-gradient(145deg, #f1f5f9 0%, #cbd5e1 36%, #94a3b8 72%, #cbd5e1 100%);
+            border: 1.8px solid #64748b;
+            color: #0f172a;
+            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.24), inset 0 1px 1px rgba(255, 255, 255, 0.94);
+        }
+
+        .ks-head {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .klubovna-showcase-ico {
+            width: 82px;
+            height: 82px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-in;
+        }
+
+        .ks-head-ico-fb {
+            width: 68px;
+            height: 68px;
+            border-radius: 16px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.95rem;
+            border: 1.5px solid rgba(255, 255, 255, 0.42);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.22);
+        }
+
+        .ks-head-text {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .ks-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ks-title {
+            font-size: 0.98rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .ks-canaries .ks-title {
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(80, 7, 36, 0.38);
+        }
+
+        .ks-grandslam .ks-title {
+            color: #0f172a;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+        }
+
+        .ks-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .ks-canaries .ks-badge {
+            background: #831843;
+            color: #fce7f3;
+            border: 1px solid #f9a8d4;
+        }
+
+        .ks-grandslam .ks-badge {
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #475569;
+        }
+
+        .ks-sub {
+            font-size: 0.72rem;
+            font-weight: 600;
+            line-height: 1.36;
+        }
+
+        .ks-canaries .ks-sub {
+            color: #fce7f3;
+        }
+
+        .ks-grandslam .ks-sub {
+            color: #334155;
+        }
+
+        /* Vnútorný nepriesvitný box pre tabuľku v oboch vitrínach */
+        .ks-table-box {
+            border-radius: 12px;
+            padding: 6px 9px 8px;
+            overflow-x: auto;
+        }
+
+        .ks-canaries .ks-table-box {
+            background: #ffe4f0;
+            border: 1.5px solid #f472b6;
+            color: #4a0624;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+        }
+
+        .ks-grandslam .ks-table-box {
+            background: #e2e8f0;
+            border: 1.5px solid #94a3b8;
+            color: #0f172a;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86);
+        }
+
+        .ks-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78rem;
+        }
+
+        .ks-table th {
+            padding: 5px 5px 6px;
+            font-size: 0.66rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            white-space: nowrap;
+            text-align: left;
+        }
+
+        .ks-canaries .ks-table th {
+            color: #9d174d;
+            border-bottom: 1.5px solid rgba(190, 24, 93, 0.24);
+        }
+
+        .ks-grandslam .ks-table th {
+            color: #334155;
+            border-bottom: 1.5px solid rgba(71, 85, 105, 0.26);
+        }
+
+        .ks-table td {
+            padding: 7px 5px;
+            vertical-align: middle;
+        }
+
+        .ks-canaries .ks-table td {
+            border-bottom: 1px solid rgba(190, 24, 93, 0.14);
+        }
+
+        .ks-grandslam .ks-table td {
+            border-bottom: 1px solid rgba(71, 85, 105, 0.16);
+        }
+
+        .ks-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .ks-canaries .kgs-player-btn {
+            color: #4a0624;
+        }
+
+        .ks-canaries .kgs-player-btn:hover {
+            background: #fbcfe8;
+            border-color: #ec4899;
+            color: #831843;
+        }
+
+        .ks-grandslam .kgs-player-btn {
+            color: #0f172a;
+        }
+
+        .ks-grandslam .kgs-player-btn:hover {
+            background: #cbd5e1;
+            border-color: #64748b;
+            color: #0f172a;
+        }
+
+        .ks-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .ks-status-pill.tier-member {
+            background: #fbcfe8;
+            color: #831843;
+            border: 1px solid #f472b6;
+        }
+
+        .ks-status-pill.tier-voliera {
+            background: #f472b6;
+            color: #ffffff;
+            border: 1px solid #db2777;
+        }
+
+        .ks-status-pill.tier-gold {
+            background: linear-gradient(135deg, #facc15, #d97706);
+            color: #291502;
+            border: 1px solid #a16207;
+            box-shadow: 0 1px 4px rgba(161, 98, 7, 0.28);
+        }
+
+        .ks-icon-row {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ks-mini-zoom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-in;
+        }
+
+        .ks-canary-img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            display: inline-block;
+            vertical-align: middle;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.28));
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
+        }
+
+        .ks-canary-fb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            vertical-align: middle;
+        }
+
+        .ks-count-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 900;
+            background: #9d174d;
+            color: #ffffff;
+            margin-left: 4px;
+        }
+
+        .ks-year-tags {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        .ks-year-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            font-size: 0.68rem;
+            font-weight: 800;
+        }
+
+        .ks-radar-box {
+            border-radius: 12px;
+            padding: 9px 10px;
+            background: #cbd5e1;
+            border: 1.5px solid #94a3b8;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .ks-radar-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 0.71rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #1e293b;
+        }
+
+        .ks-radar-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .ks-radar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 5px 8px;
+            border-radius: 9px;
+            background: #e2e8f0;
+            border: 1px solid #94a3b8;
+        }
+
+        .ks-radar-seasons {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .ks-season-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            background: #cbd5e1;
+            color: #64748b;
+            border: 1px solid #94a3b8;
+        }
+
+        .ks-season-chip.is-hit {
+            background: #0f172a;
+            color: #bef264;
+            border-color: #334155;
+        }
+
+        .ks-empty {
+            font-size: 0.77rem;
+            font-weight: 700;
+            padding: 8px 4px;
+            text-align: center;
+            opacity: 0.85;
+        }
+
+        @media (max-width: 640px) {
+            .klubovna-showcase {
+                padding: 12px 10px 11px;
+            }
+            .klubovna-showcase-ico {
+                width: 72px;
+                height: 72px;
+            }
+            .ks-canary-img {
+                width: 24px;
+                height: 24px;
+            }
+            .ks-table th {
+                padding: 5px 3px 6px;
+                font-size: 0.62rem;
+            }
+            .ks-table td {
+                padding: 6px 3px;
+            }
+        }
+
         /* Špeciálne trofeje – Klub 100 / 50 / 25 / 10 / 5 (celé sýte farebné dlaždice) */
         .klubovna-milestones-grid {
             display: grid;
@@ -5816,7 +6219,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.70</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.71</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5850,7 +6253,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.70</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.71</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -12206,9 +12609,15 @@
             if (clickedEl.classList.contains("ach-crest")) {
                 const sec = clickedEl.closest("#sec-badges") || document;
                 nodes = Array.from(sec.querySelectorAll(".ach-crest"));
-            } else if (clickedEl.classList.contains("klubovna-trophy-ico-box") || clickedEl.classList.contains("klubovna-milestone-ico")) {
+            } else if (
+                clickedEl.classList.contains("klubovna-trophy-ico-box") ||
+                clickedEl.classList.contains("klubovna-milestone-ico") ||
+                clickedEl.classList.contains("klubovna-showcase-ico") ||
+                clickedEl.classList.contains("ks-mini-zoom")
+            ) {
                 const kw = clickedEl.closest("#klubovna-wrap") || document;
-                nodes = Array.from(kw.querySelectorAll(".klubovna-trophy-ico-box, .klubovna-milestone-ico"));
+                nodes = Array.from(kw.querySelectorAll(".klubovna-trophy-ico-box, .klubovna-showcase-ico, .klubovna-milestone-ico"));
+                if (!nodes.includes(clickedEl)) nodes.unshift(clickedEl);
             } else if (clickedEl.classList.contains("profile-mini-badge")) {
                 const wrap = clickedEl.closest(".profile-badges-wrap") || document;
                 nodes = Array.from(wrap.querySelectorAll(".profile-mini-badge"));
@@ -13747,7 +14156,230 @@
             }));
 
             const totalMilestoneMembers = milestones.reduce((sum, t) => sum + t.members.length, 0);
-            return { seasons, trophyLeaders, milestones, totalMilestoneMembers };
+            const canaryCage = buildCanaryCageData();
+            const seasonalGrandSlam = buildSeasonalGrandSlamData();
+            return { seasons, trophyLeaders, milestones, totalMilestoneMembers, canaryCage, seasonalGrandSlam };
+        }
+
+        const GRAND_SLAM_SEASONS = [
+            { key: "spring", label: "Jar",   icon: "🌸", inPhrase: "na jar",   periodTxt: "marec – máj" },
+            { key: "summer", label: "Leto",  icon: "☀️", inPhrase: "v lete",   periodTxt: "jún – august" },
+            { key: "autumn", label: "Jeseň", icon: "🍂", inPhrase: "na jeseň", periodTxt: "september – november" },
+            { key: "winter", label: "Zima",  icon: "❄️", inPhrase: "v zime",   periodTxt: "január, február, december" }
+        ];
+
+        function getCalendarSeasonKeyFromIso(isoDate) {
+            const dt = parseIsoLocal(isoDate);
+            if (!dt) return null;
+            const m = dt.getMonth() + 1;
+            if (m >= 3 && m <= 5) return "spring";
+            if (m >= 6 && m <= 8) return "summer";
+            if (m >= 9 && m <= 11) return "autumn";
+            return "winter";
+        }
+
+        function buildCanaryCageData() {
+            const playerInfo = {};
+            state.players.forEach((p, idx) => {
+                playerInfo[p.id] = {
+                    id: p.id,
+                    name: p.name,
+                    color: p.color || PLAYER_COLORS[idx % PLAYER_COLORS.length]
+                };
+            });
+
+            const recs = {};
+            computedMatches.forEach(m => {
+                const parsedSets = parseSetsFromGemsString(m.gems);
+                if (parsedSets.length === 0) return;
+
+                let taken1 = 0;
+                let taken2 = 0;
+                parsedSets.forEach(st => {
+                    if (st.g1 === 6 && st.g2 === 0) taken2++;
+                    else if (st.g2 === 6 && st.g1 === 0) taken1++;
+                });
+
+                const applyTaken = (ids, cnt) => {
+                    if (cnt <= 0 || !Array.isArray(ids)) return;
+                    ids.forEach(pid => {
+                        const info = playerInfo[pid];
+                        if (!info) return;
+                        if (!recs[pid]) {
+                            recs[pid] = {
+                                id: pid,
+                                name: info.name,
+                                color: info.color,
+                                total: 0,
+                                c2H: 0,
+                                c4H: 0,
+                                bicycles: 0,
+                                lastDate: ""
+                            };
+                        }
+                        const r = recs[pid];
+                        r.total += cnt;
+                        if (m.type === "4H") r.c4H += cnt;
+                        else r.c2H += cnt;
+                        if (cnt >= 2) r.bicycles++;
+                        if (m.date && (!r.lastDate || m.date > r.lastDate)) r.lastDate = m.date;
+                    });
+                };
+
+                applyTaken(m.team1, taken1);
+                applyTaken(m.team2, taken2);
+            });
+
+            const raw = Object.values(recs)
+                .filter(r => r.total > 0)
+                .sort((a, b) => (b.total - a.total) || (b.bicycles - a.bicycles) || a.name.localeCompare(b.name, "sk"));
+
+            let lastVal = null;
+            let lastRank = 1;
+            const members = raw.map((r, idx) => {
+                const rank = (r.total === lastVal) ? lastRank : (idx + 1);
+                const isTied = (r.total === lastVal) || (idx + 1 < raw.length && raw[idx + 1].total === r.total);
+                lastVal = r.total;
+                lastRank = rank;
+                const tier = r.total >= 10
+                    ? { key: "gold", label: "Zlatý kanár" }
+                    : (r.total >= 5 ? { key: "voliera", label: "Staviteľ voliéry" } : { key: "member", label: "Spolok chovateľov" });
+                return {
+                    ...r,
+                    rank,
+                    rankLabel: isTied ? `${rank}.=` : `${rank}.`,
+                    goldCount: Math.floor(r.total / 10),
+                    tier
+                };
+            });
+
+            const totalCanaries = members.reduce((s, r) => s + r.total, 0);
+            const goldHolders = members.filter(r => r.total >= 10);
+            return { members, totalCanaries, goldHolders };
+        }
+
+        function buildSeasonalGrandSlamData() {
+            const playerInfo = {};
+            state.players.forEach((p, idx) => {
+                playerInfo[p.id] = {
+                    id: p.id,
+                    name: p.name,
+                    color: p.color || PLAYER_COLORS[idx % PLAYER_COLORS.length]
+                };
+            });
+
+            const byPlayerYear = {}; // pid -> { year -> { spring: date, summer: date, autumn: date, winter: date } }
+            computedMatches.forEach(m => {
+                if (!m.date || m.date.length < 4) return;
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                if (s1 === s2) return; // remíza sa nepočíta
+                const seasonKey = getCalendarSeasonKeyFromIso(m.date);
+                if (!seasonKey) return;
+                const yr = parseInt(m.date.slice(0, 4), 10);
+                if (!isFinite(yr)) return;
+                const winners = s1 > s2 ? m.team1 : m.team2;
+                (winners || []).forEach(pid => {
+                    if (!playerInfo[pid]) return;
+                    if (!byPlayerYear[pid]) byPlayerYear[pid] = {};
+                    if (!byPlayerYear[pid][yr]) byPlayerYear[pid][yr] = {};
+                    if (!byPlayerYear[pid][yr][seasonKey]) {
+                        byPlayerYear[pid][yr][seasonKey] = m.date;
+                    }
+                });
+            });
+
+            const byYear = {}; // year -> [ { id, name, color, consecutiveStreak } ]
+            const holdersRaw = [];
+
+            Object.keys(byPlayerYear).forEach(pid => {
+                const info = playerInfo[pid];
+                const completedYears = Object.keys(byPlayerYear[pid])
+                    .map(Number)
+                    .filter(yr => {
+                        const sObj = byPlayerYear[pid][yr];
+                        return sObj && sObj.spring && sObj.summer && sObj.autumn && sObj.winter;
+                    })
+                    .sort((a, b) => a - b);
+
+                if (completedYears.length === 0) return;
+
+                let maxStreak = 1;
+                let curStreak = 1;
+                const streakAtYear = {};
+                completedYears.forEach((yr, idx) => {
+                    if (idx > 0 && yr === completedYears[idx - 1] + 1) curStreak++;
+                    else curStreak = 1;
+                    if (curStreak > maxStreak) maxStreak = curStreak;
+                    streakAtYear[yr] = curStreak;
+                    if (!byYear[yr]) byYear[yr] = [];
+                    byYear[yr].push({
+                        id: pid,
+                        name: info.name,
+                        color: info.color,
+                        consecutiveStreak: curStreak
+                    });
+                });
+
+                holdersRaw.push({
+                    id: pid,
+                    name: info.name,
+                    color: info.color,
+                    count: completedYears.length,
+                    years: completedYears.slice().reverse(),
+                    latestYear: completedYears[completedYears.length - 1],
+                    maxStreak,
+                    streakAtYear
+                });
+            });
+
+            Object.keys(byYear).forEach(yr => {
+                byYear[yr].sort((a, b) => a.name.localeCompare(b.name, "sk"));
+            });
+
+            holdersRaw.sort((a, b) =>
+                (b.count - a.count) ||
+                (b.latestYear - a.latestYear) ||
+                a.name.localeCompare(b.name, "sk")
+            );
+
+            let lastCnt = null;
+            let lastRank = 1;
+            const holders = holdersRaw.map((h, idx) => {
+                const rank = (h.count === lastCnt) ? lastRank : (idx + 1);
+                const isTied = (h.count === lastCnt) || (idx + 1 < holdersRaw.length && holdersRaw[idx + 1].count === h.count);
+                lastCnt = h.count;
+                lastRank = rank;
+                return { ...h, rank, rankLabel: isTied ? `${rank}.=` : `${rank}.` };
+            });
+
+            const curYear = getTodayMidnight().getFullYear();
+            const curYearEntries = [];
+            Object.keys(byPlayerYear).forEach(pid => {
+                const sObj = byPlayerYear[pid][curYear];
+                if (!sObj) return;
+                const info = playerInfo[pid];
+                const hitKeys = GRAND_SLAM_SEASONS.filter(s => Boolean(sObj[s.key])).map(s => s.key);
+                if (hitKeys.length === 0) return;
+                const missing = GRAND_SLAM_SEASONS.filter(s => !sObj[s.key]);
+                curYearEntries.push({
+                    id: pid,
+                    name: info.name,
+                    color: info.color,
+                    hitCount: hitKeys.length,
+                    seasons: sObj,
+                    missing
+                });
+            });
+            curYearEntries.sort((a, b) => (b.hitCount - a.hitCount) || a.name.localeCompare(b.name, "sk"));
+
+            const hasTwoPlus = curYearEntries.some(e => e.hitCount >= 2);
+            const currentYearRadar = hasTwoPlus
+                ? curYearEntries.filter(e => e.hitCount >= 2)
+                : curYearEntries;
+
+            const totalSlams = holders.reduce((s, h) => s + h.count, 0);
+            return { holders, byYear, curYear, curYearEntries, currentYearRadar, totalSlams };
         }
 
         const klubovnaTrophyTimers = {};
@@ -13829,7 +14461,7 @@
 
         function handleKlubovnaBackClick(ev) {
             if (!klubovnaOpen) return;
-            if (ev && ev.target && ev.target.closest(".klubovna-trophy-item, .klubovna-milestone-card, .klubovna-chip, .kgs-player-btn")) {
+            if (ev && ev.target && ev.target.closest(".klubovna-trophy-item, .klubovna-milestone-card, .klubovna-showcase, .klubovna-chip, .kgs-player-btn")) {
                 return;
             }
             toggleKlubovnaCard(false);
@@ -14028,9 +14660,185 @@
                 `;
             }).join("");
 
+            const renderCanaryMiniIcon = (iconFile, altLabel, faClass, fbBg, fbColor, titleTip) => `
+                <span class="ks-mini-zoom" data-zoom-title="${escapeHtml(altLabel)}" data-zoom-desc="${escapeHtml(titleTip)}" onclick="openBadgeZoomFromEl(event, this)" title="${escapeHtml(titleTip)}">
+                    <img class="ks-canary-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="28" height="28" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                    <span class="ks-canary-fb" data-fallback-display="inline-flex" style="display:none; background:${fbBg}; color:${fbColor};"><i class="${faClass}" aria-hidden="true"></i></span>
+                </span>
+            `;
+
+            const renderCanaryStack = (total) => {
+                const n = Number(total) || 0;
+                if (n <= 0) return `<span class="kgs-zero">—</span>`;
+                const tens = Math.floor(n / 10);
+                const remAfterTen = n % 10;
+                const hasVoliera = remAfterTen >= 5;
+                const ones = remAfterTen % 5;
+                let parts = "";
+                for (let i = 0; i < tens; i++) {
+                    parts += renderCanaryMiniIcon("zlaty_kanarik.png", "Zlatý kanárik (10× 0:6)", "fa-solid fa-dove", "#facc15", "#422006", "Zlatý kanárik – za 10 inkasovaných setov 0:6");
+                }
+                if (hasVoliera) {
+                    parts += renderCanaryMiniIcon("voliera.png", "Vonkajšia voliéra (5× 0:6)", "fa-solid fa-house-chimney", "#db2777", "#ffffff", "Vonkajšia voliéra – za 5 inkasovaných setov 0:6");
+                }
+                for (let i = 0; i < ones; i++) {
+                    parts += renderCanaryMiniIcon("kanarik.png", "Kanárik (0:6)", "fa-solid fa-kiwi-bird", "#fde047", "#422006", "Inkasovaný kanárik (set 0:6)");
+                }
+                return `<div class="ks-icon-row">${parts}<span class="ks-count-pill">${n}×</span></div>`;
+            };
+
+            const cc = data.canaryCage;
+            const canaryBodyHtml = cc.members.length === 0
+                ? `<div class="ks-empty">Klietka je zatiaľ prázdna — ešte nikto neinkasoval set 0:6.</div>`
+                : `
+                    <table class="ks-table">
+                        <thead>
+                            <tr>
+                                <th>Chovateľ</th>
+                                <th>Zbierka vtáčikov (0:6)</th>
+                                <th style="text-align:right;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${cc.members.map(r => {
+                                const rCls = r.rank === 1 ? "r-1" : (r.rank === 2 ? "r-2" : (r.rank === 3 ? "r-3" : ""));
+                                const tipParts = [`${r.name}: ${r.total}× inkasovaný kanárik (0:6)`];
+                                tipParts.push(`2H: ${r.c2H}× · 4H: ${r.c4H}×`);
+                                if (r.bicycles > 0) tipParts.push(`bicykel 0:6 0:6: ${r.bicycles}×`);
+                                if (r.lastDate) tipParts.push(`posledný: ${formatDateSk(r.lastDate)}`);
+                                return `
+                                    <tr title="${escapeHtml(tipParts.join(' · '))}">
+                                        <td class="kgs-player-cell">
+                                            <div class="kgs-player-wrap">
+                                                <span class="kgs-rank ${rCls}">${escapeHtml(r.rankLabel)}</span>
+                                                <button type="button" class="kgs-player-btn" data-player-id="${escapeHtml(r.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="Otvoriť profil hráča ${escapeHtml(r.name)}">
+                                                    <span style="width:7px; height:7px; border-radius:50%; background:${r.color}; display:inline-block; flex-shrink:0;"></span>
+                                                    <span>${escapeHtml(r.name)}</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>${renderCanaryStack(r.total)}</td>
+                                        <td style="text-align:right;">
+                                            <span class="ks-status-pill tier-${r.tier.key}">${escapeHtml(r.tier.label)}</span>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join("")}
+                        </tbody>
+                    </table>
+                `;
+
+            const canaryShowcaseHtml = `
+                <div class="klubovna-showcase ks-canaries" id="klubovna-canary-cage">
+                    <div class="ks-head">
+                        <div class="klubovna-showcase-ico" data-zoom-title="Klietka kanárikov · Zlatý kanár" data-zoom-desc="Vitrína inkasovaných setov 0:6 (2H + 4H). 1–4 ks = Spolok chovateľov, 5 ks = Vonkajšia voliéra, 10 ks = Zlatý kanárik." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}zlaty_kanarik.png" alt="Klietka kanárikov" width="82" height="82" loading="lazy" decoding="async" data-icon-file="zlaty_kanarik.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#831843; color:#fde047;">
+                                <i class="fa-solid fa-dove" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                        <div class="ks-head-text">
+                            <div class="ks-title-row">
+                                <span class="ks-title">🐤 Klietka kanárikov</span>
+                                <span class="ks-badge">${skCount(cc.totalCanaries, "kanárik", "kanáriky", "kanárikov")} · ${skCount(cc.members.length, "chovateľ", "chovatelia", "chovateľov")}</span>
+                            </div>
+                            <div class="ks-sub">Zbierka inkasovaných setov <strong>0:6</strong> z dvojhier aj štvorhier · 1+ Spolok chovateľov · 5+ Vonkajšia voliéra · 10+ Zlatý kanárik</div>
+                        </div>
+                    </div>
+                    <div class="ks-table-box">${canaryBodyHtml}</div>
+                </div>
+            `;
+
+            const gs = data.seasonalGrandSlam;
+            const gsHoldersHtml = gs.holders.length === 0
+                ? `<div class="ks-empty">Zatiaľ bez držiteľa Sezónneho Grand Slamu — vyhraj aspoň 1 zápas v každej ročnej dobe toho istého roka.</div>`
+                : `
+                    <table class="ks-table">
+                        <thead>
+                            <tr>
+                                <th>Držiteľ</th>
+                                <th style="text-align:center;">Grand Slam</th>
+                                <th style="text-align:right;">Ročníky</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${gs.holders.map(h => {
+                                const rCls = h.rank === 1 ? "r-1" : (h.rank === 2 ? "r-2" : (h.rank === 3 ? "r-3" : ""));
+                                const rowTip = `${h.name}: ${skCount(h.count, "Sezónny Grand Slam", "Sezónne Grand Slamy", "Sezónnych Grand Slamov")} (${h.years.join(", ")})`;
+                                return `
+                                    <tr title="${escapeHtml(rowTip)}">
+                                        <td class="kgs-player-cell">
+                                            <div class="kgs-player-wrap">
+                                                <span class="kgs-rank ${rCls}">${escapeHtml(h.rankLabel)}</span>
+                                                <button type="button" class="kgs-player-btn" data-player-id="${escapeHtml(h.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="Otvoriť profil hráča ${escapeHtml(h.name)}">
+                                                    <span style="width:7px; height:7px; border-radius:50%; background:${h.color}; display:inline-block; flex-shrink:0;"></span>
+                                                    <span>${escapeHtml(h.name)}</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(h.count, "grand_slam.png", "Sezónny Grand Slam", "fa-solid fa-crown", "#0f172a", true)}</td>
+                                        <td style="text-align:right;">
+                                            <div class="ks-year-tags">${h.years.map(y => `<span class="ks-year-tag">${y}</span>`).join("")}</div>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join("")}
+                        </tbody>
+                    </table>
+                `;
+
+            const gsRadarHtml = gs.currentYearRadar.length > 0 ? `
+                <div class="ks-radar-box">
+                    <div class="ks-radar-head">
+                        <span>📡 Priebežný radar sezóny ${gs.curYear}</span>
+                        <span style="font-weight:700; text-transform:none; color:#334155;">Jar (3–5) · Leto (6–8) · Jeseň (9–11) · Zima (1, 2, 12)</span>
+                    </div>
+                    <div class="ks-radar-list">
+                        ${gs.currentYearRadar.map(e => `
+                            <div class="ks-radar-row">
+                                <button type="button" class="kgs-player-btn" data-player-id="${escapeHtml(e.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="Otvoriť profil hráča ${escapeHtml(e.name)}">
+                                    <span style="width:7px; height:7px; border-radius:50%; background:${e.color}; display:inline-block; flex-shrink:0;"></span>
+                                    <span>${escapeHtml(e.name)}</span>
+                                    <span style="font-size:0.68rem; font-weight:800; color:#475569;">(${e.hitCount}/4)</span>
+                                </button>
+                                <div class="ks-radar-seasons">
+                                    ${GRAND_SLAM_SEASONS.map(sn => {
+                                        const hitDate = e.seasons[sn.key];
+                                        const tip = hitDate ? `${sn.label}: prvá výhra ${formatDateSk(hitDate)}` : `${sn.label} (${sn.periodTxt}): zatiaľ bez výhry`;
+                                        return `<span class="ks-season-chip ${hitDate ? 'is-hit' : ''}" title="${escapeHtml(tip)}">${sn.icon} ${sn.label}</span>`;
+                                    }).join("")}
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            ` : "";
+
+            const grandSlamShowcaseHtml = `
+                <div class="klubovna-showcase ks-grandslam" id="klubovna-grand-slam">
+                    <div class="ks-head">
+                        <div class="klubovna-showcase-ico" data-zoom-title="Sezónny Grand Slam" data-zoom-desc="Vyhraj aspoň jeden zápas (2H alebo 4H) v každom zo 4 ročných období toho istého kalendárneho roka (Jar 3–5, Leto 6–8, Jeseň 9–11, Zima 1, 2, 12)." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}grand_slam.png" alt="Sezónny Grand Slam" width="82" height="82" loading="lazy" decoding="async" data-icon-file="grand_slam.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#1e293b; color:#e2e8f0;">
+                                <i class="fa-solid fa-crown" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                        <div class="ks-head-text">
+                            <div class="ks-title-row">
+                                <span class="ks-title">👑 Sezónny Grand Slam</span>
+                                <span class="ks-badge">${skCount(gs.totalSlams, "Grand Slam", "Grand Slamy", "Grand Slamov")} · ${skCount(gs.holders.length, "držiteľ", "držitelia", "držiteľov")}</span>
+                            </div>
+                            <div class="ks-sub">Výhra v 2H alebo 4H v každej ročnej dobe jedného roka · 🌸 Jar (3–5) · ☀️ Leto (6–8) · 🍂 Jeseň (9–11) · ❄️ Zima (1, 2, 12)</div>
+                        </div>
+                    </div>
+                    <div class="ks-table-box">${gsHoldersHtml}</div>
+                    ${gsRadarHtml}
+                </div>
+            `;
+
             const metaSummary = seasonsCount > 0
-                ? `${skCount(seasonsCount, "ročník", "ročníky", "ročníkov")}${closedCount > 0 ? ` (${closedCount} uzavret.)` : ""} · ${skCount(data.totalMilestoneMembers, "hráč", "hráči", "hráčov")} v kluboch 5–100`
-                : "Víťazi ročníkov (1.1. – 31.12.) & Kluby 5 / 10 / 25 / 50 / 100";
+                ? `${skCount(seasonsCount, "ročník", "ročníky", "ročníkov")}${closedCount > 0 ? ` (${closedCount} uzavret.)` : ""} · ${skCount(cc.totalCanaries, "kanárik", "kanáriky", "kanárikov")} · ${skCount(gs.totalSlams, "Grand Slam", "Grand Slamy", "Grand Slamov")} · ${skCount(data.totalMilestoneMembers, "hráč", "hráči", "hráčov")} v kluboch`
+                : "Víťazi ročníkov · Klietka kanárikov · Sezónny Grand Slam · Kluby 5–100";
 
             wrap.innerHTML = `
                 <div class="klubovna-card ${klubovnaOpen ? 'is-open' : ''}" id="klubovna-card" role="region" aria-label="Klubovňa – Sieň slávy" aria-expanded="${klubovnaOpen ? 'true' : 'false'}"
@@ -14072,6 +14880,10 @@
                             ${gsHtml}
                             ${seasonsHtml}
                         </div>
+
+                        ${canaryShowcaseHtml}
+
+                        ${grandSlamShowcaseHtml}
 
                         <div>
                             <div class="klubovna-sec-title">
@@ -18244,7 +19056,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.70${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.71${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -19714,6 +20526,154 @@
                 }
             });
 
+            // 6. Klietka kanárikov – inkasované sety 0:6 v tomto zápase (2H aj 4H)
+            const curParsedSets = parseSetsFromGemsString(m.gems);
+            if (curParsedSets.length > 0) {
+                let takenT1 = 0;
+                let takenT2 = 0;
+                curParsedSets.forEach(st => {
+                    if (st.g1 === 6 && st.g2 === 0) takenT2++;
+                    else if (st.g2 === 6 && st.g1 === 0) takenT1++;
+                });
+
+                const victims = [];
+                if (takenT1 > 0) (m.team1 || []).forEach(pid => victims.push({ pid, added: takenT1 }));
+                if (takenT2 > 0) (m.team2 || []).forEach(pid => victims.push({ pid, added: takenT2 }));
+
+                if (victims.length > 0) {
+                    const countPriorBagels = (pid) => {
+                        let cnt = 0;
+                        allMatches.forEach(pm => {
+                            if (pm.index >= m.index) return;
+                            const in1 = pm.team1 && pm.team1.includes(pid);
+                            const in2 = pm.team2 && pm.team2.includes(pid);
+                            if (!in1 && !in2) return;
+                            parseSetsFromGemsString(pm.gems).forEach(st => {
+                                if (in1 && st.g2 === 6 && st.g1 === 0) cnt++;
+                                else if (in2 && st.g1 === 6 && st.g2 === 0) cnt++;
+                            });
+                        });
+                        return cnt;
+                    };
+
+                    const eventBuckets = {};
+                    const pushBucket = (key, tag, kind, rec) => {
+                        if (!eventBuckets[key]) eventBuckets[key] = { tag, kind, list: [] };
+                        eventBuckets[key].list.push(rec);
+                    };
+
+                    victims.forEach(v => {
+                        const pl = state.players.find(p => p.id === v.pid);
+                        if (!pl) return;
+                        const prev = countPriorBagels(v.pid);
+                        const cur = prev + v.added;
+                        const rec = { id: v.pid, name: pl.name, prev, cur, added: v.added };
+
+                        if (v.added >= 2) {
+                            pushBucket(`bicycle_${cur}`, "DVOJITÝ PRÍRASTOK", "joke", rec);
+                        }
+                        if (Math.floor(cur / 10) > Math.floor(prev / 10)) {
+                            const goldOrd = Math.floor(cur / 10);
+                            pushBucket(`gold_${goldOrd}_${cur}`, "ZLATÝ KANÁRIK", "leader", { ...rec, goldOrd });
+                        } else if (prev < 5 && cur >= 5) {
+                            pushBucket(`voliera_${cur}`, "STAVBA VOLIÉRY", "joke", rec);
+                        } else if (prev === 0 && cur >= 1) {
+                            pushBucket(`first_${cur}`, "SPOLOK CHOVATEĽOV", "joke", rec);
+                        } else if (v.added < 2) {
+                            pushBucket(`col_${cur}`, "CHOVATEĽSKÁ ZBIERKA", "joke", rec);
+                        }
+                    });
+
+                    Object.values(eventBuckets).forEach(b => {
+                        const arr = b.list;
+                        const names = skJoinNames(arr, "nom");
+                        const multi = arr.length > 1;
+                        const sample = arr[0];
+
+                        if (b.tag === "DVOJITÝ PRÍRASTOK") {
+                            out.push({
+                                kind: b.kind,
+                                tag: b.tag,
+                                text: multi
+                                    ? `${names} si zo zápasu #${m.index} odnášajú rovno po dvoch vtáčikov naraz (0:6, 0:6) – klietka praská vo švíkoch!`
+                                    : `${names} si zo zápasu #${m.index} odnáša rovno dvoch vtáčikov naraz (0:6, 0:6) – klietka praská vo švíkoch (spolu už ${sample.cur}×)!`
+                            });
+                        } else if (b.tag === "ZLATÝ KANÁRIK") {
+                            const ordTxt = sample.goldOrd > 1 ? `už ${sample.goldOrd}. ` : "prestížny ";
+                            out.push({
+                                kind: b.kind,
+                                tag: b.tag,
+                                text: multi
+                                    ? `Historický chovateľský míľnik! ${names} nazbierali po ${sample.cur} kanárikov (0:6) a do Siene slávy im priletel ${ordTxt}ZLATÝ KANÁRIK!`
+                                    : `Historický chovateľský míľnik! ${names} nazbieral ${sample.cur} kanárikov (0:6) a do Siene slávy mu priletel ${ordTxt}ZLATÝ KANÁRIK!`
+                            });
+                        } else if (b.tag === "STAVBA VOLIÉRY") {
+                            out.push({
+                                kind: b.kind,
+                                tag: b.tag,
+                                text: multi
+                                    ? `Malá klietka už nestačí! ${names} inkasovali 5. kanárika (0:6) a oficiálne začali budovať vonkajšiu voliéru.`
+                                    : `Malá klietka už nestačí! ${names} inkasoval 5. kanárika (0:6) a oficiálne začal budovať vonkajšiu voliéru.`
+                            });
+                        } else if (b.tag === "SPOLOK CHOVATEĽOV") {
+                            out.push({
+                                kind: b.kind,
+                                tag: b.tag,
+                                text: multi
+                                    ? `${names} schytali svojho premiérového kanárika (0:6) a slávnostne sa pridali do klubového spolku chovateľov!`
+                                    : `${names} schytal svojho premiérového kanárika (0:6) a slávnostne sa pridal do klubového spolku chovateľov!`
+                            });
+                        } else {
+                            out.push({
+                                kind: b.kind,
+                                tag: b.tag,
+                                text: multi
+                                    ? `${names} rozširujú svoju početnú zbierku – po zápase #${m.index} im v klietke čviriká už ${sample.cur}. kanárik!`
+                                    : `${names} rozširuje svoju početnú zbierku – po zápase #${m.index} mu v klietke čviriká už ${sample.cur}. kanárik!`
+                            });
+                        }
+                    });
+                }
+            }
+
+            // 7. Sezónny Grand Slam skompletizovaný týmto zápasom (výhra vo všetkých 4 ročných obdobiach toho istého roka)
+            if (!isDraw && m.date && m.date.length >= 4) {
+                const mYear = parseInt(m.date.slice(0, 4), 10);
+                const mSeasonKey = getCalendarSeasonKeyFromIso(m.date);
+                const mSeasonObj = GRAND_SLAM_SEASONS.find(s => s.key === mSeasonKey);
+                if (isFinite(mYear) && mSeasonObj) {
+                    const winIds = isAWin ? (m.team1 || []) : (m.team2 || []);
+                    const completedNow = [];
+                    winIds.forEach(pid => {
+                        const pl = state.players.find(p => p.id === pid);
+                        if (!pl) return;
+                        const priorSeasons = new Set();
+                        allMatches.forEach(pm => {
+                            if (pm.index >= m.index || !pm.date || parseInt(pm.date.slice(0, 4), 10) !== mYear) return;
+                            const ps1 = Number(pm.sets1) || 0, ps2 = Number(pm.sets2) || 0;
+                            if (ps1 === ps2) return;
+                            const pWin = (ps1 > ps2 && pm.team1 && pm.team1.includes(pid)) || (ps2 > ps1 && pm.team2 && pm.team2.includes(pid));
+                            if (!pWin) return;
+                            const sk = getCalendarSeasonKeyFromIso(pm.date);
+                            if (sk) priorSeasons.add(sk);
+                        });
+                        if (!priorSeasons.has(mSeasonKey) && priorSeasons.size === 3) {
+                            completedNow.push({ id: pid, name: pl.name });
+                        }
+                    });
+                    if (completedNow.length > 0) {
+                        const names = skJoinNames(completedNow, "nom");
+                        out.push({
+                            kind: "leader",
+                            tag: "SEZÓNNY GRAND SLAM",
+                            text: completedNow.length > 1
+                                ? `Ani horúčavy, ani mráz ich nezastavili! ${names} pridali posledný dielik (${mSeasonObj.label.toLowerCase()}) a skompletizovali Sezónny Grand Slam ${mYear}!`
+                                : `Ani horúčavy, ani mráz ho nezastavili! ${names} pridal posledný dielik (${mSeasonObj.label.toLowerCase()}) a skompletizoval Sezónny Grand Slam ${mYear}!`
+                        });
+                    }
+                }
+            }
+
             return out;
         }
 
@@ -20480,7 +21440,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.70! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.71! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -21199,6 +22159,60 @@
                 }
             });
 
+            // 8b. Vitríny Siene slávy – Klietka kanárikov & Sezónny Grand Slam (priebežné veselé NEWS)
+            const ccNews = buildCanaryCageData();
+            if (ccNews.members.length > 0) {
+                const nearGold = ccNews.members.filter(r => r.total % 10 === 9);
+                nearGold.slice(0, 2).forEach(r => {
+                    const nextOrd = Math.floor(r.total / 10) + 1;
+                    const ordPart = nextOrd > 1 ? `${nextOrd}. Zlatého kanára` : "prestížneho Zlatého kanára";
+                    add("POZOR NA KLIETKU", `${r.name} má v klietke už ${r.total} kanárikov – stačí posledný set 0:6 a berie ${ordPart}!`);
+                });
+
+                const nearVoliera = ccNews.members.filter(r => r.total === 4);
+                nearVoliera.slice(0, 2).forEach(r => {
+                    add("POZOR NA KLIETKU", `${r.name} má v klietke už 4 kanáriky – ešte jeden set 0:6 a môže ísť kupovať pletivo na vonkajšiu voliéru!`);
+                });
+
+                if (ccNews.goldHolders.length > 0) {
+                    const gNames = skJoinNames(ccNews.goldHolders, "nom");
+                    add("ZLATÝ KANÁRIK", ccNews.goldHolders.length > 1
+                        ? `Zlatý kanárik v Sieni slávy: ${gNames} už nazbierali dvojcifernú zbierku setov 0:6 a patria medzi čestných majstrov chovateľov!`
+                        : `Zlatý kanárik v Sieni slávy: ${gNames} už nazbieral ${ccNews.goldHolders[0].total} setov 0:6 a hrdo vládne klubovej voliére!`);
+                } else {
+                    const topBreeder = ccNews.members[0];
+                    if (topBreeder.total >= 5) {
+                        add("STAVITEĽ VOLIÉRY", `Najväčšiu vonkajšiu voliéru v Klubovni zatiaľ buduje ${topBreeder.name} – v zbierke má už ${skCount(topBreeder.total, "kanárika", "kanáriky", "kanárikov")} (0:6)!`);
+                    } else {
+                        add("SPOLOK CHOVATEĽOV", `V ružovej klietke Klubovne už čviriká ${skCount(ccNews.totalCanaries, "kanárik", "kanáriky", "kanárikov")} – spolok chovateľov zatiaľ vedie ${topBreeder.name} (${topBreeder.total}×).`);
+                    }
+                }
+            }
+
+            const gsNews = buildSeasonalGrandSlamData();
+            const almostSlam = gsNews.curYearEntries.filter(e => e.hitCount === 3 && e.missing.length === 1);
+            almostSlam.slice(0, 2).forEach(e => {
+                const miss = e.missing[0];
+                add("NA DOSTREL GRAND SLAMU", `${e.name} má už 3 zo 4 ročných období vo vrecku – na Sezónny Grand Slam ${gsNews.curYear} mu chýba už len jediná výhra ${miss.inPhrase}!`);
+            });
+
+            const curYearSlamWinners = gsNews.byYear[gsNews.curYear] || [];
+            if (curYearSlamWinners.length > 0) {
+                const curNames = skJoinNames(curYearSlamWinners, "nom");
+                add("SEZÓNNY GRAND SLAM", curYearSlamWinners.length > 1
+                    ? `Celoročná dominancia! ${curNames} už skompletizovali Sezónny Grand Slam ${gsNews.curYear} – dokázali vyhrať na jar, v lete, na jeseň aj v zime!`
+                    : `Celoročná dominancia! ${curNames} už skompletizoval Sezónny Grand Slam ${gsNews.curYear} – dokázal vyhrať na jar, v lete, na jeseň aj v zime!`);
+            }
+
+            if (gsNews.holders.length > 0) {
+                const topSlam = gsNews.holders[0];
+                const topGroup = gsNews.holders.filter(h => h.count === topSlam.count);
+                const hNames = skJoinNames(topGroup, "nom");
+                add("SIEŇ GRAND SLAMU", topGroup.length > 1
+                    ? `V chrómovej vitríne Sezónneho Grand Slamu sa o čelo delia ${hNames} – každý s bilanciou ${skCount(topSlam.count, "Grand Slam", "Grand Slamy", "Grand Slamov")}!`
+                    : `Chrómovej vitríne Sezónneho Grand Slamu kraľuje ${hNames} – na konte má už ${skCount(topSlam.count, "Sezónny Grand Slam", "Sezónne Grand Slamy", "Sezónnych Grand Slamov")} (${topSlam.years.join(", ")})!`);
+            }
+
             // 9. O aplikácii & Tipy pre ovládanie (Tip / Vedeli ste?)
             add("O APLIKÁCII", "Aplikáciu TenisTAB vymyslel a dizajnoval Vlado Troják s pomocou AI Gemini v novembri 2026.");
             add("VEDELI STE?", "Nad tabuľkou si jedným klikom prepneš hlavný bodový rebríček (2H + 4H) na samostatné ELO rebríčky pre dvojhru (2H) alebo štvorhru (4H).");
@@ -21357,6 +22371,30 @@
             const elo2HReignItem = elo2HLeaderChangeItem ? null : buildEloCurrentLeaderReignNewsItem(elo2HLeaderSnaps, false);
             const elo4HReignItem = elo4HLeaderChangeItem ? null : buildEloCurrentLeaderReignNewsItem(elo4HLeaderSnaps, true);
             const elo4HPairsReignItem = elo4HPairsLeaderChangeItem ? null : buildEloPairsCurrentLeaderReignNewsItem(elo4HPairsLeaderSnaps);
+            const januaryGrandSlamHonorItem = (() => {
+                const todayDt = getTodayMidnight();
+                if (todayDt.getMonth() !== 0) return null; // Celý január (1. 1. – 31. 1.)
+                const prevYr = todayDt.getFullYear() - 1;
+                const gsData = buildSeasonalGrandSlamData();
+                const winners = gsData.byYear[prevYr] || [];
+                if (winners.length === 0) return null;
+                const defenders = winners.filter(w => w.consecutiveStreak >= 2);
+                const defSuffix = defenders.length > 0
+                    ? (defenders.length === 1
+                        ? ` Mimoriadne uznanie: ${defenders[0].name} obhájil Grand Slam už ${defenders[0].consecutiveStreak}. rok v rade!`
+                        : ` Obhajobu v sérii pritom potvrdili ${skJoinNames(defenders, "nom")}!`)
+                    : "";
+                if (winners.length === 1) {
+                    return {
+                        tag: `VYZNAMENANIE · GRAND SLAM ${prevYr}`,
+                        text: `Čestná salva v Sieni slávy! ${winners[0].name} je jediným držiteľom Sezónneho Grand Slamu ${prevYr} – ako jediný dokázal v uplynulom roku víťaziť na jar, v lete, na jeseň aj v zime!${defSuffix}`
+                    };
+                }
+                return {
+                    tag: `VYZNAMENANIE · GRAND SLAM ${prevYr}`,
+                    text: `Vyznamenanie Siene slávy: Sezónny Grand Slam ${prevYr} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali ${skJoinNames(winners, "nom")}. Klobúk dole pred celoročnou výdržou!${defSuffix}`
+                };
+            })();
             const weatherItem = getWeatherNewsItem();
             const extraWeather = buildExtraWeatherNewsItems();
             const extraDynamicOther = [
@@ -21366,6 +22404,7 @@
                 ...(elo4HPairsReignItem ? [elo4HPairsReignItem] : [])
             ];
             const headItems = [
+                ...(januaryGrandSlamHonorItem ? [januaryGrandSlamHonorItem] : []),
                 ...(leaderChangeItem ? [leaderChangeItem] : []),
                 ...(elo2HLeaderChangeItem ? [elo2HLeaderChangeItem] : []),
                 ...(elo4HLeaderChangeItem ? [elo4HLeaderChangeItem] : []),
