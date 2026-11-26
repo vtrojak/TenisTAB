@@ -20287,19 +20287,19 @@
 
         function getMatchJokePool(matchIndex, isDraw = false) {
             const pool = [
-                { tag: "BEZ TV PRENOSU", text: `Zápas #${matchIndex} z technických príčin nevysielala žiadna TV – kameraman vraj zabudol nabiť batériu a sťažoval sa na slabý honorár.` },
+                { tag: "BEZ TV PRENOSU", text: `Zápas #${matchIndex} z technických príčin nevysielala žiadna TV.` },
                 { tag: "BEZ ROZHODCU", text: `Duel #${matchIndex} sa odohral aj napriek tomu, že hlavný rozhodca sa nedostavil. Podľa očitých svedkov ho videli v blízkej krčme s partiou miestnych štamgastov.` },
                 { tag: "ZÁKULISIE", text: `Zápas #${matchIndex} sa musel zaobísť bez rozhodcu – zákulisné správy tvrdia, že dal prednosť blízkej krčme v spoločnosti veselých slečien.` },
                 { tag: "HAWK-EYE", text: `V zápase #${matchIndex} opäť nefungoval systém Hawk-Eye – všetky sporné auty sa riešili ${getLocationContext().methodAdj}: kto zakričal hlasnejšie, mal pravdu.` },
-                { tag: "ANTIDOPING", text: `Antidopingový komisár po zápase #${matchIndex} odobral vzorky – v krvi hráčov sa našli len stopy horčíka, kofeínu a stopové množstvo etanolu.` },
-                { tag: "TRIBÚNA", text: `Zápas #${matchIndex} sledovala z tribúny napätá návšteva: jeden znudený holub a náhodný okoloidúci, ktorý hľadal skratku do obchodu.` },
+                { tag: "ANTIDOPING", text: `Antidopingový komisár po zápase #${matchIndex} odobral vzorky – v krvi hráčov sa našli len stopy horčíka, kofeínu a zanedbateľné množstvo etanolu.` },
+                { tag: "TRIBÚNA", text: `Zápas #${matchIndex} sledoval náhodný okoloidúci, ktorý hľadal skratku do obchodu.` },
                 { tag: "ZBERAČI", text: `Pre štrajk zberačov loptičiek si hráči v zápase #${matchIndex} museli po každý aut chodiť sami – najviac kilometrov tak nabehali mimo výmen.` },
                 { tag: "STÁVKOVKY", text: `Po výsledku zápasu #${matchIndex} musela jedna nemenovaná stávková kancelária dočasne pozastaviť kurzy na ďalšie kolo.` }
             ];
             if (isDraw) {
-                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po remízovom dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde všetci označili za hlavného vinníka vypršaný čas na kurte a krivé čiary.` });
+                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde všetci označili za hlavného vinníka remízy prísny časový limit.` });
             } else {
-                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde porazený označil za hlavného vinníka zlé svetlo, krivé čiary a nový výplet.` });
+                pool.push({ tag: "TLAČOVKA", text: `Pozápasová tlačovka po dueli #${matchIndex} sa presunula k najbližšiemu výčapu, kde porazená strana označila za hlavného vinníka zlé svetlo, starú omotávku a nový výplet.` });
             }
             return pool;
         }
