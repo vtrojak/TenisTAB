@@ -4485,8 +4485,8 @@
         }
 
         .klubovna-showcase-ico {
-            width: 82px;
-            height: 82px;
+            width: 94px;
+            height: 94px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -4495,8 +4495,8 @@
         }
 
         .ks-head-ico-fb {
-            width: 68px;
-            height: 68px;
+            width: 78px;
+            height: 78px;
             border-radius: 16px;
             align-items: center;
             justify-content: center;
@@ -4703,25 +4703,42 @@
         }
 
         .ks-canary-img {
-            width: 28px;
-            height: 28px;
+            width: 38px;
+            height: 38px;
             object-fit: contain;
             display: inline-block;
             vertical-align: middle;
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.28));
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.30));
             user-select: none;
             -webkit-user-drag: none;
             pointer-events: none;
         }
 
         .ks-canary-fb {
-            width: 24px;
-            height: 24px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             align-items: center;
             justify-content: center;
-            font-size: 0.85rem;
+            font-size: 0.98rem;
             vertical-align: middle;
+        }
+
+        .ks-grandslam .kgs-icons-wrap {
+            min-height: 38px;
+            gap: 5px;
+        }
+
+        .ks-grandslam .kgs-trophy-img {
+            width: 38px;
+            height: 38px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.30));
+        }
+
+        .ks-grandslam .kgs-trophy-fb {
+            width: 30px;
+            height: 30px;
+            font-size: 1.12rem;
         }
 
         .ks-count-pill {
@@ -4837,12 +4854,16 @@
                 padding: 12px 10px 11px;
             }
             .klubovna-showcase-ico {
-                width: 72px;
-                height: 72px;
+                width: 82px;
+                height: 82px;
             }
-            .ks-canary-img {
-                width: 24px;
-                height: 24px;
+            .ks-canary-img,
+            .ks-grandslam .kgs-trophy-img {
+                width: 32px;
+                height: 32px;
+            }
+            .ks-grandslam .kgs-icons-wrap {
+                min-height: 32px;
             }
             .ks-table th {
                 padding: 5px 3px 6px;
@@ -6219,7 +6240,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.71</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.73</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -6253,7 +6274,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.71</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.73</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -14180,17 +14201,32 @@
 
         function buildCanaryCageData() {
             const playerInfo = {};
+            const careerStats = {};
             state.players.forEach((p, idx) => {
                 playerInfo[p.id] = {
                     id: p.id,
                     name: p.name,
                     color: p.color || PLAYER_COLORS[idx % PLAYER_COLORS.length]
                 };
+                careerStats[p.id] = { matches: 0, sets: 0, gems: 0 };
             });
 
             const recs = {};
             computedMatches.forEach(m => {
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
                 const parsedSets = parseSetsFromGemsString(m.gems);
+                const mSets = (s1 + s2) > 0 ? (s1 + s2) : parsedSets.length;
+                const mGems = (Number(m.gems1) || 0) + (Number(m.gems2) || 0);
+
+                // Celkovo odohraté zápasy, sety a gemy za celú históriu (pre tie-break pri zhode)
+                [...(m.team1 || []), ...(m.team2 || [])].forEach(pid => {
+                    if (!careerStats[pid]) careerStats[pid] = { matches: 0, sets: 0, gems: 0 };
+                    careerStats[pid].matches++;
+                    careerStats[pid].sets += mSets;
+                    careerStats[pid].gems += mGems;
+                });
+
                 if (parsedSets.length === 0) return;
 
                 let taken1 = 0;
@@ -14230,24 +14266,48 @@
                 applyTaken(m.team2, taken2);
             });
 
+            // Zoradenie (v1.72): 1. Viac kanárikov -> 2. Menej odohratých zápasov celkovo -> 3. Menej setov -> 4. Menej gemov -> 5. Abeceda
             const raw = Object.values(recs)
                 .filter(r => r.total > 0)
-                .sort((a, b) => (b.total - a.total) || (b.bicycles - a.bicycles) || a.name.localeCompare(b.name, "sk"));
+                .map(r => {
+                    const cs = careerStats[r.id] || { matches: 0, sets: 0, gems: 0 };
+                    return {
+                        ...r,
+                        playedMatches: cs.matches,
+                        playedSets: cs.sets,
+                        playedGems: cs.gems
+                    };
+                })
+                .sort((a, b) =>
+                    (b.total - a.total) ||
+                    (a.playedMatches - b.playedMatches) ||
+                    (a.playedSets - b.playedSets) ||
+                    (a.playedGems - b.playedGems) ||
+                    a.name.localeCompare(b.name, "sk")
+                );
 
-            let lastVal = null;
+            let lastKey = null;
             let lastRank = 1;
-            const members = raw.map((r, idx) => {
-                const rank = (r.total === lastVal) ? lastRank : (idx + 1);
-                const isTied = (r.total === lastVal) || (idx + 1 < raw.length && raw[idx + 1].total === r.total);
-                lastVal = r.total;
+            const ranked = raw.map((r, idx) => {
+                const tk = `${r.total}|${r.playedMatches}|${r.playedSets}|${r.playedGems}`;
+                const rank = (tk === lastKey) ? lastRank : (idx + 1);
+                lastKey = tk;
                 lastRank = rank;
+                return { ...r, rank };
+            });
+
+            const rankCounts = {};
+            ranked.forEach(r => { rankCounts[r.rank] = (rankCounts[r.rank] || 0) + 1; });
+
+            const members = ranked.map(r => {
+                const isTied = rankCounts[r.rank] > 1;
                 const tier = r.total >= 10
                     ? { key: "gold", label: "Zlatý kanár" }
                     : (r.total >= 5 ? { key: "voliera", label: "Staviteľ voliéry" } : { key: "member", label: "Spolok chovateľov" });
                 return {
                     ...r,
-                    rank,
-                    rankLabel: isTied ? `${rank}.=` : `${rank}.`,
+                    isTied,
+                    rankLabel: isTied ? `${r.rank}.=` : `${r.rank}.`,
                     goldCount: Math.floor(r.total / 10),
                     tier
                 };
@@ -14269,15 +14329,32 @@
             });
 
             const byPlayerYear = {}; // pid -> { year -> { spring: date, summer: date, autumn: date, winter: date } }
+            const yearPlayedStats = {}; // pid -> { year -> { matches, sets, gems } }
+
             computedMatches.forEach(m => {
                 if (!m.date || m.date.length < 4) return;
-                const s1 = Number(m.sets1) || 0;
-                const s2 = Number(m.sets2) || 0;
-                if (s1 === s2) return; // remíza sa nepočíta
-                const seasonKey = getCalendarSeasonKeyFromIso(m.date);
-                if (!seasonKey) return;
                 const yr = parseInt(m.date.slice(0, 4), 10);
                 if (!isFinite(yr)) return;
+
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                const parsedSets = parseSetsFromGemsString(m.gems);
+                const mSets = (s1 + s2) > 0 ? (s1 + s2) : parsedSets.length;
+                const mGems = (Number(m.gems1) || 0) + (Number(m.gems2) || 0);
+
+                // Počet odohratých zápasov, setov a gemov hráča v danej kalendárnej sezóne (12 mesiacov)
+                [...(m.team1 || []), ...(m.team2 || [])].forEach(pid => {
+                    if (!playerInfo[pid]) return;
+                    if (!yearPlayedStats[pid]) yearPlayedStats[pid] = {};
+                    if (!yearPlayedStats[pid][yr]) yearPlayedStats[pid][yr] = { matches: 0, sets: 0, gems: 0 };
+                    yearPlayedStats[pid][yr].matches++;
+                    yearPlayedStats[pid][yr].sets += mSets;
+                    yearPlayedStats[pid][yr].gems += mGems;
+                });
+
+                if (s1 === s2) return; // remíza sa do splnenia sezónneho obdobia nepočíta
+                const seasonKey = getCalendarSeasonKeyFromIso(m.date);
+                if (!seasonKey) return;
                 const winners = s1 > s2 ? m.team1 : m.team2;
                 (winners || []).forEach(pid => {
                     if (!playerInfo[pid]) return;
@@ -14289,7 +14366,7 @@
                 });
             });
 
-            const byYear = {}; // year -> [ { id, name, color, consecutiveStreak } ]
+            const byYear = {}; // year -> [ { id, name, color, consecutiveStreak, seasonMatches, seasonSets, seasonGems } ]
             const holdersRaw = [];
 
             Object.keys(byPlayerYear).forEach(pid => {
@@ -14307,17 +14384,32 @@
                 let maxStreak = 1;
                 let curStreak = 1;
                 const streakAtYear = {};
+                let slamMatches = 0;
+                let slamSets = 0;
+                let slamGems = 0;
+
                 completedYears.forEach((yr, idx) => {
                     if (idx > 0 && yr === completedYears[idx - 1] + 1) curStreak++;
                     else curStreak = 1;
                     if (curStreak > maxStreak) maxStreak = curStreak;
                     streakAtYear[yr] = curStreak;
+
+                    const ys = (yearPlayedStats[pid] && yearPlayedStats[pid][yr])
+                        ? yearPlayedStats[pid][yr]
+                        : { matches: 0, sets: 0, gems: 0 };
+                    slamMatches += ys.matches;
+                    slamSets += ys.sets;
+                    slamGems += ys.gems;
+
                     if (!byYear[yr]) byYear[yr] = [];
                     byYear[yr].push({
                         id: pid,
                         name: info.name,
                         color: info.color,
-                        consecutiveStreak: curStreak
+                        consecutiveStreak: curStreak,
+                        seasonMatches: ys.matches,
+                        seasonSets: ys.sets,
+                        seasonGems: ys.gems
                     });
                 });
 
@@ -14329,28 +14421,47 @@
                     years: completedYears.slice().reverse(),
                     latestYear: completedYears[completedYears.length - 1],
                     maxStreak,
-                    streakAtYear
+                    streakAtYear,
+                    slamMatches,
+                    slamSets,
+                    slamGems
                 });
             });
 
             Object.keys(byYear).forEach(yr => {
-                byYear[yr].sort((a, b) => a.name.localeCompare(b.name, "sk"));
+                byYear[yr].sort((a, b) =>
+                    (a.seasonMatches - b.seasonMatches) ||
+                    (a.seasonSets - b.seasonSets) ||
+                    (a.seasonGems - b.seasonGems) ||
+                    a.name.localeCompare(b.name, "sk")
+                );
             });
 
+            // Zoradenie (v1.72): 1. Viac Grand Slamov -> 2. Menej odohratých zápasov v GS sezónach -> 3. Menej setov -> 4. Menej gemov -> 5. Abeceda
             holdersRaw.sort((a, b) =>
                 (b.count - a.count) ||
-                (b.latestYear - a.latestYear) ||
+                (a.slamMatches - b.slamMatches) ||
+                (a.slamSets - b.slamSets) ||
+                (a.slamGems - b.slamGems) ||
                 a.name.localeCompare(b.name, "sk")
             );
 
-            let lastCnt = null;
+            let lastKey = null;
             let lastRank = 1;
-            const holders = holdersRaw.map((h, idx) => {
-                const rank = (h.count === lastCnt) ? lastRank : (idx + 1);
-                const isTied = (h.count === lastCnt) || (idx + 1 < holdersRaw.length && holdersRaw[idx + 1].count === h.count);
-                lastCnt = h.count;
+            const rankedHolders = holdersRaw.map((h, idx) => {
+                const tk = `${h.count}|${h.slamMatches}|${h.slamSets}|${h.slamGems}`;
+                const rank = (tk === lastKey) ? lastRank : (idx + 1);
+                lastKey = tk;
                 lastRank = rank;
-                return { ...h, rank, rankLabel: isTied ? `${rank}.=` : `${rank}.` };
+                return { ...h, rank };
+            });
+
+            const rankCounts = {};
+            rankedHolders.forEach(h => { rankCounts[h.rank] = (rankCounts[h.rank] || 0) + 1; });
+
+            const holders = rankedHolders.map(h => {
+                const isTied = rankCounts[h.rank] > 1;
+                return { ...h, isTied, rankLabel: isTied ? `${h.rank}.=` : `${h.rank}.` };
             });
 
             const curYear = getTodayMidnight().getFullYear();
@@ -14362,16 +14473,28 @@
                 const hitKeys = GRAND_SLAM_SEASONS.filter(s => Boolean(sObj[s.key])).map(s => s.key);
                 if (hitKeys.length === 0) return;
                 const missing = GRAND_SLAM_SEASONS.filter(s => !sObj[s.key]);
+                const ys = (yearPlayedStats[pid] && yearPlayedStats[pid][curYear])
+                    ? yearPlayedStats[pid][curYear]
+                    : { matches: 0, sets: 0, gems: 0 };
                 curYearEntries.push({
                     id: pid,
                     name: info.name,
                     color: info.color,
                     hitCount: hitKeys.length,
                     seasons: sObj,
-                    missing
+                    missing,
+                    seasonMatches: ys.matches,
+                    seasonSets: ys.sets,
+                    seasonGems: ys.gems
                 });
             });
-            curYearEntries.sort((a, b) => (b.hitCount - a.hitCount) || a.name.localeCompare(b.name, "sk"));
+            curYearEntries.sort((a, b) =>
+                (b.hitCount - a.hitCount) ||
+                (a.seasonMatches - b.seasonMatches) ||
+                (a.seasonSets - b.seasonSets) ||
+                (a.seasonGems - b.seasonGems) ||
+                a.name.localeCompare(b.name, "sk")
+            );
 
             const hasTwoPlus = curYearEntries.some(e => e.hitCount >= 2);
             const currentYearRadar = hasTwoPlus
@@ -14662,7 +14785,7 @@
 
             const renderCanaryMiniIcon = (iconFile, altLabel, faClass, fbBg, fbColor, titleTip) => `
                 <span class="ks-mini-zoom" data-zoom-title="${escapeHtml(altLabel)}" data-zoom-desc="${escapeHtml(titleTip)}" onclick="openBadgeZoomFromEl(event, this)" title="${escapeHtml(titleTip)}">
-                    <img class="ks-canary-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="28" height="28" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                    <img class="ks-canary-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="38" height="38" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
                     <span class="ks-canary-fb" data-fallback-display="inline-flex" style="display:none; background:${fbBg}; color:${fbColor};"><i class="${faClass}" aria-hidden="true"></i></span>
                 </span>
             `;
@@ -14704,6 +14827,7 @@
                                 const rCls = r.rank === 1 ? "r-1" : (r.rank === 2 ? "r-2" : (r.rank === 3 ? "r-3" : ""));
                                 const tipParts = [`${r.name}: ${r.total}× inkasovaný kanárik (0:6)`];
                                 tipParts.push(`2H: ${r.c2H}× · 4H: ${r.c4H}×`);
+                                tipParts.push(`odohraté spolu: ${r.playedMatches} záp. · ${r.playedSets} setov · ${r.playedGems} gemov`);
                                 if (r.bicycles > 0) tipParts.push(`bicykel 0:6 0:6: ${r.bicycles}×`);
                                 if (r.lastDate) tipParts.push(`posledný: ${formatDateSk(r.lastDate)}`);
                                 return `
@@ -14732,7 +14856,7 @@
                 <div class="klubovna-showcase ks-canaries" id="klubovna-canary-cage">
                     <div class="ks-head">
                         <div class="klubovna-showcase-ico" data-zoom-title="Klietka kanárikov · Zlatý kanár" data-zoom-desc="Vitrína inkasovaných setov 0:6 (2H + 4H). 1–4 ks = Spolok chovateľov, 5 ks = Vonkajšia voliéra, 10 ks = Zlatý kanárik." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
-                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}zlaty_kanarik.png" alt="Klietka kanárikov" width="82" height="82" loading="lazy" decoding="async" data-icon-file="zlaty_kanarik.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}zlaty_kanarik.png" alt="Klietka kanárikov" width="94" height="94" loading="lazy" decoding="async" data-icon-file="zlaty_kanarik.png" data-dir-idx="0" onerror="handleAchIconError(this)">
                             <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#831843; color:#fde047;">
                                 <i class="fa-solid fa-dove" aria-hidden="true"></i>
                             </div>
@@ -14764,7 +14888,8 @@
                         <tbody>
                             ${gs.holders.map(h => {
                                 const rCls = h.rank === 1 ? "r-1" : (h.rank === 2 ? "r-2" : (h.rank === 3 ? "r-3" : ""));
-                                const rowTip = `${h.name}: ${skCount(h.count, "Sezónny Grand Slam", "Sezónne Grand Slamy", "Sezónnych Grand Slamov")} (${h.years.join(", ")})`;
+                                const seasonSpanTxt = h.count === 1 ? `v sezóne ${h.years[0]}` : `v GS sezónach (${h.years.join(", ")})`;
+                                const rowTip = `${h.name}: ${skCount(h.count, "Sezónny Grand Slam", "Sezónne Grand Slamy", "Sezónnych Grand Slamov")} · ${seasonSpanTxt}: ${h.slamMatches} záp. · ${h.slamSets} setov · ${h.slamGems} gemov`;
                                 return `
                                     <tr title="${escapeHtml(rowTip)}">
                                         <td class="kgs-player-cell">
@@ -14818,7 +14943,7 @@
                 <div class="klubovna-showcase ks-grandslam" id="klubovna-grand-slam">
                     <div class="ks-head">
                         <div class="klubovna-showcase-ico" data-zoom-title="Sezónny Grand Slam" data-zoom-desc="Vyhraj aspoň jeden zápas (2H alebo 4H) v každom zo 4 ročných období toho istého kalendárneho roka (Jar 3–5, Leto 6–8, Jeseň 9–11, Zima 1, 2, 12)." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
-                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}grand_slam.png" alt="Sezónny Grand Slam" width="82" height="82" loading="lazy" decoding="async" data-icon-file="grand_slam.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}grand_slam.png" alt="Sezónny Grand Slam" width="94" height="94" loading="lazy" decoding="async" data-icon-file="grand_slam.png" data-dir-idx="0" onerror="handleAchIconError(this)">
                             <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#1e293b; color:#e2e8f0;">
                                 <i class="fa-solid fa-crown" aria-hidden="true"></i>
                             </div>
@@ -19056,7 +19181,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.71${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.73${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -21440,7 +21565,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.71! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.73! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -22206,7 +22331,7 @@
 
             if (gsNews.holders.length > 0) {
                 const topSlam = gsNews.holders[0];
-                const topGroup = gsNews.holders.filter(h => h.count === topSlam.count);
+                const topGroup = gsNews.holders.filter(h => h.rank === 1);
                 const hNames = skJoinNames(topGroup, "nom");
                 add("SIEŇ GRAND SLAMU", topGroup.length > 1
                     ? `V chrómovej vitríne Sezónneho Grand Slamu sa o čelo delia ${hNames} – každý s bilanciou ${skCount(topSlam.count, "Grand Slam", "Grand Slamy", "Grand Slamov")}!`
