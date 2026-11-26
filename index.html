@@ -2643,15 +2643,15 @@
         }
 
         .ach-card.ach-gold {
-            --ach-glow: rgba(234, 179, 8, 0.72);
-            --ach-tint: rgba(250, 204, 21, 0.22);
-            --ach-front-bg: linear-gradient(145deg, #ffffff 0%, #fefce8 100%);
-            --ach-front-border: rgba(234, 179, 8, 0.60);
+            --ach-glow: rgba(234, 179, 8, 0.76);
+            --ach-tint: rgba(250, 204, 21, 0.28);
+            --ach-front-bg: linear-gradient(145deg, #fffdf5 0%, #fef3c7 100%);
+            --ach-front-border: rgba(217, 119, 6, 0.62);
             --ach-front-accent: #a16207;
-            --ach-pill-bg: rgba(202, 138, 4, 0.13);
-            --ach-pill-border: rgba(202, 138, 4, 0.36);
+            --ach-pill-bg: rgba(202, 138, 4, 0.15);
+            --ach-pill-border: rgba(202, 138, 4, 0.40);
             --ach-back-bg: linear-gradient(145deg, #854d0e 0%, #422006 100%);
-            --ach-back-border: rgba(253, 224, 71, 0.65);
+            --ach-back-border: rgba(253, 224, 71, 0.68);
             --ach-back-accent: #fde047;
         }
 
@@ -5381,7 +5381,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.64</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.65</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -5415,7 +5415,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.64</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.65</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -12342,7 +12342,7 @@
                     desc: "Najviac získaných bodov spolu (kombinovane 2H + 4H)",
                     rules: "Súčet všetkých bodov z dvojhier (V=1, R=0.5) aj štvorhier (V=0.5, R=0.25) v zvolenom období.",
                     iconFile: "vrchol.png", faClass: "fa-solid fa-mountain",
-                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    theme: "ach-gold", accent: "#fbbf24", isNegative: false,
                     valueText: formatPtsWithUnit(rPointsKing.value),
                     holders: rPointsKing.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.points, pName, v => `${formatPts(v)} b`, 0.25),
@@ -12353,7 +12353,7 @@
                     desc: "Najviac získaných bodov čisto z dvojhier (2H)",
                     rules: "Počítajú sa výhradne body zo singlových zápasov 2H (výhra 1 b, remíza 0.5 b).",
                     iconFile: "kral_dvojhry.png", faClass: "fa-solid fa-crown",
-                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    theme: "ach-gold", accent: "#fbbf24", isNegative: false,
                     valueText: formatPtsWithUnit(rSinglesKing.value),
                     holders: rSinglesKing.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.pts2H, pName, v => `${formatPts(v)} b`, 0.25),
@@ -12364,7 +12364,7 @@
                     desc: "Najviac získaných bodov čisto zo štvorhier (4H)",
                     rules: "Počítajú sa výhradne body z deblových zápasov 4H (výhra 0.5 b, remíza 0.25 b).",
                     iconFile: "kral_stvorhry.png", faClass: "fa-solid fa-crown",
-                    theme: "ach-green", accent: "#4ade80", isNegative: false,
+                    theme: "ach-gold", accent: "#fbbf24", isNegative: false,
                     valueText: formatPtsWithUnit(rDoublesKing.value),
                     holders: rDoublesKing.holders,
                     top3: buildTop3Ranking(activePlayers, p => p.pts4H, pName, v => `${formatPts(v)} b`, 0.25),
@@ -17353,7 +17353,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.64${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.65${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -19578,7 +19578,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.64! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.65! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
