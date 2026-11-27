@@ -3884,70 +3884,19 @@
             text-align: center;
         }
 
-        .kgs-icons-wrap {
-            display: inline-flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            min-height: 26px;
-        }
-
-        .kgs-trophy-img {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            display: inline-block;
-            vertical-align: middle;
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.28));
-            user-select: none;
-            -webkit-user-drag: none;
-            pointer-events: none;
-        }
-
-        .kgs-trophy-fb {
-            width: 22px;
-            height: 22px;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.95rem;
-            vertical-align: middle;
-        }
-
-        .kgs-bundle {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            padding: 1px 6px;
-            border-radius: 999px;
-            background: rgba(250, 204, 21, 0.24);
-            border: 1px solid rgba(202, 138, 4, 0.50);
-        }
-
-        .kgs-bundle.is-silver {
-            background: rgba(148, 163, 184, 0.22);
-            border-color: rgba(100, 116, 139, 0.48);
-        }
-
-        .kgs-mult {
-            font-size: 0.72rem;
-            font-weight: 900;
-            color: #78350f;
-            line-height: 1;
-        }
-
-        .kgs-bundle.is-silver .kgs-mult {
-            color: #334155;
-        }
-
         .kgs-zero {
             color: #a8a29e;
             font-weight: 700;
             font-size: 0.74rem;
         }
 
-        /* Zväčšené poháre (2x) + rohový odznak xČíslo v tabuľke víťazov ročníkov (v1.74) */
-        .klubovna-gs-table .kgs-icons-wrap {
+        /* Jednotné zväčšené trofeje (2x) + rohový odznak xČíslo pre tabuľku víťazov ročníkov aj GRAND SLAM (v1.75) */
+        .kgs-icons-wrap {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
             min-height: 54px;
         }
 
@@ -3960,16 +3909,25 @@
             height: 52px;
         }
 
-        .klubovna-gs-table .kgs-trophy-img {
+        .kgs-trophy-img {
             width: 52px;
             height: 52px;
+            object-fit: contain;
+            display: inline-block;
+            vertical-align: middle;
             filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.30));
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none;
         }
 
-        .klubovna-gs-table .kgs-trophy-fb {
+        .kgs-trophy-fb {
             width: 44px;
             height: 44px;
+            align-items: center;
+            justify-content: center;
             font-size: 1.72rem;
+            vertical-align: middle;
         }
 
         .kgs-count-badge {
@@ -4004,6 +3962,11 @@
             color: #ffffff;
         }
 
+        .kgs-count-badge.is-gs {
+            background: linear-gradient(135deg, #334155 0%, #0f172a 100%);
+            color: #f8fafc;
+        }
+
         @media (max-width: 640px) {
             .klubovna-gs-box {
                 padding: 5px 6px 6px;
@@ -4019,27 +3982,18 @@
                 font-size: 0.75rem;
                 padding: 2px 5px 2px 4px;
             }
-            .kgs-trophy-img {
-                width: 22px;
-                height: 22px;
-            }
-            .kgs-trophy-fb {
-                width: 19px;
-                height: 19px;
-                font-size: 0.84rem;
-            }
-            .klubovna-gs-table .kgs-icons-wrap {
+            .kgs-icons-wrap {
                 min-height: 46px;
             }
             .kgs-trophy-badge-wrap {
                 width: 44px;
                 height: 44px;
             }
-            .klubovna-gs-table .kgs-trophy-img {
+            .kgs-trophy-img {
                 width: 44px;
                 height: 44px;
             }
-            .klubovna-gs-table .kgs-trophy-fb {
+            .kgs-trophy-fb {
                 width: 36px;
                 height: 36px;
                 font-size: 1.45rem;
@@ -4987,23 +4941,6 @@
             vertical-align: middle;
         }
 
-        .ks-grandslam .kgs-icons-wrap {
-            min-height: 38px;
-            gap: 5px;
-        }
-
-        .ks-grandslam .kgs-trophy-img {
-            width: 38px;
-            height: 38px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.30));
-        }
-
-        .ks-grandslam .kgs-trophy-fb {
-            width: 30px;
-            height: 30px;
-            font-size: 1.12rem;
-        }
-
         .ks-count-pill {
             display: inline-flex;
             align-items: center;
@@ -5129,13 +5066,9 @@
                 width: 108px;
                 height: 108px;
             }
-            .ks-canary-img,
-            .ks-grandslam .kgs-trophy-img {
+            .ks-canary-img {
                 width: 32px;
                 height: 32px;
-            }
-            .ks-grandslam .kgs-icons-wrap {
-                min-height: 32px;
             }
             .ks-table th {
                 padding: 5px 3px 6px;
@@ -6514,7 +6447,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.74</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.75</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -6548,7 +6481,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.74</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.75</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -15039,27 +14972,6 @@
                 `;
             };
 
-            const renderMiniTrophyStack = (count, iconFile, altLabel, faClass, fbColor, isSilver) => {
-                const n = Number(count) || 0;
-                if (n <= 0) return `<span class="kgs-zero">—</span>`;
-
-                const oneIcon = () => `
-                    <img class="kgs-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="26" height="26" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
-                    <i class="kgs-trophy-fb ${faClass}" data-fallback-display="inline-flex" style="display:none; color:${fbColor};" aria-hidden="true"></i>
-                `;
-
-                const fives = Math.floor(n / 5) * 5;
-                const rem = n % 5;
-                let parts = "";
-                if (fives >= 5) {
-                    parts += `<span class="kgs-bundle ${isSilver ? 'is-silver' : ''}"><span class="kgs-mult">${fives}×</span>${oneIcon()}</span>`;
-                }
-                for (let i = 0; i < rem; i++) {
-                    parts += oneIcon();
-                }
-                return `<div class="kgs-icons-wrap" title="${escapeHtml(altLabel)}: ${n}×">${parts}</div>`;
-            };
-
             const renderSeasonTrophyCounter = (count, iconFile, altLabel, faClass, fbColor, badgeCls = "") => {
                 const n = Number(count) || 0;
                 if (n <= 0) return `<span class="kgs-zero">—</span>`;
@@ -15316,7 +15228,7 @@
                                                 </button>
                                             </div>
                                         </td>
-                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(h.count, "grand_slam.png", "Sezónny Grand Slam", "fa-solid fa-crown", "#0f172a", true)}</td>
+                                        <td class="kgs-trophy-cell">${renderSeasonTrophyCounter(h.count, "grand_slam.png", "GRAND SLAM", "fa-solid fa-crown", "#0f172a", "is-gs")}</td>
                                         <td style="text-align:right;">
                                             <div class="ks-year-tags">${h.years.map(y => `<span class="ks-year-tag">${y}</span>`).join("")}</div>
                                         </td>
@@ -19605,7 +19517,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.74${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.75${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -21989,7 +21901,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.74! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.75! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
