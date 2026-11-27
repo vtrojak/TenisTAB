@@ -475,19 +475,29 @@
             flex-shrink: 0;
         }
 
-        /* TLAČIDLO NAČÍTANIA DATABÁZY V KARTE TABUĽKA */
+        /* HORNÝ RIADOK NA KARTE TABUĽKA: 1/3 DATABÁZA + 2/3 NEPRIEHĽADNÉ BIELE POČASIE (v1.78) */
+        .table-top-bar {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin-bottom: 14px;
+            align-items: stretch;
+        }
+
         .btn-db-sync {
             width: 100%;
-            padding: 13px 16px;
-            margin-bottom: 14px;
+            min-height: 56px;
+            padding: 10px 10px;
+            margin-bottom: 0;
             border-radius: 14px;
             font-weight: 800;
-            font-size: 0.94rem;
+            font-size: 0.88rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 9px;
+            gap: 7px;
+            white-space: nowrap;
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
             transition: all 0.22s ease;
@@ -519,6 +529,327 @@
         .btn-db-sync.synced:hover {
             background: linear-gradient(135deg, rgba(6, 95, 64, 0.90), rgba(4, 62, 44, 0.78));
             border-color: rgba(110, 231, 183, 0.65);
+        }
+
+        .table-weather-box {
+            min-height: 56px;
+            min-width: 0;
+            padding: 8px 13px;
+            border-radius: 14px;
+            background: #ffffff;
+            color: #0f172a;
+            border: 1.5px solid rgba(15, 23, 42, 0.16);
+            box-shadow: 0 6px 20px rgba(8, 20, 34, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.14s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .table-weather-box:hover {
+            transform: translateY(-1px);
+            border-color: rgba(15, 23, 42, 0.32);
+            box-shadow: 0 8px 24px rgba(8, 20, 34, 0.30);
+        }
+
+        .table-weather-box:active {
+            transform: scale(0.99);
+        }
+
+        .twb-row-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+            line-height: 1.2;
+        }
+
+        .twb-city {
+            font-size: 0.84rem;
+            font-weight: 900;
+            color: #0f172a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 0.15px;
+        }
+
+        .twb-main-temp {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+            font-size: 0.92rem;
+            font-weight: 900;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+
+        .twb-ico {
+            font-size: 1.05rem;
+            line-height: 1;
+        }
+
+        .twb-row-bot {
+            font-size: 0.73rem;
+            font-weight: 700;
+            color: #475569;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.25;
+        }
+
+        @media (max-width: 480px) {
+            .table-top-bar {
+                gap: 7px;
+            }
+            .btn-db-sync {
+                padding: 8px 6px;
+                font-size: 0.78rem;
+                gap: 5px;
+            }
+            .table-weather-box {
+                padding: 7px 10px;
+            }
+            .twb-city {
+                font-size: 0.78rem;
+            }
+            .twb-main-temp {
+                font-size: 0.84rem;
+                gap: 4px;
+            }
+            .twb-ico {
+                font-size: 0.95rem;
+            }
+            .twb-row-bot {
+                font-size: 0.68rem;
+            }
+        }
+
+        /* ADMIN TLAČIDLO & EDITOR VLASTNÝCH NEWS (v1.78) */
+        .btn-admin-entry {
+            width: 100%;
+            margin-top: 10px;
+            padding: 9px 14px;
+            border-radius: 11px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px dashed rgba(186, 230, 253, 0.34);
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.1s ease;
+        }
+
+        .btn-admin-entry:hover {
+            background: rgba(30, 41, 59, 0.92);
+            border-color: var(--tennis-lime);
+            color: var(--tennis-lime);
+        }
+
+        .btn-admin-entry:active {
+            transform: scale(0.985);
+        }
+
+        .admin-pin-input {
+            text-align: center;
+            font-size: 1.35rem !important;
+            font-weight: 900;
+            letter-spacing: 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        }
+
+        .admin-pin-error {
+            margin-top: 7px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--loss);
+            text-align: center;
+            min-height: 18px;
+        }
+
+        .admin-news-prio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        .admin-news-exp-presets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .admin-news-textarea {
+            width: 100%;
+            min-height: 68px;
+            padding: 9px 11px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text-main);
+            font-size: 0.86rem;
+            line-height: 1.42;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .admin-news-textarea:focus {
+            border-color: var(--btn-accent);
+            box-shadow: 0 0 0 2px var(--btn-glow);
+        }
+
+        .admin-news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .admin-news-item {
+            background: rgba(6, 16, 28, 0.82);
+            border: 1px solid rgba(186, 230, 253, 0.22);
+            border-left: 4px solid #dc2626;
+            border-radius: 12px;
+            padding: 10px 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .admin-news-item.is-hidden {
+            opacity: 0.65;
+            border-left-color: #64748b;
+        }
+
+        .admin-news-item.is-expired {
+            opacity: 0.72;
+            border-left-color: #fb923c;
+        }
+
+        .admin-news-item-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .admin-news-badges {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .admin-news-tag-pill {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: #dc2626;
+            color: #ffffff;
+            font-size: 0.67rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .admin-news-meta-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: var(--text-muted);
+        }
+
+        .admin-news-meta-pill.st-active {
+            background: rgba(52, 211, 153, 0.16);
+            border-color: rgba(110, 231, 183, 0.42);
+            color: var(--win);
+        }
+
+        .admin-news-meta-pill.st-expired {
+            background: rgba(249, 115, 22, 0.20);
+            border-color: rgba(251, 146, 60, 0.48);
+            color: #fdba74;
+        }
+
+        .admin-news-meta-pill.st-hidden {
+            background: rgba(148, 163, 184, 0.18);
+            border-color: rgba(148, 163, 184, 0.36);
+            color: #cbd5e1;
+        }
+
+        .admin-news-text {
+            font-size: 0.80rem;
+            color: #f1f5f9;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .admin-news-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .admin-news-actions .icon-btn {
+            padding: 4px 8px;
+            font-size: 0.70rem;
+        }
+
+        .admin-news-preview-strip {
+            margin-bottom: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            background: #ffffff;
+            color: #111827;
+            display: flex;
+            align-items: stretch;
+            min-height: 34px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+        }
+
+        .admin-news-preview-badge {
+            flex: 0 0 auto;
+            padding: 6px 10px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .admin-news-preview-text {
+            flex: 1 1 auto;
+            min-width: 0;
+            padding: 6px 10px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: #111827;
+            line-height: 1.35;
+            word-break: break-word;
         }
 
         /* UVÍTACIA KARTA PRE PRÁZDNU DATABÁZU */
@@ -6669,7 +7000,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.77</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.79</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -6696,14 +7027,23 @@
 
         <!-- ==================== SEKCIA 1: TABUĽKA ==================== -->
         <section id="sec-table" class="section active">
-            <button id="table-sync-db-btn" class="btn-db-sync" onclick="syncFromRemoteJSON(true)">
-                <i class="fa-solid fa-rotate"></i>
-                <span>Načítať aktuálnu databázu</span>
-            </button>
+            <div class="table-top-bar">
+                <button id="table-sync-db-btn" class="btn-db-sync" onclick="syncFromRemoteJSON(true)">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>Databáza</span>
+                </button>
+                <div id="table-weather-box" class="table-weather-box" role="button" tabindex="0" onclick="refreshTableWeatherBox()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); refreshTableWeatherBox();}" title="Kliknutím obnovíš predpoveď počasia">
+                    <div class="twb-row-top">
+                        <span class="twb-city" id="twb-city">Počasie</span>
+                        <span class="twb-main-temp" id="twb-temp"><span class="twb-ico">🌤️</span><span>—</span></span>
+                    </div>
+                    <div class="twb-row-bot" id="twb-details">Načítavam predpoveď…</div>
+                </div>
+            </div>
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.77</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.79</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -7501,6 +7841,13 @@
                             data-ctx-desc="Vymaže lokálne uložených hráčov aj všetky zápasy v prehliadači (Čistý štart)."
                             data-ctx-tip="Odporúčame najprv stiahnuť zálohu JSON."
                             onclick="resetToEmpty()">Vymazať lokálnu databázu (Čistý štart)</button>
+
+                        <button type="button" class="btn-admin-entry" id="btn-admin-news-open"
+                            data-ctx-title="ADMIN – Editor vlastných NEWS"
+                            data-ctx-desc="Otvorí chránený editor osobných správ do lišty NEWS s prioritou a expiráciou (ukladá sa do databaza.json)."
+                            onclick="openAdminNewsAccess()">
+                            <i class="fa-solid fa-lock"></i> ADMIN
+                        </button>
                     </div>
                 </div>
             </div>
@@ -8020,6 +8367,137 @@
         </div>
     </div>
 
+    <!-- MODAL: ADMIN PIN OVERENIE (v1.78) -->
+    <div class="modal-backdrop" id="admin-pin-modal" onclick="if(event.target===this) closeAdminPinModal()">
+        <div class="modal-box" style="max-width: 360px;">
+            <div class="card-header">
+                <div class="card-title">
+                    <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                    <span><i class="fa-solid fa-shield-halved" style="margin-right:6px; color:var(--tennis-lime);"></i>ADMIN prístup</span>
+                </div>
+                <button type="button" class="icon-btn" onclick="closeAdminPinModal()">Zavrieť ✕</button>
+            </div>
+            <div class="form-group" style="margin-bottom: 8px;">
+                <label for="admin-pin-input">Zadaj 6-miestny kód správcu</label>
+                <input type="password" id="admin-pin-input" class="admin-pin-input" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="••••••" onkeydown="if(event.key==='Enter') submitAdminPin()">
+                <div id="admin-pin-error" class="admin-pin-error"></div>
+            </div>
+            <div class="grid-2">
+                <button type="button" class="btn btn-primary" onclick="submitAdminPin()">Odomknúť</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAdminPinModal()">Zrušiť</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADMIN EDITOR VLASTNÝCH NEWS (v1.78) -->
+    <div class="modal-backdrop" id="admin-news-modal" onclick="if(event.target===this) closeAdminNewsModal()">
+        <div class="modal-box tv-modal-box">
+            <div class="tv-modal-head">
+                <div class="tv-modal-head-top">
+                    <div class="card-title">
+                        <span class="card-title-dot" style="background: #ef4444;"></span>
+                        <span><i class="fa-solid fa-bullhorn" style="margin-right:6px; color:var(--tennis-lime);"></i>ADMIN · Editor vlastných NEWS</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="chart-range-pill" id="admin-news-count-pill">0 aktívnych</span>
+                        <button type="button" class="icon-btn" onclick="closeAdminNewsModal()">Zavrieť ✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tv-modal-body">
+                <!-- FORMULÁR PRE PRIDANIE / ÚPRAVU SPRÁVY -->
+                <div class="settings-section-card" style="border-color: rgba(190, 242, 100, 0.34);">
+                    <div class="settings-section-head">
+                        <div class="card-title" style="font-size:0.88rem;">
+                            <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                            <span id="admin-news-form-title">Nová osobná správa do NEWS</span>
+                        </div>
+                        <button type="button" id="btn-admin-news-cancel-edit" class="chart-quick-btn" onclick="resetAdminNewsForm()" style="display:none;">Zrušiť úpravu</button>
+                    </div>
+
+                    <input type="hidden" id="admin-news-edit-id" value="">
+
+                    <div class="form-group">
+                        <label for="admin-news-tag" class="note-label-row">
+                            <span>Titulok správy (červený štítok v NEWS)</span>
+                            <span class="note-counter" id="admin-news-tag-count">0 / 36</span>
+                        </label>
+                        <input type="text" id="admin-news-tag" maxlength="36" placeholder="napr. TAJNÝ TRÉNING, OZNAM, SPRÁVA DŇA..." oninput="updateAdminNewsCounters()">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin-news-text" class="note-label-row">
+                            <span>Text správy</span>
+                            <span class="note-counter" id="admin-news-text-count">0 / 240</span>
+                        </label>
+                        <textarea id="admin-news-text" class="admin-news-textarea" maxlength="240" placeholder="napr. Dvojica bola videná na tajnom rannom tréningu pred sobotným turnajom..." oninput="updateAdminNewsCounters()"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Priorita zobrazenia v lište NEWS</label>
+                        <input type="hidden" id="admin-news-priority" value="top">
+                        <div class="admin-news-prio-grid" id="admin-news-prio-bar">
+                            <button type="button" class="preset-btn active" data-prio="top" onclick="setAdminNewsPriority('top')">1. Úplne prvá</button>
+                            <button type="button" class="preset-btn" data-prio="after_matches" onclick="setAdminNewsPriority('after_matches')">2. Po zápasoch</button>
+                            <button type="button" class="preset-btn" data-prio="after_weather" onclick="setAdminNewsPriority('after_weather')">3. Po počasí</button>
+                            <button type="button" class="preset-btn" data-prio="random" onclick="setAdminNewsPriority('random')">4. Medzi ostatné</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin-news-expires">Expirácia (platí do konca zvoleného dňa · prázdne = natrvalo)</label>
+                        <div class="admin-news-exp-presets">
+                            <button type="button" class="preset-btn" data-exp-days="0" onclick="setAdminNewsExpiryPreset(0)">Len dnes</button>
+                            <button type="button" class="preset-btn" data-exp-days="2" onclick="setAdminNewsExpiryPreset(2)">3 dni</button>
+                            <button type="button" class="preset-btn" data-exp-days="6" onclick="setAdminNewsExpiryPreset(6)">7 dní</button>
+                            <button type="button" class="preset-btn active" data-exp-days="-1" onclick="setAdminNewsExpiryPreset(-1)">Natrvalo</button>
+                        </div>
+                        <input type="date" id="admin-news-expires" oninput="syncAdminNewsExpPresetButtons()">
+                    </div>
+
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+                        <label style="display:inline-flex; align-items:center; gap:8px; margin:0; cursor:pointer; color:#ffffff; font-size:0.80rem;">
+                            <input type="checkbox" id="admin-news-enabled" checked style="width:17px; height:17px; cursor:pointer;">
+                            <span>Aktívna (zobrazovať v lište NEWS)</span>
+                        </label>
+                    </div>
+
+                    <div class="admin-news-preview-strip" aria-label="Náhľad správy v NEWS">
+                        <span class="admin-news-preview-badge">NÁHĽAD</span>
+                        <div class="admin-news-preview-text" id="admin-news-live-preview">
+                            <span style="color:#64748b;">Zadaj titulok a text správy…</span>
+                        </div>
+                    </div>
+
+                    <button type="button" id="btn-admin-news-save" class="btn btn-primary" onclick="saveAdminNewsItem()">
+                        <i class="fa-solid fa-plus"></i> Uložiť správu do databázy
+                    </button>
+                </div>
+
+                <!-- ZOZNAM ULOŽENÝCH VLASTNÝCH SPRÁV -->
+                <div class="settings-section-card">
+                    <div class="settings-section-head">
+                        <div class="card-title" style="font-size:0.88rem;">
+                            <span class="card-title-dot" style="background: var(--blue-accent);"></span>
+                            <span>Uložené vlastné správy (<span id="admin-news-total-count">0</span>)</span>
+                        </div>
+                        <span style="font-size:0.70rem; color:var(--text-muted);">Ukladá sa priamo do databaza.json</span>
+                    </div>
+                    <div id="admin-news-list" class="admin-news-list"></div>
+                </div>
+            </div>
+
+            <div class="tv-modal-foot">
+                <div class="grid-3">
+                    <button type="button" class="btn btn-primary" onclick="exportBackupJSON('databaza.json')"><i class="fa-solid fa-download"></i> databaza.json</button>
+                    <button type="button" class="btn btn-secondary" onclick="previewAdminNewsInTicker()"><i class="fa-solid fa-play"></i> Náhľad v lište</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminNewsModal()">Zavrieť</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL: DETAILNÝ NÁHĽAD PNG ODZNAKU NA CELÚ OBRAZOVKU + SWIPE (v1.67) -->
     <div class="modal-backdrop badge-zoom-backdrop" id="badge-zoom-modal" role="dialog" aria-modal="true" aria-labelledby="badge-zoom-title" onclick="handleBadgeZoomBackdropClick(event)">
         <div class="badge-zoom-card" id="badge-zoom-card">
@@ -8264,6 +8742,7 @@
             },
             players: [],
             matches: [],
+            customNews: [],
             chartVisiblePlayers: {},
             updatedAt: 0
         };
@@ -8871,6 +9350,40 @@
         }
 
         /* ==================== VALIDÁCIA, NORMALIZÁCIA A UKLADANIE STAVU (v1.40) ==================== */
+        const VALID_CUSTOM_NEWS_PRIORITIES = ["top", "after_matches", "after_weather", "random"];
+
+        function sanitizeCustomNewsList(rawList) {
+            if (!Array.isArray(rawList)) return [];
+            const seen = new Set();
+            const out = [];
+            rawList.forEach(item => {
+                if (!item || typeof item !== "object" || Array.isArray(item)) return;
+                const tag = String(item.tag ?? "").trim().slice(0, 36);
+                const text = String(item.text ?? "").trim().slice(0, 240);
+                if (!text) return;
+                let id = String(item.id ?? "").trim() || generateUniqueId("cn");
+                if (seen.has(id)) id = generateUniqueId("cn");
+                seen.add(id);
+                const prioRaw = String(item.priority ?? "top").trim();
+                const priority = VALID_CUSTOM_NEWS_PRIORITIES.includes(prioRaw) ? prioRaw : "top";
+                const expRaw = String(item.expiresAt ?? "").trim();
+                const expiresAt = (expRaw && parseIsoLocal(expRaw)) ? expRaw : "";
+                const enabled = item.enabled !== false;
+                const createdRaw = Number(item.createdAt);
+                const createdAt = (isFinite(createdRaw) && createdRaw > 0) ? createdRaw : Date.now();
+                out.push({
+                    id,
+                    tag: tag || "OZNAM",
+                    text,
+                    priority,
+                    expiresAt,
+                    enabled,
+                    createdAt
+                });
+            });
+            return out;
+        }
+
         function validateDatabase(data) {
             const errors = [];
             const warnings = [];
@@ -9058,6 +9571,7 @@
                     config: sanitizedCfg,
                     players: sanitizedPlayers,
                     matches: sanitizedMatches,
+                    customNews: sanitizeCustomNewsList(data.customNews),
                     chartVisiblePlayers: (data.chartVisiblePlayers && typeof data.chartVisiblePlayers === "object") ? { ...data.chartVisiblePlayers } : null,
                     updatedAt
                 } : null,
@@ -9149,6 +9663,7 @@
                     if (surface) normMatch.surface = surface;
                     return normMatch;
                 });
+            state.customNews = sanitizeCustomNewsList(state.customNews);
         }
 
         function sortMatchesChronologically() {
@@ -9321,6 +9836,7 @@
                     },
                     players: remoteData.players,
                     matches: remoteData.matches,
+                    customNews: Array.isArray(remoteData.customNews) ? remoteData.customNews : [],
                     chartVisiblePlayers: preservedChartVis,
                     updatedAt: remoteUpdated || Date.now()
                 };
@@ -16920,6 +17436,7 @@
                 config: state.config,
                 players: state.players,
                 matches: state.matches,
+                customNews: Array.isArray(state.customNews) ? state.customNews : [],
                 updatedAt: state.updatedAt,
                 exportedAtIso: new Date().toISOString()
             };
@@ -16987,6 +17504,7 @@
                         config: clean.config,
                         players: clean.players,
                         matches: clean.matches,
+                        customNews: Array.isArray(clean.customNews) ? clean.customNews : [],
                         chartVisiblePlayers: preservedChartVis,
                         updatedAt: Date.now()
                     };
@@ -17052,6 +17570,7 @@
                 config: { windowMonths: 12, K: 32, D: 200, location: { name: "", lat: null, lon: null } },
                 players: [],
                 matches: [],
+                customNews: [],
                 chartVisiblePlayers: {},
                 updatedAt: 0
             };
@@ -20288,7 +20807,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.77${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.79${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -20804,7 +21323,7 @@
             const bgMode = getEffectiveChroniclePosterBgMode();
             const fontSans = 'Inter, "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif';
             const locCtx = getLocationContext();
-            const locSuffix = locCtx.homeName ? ` · ${locCtx.homeName}` : "";
+            const locSuffix = locCtx.name ? ` · ${locCtx.name}` : "";
 
             ctx.clearRect(0, 0, W, H);
             drawChroniclePosterBackgroundLayer(ctx, W, H, forceFallbackBg, bgMode);
@@ -21317,7 +21836,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.77${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.79${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -21401,7 +21920,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.77${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.79${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -21721,6 +22240,7 @@
             if (clearStorage) {
                 try { localStorage.removeItem(WEATHER_CACHE_KEY); } catch (e) {}
             }
+            renderTableWeatherBox();
         }
 
         async function fetchWithTimeout(url, options = {}, timeoutMs = WEATHER_FETCH_TIMEOUT_MS) {
@@ -23806,7 +24326,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.77! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.79! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -24702,7 +25222,486 @@
             return result;
         }
 
-        function renderNewsTicker(forceReshuffle = false) {
+        /* ==================== POLÍČKO POČASIA NA KARTE TABUĽKA (2 RIADKY · v1.78) ==================== */
+        function renderTableWeatherBox() {
+            const box = document.getElementById("table-weather-box");
+            const cityEl = document.getElementById("twb-city");
+            const tempEl = document.getElementById("twb-temp");
+            const detEl = document.getElementById("twb-details");
+            if (!box || !cityEl || !tempEl || !detEl) return;
+
+            const loc = getLocationContext();
+            const usingLocal = Boolean(isAwayFromHome && localWeather);
+            const activeW = usingLocal ? localWeather : homeWeather;
+
+            if (!activeW) {
+                const cityLabel = loc.hasCity ? loc.name : "Počasie";
+                cityEl.textContent = cityLabel;
+                if (homeWeatherFailed) {
+                    tempEl.innerHTML = `<span class="twb-ico">📡</span><span>Offline</span>`;
+                    detEl.textContent = "Ťukni pre obnovenie predpovede";
+                } else if (!loc.hasCoords && weatherLocMode === "home") {
+                    tempEl.innerHTML = `<span class="twb-ico">📍</span><span>—</span>`;
+                    detEl.textContent = "Nastav domovské mesto v ⚙";
+                } else {
+                    tempEl.innerHTML = `<span class="twb-ico">🌤️</span><span>—</span>`;
+                    detEl.textContent = "Načítavam aktuálne počasie…";
+                }
+                return;
+            }
+
+            const cityLabel = usingLocal
+                ? (localLocationName || "Aktuálna poloha")
+                : (loc.hasCity ? loc.name : "Počasie");
+            const temp = Number(activeW.temperature_2m);
+            const wind = Math.round(Number(activeW.wind_speed_10m) || 0);
+            const precip = Number(activeW.precipitation) || 0;
+            const wmo = decodeWmoWeather(activeW.weather_code);
+            const condLabel = wmo.label ? (wmo.label.charAt(0).toUpperCase() + wmo.label.slice(1)) : "Premenlivo";
+            const tempStr = isFinite(temp) ? `${skNum(temp, 1)} °C` : "—";
+            const precipPart = precip > 0 ? ` · 💧 ${skNum(precip, 1)} mm` : "";
+
+            cityEl.textContent = cityLabel;
+            tempEl.innerHTML = `<span class="twb-ico">${wmo.icon}</span><span>${escapeHtml(tempStr)}</span>`;
+            detEl.textContent = `${condLabel} · 💨 ${wind} km/h${precipPart}`;
+        }
+
+        function refreshTableWeatherBox() {
+            const loc = getLocationContext();
+            if (!loc.hasCoords && weatherLocMode === "home") {
+                openSettingsModal("general");
+                showToast("Zadaj domovské mesto v Nastaveniach pre predpoveď počasia.");
+                return;
+            }
+            const detEl = document.getElementById("twb-details");
+            if (detEl) detEl.textContent = "Aktualizujem počasie…";
+            fetchHomeWeather(true).then(() => {
+                renderTableWeatherBox();
+                if (!homeWeatherFailed && (homeWeather || localWeather)) {
+                    showToast("Predpoveď počasia bola aktualizovaná.");
+                }
+            });
+        }
+
+        /* ==================== ADMIN EDITOR VLASTNÝCH NEWS (PIN 324380 · v1.78) ==================== */
+        const ADMIN_NEWS_PIN = "324380";
+        let adminNewsUnlocked = false;
+        let adminNewsDraftPreview = null;
+        let newsRestartRaf1 = null;
+        let newsRestartRaf2 = null;
+        const ADMIN_NEWS_PRIO_LABELS = {
+            top: "1. Úplne prvá",
+            after_matches: "2. Po zápasoch",
+            after_weather: "3. Po počasí",
+            random: "4. Medzi ostatné"
+        };
+
+        function openAdminNewsAccess() {
+            if (adminNewsUnlocked) {
+                closeSettingsModal();
+                openAdminNewsModal();
+                return;
+            }
+            const pinMod = document.getElementById("admin-pin-modal");
+            const pinInp = document.getElementById("admin-pin-input");
+            const pinErr = document.getElementById("admin-pin-error");
+            if (!pinMod || !pinInp) return;
+            pinInp.value = "";
+            if (pinErr) pinErr.textContent = "";
+            pinMod.classList.add("open");
+            syncModalBodyScrollLock();
+            setTimeout(() => pinInp.focus(), 80);
+        }
+
+        function closeAdminPinModal() {
+            const pinMod = document.getElementById("admin-pin-modal");
+            if (pinMod) pinMod.classList.remove("open");
+            syncModalBodyScrollLock();
+        }
+
+        function submitAdminPin() {
+            const pinInp = document.getElementById("admin-pin-input");
+            const pinErr = document.getElementById("admin-pin-error");
+            if (!pinInp) return;
+            const entered = String(pinInp.value || "").trim();
+            if (entered === ADMIN_NEWS_PIN) {
+                adminNewsUnlocked = true;
+                closeAdminPinModal();
+                closeSettingsModal();
+                openAdminNewsModal();
+                showToast("ADMIN režim odomknutý!");
+            } else {
+                if (pinErr) pinErr.textContent = "Nesprávny kód správcu.";
+                pinInp.value = "";
+                pinInp.focus();
+            }
+        }
+
+        function openAdminNewsModal() {
+            const mod = document.getElementById("admin-news-modal");
+            if (!mod) return;
+            if (adminNewsDraftPreview) {
+                const draft = adminNewsDraftPreview;
+                document.getElementById("admin-news-edit-id").value = draft.editId || "";
+                document.getElementById("admin-news-tag").value = draft.tag || "";
+                document.getElementById("admin-news-text").value = draft.text || "";
+                document.getElementById("admin-news-expires").value = draft.expiresAt || "";
+                document.getElementById("admin-news-enabled").checked = draft.enabled !== false;
+                setAdminNewsPriority(draft.priority || "top");
+                syncAdminNewsExpPresetButtons();
+                updateAdminNewsCounters();
+            } else {
+                resetAdminNewsForm();
+            }
+            renderAdminNewsList();
+            mod.classList.add("open");
+            const bodyEl = mod.querySelector(".tv-modal-body");
+            if (bodyEl) bodyEl.scrollTop = 0;
+            syncModalBodyScrollLock();
+        }
+
+        function closeAdminNewsModal() {
+            const mod = document.getElementById("admin-news-modal");
+            if (mod) mod.classList.remove("open");
+            syncModalBodyScrollLock();
+        }
+
+        function updateAdminNewsLivePreview() {
+            const prevEl = document.getElementById("admin-news-live-preview");
+            if (!prevEl) return;
+            const rawTag = String(document.getElementById("admin-news-tag")?.value || "").trim().slice(0, 36);
+            const rawText = String(document.getElementById("admin-news-text")?.value || "").trim().slice(0, 240);
+            const prio = String(document.getElementById("admin-news-priority")?.value || "top").trim();
+            const prioLbl = ADMIN_NEWS_PRIO_LABELS[prio] || ADMIN_NEWS_PRIO_LABELS.top;
+            if (!rawText) {
+                prevEl.innerHTML = `<span style="color:#64748b;">Zadaj titulok a text správy… (${escapeHtml(prioLbl)})</span>`;
+                return;
+            }
+            const tag = rawTag || "OZNAM";
+            prevEl.innerHTML = `<span class="news-tag">${escapeHtml(tag)}:</span>${escapeHtml(rawText)}`;
+        }
+
+        function updateAdminNewsCounters() {
+            const tagEl = document.getElementById("admin-news-tag");
+            const txtEl = document.getElementById("admin-news-text");
+            const tagCnt = document.getElementById("admin-news-tag-count");
+            const txtCnt = document.getElementById("admin-news-text-count");
+            if (tagEl && tagCnt) tagCnt.textContent = `${tagEl.value.length} / 36`;
+            if (txtEl && txtCnt) {
+                txtCnt.textContent = `${txtEl.value.length} / 240`;
+                txtCnt.style.color = txtEl.value.length >= 220 ? "var(--draw)" : "var(--text-muted)";
+            }
+            updateAdminNewsLivePreview();
+        }
+
+        function setAdminNewsPriority(prio) {
+            const valid = VALID_CUSTOM_NEWS_PRIORITIES.includes(prio) ? prio : "top";
+            const hiddenEl = document.getElementById("admin-news-priority");
+            if (hiddenEl) hiddenEl.value = valid;
+            const bar = document.getElementById("admin-news-prio-bar");
+            if (bar) {
+                bar.querySelectorAll(".preset-btn").forEach(btn => {
+                    btn.classList.toggle("active", btn.getAttribute("data-prio") === valid);
+                });
+            }
+            updateAdminNewsLivePreview();
+        }
+
+        function addDaysToTodayIso(days) {
+            const dt = getTodayMidnight();
+            dt.setDate(dt.getDate() + Number(days || 0));
+            return dateToIsoLocal(dt);
+        }
+
+        function setAdminNewsExpiryPreset(daysOffset) {
+            const expInp = document.getElementById("admin-news-expires");
+            if (!expInp) return;
+            const d = Number(daysOffset);
+            expInp.value = d < 0 ? "" : addDaysToTodayIso(d);
+            syncAdminNewsExpPresetButtons();
+        }
+
+        function syncAdminNewsExpPresetButtons() {
+            const expInp = document.getElementById("admin-news-expires");
+            const val = expInp ? String(expInp.value || "").trim() : "";
+            const d0 = addDaysToTodayIso(0);
+            const d2 = addDaysToTodayIso(2);
+            const d6 = addDaysToTodayIso(6);
+            document.querySelectorAll(".admin-news-exp-presets .preset-btn").forEach(btn => {
+                const days = Number(btn.getAttribute("data-exp-days"));
+                let isActive = false;
+                if (days < 0) isActive = val === "";
+                else if (days === 0) isActive = val === d0;
+                else if (days === 2) isActive = val === d2;
+                else if (days === 6) isActive = val === d6;
+                btn.classList.toggle("active", isActive);
+            });
+        }
+
+        function resetAdminNewsForm() {
+            const editIdEl = document.getElementById("admin-news-edit-id");
+            const tagEl = document.getElementById("admin-news-tag");
+            const txtEl = document.getElementById("admin-news-text");
+            const expEl = document.getElementById("admin-news-expires");
+            const enEl = document.getElementById("admin-news-enabled");
+            const titleEl = document.getElementById("admin-news-form-title");
+            const saveBtn = document.getElementById("btn-admin-news-save");
+            const cancelBtn = document.getElementById("btn-admin-news-cancel-edit");
+
+            if (editIdEl) editIdEl.value = "";
+            if (tagEl) tagEl.value = "";
+            if (txtEl) txtEl.value = "";
+            if (expEl) expEl.value = "";
+            if (enEl) enEl.checked = true;
+            if (titleEl) titleEl.textContent = "Nová osobná správa do NEWS";
+            if (saveBtn) saveBtn.innerHTML = `<i class="fa-solid fa-plus"></i> Uložiť správu do databázy`;
+            if (cancelBtn) cancelBtn.style.display = "none";
+
+            setAdminNewsPriority("top");
+            syncAdminNewsExpPresetButtons();
+            updateAdminNewsCounters();
+        }
+
+        function editAdminNewsItem(id) {
+            const list = Array.isArray(state.customNews) ? state.customNews : [];
+            const item = list.find(x => x.id === id);
+            if (!item) return;
+
+            document.getElementById("admin-news-edit-id").value = item.id;
+            document.getElementById("admin-news-tag").value = item.tag || "";
+            document.getElementById("admin-news-text").value = item.text || "";
+            document.getElementById("admin-news-expires").value = item.expiresAt || "";
+            document.getElementById("admin-news-enabled").checked = item.enabled !== false;
+            document.getElementById("admin-news-form-title").textContent = "Upraviť uloženú správu";
+            document.getElementById("btn-admin-news-save").innerHTML = `<i class="fa-solid fa-check"></i> Uložiť zmeny správy`;
+            document.getElementById("btn-admin-news-cancel-edit").style.display = "inline-flex";
+
+            setAdminNewsPriority(item.priority || "top");
+            syncAdminNewsExpPresetButtons();
+            updateAdminNewsCounters();
+
+            const bodyEl = document.querySelector("#admin-news-modal .tv-modal-body");
+            if (bodyEl) bodyEl.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function saveAdminNewsItem() {
+            const editId = String(document.getElementById("admin-news-edit-id").value || "").trim();
+            const rawTag = String(document.getElementById("admin-news-tag").value || "").trim().slice(0, 36);
+            const rawText = String(document.getElementById("admin-news-text").value || "").trim().slice(0, 240);
+            const prio = String(document.getElementById("admin-news-priority").value || "top").trim();
+            const expRaw = String(document.getElementById("admin-news-expires").value || "").trim();
+            const enabled = Boolean(document.getElementById("admin-news-enabled").checked);
+
+            if (!rawText) {
+                showToast("Zadaj text správy!", true);
+                document.getElementById("admin-news-text").focus();
+                return;
+            }
+
+            const cleanTag = rawTag || "OZNAM";
+            const cleanPrio = VALID_CUSTOM_NEWS_PRIORITIES.includes(prio) ? prio : "top";
+            const cleanExp = (expRaw && parseIsoLocal(expRaw)) ? expRaw : "";
+
+            if (!Array.isArray(state.customNews)) state.customNews = [];
+
+            if (editId) {
+                const idx = state.customNews.findIndex(x => x.id === editId);
+                if (idx !== -1) {
+                    state.customNews[idx] = {
+                        ...state.customNews[idx],
+                        tag: cleanTag,
+                        text: rawText,
+                        priority: cleanPrio,
+                        expiresAt: cleanExp,
+                        enabled
+                    };
+                }
+            } else {
+                state.customNews.unshift({
+                    id: generateUniqueId("cn"),
+                    tag: cleanTag,
+                    text: rawText,
+                    priority: cleanPrio,
+                    expiresAt: cleanExp,
+                    enabled,
+                    createdAt: Date.now()
+                });
+            }
+
+            adminNewsDraftPreview = null;
+            saveState(true);
+            resetAdminNewsForm();
+            renderAdminNewsList();
+            renderNewsTicker(true);
+            showToast(editId ? "Správa upravená a pridaná do NEWS! Nezabudni stiahnuť databaza.json." : "Správa pridaná do NEWS! Pre zverejnenie stiahni databaza.json.");
+        }
+
+        function toggleAdminNewsEnabled(id) {
+            const item = (state.customNews || []).find(x => x.id === id);
+            if (!item) return;
+            item.enabled = item.enabled === false;
+            saveState(true);
+            renderAdminNewsList();
+            renderNewsTicker(true);
+            showToast(item.enabled ? "Správa je aktívna v NEWS." : "Správa bola skrytá z NEWS.");
+        }
+
+        function moveAdminNewsItem(id, delta) {
+            const arr = state.customNews || [];
+            const idx = arr.findIndex(x => x.id === id);
+            const target = idx + delta;
+            if (idx === -1 || target < 0 || target >= arr.length) return;
+            const [moved] = arr.splice(idx, 1);
+            arr.splice(target, 0, moved);
+            saveState(true);
+            renderAdminNewsList();
+            renderNewsTicker(true);
+        }
+
+        function deleteAdminNewsItem(id) {
+            const arr = state.customNews || [];
+            const item = arr.find(x => x.id === id);
+            if (!item) return;
+            if (!confirm(`Zmazať vlastnú správu „${item.tag}: ${item.text.slice(0, 60)}“?`)) return;
+            state.customNews = arr.filter(x => x.id !== id);
+            if (document.getElementById("admin-news-edit-id").value === id) {
+                resetAdminNewsForm();
+            }
+            saveState(true);
+            renderAdminNewsList();
+            renderNewsTicker(true);
+            showToast("Vlastná správa bola zmazaná.");
+        }
+
+        function getActiveCustomNewsBuckets() {
+            const todayIso = getTodayIso();
+            const buckets = { top: [], after_matches: [], after_weather: [], random: [] };
+            const baseList = Array.isArray(state.customNews) ? state.customNews.map(x => ({ ...x })) : [];
+
+            // Ak je aktívny náhľad rozpísanej (neuloženej) správy z ADMIN editora, zahrň ju presne na jej prioritu
+            if (adminNewsDraftPreview && adminNewsDraftPreview.text) {
+                const d = adminNewsDraftPreview;
+                if (d.editId) {
+                    const idx = baseList.findIndex(x => x.id === d.editId);
+                    if (idx !== -1) {
+                        baseList[idx] = { ...baseList[idx], tag: d.tag, text: d.text, priority: d.priority, expiresAt: d.expiresAt, enabled: d.enabled };
+                    } else {
+                        baseList.unshift({ id: "__draft__", tag: d.tag, text: d.text, priority: d.priority, expiresAt: d.expiresAt, enabled: d.enabled });
+                    }
+                } else {
+                    baseList.unshift({ id: "__draft__", tag: d.tag, text: d.text, priority: d.priority, expiresAt: d.expiresAt, enabled: d.enabled });
+                }
+            }
+
+            baseList.forEach(item => {
+                if (!item || item.enabled === false || !item.text) return;
+                if (item.expiresAt && item.expiresAt < todayIso) return;
+                const p = VALID_CUSTOM_NEWS_PRIORITIES.includes(item.priority) ? item.priority : "top";
+                buckets[p].push({ tag: item.tag || "OZNAM", text: item.text });
+            });
+            return buckets;
+        }
+
+        function renderAdminNewsList() {
+            const listEl = document.getElementById("admin-news-list");
+            const totEl = document.getElementById("admin-news-total-count");
+            const activePill = document.getElementById("admin-news-count-pill");
+            if (!listEl) return;
+
+            const arr = Array.isArray(state.customNews) ? state.customNews : [];
+            const todayIso = getTodayIso();
+            let activeCount = 0;
+
+            arr.forEach(item => {
+                const isExp = Boolean(item.expiresAt && item.expiresAt < todayIso);
+                if (item.enabled !== false && !isExp) activeCount++;
+            });
+
+            if (totEl) totEl.textContent = String(arr.length);
+            if (activePill) activePill.textContent = `${skCount(activeCount, "aktívna", "aktívne", "aktívnych")}`;
+
+            if (arr.length === 0) {
+                listEl.innerHTML = `<div style="font-size:0.78rem; color:var(--text-muted); padding:8px 2px;">Zatiaľ nemáš uloženú žiadnu vlastnú správu. Vytvor prvú vo formulári vyššie.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = arr.map((item, idx) => {
+                const isExp = Boolean(item.expiresAt && item.expiresAt < todayIso);
+                const isHidden = item.enabled === false;
+                const itemCls = isHidden ? "is-hidden" : (isExp ? "is-expired" : "");
+                const stPill = isHidden
+                    ? `<span class="admin-news-meta-pill st-hidden">Skrytá</span>`
+                    : (isExp ? `<span class="admin-news-meta-pill st-expired">Expirovaná</span>` : `<span class="admin-news-meta-pill st-active">Aktívna</span>`);
+                const prioLabel = ADMIN_NEWS_PRIO_LABELS[item.priority] || ADMIN_NEWS_PRIO_LABELS.top;
+                const expLabel = item.expiresAt ? `Do ${formatDateSk(item.expiresAt)}` : "Natrvalo";
+                return `
+                    <div class="admin-news-item ${itemCls}">
+                        <div class="admin-news-item-head">
+                            <div class="admin-news-badges">
+                                <span class="admin-news-tag-pill">${escapeHtml(item.tag || "OZNAM")}</span>
+                                ${stPill}
+                                <span class="admin-news-meta-pill">${escapeHtml(prioLabel)}</span>
+                                <span class="admin-news-meta-pill">${escapeHtml(expLabel)}</span>
+                            </div>
+                        </div>
+                        <div class="admin-news-text">${escapeHtml(item.text)}</div>
+                        <div class="admin-news-actions">
+                            <button type="button" class="icon-btn" onclick="moveAdminNewsItem('${escapeHtml(item.id)}', -1)" ${idx === 0 ? "disabled style='opacity:0.38;'" : ""} title="Posunúť vyššie">▲</button>
+                            <button type="button" class="icon-btn" onclick="moveAdminNewsItem('${escapeHtml(item.id)}', 1)" ${idx === arr.length - 1 ? "disabled style='opacity:0.38;'" : ""} title="Posunúť nižšie">▼</button>
+                            <button type="button" class="icon-btn" onclick="toggleAdminNewsEnabled('${escapeHtml(item.id)}')">${isHidden ? "Zobraziť" : "Skryť"}</button>
+                            <button type="button" class="icon-btn" onclick="editAdminNewsItem('${escapeHtml(item.id)}')">Upraviť</button>
+                            <button type="button" class="icon-btn" style="background:linear-gradient(180deg,#dc2626,#991b1b); border-color:#f87171;" onclick="deleteAdminNewsItem('${escapeHtml(item.id)}')">✕</button>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function previewAdminNewsInTicker() {
+            const editId = String(document.getElementById("admin-news-edit-id")?.value || "").trim();
+            const rawTag = String(document.getElementById("admin-news-tag")?.value || "").trim().slice(0, 36);
+            const rawText = String(document.getElementById("admin-news-text")?.value || "").trim().slice(0, 240);
+            const prio = String(document.getElementById("admin-news-priority")?.value || "top").trim();
+            const expRaw = String(document.getElementById("admin-news-expires")?.value || "").trim();
+            const enabled = Boolean(document.getElementById("admin-news-enabled")?.checked);
+
+            let usedDraft = false;
+            if (rawText) {
+                adminNewsDraftPreview = {
+                    editId,
+                    tag: rawTag || "OZNAM",
+                    text: rawText,
+                    priority: VALID_CUSTOM_NEWS_PRIORITIES.includes(prio) ? prio : "top",
+                    expiresAt: (expRaw && parseIsoLocal(expRaw)) ? expRaw : "",
+                    enabled
+                };
+                usedDraft = true;
+            } else {
+                adminNewsDraftPreview = null;
+            }
+
+            newsTickerPaused = false;
+            const bar = document.getElementById("news-bar");
+            const label = document.getElementById("news-badge-label");
+            const vp = document.getElementById("news-viewport");
+            if (bar) bar.classList.remove("is-paused", "ignore-hover");
+            if (label) label.textContent = "NEWS";
+            if (vp) vp.setAttribute("aria-pressed", "false");
+
+            closeAdminNewsModal();
+            renderNewsTicker(true, true);
+
+            const firstItem = cachedNewsItems && cachedNewsItems[0] ? cachedNewsItems[0] : null;
+            const firstTag = firstItem ? firstItem.tag : "";
+            if (usedDraft) {
+                showToast(`Náhľad rozpísanej správy v lište (1.: ${firstTag}) – pre trvalé uloženie ju v ADMIN ulož!`);
+            } else {
+                showToast(`NEWS lišta spustená od začiatku · 1. správa: ${firstTag}`);
+            }
+        }
+
+        function renderNewsTicker(forceReshuffle = false, immediateStartFromLeft = false) {
+            renderTableWeatherBox();
             const groupA = document.getElementById("news-ticker-group-a");
             const groupB = document.getElementById("news-ticker-group-b");
             const track = document.getElementById("news-ticker-track");
@@ -24712,10 +25711,13 @@
             const wm = Number(state.config.windowMonths) || 0;
             const dataSig = JSON.stringify({
                 updatedAt: state.updatedAt || 0,
+                today: getTodayIso(),
                 wm,
                 badgesScope,
                 elo: { K: getEloK(), D: getEloD() },
                 locSig,
+                draftPrev: adminNewsDraftPreview || null,
+                customNews: (state.customNews || []).map(c => ({ id: c.id, tg: c.tag, tx: c.text, pr: c.priority, ex: c.expiresAt, en: c.enabled })),
                 players: computedPlayers.map(p => ({ id: p.id, n: p.name, pts: p.points, r: p.rank, m: p.matches, e30: p.expiring30 })),
                 matches: computedMatches.map(m => ({ id: m.id, d: m.date || "", t: m.type, s1: m.sets1, s2: m.sets2, g: m.gems || "", sf: m.surface || "", n: m.note || "" }))
             });
@@ -24767,22 +25769,27 @@
                     text: `Vyznamenanie Siene slávy: Sezónny Grand Slam ${prevYr} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali ${skJoinNames(winners, "nom")}. Klobúk dole pred celoročnou výdržou!${defSuffix}`
                 };
             })();
+            const customNewsBuckets = getActiveCustomNewsBuckets();
             const weatherItem = getWeatherNewsItem();
             const extraWeather = buildExtraWeatherNewsItems();
             const extraDynamicOther = [
+                ...customNewsBuckets.random,
                 ...extraWeather,
                 ...(elo2HReignItem ? [elo2HReignItem] : []),
                 ...(elo4HReignItem ? [elo4HReignItem] : []),
                 ...(elo4HPairsReignItem ? [elo4HPairsReignItem] : [])
             ];
             const headItems = [
+                ...customNewsBuckets.top,
                 ...(januaryGrandSlamHonorItem ? [januaryGrandSlamHonorItem] : []),
                 ...(leaderChangeItem ? [leaderChangeItem] : []),
                 ...(elo2HLeaderChangeItem ? [elo2HLeaderChangeItem] : []),
                 ...(elo4HLeaderChangeItem ? [elo4HLeaderChangeItem] : []),
                 ...(elo4HPairsLeaderChangeItem ? [elo4HPairsLeaderChangeItem] : []),
                 ...cachedRecentNewsItems,
+                ...customNewsBuckets.after_matches,
                 ...(weatherItem ? [weatherItem] : []),
+                ...customNewsBuckets.after_weather,
                 ...(currentLeaderReignItem ? [currentLeaderReignItem] : [])
             ];
             const prevAnchorText = headItems.length > 0 ? headItems[headItems.length - 1].text : "";
@@ -24803,14 +25810,31 @@
             groupA.innerHTML = html;
             groupB.innerHTML = html;
 
-            const shouldRestartAnim = forceReshuffle || !newsAnimationInitialized;
-            // Najprv zmeriame novú šírku a nastavíme CSS premenné, až potom reštartujeme animáciu (bez cuknutia)
+            const shouldRestartAnim = forceReshuffle || immediateStartFromLeft || !newsAnimationInitialized;
+            // Najprv zmeriame novú šírku a nastavíme CSS premenné, až potom spoľahlivo reštartujeme animáciu
             updateNewsTickerSpeed(shouldRestartAnim);
 
             if (shouldRestartAnim) {
+                if (newsRestartRaf1) cancelAnimationFrame(newsRestartRaf1);
+                if (newsRestartRaf2) cancelAnimationFrame(newsRestartRaf2);
                 track.style.animation = "none";
+                if (typeof track.getAnimations === "function") {
+                    try { track.getAnimations().forEach(a => a.cancel()); } catch (e) {}
+                }
+                track.style.transform = immediateStartFromLeft ? "translate3d(0, 0, 0)" : "";
                 void track.offsetWidth;
-                track.style.animation = "";
+                newsRestartRaf1 = requestAnimationFrame(() => {
+                    updateNewsTickerSpeed(true);
+                    void track.offsetWidth;
+                    newsRestartRaf2 = requestAnimationFrame(() => {
+                        track.style.transform = "";
+                        if (immediateStartFromLeft) {
+                            track.style.animation = "newsMarqueeScroll var(--news-duration, 90s) linear 0.65s infinite";
+                        } else {
+                            track.style.animation = "";
+                        }
+                    });
+                });
             }
         }
 
@@ -24872,6 +25896,7 @@
                 ["#last-match-banner", "Report posledného zápasu (PNG)", "Kliknutím otvoríš editor PNG reportu s grafikou zápasu, poznámkou, spätným počasím a všetkými NEWS k duelu.", "Nepotrebné riadky jednoducho vymažeš červeným krížikom pred stiahnutím PNG."],
                 ["#btn-history-add-past", "Zapísať starší zápas", "Prepne na formulár Nový zápas a zameria pole dátumu – starší zápas sa zaradí chronologicky.", ""],
                 ["#table-sync-db-btn", "Synchronizácia s GitHubom", "Stiahne najnovšiu oficiálnu databázu (databaza.json) zo servera pri zachovaní filtrov grafu a vlastného TV pozadia.", "Tmavozelená = dáta sú aktuálne."],
+                ["#table-weather-box", "Aktuálne počasie na kurte", "Zobrazuje mesto, symbol, teplotu, stav počasia a vietor z rovnakého zdroja ako lišta NEWS.", "Kliknutím predpoveď okamžite obnovíš."],
                 ["#tmode-btn-points", "Bodová tabuľka (2H + 4H)", "Kombinovaný rebríček podľa získaných bodov za dvojhry (1 b) aj štvorhry (0.5 b) vo zvolenej lehote.", ""],
                 ["#tmode-btn-elo2h", "ELO rebríček – Dvojhra (2H)", "Celoživotný singlový ELO rebríček počítaný z dvojhier podľa parametrov K a D.", "Ak bol posledný zápas 2H, banner hore ukáže posun ELO."],
                 ["#tmode-btn-elo4h", "ELO rebríček – Štvorhra (4H)", "Celoživotný deblový ELO rebríček jednotlivcov počítaný z priemeru dvojíc.", "Ak bol posledný zápas 4H, banner hore ukáže posun ELO."],
@@ -25066,6 +26091,7 @@
                     state.config = parsed.config || { windowMonths: 12, location: { name: "", lat: null, lon: null } };
                     state.players = Array.isArray(parsed.players) ? parsed.players : [];
                     state.matches = Array.isArray(parsed.matches) ? parsed.matches : [];
+                    state.customNews = Array.isArray(parsed.customNews) ? parsed.customNews : [];
                     state.chartVisiblePlayers = parsed.chartVisiblePlayers || {};
                     state.updatedAt = Number(parsed.updatedAt) || 0;
                 } catch (e) {
@@ -25119,6 +26145,8 @@
                     closeTvChartModal();
                     closeMatchReportModal();
                     closeChroniclePosterModal();
+                    closeAdminPinModal();
+                    closeAdminNewsModal();
                 }
             });
 
