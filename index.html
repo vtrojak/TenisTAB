@@ -3803,11 +3803,12 @@
             text-align: left;
         }
 
+        table.klubovna-gs-table th.kgs-th-overall { color: #5b21b6; }
         table.klubovna-gs-table th.kgs-th-2h { color: #881337; }
         table.klubovna-gs-table th.kgs-th-4h { color: #1e3a8a; }
 
         table.klubovna-gs-table td {
-            padding: 7px 5px;
+            padding: 6px 5px;
             border-bottom: 1px solid rgba(180, 83, 9, 0.13);
             vertical-align: middle;
         }
@@ -3945,6 +3946,64 @@
             font-size: 0.74rem;
         }
 
+        /* Zväčšené poháre (2x) + rohový odznak xČíslo v tabuľke víťazov ročníkov (v1.74) */
+        .klubovna-gs-table .kgs-icons-wrap {
+            min-height: 54px;
+        }
+
+        .kgs-trophy-badge-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+        }
+
+        .klubovna-gs-table .kgs-trophy-img {
+            width: 52px;
+            height: 52px;
+            filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.30));
+        }
+
+        .klubovna-gs-table .kgs-trophy-fb {
+            width: 44px;
+            height: 44px;
+            font-size: 1.72rem;
+        }
+
+        .kgs-count-badge {
+            position: absolute;
+            right: -6px;
+            bottom: -2px;
+            min-width: 22px;
+            height: 19px;
+            padding: 0 5px;
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.69rem;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.2px;
+            background: linear-gradient(135deg, #6d28d9 0%, #3b0764 100%);
+            color: #fef08a;
+            border: 1.6px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.44);
+            pointer-events: none;
+        }
+
+        .kgs-count-badge.is-2h {
+            background: linear-gradient(135deg, #9f1239 0%, #580a20 100%);
+            color: #ffffff;
+        }
+
+        .kgs-count-badge.is-4h {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: #ffffff;
+        }
+
         @media (max-width: 640px) {
             .klubovna-gs-box {
                 padding: 5px 6px 6px;
@@ -3954,7 +4013,7 @@
                 font-size: 0.64rem;
             }
             table.klubovna-gs-table td {
-                padding: 6px 3px;
+                padding: 5px 3px;
             }
             .kgs-player-btn {
                 font-size: 0.75rem;
@@ -3969,25 +4028,63 @@
                 height: 19px;
                 font-size: 0.84rem;
             }
+            .klubovna-gs-table .kgs-icons-wrap {
+                min-height: 46px;
+            }
+            .kgs-trophy-badge-wrap {
+                width: 44px;
+                height: 44px;
+            }
+            .klubovna-gs-table .kgs-trophy-img {
+                width: 44px;
+                height: 44px;
+            }
+            .klubovna-gs-table .kgs-trophy-fb {
+                width: 36px;
+                height: 36px;
+                font-size: 1.45rem;
+            }
+            .kgs-count-badge {
+                right: -5px;
+                bottom: -2px;
+                min-width: 19px;
+                height: 17px;
+                padding: 0 4px;
+                font-size: 0.63rem;
+            }
         }
 
+        /* Jednoriadkové rozbaľovacie ročníky vo farbe celkového víťaza (v1.74) */
         .klubovna-year-block {
-            background: rgba(255, 255, 255, 0.76);
-            border: 1px solid rgba(217, 119, 6, 0.28);
-            border-radius: 14px;
-            padding: 12px;
-            margin-bottom: 10px;
-            box-shadow: 0 3px 10px rgba(120, 53, 15, 0.08);
+            --ky-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(254, 243, 199, 0.78) 100%);
+            --ky-border: rgba(217, 119, 6, 0.38);
+            --ky-fg: #1c1917;
+            --ky-sub: #57534e;
+            --ky-pill-bg: rgba(120, 53, 15, 0.12);
+            --ky-pill-border: rgba(180, 83, 9, 0.32);
+            --ky-text-shadow: none;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1.5px solid var(--ky-border);
+            border-radius: 13px;
+            padding: 0;
+            margin-bottom: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.10);
+            transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
 
         .klubovna-year-block:last-child {
             margin-bottom: 0;
         }
 
+        .klubovna-year-block:not(.is-expanded):hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+        }
+
         .klubovna-year-block.is-ongoing {
             border-style: dashed;
-            border-color: rgba(101, 163, 13, 0.58);
-            background: rgba(255, 255, 255, 0.86);
+            border-width: 1.8px;
         }
 
         .klubovna-year-head {
@@ -3995,47 +4092,142 @@
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            margin-bottom: 10px;
-            padding-bottom: 7px;
-            border-bottom: 1px solid rgba(180, 83, 9, 0.16);
-            flex-wrap: wrap;
+            padding: 10px 13px;
+            background: var(--ky-bg);
+            color: var(--ky-fg);
+            text-shadow: var(--ky-text-shadow);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32);
+            transition: filter 0.16s ease;
+        }
+
+        .klubovna-year-head:hover {
+            filter: brightness(1.04);
+        }
+
+        .klubovna-year-block.is-expanded .klubovna-year-head {
+            border-bottom: 1.5px solid var(--ky-pill-border);
+        }
+
+        .klubovna-year-left {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+            flex: 1 1 auto;
         }
 
         .klubovna-year-num {
-            font-size: 0.98rem;
+            font-size: 0.94rem;
             font-weight: 900;
-            color: #1c1917;
-            letter-spacing: 0.5px;
+            color: var(--ky-fg);
+            letter-spacing: 0.35px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .klubovna-year-pill {
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 999px;
+            letter-spacing: 0.25px;
+            text-transform: uppercase;
+            background: var(--ky-pill-bg);
+            border: 1px solid var(--ky-pill-border);
+            color: var(--ky-fg);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .klubovna-year-winner {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: var(--ky-fg);
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            opacity: 0.96;
+        }
+
+        .klubovna-year-right {
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            flex-shrink: 0;
         }
 
         .klubovna-year-matches {
             font-size: 0.71rem;
-            color: #57534e;
-            font-weight: 700;
-        }
-
-        .klubovna-year-pill {
-            font-size: 0.65rem;
+            color: var(--ky-sub);
             font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 999px;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-        .klubovna-year-pill.closed {
-            background: rgba(245, 158, 11, 0.20);
-            border: 1px solid rgba(217, 119, 6, 0.48);
-            color: #78350f;
+        .klubovna-year-chevron {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.66rem;
+            font-weight: 900;
+            background: var(--ky-pill-bg);
+            border: 1px solid var(--ky-pill-border);
+            color: var(--ky-fg);
+            flex-shrink: 0;
+            transition: transform 0.2s ease, background 0.16s ease;
         }
 
-        .klubovna-year-pill.ongoing {
-            background: rgba(101, 163, 13, 0.16);
-            border: 1px solid rgba(101, 163, 13, 0.50);
-            color: #365314;
+        .klubovna-year-body {
+            display: none;
+            padding: 11px;
+            background: rgba(255, 255, 255, 0.90);
+        }
+
+        .klubovna-year-block.is-expanded .klubovna-year-body {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @media (max-width: 560px) {
+            .klubovna-year-head {
+                padding: 9px 10px;
+                gap: 6px;
+            }
+            .klubovna-year-left {
+                gap: 5px;
+            }
+            .klubovna-year-num {
+                font-size: 0.86rem;
+            }
+            .klubovna-year-pill {
+                font-size: 0.58rem;
+                padding: 1px 6px;
+            }
+            .klubovna-year-winner {
+                font-size: 0.70rem;
+            }
+            .klubovna-year-matches-detail {
+                display: none;
+            }
+            .klubovna-year-matches {
+                font-size: 0.68rem;
+            }
+            .klubovna-year-chevron {
+                width: 22px;
+                height: 22px;
+                font-size: 0.60rem;
+            }
+            .klubovna-year-body {
+                padding: 9px;
+            }
         }
 
         .klubovna-trophies-grid {
@@ -4090,16 +4282,16 @@
             transform: translateY(-2px);
         }
 
-        /* CELKOVO – sýta zlatá (tmavé písmo pre maximálny kontrast) */
+        /* CELKOVO – kráľovská purpurová (biele písmo · zlatý pohár na nej krásne vynikne · v1.74) */
         .klubovna-trophy-item.t-overall {
-            --kt-glow: rgba(234, 179, 8, 0.78);
-            --kt-back-bg: linear-gradient(145deg, #854d0e 0%, #422006 100%);
-            --kt-back-border: #fde047;
-            --kt-back-accent: #fde047;
-            background: linear-gradient(145deg, #facc15 0%, #eab308 52%, #ca8a04 100%);
-            border: 1.5px solid #a16207;
-            color: #291502;
-            box-shadow: 0 5px 14px rgba(161, 98, 7, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.50);
+            --kt-glow: rgba(139, 92, 246, 0.80);
+            --kt-back-bg: linear-gradient(145deg, #4c1d95 0%, #24074d 100%);
+            --kt-back-border: #ddd6fe;
+            --kt-back-accent: #ddd6fe;
+            background: linear-gradient(145deg, #7c3aed 0%, #5b21b6 54%, #3b0764 100%);
+            border: 1.5px solid #a78bfa;
+            color: #ffffff;
+            box-shadow: 0 5px 14px rgba(59, 7, 100, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.26);
         }
 
         /* DVOJHRA – sýta bordová (biele písmo) */
@@ -4200,9 +4392,9 @@
         }
 
         .klubovna-trophy-item.t-overall .kt-info-dot {
-            color: #291502;
-            background: rgba(41, 21, 2, 0.14);
-            border-color: rgba(41, 21, 2, 0.34);
+            color: rgba(255, 255, 255, 0.94);
+            background: rgba(0, 0, 0, 0.26);
+            border-color: rgba(221, 214, 254, 0.45);
         }
 
         .kt-back-head {
@@ -4343,6 +4535,7 @@
         }
 
         .klubovna-trophy-item:hover .klubovna-trophy-img,
+        .klubovna-showcase:hover .klubovna-trophy-img,
         .klubovna-milestone-card:hover .klubovna-trophy-img {
             transform: scale(1.20);
             filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.44));
@@ -4366,7 +4559,7 @@
             letter-spacing: 0.45px;
         }
 
-        .klubovna-trophy-item.t-overall .klubovna-trophy-cat { color: #291502; }
+        .klubovna-trophy-item.t-overall .klubovna-trophy-cat { color: #ede9fe; }
         .klubovna-trophy-item.t-2h .klubovna-trophy-cat      { color: #ffe4e6; }
         .klubovna-trophy-item.t-4h .klubovna-trophy-cat      { color: #dbeafe; }
 
@@ -4375,7 +4568,7 @@
             font-weight: 700;
         }
 
-        .klubovna-trophy-item.t-overall .klubovna-trophy-val { color: #3f2003; }
+        .klubovna-trophy-item.t-overall .klubovna-trophy-val { color: rgba(245, 243, 255, 0.92); }
         .klubovna-trophy-item.t-2h .klubovna-trophy-val      { color: rgba(255, 241, 242, 0.90); }
         .klubovna-trophy-item.t-4h .klubovna-trophy-val      { color: rgba(224, 242, 254, 0.90); }
 
@@ -4385,7 +4578,6 @@
             color: rgba(255, 255, 255, 0.78);
         }
 
-        .klubovna-trophy-item.t-overall .klubovna-empty-note,
         .klubovna-milestone-card.km-10 .klubovna-empty-note {
             color: rgba(41, 21, 2, 0.78);
         }
@@ -4429,8 +4621,7 @@
             color: rgba(255, 255, 255, 0.84);
         }
 
-        /* Na zlatých a žltých dlaždiciach tmavý kontrastný čip s bielym písmom */
-        .klubovna-trophy-item.t-overall .klubovna-chip,
+        /* Na žltej dlaždici (Klub 10) tmavý kontrastný čip s bielym písmom */
         .klubovna-milestone-card.km-10 .klubovna-chip {
             background: #291502;
             border-color: rgba(41, 21, 2, 0.65);
@@ -4438,60 +4629,132 @@
             box-shadow: 0 2px 5px rgba(41, 21, 2, 0.22);
         }
 
-        .klubovna-trophy-item.t-overall .klubovna-chip:hover,
         .klubovna-milestone-card.km-10 .klubovna-chip:hover {
             background: #0f172a;
             border-color: #fef08a;
             color: #fef08a;
         }
 
-        .klubovna-trophy-item.t-overall .klubovna-chip-sub,
         .klubovna-milestone-card.km-10 .klubovna-chip-sub {
             color: #fde047;
         }
 
-        /* SAMOSTATNÉ VITRÍNY V KLUBOVNI: KLIETKA KANÁRIKOV (RUŽOVÁ) & SEZÓNNY GRAND SLAM (CHRÓMOVO SIVÁ) · v1.71 */
+        /* SAMOSTATNÉ VITRÍNY V KLUBOVNI: KLIETKA (RUŽOVÁ) & GRAND SLAM (CHRÓMOVO SIVÁ) – zbaliteľné v štýle míľnikov · v1.74 */
+        .klubovna-showcases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            align-items: stretch;
+        }
+
         .klubovna-showcase {
-            border-radius: 16px;
-            padding: 14px 13px 13px;
+            border-radius: 13px;
+            padding: 14px 14px 14px 16px;
             display: flex;
             flex-direction: column;
-            gap: 11px;
+            gap: 0;
             cursor: default;
             position: relative;
             overflow: hidden;
+            transition: transform 0.16s ease, box-shadow 0.2s ease;
         }
 
-        /* Klietka kanárikov – nepriesvitná ružová s jemným gradientom */
+        .klubovna-showcase:not(.is-expanded):hover {
+            transform: translateY(-2px);
+        }
+
+        .klubovna-showcase.is-expanded {
+            grid-column: 1 / -1;
+            gap: 11px;
+        }
+
+        /* KLIETKA – nepriesvitná ružová s jemným gradientom */
         .klubovna-showcase.ks-canaries {
             background: linear-gradient(145deg, #ec4899 0%, #db2777 54%, #a61458 100%);
-            border: 1.8px solid #f9a8d4;
+            border: 1.5px solid #f9a8d4;
             color: #ffffff;
-            box-shadow: 0 8px 22px rgba(131, 24, 67, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.36);
+            box-shadow: 0 6px 18px rgba(131, 24, 67, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.34);
         }
 
-        /* Sezónny Grand Slam – nepriesvitná chrómovo sivá s kovovým leskom */
+        /* GRAND SLAM – nepriesvitná chrómovo sivá s kovovým leskom */
         .klubovna-showcase.ks-grandslam {
             background: linear-gradient(145deg, #f1f5f9 0%, #cbd5e1 36%, #94a3b8 72%, #cbd5e1 100%);
-            border: 1.8px solid #64748b;
+            border: 1.5px solid #64748b;
             color: #0f172a;
-            box-shadow: 0 8px 22px rgba(15, 23, 42, 0.24), inset 0 1px 1px rgba(255, 255, 255, 0.94);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.94);
         }
 
         .ks-head {
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 17px;
+            cursor: pointer;
+            user-select: none;
         }
 
         .klubovna-showcase-ico {
-            width: 94px;
-            height: 94px;
+            width: 96px;
+            height: 96px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: zoom-in;
+        }
+
+        .ks-chevron {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.66rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            transition: background 0.16s ease, transform 0.18s ease;
+        }
+
+        .ks-canaries .ks-chevron {
+            background: rgba(80, 7, 36, 0.34);
+            border: 1px solid rgba(249, 168, 212, 0.55);
+            color: #fce7f3;
+        }
+
+        .ks-grandslam .ks-chevron {
+            background: rgba(15, 23, 42, 0.14);
+            border: 1px solid rgba(51, 65, 85, 0.36);
+            color: #0f172a;
+        }
+
+        .ks-body {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            padding-top: 2px;
+        }
+
+        .klubovna-showcase.is-expanded .ks-body {
+            display: flex;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .ks-sub-detail {
+            font-size: 0.71rem;
+            font-weight: 700;
+            line-height: 1.38;
+            padding: 6px 10px;
+            border-radius: 9px;
+        }
+
+        .ks-canaries .ks-sub-detail {
+            background: rgba(80, 7, 36, 0.24);
+            color: #fce7f3;
+        }
+
+        .ks-grandslam .ks-sub-detail {
+            background: rgba(15, 23, 42, 0.08);
+            color: #1e293b;
         }
 
         .ks-head-ico-fb {
@@ -4850,12 +5113,21 @@
         }
 
         @media (max-width: 640px) {
+            .klubovna-showcases-grid {
+                grid-template-columns: 1fr;
+            }
             .klubovna-showcase {
-                padding: 12px 10px 11px;
+                padding: 14px 14px 14px 15px;
+            }
+            .klubovna-showcase.is-expanded {
+                grid-column: auto;
+            }
+            .ks-head {
+                gap: 18px;
             }
             .klubovna-showcase-ico {
-                width: 82px;
-                height: 82px;
+                width: 108px;
+                height: 108px;
             }
             .ks-canary-img,
             .ks-grandslam .kgs-trophy-img {
@@ -5069,10 +5341,12 @@
                 width: 104px;
                 height: 104px;
             }
-            .klubovna-milestone-card {
+            .klubovna-milestone-card,
+            .ks-head {
                 gap: 14px;
             }
-            .klubovna-milestone-ico {
+            .klubovna-milestone-ico,
+            .klubovna-showcase-ico {
                 width: 92px;
                 height: 92px;
             }
@@ -6240,7 +6514,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.73</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.74</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -6274,7 +6548,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.73</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.74</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -14506,6 +14780,8 @@
         }
 
         const klubovnaTrophyTimers = {};
+        const klubovnaExpandedYears = new Set();
+        const klubovnaExpandedShowcases = new Set();
 
         function clearKlubovnaTrophyTimers() {
             Object.keys(klubovnaTrophyTimers).forEach(k => {
@@ -14564,6 +14840,93 @@
             }, 30000);
         }
 
+        function toggleKlubovnaYear(yearNum) {
+            const yr = Number(yearNum);
+            if (!isFinite(yr)) return;
+            const blockEl = document.querySelector(`.klubovna-year-block[data-year="${yr}"]`);
+            const willOpen = !klubovnaExpandedYears.has(yr);
+            if (willOpen) {
+                klubovnaExpandedYears.add(yr);
+            } else {
+                klubovnaExpandedYears.delete(yr);
+                if (blockEl) {
+                    blockEl.querySelectorAll(".klubovna-trophy-item.is-flipped").forEach(el => {
+                        closeKlubovnaTrophyCard(el.dataset.ktId, false);
+                    });
+                }
+            }
+            if (blockEl) {
+                blockEl.classList.toggle("is-expanded", willOpen);
+                const headEl = blockEl.querySelector(".klubovna-year-head");
+                if (headEl) headEl.setAttribute("aria-expanded", willOpen ? "true" : "false");
+                const chevEl = blockEl.querySelector(".klubovna-year-chevron");
+                if (chevEl) chevEl.textContent = willOpen ? "▲" : "▼";
+            }
+        }
+
+        function toggleKlubovnaShowcase(key) {
+            const k = String(key || "");
+            if (!k) return;
+            const cardEl = document.querySelector(`.klubovna-showcase[data-ks-key="${k}"]`);
+            const willOpen = !klubovnaExpandedShowcases.has(k);
+            if (willOpen) {
+                klubovnaExpandedShowcases.add(k);
+            } else {
+                klubovnaExpandedShowcases.delete(k);
+            }
+            if (cardEl) {
+                cardEl.classList.toggle("is-expanded", willOpen);
+                const headEl = cardEl.querySelector(".ks-head");
+                if (headEl) headEl.setAttribute("aria-expanded", willOpen ? "true" : "false");
+                const chevEl = cardEl.querySelector(".ks-chevron");
+                if (chevEl) chevEl.textContent = willOpen ? "▲" : "▼";
+            }
+        }
+
+        function buildKlubovnaYearWinnerStyle(season) {
+            const winners = (season && Array.isArray(season.overallWinners)) ? season.overallWinners : [];
+            if (winners.length === 0) return "";
+            const colors = winners.map((w, idx) => sanitizeHexColor(w.color, idx));
+
+            let bgCss = "";
+            let avgLum = 0;
+            let borderHex = "#78350f";
+
+            if (colors.length === 1) {
+                const c = colors[0];
+                const rgb = hexToRgb(c);
+                const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+                avgLum = getHexRelativeLuminance(c);
+                const cLight = hslToHex(hsl.h, Math.min(96, hsl.s + 4), Math.min(84, hsl.l + 7));
+                const cDark  = hslToHex(hsl.h, Math.min(96, hsl.s + 6), Math.max(16, hsl.l - 11));
+                bgCss = `linear-gradient(135deg, ${cLight} 0%, ${c} 52%, ${cDark} 100%)`;
+                borderHex = avgLum >= 0.22
+                    ? hslToHex(hsl.h, Math.min(92, hsl.s), Math.max(16, hsl.l - 22))
+                    : hslToHex(hsl.h, Math.min(92, hsl.s), Math.min(84, hsl.l + 20));
+            } else {
+                const stops = colors.map((c, idx) => {
+                    const pct = Math.round((idx / (colors.length - 1)) * 100);
+                    return `${c} ${pct}%`;
+                }).join(", ");
+                bgCss = `linear-gradient(135deg, ${stops})`;
+                avgLum = colors.reduce((acc, c) => acc + getHexRelativeLuminance(c), 0) / colors.length;
+                const rgb0 = hexToRgb(colors[0]);
+                const hsl0 = rgbToHsl(rgb0.r, rgb0.g, rgb0.b);
+                borderHex = avgLum >= 0.22
+                    ? hslToHex(hsl0.h, Math.min(92, hsl0.s), Math.max(16, hsl0.l - 22))
+                    : hslToHex(hsl0.h, Math.min(92, hsl0.s), Math.min(84, hsl0.l + 20));
+            }
+
+            const isLight = avgLum >= 0.22;
+            const fg = isLight ? "#0f172a" : "#ffffff";
+            const sub = isLight ? "rgba(15, 23, 42, 0.82)" : "rgba(255, 255, 255, 0.90)";
+            const pillBg = isLight ? "rgba(15, 23, 42, 0.14)" : "rgba(0, 0, 0, 0.26)";
+            const pillBorder = isLight ? "rgba(15, 23, 42, 0.28)" : "rgba(255, 255, 255, 0.34)";
+            const textShadow = isLight ? "none" : "0 1px 2px rgba(0, 0, 0, 0.34)";
+
+            return `--ky-bg:${bgCss}; --ky-border:${borderHex}; --ky-fg:${fg}; --ky-sub:${sub}; --ky-pill-bg:${pillBg}; --ky-pill-border:${pillBorder}; --ky-text-shadow:${textShadow};`;
+        }
+
         function toggleKlubovnaCard(forceState = null) {
             const cardEl = document.getElementById("klubovna-card");
             if (!cardEl) return;
@@ -14575,6 +14938,22 @@
             triggerAchLightFlash(cardEl);
             if (!klubovnaOpen) {
                 resetAllKlubovnaTrophyCards();
+                klubovnaExpandedYears.clear();
+                klubovnaExpandedShowcases.clear();
+                cardEl.querySelectorAll(".klubovna-year-block.is-expanded").forEach(el => {
+                    el.classList.remove("is-expanded");
+                    const h = el.querySelector(".klubovna-year-head");
+                    if (h) h.setAttribute("aria-expanded", "false");
+                    const c = el.querySelector(".klubovna-year-chevron");
+                    if (c) c.textContent = "▼";
+                });
+                cardEl.querySelectorAll(".klubovna-showcase.is-expanded").forEach(el => {
+                    el.classList.remove("is-expanded");
+                    const h = el.querySelector(".ks-head");
+                    if (h) h.setAttribute("aria-expanded", "false");
+                    const c = el.querySelector(".ks-chevron");
+                    if (c) c.textContent = "▼";
+                });
                 const rect = cardEl.getBoundingClientRect();
                 if (rect.top < 72) {
                     cardEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -14584,7 +14963,7 @@
 
         function handleKlubovnaBackClick(ev) {
             if (!klubovnaOpen) return;
-            if (ev && ev.target && ev.target.closest(".klubovna-trophy-item, .klubovna-milestone-card, .klubovna-showcase, .klubovna-chip, .kgs-player-btn")) {
+            if (ev && ev.target && ev.target.closest(".klubovna-year-block, .klubovna-gs-box, .klubovna-trophy-item, .klubovna-milestone-card, .klubovna-showcase, .klubovna-chip, .kgs-player-btn")) {
                 return;
             }
             toggleKlubovnaCard(false);
@@ -14681,13 +15060,28 @@
                 return `<div class="kgs-icons-wrap" title="${escapeHtml(altLabel)}: ${n}×">${parts}</div>`;
             };
 
+            const renderSeasonTrophyCounter = (count, iconFile, altLabel, faClass, fbColor, badgeCls = "") => {
+                const n = Number(count) || 0;
+                if (n <= 0) return `<span class="kgs-zero">—</span>`;
+                const countBadge = n > 1 ? `<span class="kgs-count-badge ${badgeCls}">x${n}</span>` : "";
+                return `
+                    <div class="kgs-icons-wrap" title="${escapeHtml(altLabel)}: ${n}×">
+                        <span class="kgs-trophy-badge-wrap">
+                            <img class="kgs-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="52" height="52" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                            <i class="kgs-trophy-fb ${faClass}" data-fallback-display="inline-flex" style="display:none; color:${fbColor};" aria-hidden="true"></i>
+                            ${countBadge}
+                        </span>
+                    </div>
+                `;
+            };
+
             const gsHtml = data.trophyLeaders.length > 0 ? `
                 <div class="klubovna-gs-box">
                     <table class="klubovna-gs-table">
                         <thead>
                             <tr>
                                 <th>Meno</th>
-                                <th>Celkovo</th>
+                                <th class="kgs-th-overall">Celkovo</th>
                                 <th class="kgs-th-2h">2H</th>
                                 <th class="kgs-th-4h">4H</th>
                             </tr>
@@ -14707,9 +15101,9 @@
                                                 </button>
                                             </div>
                                         </td>
-                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(tl.overall, "trofej_celkovo.png", "Celkovo", "fa-solid fa-trophy", "#ca8a04", false)}</td>
-                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(tl.singles, "trofej_2h.png", "Dvojhra 2H", "fa-solid fa-trophy", "#64748b", true)}</td>
-                                        <td class="kgs-trophy-cell">${renderMiniTrophyStack(tl.doubles, "trofej_4h.png", "Štvorhra 4H", "fa-solid fa-trophy", "#64748b", true)}</td>
+                                        <td class="kgs-trophy-cell">${renderSeasonTrophyCounter(tl.overall, "trofej_celkovo.png", "Celkovo", "fa-solid fa-trophy", "#6d28d9", "")}</td>
+                                        <td class="kgs-trophy-cell">${renderSeasonTrophyCounter(tl.singles, "trofej_2h.png", "Dvojhra 2H", "fa-solid fa-trophy", "#9f1239", "is-2h")}</td>
+                                        <td class="kgs-trophy-cell">${renderSeasonTrophyCounter(tl.doubles, "trofej_4h.png", "Štvorhra 4H", "fa-solid fa-trophy", "#1e3a8a", "is-4h")}</td>
                                     </tr>
                                 `;
                             }).join("")}
@@ -14720,35 +15114,48 @@
 
             const seasonsHtml = data.seasons.length === 0
                 ? `<div style="font-size:0.78rem; color:#57534e; padding:8px 2px;">Zatiaľ nie sú zapísané žiadne zápasy pre vyhodnotenie ročníkov.</div>`
-                : data.seasons.map(s => `
-                    <div class="klubovna-year-block ${s.isOngoing ? 'is-ongoing' : ''}">
-                        <div class="klubovna-year-head">
-                            <div class="klubovna-year-num">
-                                <span>Ročník ${s.year}</span>
-                                <span class="klubovna-year-pill ${s.isOngoing ? 'ongoing' : 'closed'}">
-                                    ${s.isOngoing ? 'Priebežne · do 31.12.' : 'Uzavretý · 1.1. – 31.12.'}
-                                </span>
+                : data.seasons.map(s => {
+                    const isYearOpen = klubovnaExpandedYears.has(s.year);
+                    const winnerStyle = buildKlubovnaYearWinnerStyle(s);
+                    const winnerNames = s.overallWinners.length > 0 ? s.overallWinners.map(w => w.name).join(", ") : "";
+                    const winnerBadgeHtml = winnerNames
+                        ? `<span class="klubovna-year-winner" title="${s.isOngoing ? 'Aktuálny líder celkovo' : 'Celkový víťaz ročníka'}: ${escapeHtml(winnerNames)}"><i class="fa-solid fa-crown" aria-hidden="true" style="font-size:0.68rem;"></i> ${escapeHtml(winnerNames)}</span>`
+                        : "";
+                    return `
+                        <div class="klubovna-year-block ${s.isOngoing ? 'is-ongoing' : ''} ${isYearOpen ? 'is-expanded' : ''}" data-year="${s.year}" style="${winnerStyle}">
+                            <div class="klubovna-year-head" role="button" tabindex="0" aria-expanded="${isYearOpen ? 'true' : 'false'}"
+                                 onclick="event.stopPropagation(); toggleKlubovnaYear(${s.year});"
+                                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); event.stopPropagation(); toggleKlubovnaYear(${s.year});}"
+                                 title="Kliknutím ${isYearOpen ? 'zbalíš' : 'rozbalíš'} trofeje ročníka ${s.year}">
+                                <div class="klubovna-year-left">
+                                    <span class="klubovna-year-num">${s.year}</span>
+                                    <span class="klubovna-year-pill">${s.isOngoing ? 'Priebežne' : 'Uzavretý'}</span>
+                                    ${winnerBadgeHtml}
+                                </div>
+                                <div class="klubovna-year-right">
+                                    <span class="klubovna-year-matches">${s.totalMatches} záp.<span class="klubovna-year-matches-detail"> (${s.count2H}× 2H · ${s.count4H}× 4H)</span></span>
+                                    <span class="klubovna-year-chevron">${isYearOpen ? '▲' : '▼'}</span>
+                                </div>
                             </div>
-                            <span class="klubovna-year-matches">
-                                ${s.totalMatches} záp. (${s.count2H}× 2H · ${s.count4H}× 4H)
-                            </span>
+                            <div class="klubovna-year-body">
+                                <div class="klubovna-trophies-grid">
+                                    ${renderSeasonTrophy(
+                                        `kt_${s.year}_overall`, s.year, "t-overall", "Celkovo (2H + 4H)", "Celkovo", "trofej_celkovo.png", "fa-solid fa-trophy", "#fde047", "rgba(255, 255, 255, 0.14)",
+                                        s.overallWinners, s.overallTop3, w => `${formatPts(w.points)} b · ${w.wins}V-${w.draws}R-${w.losses}P`
+                                    )}
+                                    ${renderSeasonTrophy(
+                                        `kt_${s.year}_2h`, s.year, "t-2h", "Dvojhra (2H)", "Dvojhra 2H", "trofej_2h.png", "fa-solid fa-award", "#ffe4e6", "rgba(255, 255, 255, 0.14)",
+                                        s.singlesWinners, s.singlesTop3, w => `${formatPts(w.pts2H)} b · ${w.w2H}V-${w.d2H}R-${w.l2H}P`
+                                    )}
+                                    ${renderSeasonTrophy(
+                                        `kt_${s.year}_4h`, s.year, "t-4h", "Štvorhra (4H)", "Štvorhra 4H", "trofej_4h.png", "fa-solid fa-medal", "#dbeafe", "rgba(255, 255, 255, 0.14)",
+                                        s.doublesWinners, s.doublesTop3, w => `${formatPts(w.pts4H)} b · ${w.w4H}V-${w.d4H}R-${w.l4H}P`
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <div class="klubovna-trophies-grid">
-                            ${renderSeasonTrophy(
-                                `kt_${s.year}_overall`, s.year, "t-overall", "Celkovo (2H + 4H)", "Celkovo", "trofej_celkovo.png", "fa-solid fa-trophy", "#291502", "rgba(41, 21, 2, 0.16)",
-                                s.overallWinners, s.overallTop3, w => `${formatPts(w.points)} b · ${w.wins}V-${w.draws}R-${w.losses}P`
-                            )}
-                            ${renderSeasonTrophy(
-                                `kt_${s.year}_2h`, s.year, "t-2h", "Dvojhra (2H)", "Dvojhra 2H", "trofej_2h.png", "fa-solid fa-award", "#ffe4e6", "rgba(255, 255, 255, 0.14)",
-                                s.singlesWinners, s.singlesTop3, w => `${formatPts(w.pts2H)} b · ${w.w2H}V-${w.d2H}R-${w.l2H}P`
-                            )}
-                            ${renderSeasonTrophy(
-                                `kt_${s.year}_4h`, s.year, "t-4h", "Štvorhra (4H)", "Štvorhra 4H", "trofej_4h.png", "fa-solid fa-medal", "#dbeafe", "rgba(255, 255, 255, 0.14)",
-                                s.doublesWinners, s.doublesTop3, w => `${formatPts(w.pts4H)} b · ${w.w4H}V-${w.d4H}R-${w.l4H}P`
-                            )}
-                        </div>
-                    </div>
-                `).join("");
+                    `;
+                }).join("");
 
             const milestonesHtml = data.milestones.map(t => {
                 const membersHtml = t.members.length === 0
@@ -14852,24 +15259,32 @@
                     </table>
                 `;
 
+            const isCanaryOpen = klubovnaExpandedShowcases.has("canaries");
             const canaryShowcaseHtml = `
-                <div class="klubovna-showcase ks-canaries" id="klubovna-canary-cage">
-                    <div class="ks-head">
-                        <div class="klubovna-showcase-ico" data-zoom-title="Klietka kanárikov · Zlatý kanár" data-zoom-desc="Vitrína inkasovaných setov 0:6 (2H + 4H). 1–4 ks = Spolok chovateľov, 5 ks = Vonkajšia voliéra, 10 ks = Zlatý kanárik." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
-                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}zlaty_kanarik.png" alt="Klietka kanárikov" width="94" height="94" loading="lazy" decoding="async" data-icon-file="zlaty_kanarik.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                <div class="klubovna-showcase ks-canaries ${isCanaryOpen ? 'is-expanded' : ''}" id="klubovna-canary-cage" data-ks-key="canaries">
+                    <div class="ks-head" role="button" tabindex="0" aria-expanded="${isCanaryOpen ? 'true' : 'false'}"
+                         onclick="event.stopPropagation(); toggleKlubovnaShowcase('canaries');"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); event.stopPropagation(); toggleKlubovnaShowcase('canaries');}"
+                         title="Kliknutím otvoríš alebo zbalíš vitrínu KLIETKA">
+                        <div class="klubovna-showcase-ico" data-zoom-title="KLIETKA · Zlatý kanárik" data-zoom-desc="Vitrína inkasovaných setov 0:6 (2H + 4H). 1–4 ks = Spolok chovateľov, 5 ks = Vonkajšia voliéra, 10 ks = Zlatý kanárik." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}zlaty_kanarik.png" alt="KLIETKA" width="108" height="108" loading="lazy" decoding="async" data-icon-file="zlaty_kanarik.png" data-dir-idx="0" onerror="handleAchIconError(this)">
                             <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#831843; color:#fde047;">
                                 <i class="fa-solid fa-dove" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ks-head-text">
                             <div class="ks-title-row">
-                                <span class="ks-title">🐤 Klietka kanárikov</span>
-                                <span class="ks-badge">${skCount(cc.totalCanaries, "kanárik", "kanáriky", "kanárikov")} · ${skCount(cc.members.length, "chovateľ", "chovatelia", "chovateľov")}</span>
+                                <span class="ks-title">KLIETKA</span>
+                                <span class="ks-chevron">${isCanaryOpen ? '▲' : '▼'}</span>
                             </div>
-                            <div class="ks-sub">Zbierka inkasovaných setov <strong>0:6</strong> z dvojhier aj štvorhier · 1+ Spolok chovateľov · 5+ Vonkajšia voliéra · 10+ Zlatý kanárik</div>
+                            <div class="ks-sub">Inkasované sety <strong>0:6</strong> (2H + 4H)</div>
+                            <div><span class="ks-badge">${skCount(cc.totalCanaries, "kanárik", "kanáriky", "kanárikov")} · ${skCount(cc.members.length, "chovateľ", "chovatelia", "chovateľov")}</span></div>
                         </div>
                     </div>
-                    <div class="ks-table-box">${canaryBodyHtml}</div>
+                    <div class="ks-body">
+                        <div class="ks-sub-detail">1+ Spolok chovateľov · 5+ Vonkajšia voliéra · 10+ Zlatý kanárik</div>
+                        <div class="ks-table-box">${canaryBodyHtml}</div>
+                    </div>
                 </div>
             `;
 
@@ -14939,31 +15354,39 @@
                 </div>
             ` : "";
 
+            const isGsOpen = klubovnaExpandedShowcases.has("grandslam");
             const grandSlamShowcaseHtml = `
-                <div class="klubovna-showcase ks-grandslam" id="klubovna-grand-slam">
-                    <div class="ks-head">
-                        <div class="klubovna-showcase-ico" data-zoom-title="Sezónny Grand Slam" data-zoom-desc="Vyhraj aspoň jeden zápas (2H alebo 4H) v každom zo 4 ročných období toho istého kalendárneho roka (Jar 3–5, Leto 6–8, Jeseň 9–11, Zima 1, 2, 12)." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
-                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}grand_slam.png" alt="Sezónny Grand Slam" width="94" height="94" loading="lazy" decoding="async" data-icon-file="grand_slam.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                <div class="klubovna-showcase ks-grandslam ${isGsOpen ? 'is-expanded' : ''}" id="klubovna-grand-slam" data-ks-key="grandslam">
+                    <div class="ks-head" role="button" tabindex="0" aria-expanded="${isGsOpen ? 'true' : 'false'}"
+                         onclick="event.stopPropagation(); toggleKlubovnaShowcase('grandslam');"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); event.stopPropagation(); toggleKlubovnaShowcase('grandslam');}"
+                         title="Kliknutím otvoríš alebo zbalíš vitrínu GRAND SLAM">
+                        <div class="klubovna-showcase-ico" data-zoom-title="GRAND SLAM" data-zoom-desc="Vyhraj aspoň jeden zápas (2H alebo 4H) v každom zo 4 ročných období toho istého kalendárneho roka (Jar 3–5, Leto 6–8, Jeseň 9–11, Zima 1, 2, 12)." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
+                            <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}grand_slam.png" alt="GRAND SLAM" width="108" height="108" loading="lazy" decoding="async" data-icon-file="grand_slam.png" data-dir-idx="0" onerror="handleAchIconError(this)">
                             <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#1e293b; color:#e2e8f0;">
                                 <i class="fa-solid fa-crown" aria-hidden="true"></i>
                             </div>
                         </div>
                         <div class="ks-head-text">
                             <div class="ks-title-row">
-                                <span class="ks-title">👑 Sezónny Grand Slam</span>
-                                <span class="ks-badge">${skCount(gs.totalSlams, "Grand Slam", "Grand Slamy", "Grand Slamov")} · ${skCount(gs.holders.length, "držiteľ", "držitelia", "držiteľov")}</span>
+                                <span class="ks-title">GRAND SLAM</span>
+                                <span class="ks-chevron">${isGsOpen ? '▲' : '▼'}</span>
                             </div>
-                            <div class="ks-sub">Výhra v 2H alebo 4H v každej ročnej dobe jedného roka · 🌸 Jar (3–5) · ☀️ Leto (6–8) · 🍂 Jeseň (9–11) · ❄️ Zima (1, 2, 12)</div>
+                            <div class="ks-sub">Výhra vo všetkých 4 ročných obdobiach</div>
+                            <div><span class="ks-badge">${skCount(gs.totalSlams, "Grand Slam", "Grand Slamy", "Grand Slamov")} · ${skCount(gs.holders.length, "držiteľ", "držitelia", "držiteľov")}</span></div>
                         </div>
                     </div>
-                    <div class="ks-table-box">${gsHoldersHtml}</div>
-                    ${gsRadarHtml}
+                    <div class="ks-body">
+                        <div class="ks-sub-detail">Výhra v 2H alebo 4H v každej ročnej dobe jedného roka · 🌸 Jar (3–5) · ☀️ Leto (6–8) · 🍂 Jeseň (9–11) · ❄️ Zima (1, 2, 12)</div>
+                        <div class="ks-table-box">${gsHoldersHtml}</div>
+                        ${gsRadarHtml}
+                    </div>
                 </div>
             `;
 
             const metaSummary = seasonsCount > 0
                 ? `${skCount(seasonsCount, "ročník", "ročníky", "ročníkov")}${closedCount > 0 ? ` (${closedCount} uzavret.)` : ""} · ${skCount(cc.totalCanaries, "kanárik", "kanáriky", "kanárikov")} · ${skCount(gs.totalSlams, "Grand Slam", "Grand Slamy", "Grand Slamov")} · ${skCount(data.totalMilestoneMembers, "hráč", "hráči", "hráčov")} v kluboch`
-                : "Víťazi ročníkov · Klietka kanárikov · Sezónny Grand Slam · Kluby 5–100";
+                : "Víťazi ročníkov · Klietka · Grand Slam · Kluby 5–100";
 
             wrap.innerHTML = `
                 <div class="klubovna-card ${klubovnaOpen ? 'is-open' : ''}" id="klubovna-card" role="region" aria-label="Klubovňa – Sieň slávy" aria-expanded="${klubovnaOpen ? 'true' : 'false'}"
@@ -15000,15 +15423,16 @@
                         <div>
                             <div class="klubovna-sec-title">
                                 <span>🏆 Víťazi ročníkov</span>
-                                <span class="klubovna-sec-note">Klikni na dlaždicu pre Top 3 · na meno pre profil</span>
+                                <span class="klubovna-sec-note">Klikni na ročník pre rozbalenie · na trofej pre Top 3</span>
                             </div>
                             ${gsHtml}
                             ${seasonsHtml}
                         </div>
 
-                        ${canaryShowcaseHtml}
-
-                        ${grandSlamShowcaseHtml}
+                        <div class="klubovna-showcases-grid">
+                            ${canaryShowcaseHtml}
+                            ${grandSlamShowcaseHtml}
+                        </div>
 
                         <div>
                             <div class="klubovna-sec-title">
@@ -19181,7 +19605,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.73${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.74${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -21565,7 +21989,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.73! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.74! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
