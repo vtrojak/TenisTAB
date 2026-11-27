@@ -4045,6 +4045,16 @@
             color: #f8fafc;
         }
 
+        .kgs-count-badge.is-canary {
+            background: linear-gradient(135deg, #db2777 0%, #831843 100%);
+            color: #fef08a;
+        }
+
+        .kgs-count-badge.is-canary-vol {
+            background: linear-gradient(135deg, #9d174d 0%, #500724 100%);
+            color: #ffffff;
+        }
+
         @media (max-width: 640px) {
             .klubovna-gs-box {
                 padding: 5px 6px 6px;
@@ -4716,6 +4726,48 @@
             box-shadow: 0 6px 18px rgba(15, 23, 42, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.94);
         }
 
+        /* KLUBOVÉ MÍĽNIKY – rozbaľovacia dlaždica v štýle Klubu 100 (purpurová + klub_100.png · v1.77) */
+        .klubovna-showcase.ks-milestones {
+            grid-column: 1 / -1;
+            background: linear-gradient(145deg, #86198f 0%, #6b21a8 56%, #4a044e 100%);
+            border: 1.5px solid #c026d3;
+            color: #ffffff;
+            box-shadow: 0 6px 18px rgba(74, 4, 78, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        }
+
+        .ks-milestones .ks-chevron {
+            background: rgba(46, 3, 50, 0.42);
+            border: 1px solid rgba(245, 208, 254, 0.52);
+            color: #fae8ff;
+        }
+
+        .ks-milestones .ks-title {
+            color: #ffffff;
+            text-shadow: 0 1px 2px rgba(46, 3, 50, 0.45);
+        }
+
+        .ks-milestones .ks-sub {
+            color: #f5d0fe;
+        }
+
+        .ks-milestones .ks-badge {
+            background: #4a044e;
+            color: #fae8ff;
+            border: 1px solid #e879f9;
+        }
+
+        .ks-milestones .ks-sub-detail {
+            background: rgba(46, 3, 50, 0.34);
+            color: #fae8ff;
+        }
+
+        .ks-milestones-inner {
+            border-radius: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(245, 208, 254, 0.30);
+        }
+
         .ks-head {
             display: flex;
             align-items: center;
@@ -4987,7 +5039,7 @@
             display: inline-flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 4px;
+            gap: 10px;
         }
 
         .ks-mini-zoom {
@@ -4997,39 +5049,124 @@
             cursor: zoom-in;
         }
 
-        .ks-canary-img {
-            width: 38px;
-            height: 38px;
+        /* Špeciálny čestný riadok Zlatý kanárik (10+ setov 0:6 · v1.77) */
+        .ks-gold-canary-box {
+            border-radius: 13px;
+            padding: 11px 13px;
+            background: linear-gradient(145deg, #fffbeb 0%, #fef08a 46%, #eab308 100%);
+            border: 1.8px solid #b45309;
+            color: #291502;
+            box-shadow: 0 5px 14px rgba(80, 7, 36, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.90);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .ks-gold-canary-ico {
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-in;
+        }
+
+        .ks-gold-canary-ico img {
+            width: 100%;
+            height: 100%;
             object-fit: contain;
-            display: inline-block;
-            vertical-align: middle;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.30));
+            display: block;
+            transform: scale(1.12);
+            filter: drop-shadow(0 5px 10px rgba(120, 53, 15, 0.38));
             user-select: none;
             -webkit-user-drag: none;
             pointer-events: none;
         }
 
-        .ks-canary-fb {
-            width: 30px;
-            height: 30px;
+        .ks-gold-canary-ico-fb {
+            width: 68px;
+            height: 68px;
             border-radius: 50%;
             align-items: center;
             justify-content: center;
-            font-size: 0.98rem;
-            vertical-align: middle;
+            font-size: 1.85rem;
+            background: #78350f;
+            color: #fde047;
+            border: 1.5px solid #fef08a;
         }
 
-        .ks-count-pill {
+        .ks-gold-canary-body {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .ks-gold-canary-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .ks-gold-canary-title {
+            font-size: 0.90rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: #422006;
+        }
+
+        .ks-gold-canary-rule {
+            font-size: 0.69rem;
+            font-weight: 700;
+            color: #78350f;
+        }
+
+        .ks-gold-canary-holders {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ks-gold-holder-chip {
             display: inline-flex;
             align-items: center;
-            gap: 3px;
-            padding: 2px 7px;
+            gap: 6px;
+            padding: 4px 10px;
             border-radius: 999px;
-            font-size: 0.72rem;
-            font-weight: 900;
-            background: #9d174d;
+            background: #291502;
+            border: 1px solid rgba(41, 21, 2, 0.72);
             color: #ffffff;
-            margin-left: 4px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(41, 21, 2, 0.25);
+            transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+        }
+
+        .ks-gold-holder-chip:hover {
+            background: #0f172a;
+            border-color: #fef08a;
+            color: #fef08a;
+        }
+
+        .ks-gold-holder-chip:active {
+            transform: scale(0.96);
+        }
+
+        .ks-gold-holder-cnt {
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #facc15, #d97706);
+            color: #291502;
+            font-size: 0.69rem;
+            font-weight: 900;
+            line-height: 1.1;
         }
 
         .ks-year-tags {
@@ -5144,9 +5281,16 @@
                 width: 108px;
                 height: 108px;
             }
-            .ks-canary-img {
-                width: 32px;
-                height: 32px;
+            .ks-gold-canary-box {
+                padding: 10px 11px;
+                gap: 11px;
+            }
+            .ks-gold-canary-ico {
+                width: 74px;
+                height: 74px;
+            }
+            .ks-icon-row {
+                gap: 8px;
             }
             .ks-table th {
                 padding: 5px 3px 6px;
@@ -6525,7 +6669,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.76</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.77</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -6559,7 +6703,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.76</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.77</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -12778,6 +12922,8 @@
 
         const ACH_ICON_LEGACY_FALLBACKS = {
             "terminator.png": "zelezny_muz.png",
+            "muz_zo_zeleza.png": "nervy_zo_zeleza.png",
+            "nervy_zo_zeleza.png": "muz_zo_zeleza.png",
             "rocky_balboa.png": "krv_pot.png",
             "trofej_celkovo.png": "trofej.png",
             "trofej_2h.png": "trofej.png",
@@ -13039,6 +13185,7 @@
                 clickedEl.classList.contains("klubovna-trophy-ico-box") ||
                 clickedEl.classList.contains("klubovna-milestone-ico") ||
                 clickedEl.classList.contains("klubovna-showcase-ico") ||
+                clickedEl.classList.contains("ks-gold-canary-ico") ||
                 clickedEl.classList.contains("ks-mini-zoom")
             ) {
                 const kw = clickedEl.closest("#klubovna-wrap") || document;
@@ -13951,7 +14098,7 @@
                     held: getHeldInfo("surgeon")
                 },
                 {
-                    id: "nerves_of_steel", cat: 2, title: "Muž zo železa",
+                    id: "nerves_of_steel", cat: 2, title: "Nervy zo železa",
                     desc: "Najviac odohratých tiebreakových setov (7:6 / 6:7)",
                     rules: "Každý odohratý set s výsledkom 7:6 alebo 6:7 bez ohľadu na konečného víťaza.",
                     iconFile: "muz_zo_zeleza.png", faClass: "fa-solid fa-7",
@@ -14707,8 +14854,8 @@
             const members = ranked.map(r => {
                 const isTied = rankCounts[r.rank] > 1;
                 const tier = r.total >= 10
-                    ? { key: "gold", label: "Zlatý kanár" }
-                    : (r.total >= 5 ? { key: "voliera", label: "Staviteľ voliéry" } : { key: "member", label: "Spolok chovateľov" });
+                    ? { key: "gold", label: "Majster" }
+                    : (r.total >= 5 ? { key: "voliera", label: "Chovateľ" } : { key: "member", label: "Zberateľ" });
                 return {
                     ...r,
                     isTied,
@@ -15300,49 +15447,80 @@
                 `;
             }).join("");
 
-            const renderCanaryMiniIcon = (iconFile, altLabel, faClass, fbBg, fbColor, titleTip) => `
-                <span class="ks-mini-zoom" data-zoom-title="${escapeHtml(altLabel)}" data-zoom-desc="${escapeHtml(titleTip)}" onclick="openBadgeZoomFromEl(event, this)" title="${escapeHtml(titleTip)}">
-                    <img class="ks-canary-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="38" height="38" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
-                    <span class="ks-canary-fb" data-fallback-display="inline-flex" style="display:none; background:${fbBg}; color:${fbColor};"><i class="${faClass}" aria-hidden="true"></i></span>
-                </span>
-            `;
+            const renderCanaryCounterItem = (count, iconFile, altLabel, faClass, fbColor, badgeCls, titleTip) => {
+                const c = Number(count) || 0;
+                if (c <= 0) return "";
+                const countBadge = c > 1 ? `<span class="kgs-count-badge ${badgeCls}">x${c}</span>` : "";
+                return `
+                    <span class="ks-mini-zoom kgs-trophy-badge-wrap" data-zoom-title="${escapeHtml(altLabel)}" data-zoom-desc="${escapeHtml(titleTip)}" onclick="openBadgeZoomFromEl(event, this)" title="${escapeHtml(titleTip)}">
+                        <img class="kgs-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}${escapeHtml(iconFile)}" alt="${escapeHtml(altLabel)}" width="52" height="52" loading="lazy" decoding="async" data-icon-file="${escapeHtml(iconFile)}" data-dir-idx="0" onerror="handleAchIconError(this)">
+                        <i class="kgs-trophy-fb ${faClass}" data-fallback-display="inline-flex" style="display:none; color:${fbColor};" aria-hidden="true"></i>
+                        ${countBadge}
+                    </span>
+                `;
+            };
 
             const renderCanaryStack = (total) => {
                 const n = Number(total) || 0;
                 if (n <= 0) return `<span class="kgs-zero">—</span>`;
-                const tens = Math.floor(n / 10);
-                const remAfterTen = n % 10;
-                const hasVoliera = remAfterTen >= 5;
-                const ones = remAfterTen % 5;
+                const volieras = Math.floor(n / 5);
+                const ones = n % 5;
                 let parts = "";
-                for (let i = 0; i < tens; i++) {
-                    parts += renderCanaryMiniIcon("zlaty_kanarik.png", "Zlatý kanárik (10× 0:6)", "fa-solid fa-dove", "#facc15", "#422006", "Zlatý kanárik – za 10 inkasovaných setov 0:6");
+                if (volieras > 0) {
+                    parts += renderCanaryCounterItem(
+                        volieras, "voliera.png", "Voliéra (5× 0:6)", "fa-solid fa-house-chimney", "#9d174d", "is-canary-vol",
+                        `Voliéra (1× = 5 setov 0:6) · spolu ${volieras}× (${volieras * 5} ks)`
+                    );
                 }
-                if (hasVoliera) {
-                    parts += renderCanaryMiniIcon("voliera.png", "Vonkajšia voliéra (5× 0:6)", "fa-solid fa-house-chimney", "#db2777", "#ffffff", "Vonkajšia voliéra – za 5 inkasovaných setov 0:6");
+                if (ones > 0) {
+                    parts += renderCanaryCounterItem(
+                        ones, "kanarik.png", "Kanárik (0:6)", "fa-solid fa-kiwi-bird", "#ca8a04", "is-canary",
+                        `Kanárik (set 0:6) · +${ones} ks`
+                    );
                 }
-                for (let i = 0; i < ones; i++) {
-                    parts += renderCanaryMiniIcon("kanarik.png", "Kanárik (0:6)", "fa-solid fa-kiwi-bird", "#fde047", "#422006", "Inkasovaný kanárik (set 0:6)");
-                }
-                return `<div class="ks-icon-row">${parts}<span class="ks-count-pill">${n}×</span></div>`;
+                return `<div class="ks-icon-row" title="Spolu ${skCount(n, "inkasovaný kanárik", "inkasované kanáriky", "inkasovaných kanárikov")} (0:6)">${parts}</div>`;
             };
 
             const cc = data.canaryCage;
+            const goldCanaryBannerHtml = cc.goldHolders.length > 0 ? `
+                <div class="ks-gold-canary-box" id="klubovna-gold-canary-row">
+                    <div class="ks-gold-canary-ico" data-zoom-title="Zlatý kanárik (Majster · 10× 0:6)" data-zoom-desc="Čestná soška Klietky za každých 10 inkasovaných setov 0:6. Za každú desiatku +1 Zlatý kanárik." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
+                        <img src="${ACHIEVEMENT_ICON_DIRS[0]}zlaty_kanarik.png" alt="Zlatý kanárik" width="84" height="84" loading="lazy" decoding="async" data-icon-file="zlaty_kanarik.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                        <span class="ks-gold-canary-ico-fb" data-fallback-display="inline-flex" style="display:none;"><i class="fa-solid fa-dove" aria-hidden="true"></i></span>
+                    </div>
+                    <div class="ks-gold-canary-body">
+                        <div class="ks-gold-canary-head">
+                            <span class="ks-gold-canary-title">🏆 Zlatý kanárik · Majstri</span>
+                            <span class="ks-gold-canary-rule">+1 za každých 10 setov 0:6</span>
+                        </div>
+                        <div class="ks-gold-canary-holders">
+                            ${cc.goldHolders.map(g => `
+                                <button type="button" class="ks-gold-holder-chip" data-player-id="${escapeHtml(g.id)}" onclick="event.stopPropagation(); openPlayerDetail(this.dataset.playerId)" title="${escapeHtml(g.name)}: ${skCount(g.goldCount, "Zlatý kanárik", "Zlatí kanárici", "Zlatých kanárikov")} (spolu ${g.total}× 0:6)">
+                                    <span style="width:7px; height:7px; border-radius:50%; background:${g.color}; display:inline-block; flex-shrink:0;"></span>
+                                    <span>${escapeHtml(g.name)}</span>
+                                    <span class="ks-gold-holder-cnt">${g.goldCount}×</span>
+                                </button>
+                            `).join("")}
+                        </div>
+                    </div>
+                </div>
+            ` : "";
+
             const canaryBodyHtml = cc.members.length === 0
                 ? `<div class="ks-empty">Klietka je zatiaľ prázdna — ešte nikto neinkasoval set 0:6.</div>`
                 : `
                     <table class="ks-table">
                         <thead>
                             <tr>
-                                <th>Chovateľ</th>
-                                <th>Zbierka vtáčikov (0:6)</th>
+                                <th>Hráč</th>
+                                <th>Zbierka (0:6)</th>
                                 <th style="text-align:right;">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${cc.members.map(r => {
                                 const rCls = r.rank === 1 ? "r-1" : (r.rank === 2 ? "r-2" : (r.rank === 3 ? "r-3" : ""));
-                                const tipParts = [`${r.name}: ${r.total}× inkasovaný kanárik (0:6)`];
+                                const tipParts = [`${r.name}: ${r.total}× inkasovaný kanárik (0:6) · status: ${r.tier.label}`];
                                 tipParts.push(`2H: ${r.c2H}× · 4H: ${r.c4H}×`);
                                 tipParts.push(`odohraté spolu: ${r.playedMatches} záp. · ${r.playedSets} setov · ${r.playedGems} gemov`);
                                 if (r.bicycles > 0) tipParts.push(`bicykel 0:6 0:6: ${r.bicycles}×`);
@@ -15376,7 +15554,7 @@
                          onclick="event.stopPropagation(); toggleKlubovnaShowcase('canaries');"
                          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); event.stopPropagation(); toggleKlubovnaShowcase('canaries');}"
                          title="Kliknutím otvoríš alebo zbalíš vitrínu KLIETKA">
-                        <div class="klubovna-showcase-ico" data-zoom-title="KLIETKA · Zlatý kanárik" data-zoom-desc="Vitrína inkasovaných setov 0:6 (2H + 4H). 1–4 ks = Spolok chovateľov, 5 ks = Vonkajšia voliéra, 10 ks = Zlatý kanárik." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
+                        <div class="klubovna-showcase-ico" data-zoom-title="KLIETKA · Zlatý kanárik" data-zoom-desc="Vitrína inkasovaných setov 0:6 (2H + 4H). 1–4 ks = Zberateľ, 5–9 ks = Chovateľ (1× voliéra = 5 ks), 10+ ks = Majster (Zlatý kanárik)." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
                             <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}zlaty_kanarik.png" alt="KLIETKA" width="108" height="108" loading="lazy" decoding="async" data-icon-file="zlaty_kanarik.png" data-dir-idx="0" onerror="handleAchIconError(this)">
                             <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#831843; color:#fde047;">
                                 <i class="fa-solid fa-dove" aria-hidden="true"></i>
@@ -15388,11 +15566,12 @@
                                 <span class="ks-chevron">${isCanaryOpen ? '▲' : '▼'}</span>
                             </div>
                             <div class="ks-sub">Inkasované sety <strong>0:6</strong> (2H + 4H)</div>
-                            <div><span class="ks-badge">${skCount(cc.totalCanaries, "kanárik", "kanáriky", "kanárikov")} · ${skCount(cc.members.length, "chovateľ", "chovatelia", "chovateľov")}</span></div>
+                            <div><span class="ks-badge">${skCount(cc.totalCanaries, "kanárik", "kanáriky", "kanárikov")} · ${skCount(cc.members.length, "hráč", "hráči", "hráčov")}</span></div>
                         </div>
                     </div>
                     <div class="ks-body">
-                        <div class="ks-sub-detail">1+ Spolok chovateľov · 5+ Vonkajšia voliéra · 10+ Zlatý kanárik</div>
+                        <div class="ks-sub-detail">1–4 Zberateľ · 5–9 Chovateľ (1× voliéra = 5 ks) · 10+ Majster (Zlatý kanárik)</div>
+                        ${goldCanaryBannerHtml}
                         <div class="ks-table-box">${canaryBodyHtml}</div>
                     </div>
                 </div>
@@ -15542,15 +15721,34 @@
                         <div class="klubovna-showcases-grid">
                             ${canaryShowcaseHtml}
                             ${grandSlamShowcaseHtml}
-                        </div>
-
-                        <div>
-                            <div class="klubovna-sec-title">
-                                <span>🎖️ Klubové míľniky (počet zápasov)</span>
-                                <span class="klubovna-sec-note">Zobrazuje sa vždy najvyšší dosiahnutý klub (nižší zaniká)</span>
-                            </div>
-                            <div class="klubovna-milestones-grid">
-                                ${milestonesHtml}
+                            <div class="klubovna-showcase ks-milestones ${klubovnaExpandedShowcases.has('milestones') ? 'is-expanded' : ''}" id="klubovna-milestones-showcase" data-ks-key="milestones">
+                                <div class="ks-head" role="button" tabindex="0" aria-expanded="${klubovnaExpandedShowcases.has('milestones') ? 'true' : 'false'}"
+                                     onclick="event.stopPropagation(); toggleKlubovnaShowcase('milestones');"
+                                     onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); event.stopPropagation(); toggleKlubovnaShowcase('milestones');}"
+                                     title="Kliknutím otvoríš alebo zbalíš Klubové míľniky">
+                                    <div class="klubovna-showcase-ico" data-zoom-title="KLUBOVÉ MÍĽNIKY · Klub 100" data-zoom-desc="Trvalé klubové míľniky podľa celkového počtu odohratých zápasov (Klub 5, 10, 25, 50 a 100)." onclick="openBadgeZoomFromEl(event, this)" title="Kliknutím zobrazíš detailný obrázok">
+                                        <img class="klubovna-trophy-img" src="${ACHIEVEMENT_ICON_DIRS[0]}klub_100.png" alt="KLUBOVÉ MÍĽNIKY" width="108" height="108" loading="lazy" decoding="async" data-icon-file="klub_100.png" data-dir-idx="0" onerror="handleAchIconError(this)">
+                                        <div class="ks-head-ico-fb" data-fallback-display="flex" style="display:none; background:#4a044e; color:#fae8ff;">
+                                            <i class="fa-solid fa-crown" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ks-head-text">
+                                        <div class="ks-title-row">
+                                            <span class="ks-title">KLUBOVÉ MÍĽNIKY</span>
+                                            <span class="ks-chevron">${klubovnaExpandedShowcases.has('milestones') ? '▲' : '▼'}</span>
+                                        </div>
+                                        <div class="ks-sub">Klub 100 · Klub 50 · Klub 25 · Klub 10 · Klub 5 (počet zápasov)</div>
+                                        <div><span class="ks-badge">${skCount(data.totalMilestoneMembers, "hráč", "hráči", "hráčov")} v kluboch</span></div>
+                                    </div>
+                                </div>
+                                <div class="ks-body">
+                                    <div class="ks-sub-detail">Zobrazuje sa vždy najvyšší dosiahnutý klub (nižší zaniká)</div>
+                                    <div class="ks-milestones-inner">
+                                        <div class="klubovna-milestones-grid">
+                                            ${milestonesHtml}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -20090,7 +20288,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.76${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.77${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -21119,7 +21317,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.76${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.77${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -21203,7 +21401,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.76${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.77${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -22744,11 +22942,11 @@
                             const goldOrd = Math.floor(cur / 10);
                             pushBucket(`gold_${goldOrd}_${cur}`, "ZLATÝ KANÁRIK", "leader", { ...rec, goldOrd });
                         } else if (prev < 5 && cur >= 5) {
-                            pushBucket(`voliera_${cur}`, "STAVBA VOLIÉRY", "joke", rec);
+                            pushBucket(`voliera_${cur}`, "CHOVATEĽ · VOLIÉRA", "joke", rec);
                         } else if (prev === 0 && cur >= 1) {
-                            pushBucket(`first_${cur}`, "SPOLOK CHOVATEĽOV", "joke", rec);
+                            pushBucket(`first_${cur}`, "NOVÝ ZBERATEĽ", "joke", rec);
                         } else if (v.added < 2) {
-                            pushBucket(`col_${cur}`, "CHOVATEĽSKÁ ZBIERKA", "joke", rec);
+                            pushBucket(`col_${cur}`, "KLIETKA KANÁRIKOV", "joke", rec);
                         }
                     });
 
@@ -22767,37 +22965,37 @@
                                     : `${names} si zo zápasu #${m.index} odnáša rovno dvoch vtáčikov naraz (0:6, 0:6) – klietka praská vo švíkoch (spolu už ${sample.cur}×)!`
                             });
                         } else if (b.tag === "ZLATÝ KANÁRIK") {
-                            const ordTxt = sample.goldOrd > 1 ? `už ${sample.goldOrd}. ` : "prestížny ";
+                            const ordTxt = sample.goldOrd > 1 ? `už ${sample.goldOrd}. ` : "svojho prvého ";
                             out.push({
                                 kind: b.kind,
                                 tag: b.tag,
                                 text: multi
-                                    ? `Historický chovateľský míľnik! ${names} nazbierali po ${sample.cur} kanárikov (0:6) a do Siene slávy im priletel ${ordTxt}ZLATÝ KANÁRIK!`
-                                    : `Historický chovateľský míľnik! ${names} nazbieral ${sample.cur} kanárikov (0:6) a do Siene slávy mu priletel ${ordTxt}ZLATÝ KANÁRIK!`
+                                    ? `Karel Gott kedysi bral Zlatých slávikov vo veľkom — ${names} práve pokorili métu ${sample.cur}× 0:6 a v Klietke si ako Majstri preberajú ${ordTxt}ZLATÉHO KANÁRIKA!`
+                                    : `Karel Gott kedysi bral Zlatých slávikov vo veľkom — ${names} práve pokoril métu ${sample.cur}× 0:6 a v Klietke si ako Majster preberá ${ordTxt}ZLATÉHO KANÁRIKA!`
                             });
-                        } else if (b.tag === "STAVBA VOLIÉRY") {
+                        } else if (b.tag === "CHOVATEĽ · VOLIÉRA") {
                             out.push({
                                 kind: b.kind,
                                 tag: b.tag,
                                 text: multi
-                                    ? `Malá klietka už nestačí! ${names} inkasovali 5. kanárika (0:6) a oficiálne začali budovať vonkajšiu voliéru.`
-                                    : `Malá klietka už nestačí! ${names} inkasoval 5. kanárika (0:6) a oficiálne začal budovať vonkajšiu voliéru.`
+                                    ? `Malá klietka už nestačí! ${names} inkasovali 5. kanárika (0:6), povýšili na status Chovateľ a dostávajú vlastnú voliéru.`
+                                    : `Malá klietka už nestačí! ${names} inkasoval 5. kanárika (0:6), povýšil na status Chovateľ a dostáva vlastnú voliéru.`
                             });
-                        } else if (b.tag === "SPOLOK CHOVATEĽOV") {
+                        } else if (b.tag === "NOVÝ ZBERATEĽ") {
                             out.push({
                                 kind: b.kind,
                                 tag: b.tag,
                                 text: multi
-                                    ? `${names} schytali svojho premiérového kanárika (0:6) a slávnostne sa pridali do klubového spolku chovateľov!`
-                                    : `${names} schytal svojho premiérového kanárika (0:6) a slávnostne sa pridal do klubového spolku chovateľov!`
+                                    ? `${names} schytali premiérového kanárika (0:6) a slávnostne vstúpili do Klietky so statusom Zberateľ!`
+                                    : `${names} schytal premiérového kanárika (0:6) a slávnostne vstúpil do Klietky so statusom Zberateľ!`
                             });
                         } else {
                             out.push({
                                 kind: b.kind,
                                 tag: b.tag,
                                 text: multi
-                                    ? `${names} rozširujú svoju početnú zbierku – po zápase #${m.index} im v klietke čviriká už ${sample.cur}. kanárik!`
-                                    : `${names} rozširuje svoju početnú zbierku – po zápase #${m.index} mu v klietke čviriká už ${sample.cur}. kanárik!`
+                                    ? `${names} rozširujú svoju zbierku v Klietke – po zápase #${m.index} im tam čviriká už ${sample.cur}. kanárik!`
+                                    : `${names} rozširuje svoju zbierku v Klietke – po zápase #${m.index} mu tam čviriká už ${sample.cur}. kanárik!`
                             });
                         }
                     });
@@ -23608,7 +23806,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.76! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.77! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -24106,7 +24304,7 @@
                 },
                 nerves_of_steel: (holders, a) => {
                     const n = skJoinNames(holders, "nom");
-                    return ["MUŽ ZO ŽELEZA", holders.length > 1
+                    return ["NERVY ZO ŽELEZA", holders.length > 1
                         ? `${n} odohrali už ${a.valueText} (7:6 / 6:7). Kardiológ tento šport neodporúča.`
                         : `${n} odohral už ${a.valueText} (7:6 / 6:7). Kardiológ tento šport neodporúča.`];
                 },
@@ -24327,32 +24525,38 @@
                 }
             });
 
-            // 8b. Vitríny Siene slávy – Klietka kanárikov & Sezónny Grand Slam (priebežné veselé NEWS)
+            // 8b. Vitríny Siene slávy – KLIETKA & GRAND SLAM (priebežné veselé NEWS)
             const ccNews = buildCanaryCageData();
             if (ccNews.members.length > 0) {
                 const nearGold = ccNews.members.filter(r => r.total % 10 === 9);
                 nearGold.slice(0, 2).forEach(r => {
                     const nextOrd = Math.floor(r.total / 10) + 1;
-                    const ordPart = nextOrd > 1 ? `${nextOrd}. Zlatého kanára` : "prestížneho Zlatého kanára";
-                    add("POZOR NA KLIETKU", `${r.name} má v klietke už ${r.total} kanárikov – stačí posledný set 0:6 a berie ${ordPart}!`);
+                    const ordPart = nextOrd > 1 ? `${nextOrd}. Zlatého kanárika` : "svojho prvého Zlatého kanárika";
+                    add("POZOR NA KLIETKU", `${r.name} má v Klietke už ${r.total} kanárikov – stačí jediný set 0:6 a ako kedysi Karel Gott po Slávika si pôjde po ${ordPart}!`);
                 });
 
                 const nearVoliera = ccNews.members.filter(r => r.total === 4);
                 nearVoliera.slice(0, 2).forEach(r => {
-                    add("POZOR NA KLIETKU", `${r.name} má v klietke už 4 kanáriky – ešte jeden set 0:6 a môže ísť kupovať pletivo na vonkajšiu voliéru!`);
+                    add("POZOR NA KLIETKU", `${r.name} má v Klietke už 4 kanáriky – ešte jeden set 0:6 a zo Zberateľa povyšuje na Chovateľa s vlastnou voliérou!`);
                 });
 
                 if (ccNews.goldHolders.length > 0) {
-                    const gNames = skJoinNames(ccNews.goldHolders, "nom");
-                    add("ZLATÝ KANÁRIK", ccNews.goldHolders.length > 1
-                        ? `Zlatý kanárik v Sieni slávy: ${gNames} už nazbierali dvojcifernú zbierku setov 0:6 a patria medzi čestných majstrov chovateľov!`
-                        : `Zlatý kanárik v Sieni slávy: ${gNames} už nazbieral ${ccNews.goldHolders[0].total} setov 0:6 a hrdo vládne klubovej voliére!`);
+                    if (ccNews.goldHolders.length === 1) {
+                        const g = ccNews.goldHolders[0];
+                        const goldMsg = g.goldCount >= 2
+                            ? `Karel Gott mal 42 Zlatých slávikov, náš Majster ${g.name} už má v Klietke ${g.goldCount}× Zlatého kanárika (${g.total}× 0:6) – božský výkon na nulu!`
+                            : `Zlatého slávika kedysi bral vo veľkom Karel Gott, nášho Zlatého kanárika v Klietke si už prebral Majster ${g.name} (${g.total}× 0:6) – to bola naozaj božská nula!`;
+                        add("ZLATÝ KANÁRIK", goldMsg);
+                    } else {
+                        const gList = ccNews.goldHolders.map(g => `${g.name} (${g.goldCount}×)`).join(", ");
+                        add("ZLATÝ KANÁRIK", `Karel Gott kedysi bral Zlatých slávikov po desiatkach – v našej Klietke si sošku Zlatého kanárika a titul Majster už držia ${gList}!`);
+                    }
                 } else {
                     const topBreeder = ccNews.members[0];
                     if (topBreeder.total >= 5) {
-                        add("STAVITEĽ VOLIÉRY", `Najväčšiu vonkajšiu voliéru v Klubovni zatiaľ buduje ${topBreeder.name} – v zbierke má už ${skCount(topBreeder.total, "kanárika", "kanáriky", "kanárikov")} (0:6)!`);
+                        add("CHOVATEĽ", `Najväčšiu voliéru v Klietke zatiaľ vedie Chovateľ ${topBreeder.name} – v zbierke má už ${skCount(topBreeder.total, "kanárika", "kanáriky", "kanárikov")} (0:6)!`);
                     } else {
-                        add("SPOLOK CHOVATEĽOV", `V ružovej klietke Klubovne už čviriká ${skCount(ccNews.totalCanaries, "kanárik", "kanáriky", "kanárikov")} – spolok chovateľov zatiaľ vedie ${topBreeder.name} (${topBreeder.total}×).`);
+                        add("ZBERATEĽ", `V ružovej Klietke Klubovne už čviriká ${skCount(ccNews.totalCanaries, "kanárik", "kanáriky", "kanárikov")} – poradie Zberateľov zatiaľ vedie ${topBreeder.name} (${topBreeder.total}×).`);
                     }
                 }
             }
