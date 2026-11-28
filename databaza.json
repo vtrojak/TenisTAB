@@ -1,46 +1,46 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 44,
+  "databaseRevision": 202,
   "config": {
     "windowMonths": 12,
-    "K": 32,
-    "D": 200,
     "location": {
-      "name": "Čadca",
-      "lat": 49.4386,
-      "lon": 18.7897
-    }
+      "name": "",
+      "lat": null,
+      "lon": null
+    },
+    "K": 32,
+    "D": 200
   },
   "players": [
     {
       "id": "vlado",
       "name": "Vlado",
-      "color": "#bbff00"
+      "color": "#f97316"
     },
     {
       "id": "tibor",
       "name": "Tibor",
-      "color": "#00bd9d"
+      "color": "#c084fc"
     },
     {
       "id": "belo",
       "name": "Belo",
-      "color": "#2e89ff"
+      "color": "#facc15"
     },
     {
       "id": "martin",
       "name": "Martin",
-      "color": "#9700ab"
+      "color": "#2dd4bf"
     },
     {
       "id": "adam",
       "name": "Adam",
-      "color": "#ff8400"
+      "color": "#fb7185"
     },
     {
       "id": "uher",
       "name": "Uher",
-      "color": "#9e1651"
+      "color": "#60a5fa"
     },
     {
       "id": "igor",
@@ -50,27 +50,27 @@
     {
       "id": "matus",
       "name": "Matúš",
-      "color": "#c8c81e"
+      "color": "#fbbf24"
     },
     {
       "id": "tono",
       "name": "Toňo",
-      "color": "#0ba300"
+      "color": "#38bdf8"
     },
     {
       "id": "cicero",
       "name": "Cicero",
-      "color": "#ff14b1"
+      "color": "#34d399"
     },
     {
       "id": "peto",
       "name": "Peťo",
-      "color": "#e3e3e3"
+      "color": "#a3e635"
     },
     {
       "id": "majo",
       "name": "Majo",
-      "color": "#d60000"
+      "color": "#f43f5e"
     }
   ],
   "matches": [
@@ -1031,8 +1031,7 @@
       "sets1": 3,
       "sets2": 0,
       "gems": "6:2 7:6 6:3",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_062",
@@ -1047,24 +1046,7 @@
       "sets1": 1,
       "sets2": 2,
       "gems": "6:4 4:6 3:6",
-      "note": "",
-      "surface": "tvrdy"
-    },
-    {
-      "id": "m_064",
-      "date": "2026-01-25",
-      "type": "2H",
-      "team1": [
-        "tibor"
-      ],
-      "team2": [
-        "vlado"
-      ],
-      "sets1": 0,
-      "sets2": 2,
-      "gems": "3:6 3:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_063",
@@ -1079,8 +1061,22 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "3:6 2:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
+    },
+    {
+      "id": "m_064",
+      "date": "2026-01-25",
+      "type": "2H",
+      "team1": [
+        "tibor"
+      ],
+      "team2": [
+        "vlado"
+      ],
+      "sets1": 0,
+      "sets2": 2,
+      "gems": "3:6 3:6",
+      "note": ""
     },
     {
       "id": "m_065",
@@ -1095,8 +1091,7 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:4 6:2",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_066",
@@ -1111,8 +1106,7 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:5 6:4",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_067",
@@ -1127,8 +1121,7 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:2 6:4",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_068",
@@ -1143,8 +1136,7 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "3:6 2:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_069",
@@ -1159,8 +1151,7 @@
       "sets1": 1,
       "sets2": 2,
       "gems": "5:6 6:2 5:7",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_070",
@@ -1175,8 +1166,7 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:3 6:5",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_071",
@@ -1191,8 +1181,7 @@
       "sets1": 2,
       "sets2": 1,
       "gems": "6:4 6:3 3:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_072",
@@ -1207,24 +1196,7 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:5 6:3",
-      "note": "",
-      "surface": "tvrdy"
-    },
-    {
-      "id": "m_074",
-      "date": "2026-03-21",
-      "type": "2H",
-      "team1": [
-        "tibor"
-      ],
-      "team2": [
-        "vlado"
-      ],
-      "sets1": 0,
-      "sets2": 2,
-      "gems": "4:6 2:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_073",
@@ -1239,8 +1211,22 @@
       "sets1": 1,
       "sets2": 1,
       "gems": "4:6 6:5",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
+    },
+    {
+      "id": "m_074",
+      "date": "2026-03-21",
+      "type": "2H",
+      "team1": [
+        "tibor"
+      ],
+      "team2": [
+        "vlado"
+      ],
+      "sets1": 0,
+      "sets2": 2,
+      "gems": "4:6 2:6",
+      "note": ""
     },
     {
       "id": "m_075",
@@ -1255,8 +1241,7 @@
       "sets1": 0,
       "sets2": 2,
       "gems": "3:6 3:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_076",
@@ -1271,8 +1256,7 @@
       "sets1": 1,
       "sets2": 2,
       "gems": "6:5 5:6 3:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_077",
@@ -1287,8 +1271,7 @@
       "sets1": 2,
       "sets2": 0,
       "gems": "6:3 6:3",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_078",
@@ -1303,8 +1286,7 @@
       "sets1": 2,
       "sets2": 1,
       "gems": "6:2 5:7 6:3",
-      "note": "",
-      "surface": "antuka"
+      "note": ""
     },
     {
       "id": "m_079",
@@ -1321,8 +1303,7 @@
       "sets1": 3,
       "sets2": 0,
       "gems": "6:3 6:4 7:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_080",
@@ -1337,8 +1318,7 @@
       "sets1": 0,
       "sets2": 3,
       "gems": "2:6 4:6 4:6",
-      "note": "",
-      "surface": "tvrdy"
+      "note": ""
     },
     {
       "id": "m_081",
@@ -1355,8 +1335,7 @@
       "sets1": 0,
       "sets2": 3,
       "gems": "2:6 2:6 1:6",
-      "note": "",
-      "surface": "antuka"
+      "note": ""
     },
     {
       "id": "m_082",
@@ -1373,10 +1352,71 @@
       "sets1": 1,
       "sets2": 1,
       "gems": "7:5 4:6",
-      "note": "Tretí set sa za stavu 4:1 pre Vlada s Tiborom nedohral. Definitívne tak platí remízový výsledok.",
-      "surface": "tvrdy"
+      "note": ""
     }
   ],
-  "updatedAt": 1795517965565,
-  "exportedAtIso": "2026-11-24T10:59:44.514Z"
+  "customNews": [],
+  "newsTemplates": {
+    "weatherQuips": {
+      "11": [
+        {
+          "text": "Nasnežilo a v najbližších dňoch aj prituhne!"
+        },
+        {
+          "text": "Tenis vonku? V novembrovej hmle jedine v reflexnej veste.",
+          "sleeping": true
+        },
+        {
+          "text": "Dnes som stretol vonku chlapa v kraťasoch. Zabudol sa prezliesť, keď išiel domov z haly.",
+          "sleeping": true
+        },
+        {
+          "text": "Je ti zima? Ešte že tu máme vykúrenú tenisovú halu!"
+        }
+      ]
+    },
+    "weatherEvents": {
+      "frost": {
+        "text": "{miesto} mrzne ({teplota} °C). Nezabudni si dnes zobrať čiapku a rukavice!"
+      }
+    },
+    "badges": {},
+    "other": {
+      "leader_monopoly": {
+        "single": "{hráč} kraľuje tabuľke ({body}) s náskokom {rozdiel} pred {hráčom2}. Zvyšok ligy tajne rokuje, či mu nepridelia drevenú raketu."
+      },
+      "club_doubles_alchemy": {
+        "sleeping": true
+      },
+      "tip_1": {
+        "sleeping": true
+      },
+      "tip_3": {
+        "sleeping": true
+      },
+      "tip_4": {
+        "sleeping": true
+      },
+      "tip_5": {
+        "sleeping": true
+      },
+      "tip_6": {
+        "sleeping": true
+      },
+      "tip_8": {
+        "sleeping": true
+      },
+      "tip_10": {
+        "sleeping": true
+      },
+      "tip_12": {
+        "sleeping": true
+      },
+      "inact_year_1": {
+        "single": "{hráč} nehral už {dniTxt}. Zákulisné zdroje tvrdia, že vymenil raketu za šípky."
+      }
+    }
+  },
+  "updatedAt": 1795853426801,
+  "exportedAtIso": "2026-11-28T08:18:27.100Z"
 }
