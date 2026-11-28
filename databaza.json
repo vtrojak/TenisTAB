@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 539,
+  "databaseRevision": 808,
   "config": {
     "windowMonths": 12,
     "K": 32,
@@ -1419,7 +1419,7 @@
         "single": "Pátracia akcia: {hráč} chýba na kurte už {dniTxt}. Svedkovia tvrdia, že ho videli ako v parku kŕmi holuby."
       },
       "inact_year_1": {
-        "single": "{hráč} nehral už {dniTxt}. Zákulisné zdroje tvrdia, že vymenil raketu za šípky."
+        "single": "{hráč} nehral už {dniTxt}. Zákulisné zdroje tvrdia, že definitívne vymenil raketu za šípky."
       },
       "leader_throne": {
         "single": "Lídrom celkového poradia v {okno} je {hráč} so ziskom {body} ({rozpis})."
@@ -1444,9 +1444,89 @@
       },
       "streak_crisis": {
         "single": "{hráč} prehral už {hodnota} po sebe. Odborníci odporúčajú vymeniť výplet aj omotávku."
+      },
+      "team_streak_2": {
+        "single": "{hráč} vyhrali už {hodnota} po sebe! V šatni sa šepká, že ich budú musieť rozdeliť dekrétom."
+      },
+      "elo_mom_up_2h": {
+        "plural": "{hráč1} s {ostatnými} chytili singlovú fazónu – za posledných 5 dvojhier nabrali zhodne po {hodnota} ELO!"
+      },
+      "elo_mom_dn_4h": {
+        "single": "{hráč} za posledných 5 štvorhier pustil spolu {hodnota} ELO – stále však verí v skorý obrat.",
+        "plural": "{hráč1} s {ostatnými} za posledných 5 štvorhier pustili zhodne po {hodnota} ELO – čakajú na vytúžený obrat."
+      },
+      "stat_doubles_mage": {
+        "plural": "Najviac bodov zo štvorhier 4H ({hodnota}) majú v {okno} zhodne {hráč1} s {ostatnými}."
+      },
+      "stat_universal": {
+        "tag": "UNIVERZÁL"
+      },
+      "stat_sponsor": {
+        "tag": "DARCA",
+        "plural": "{hráč} majú na konte zhodne po {hodnota} – v klube im zvažujú udeliť čestný titul „Bodoví mecenáši“."
+      },
+      "stat_basement": {
+        "tag": "NA DNE"
+      },
+      "stat_class_gap": {
+        "single": "Medzi prvým {hráčom} a posledným (aktívnym) {hráčom2} je v tabuľke priepasť {rozdiel}. Na ich zápas stávkové kancelárie aktuálne nevypisujú žiaden kurz."
+      },
+      "stat_all_or_nothing": {
+        "plural": "{hráč1} s {ostatnými} odohrali už po {hodnota} bez jedinej remízy – polovičné riešenia a kompromisy zjavne neuznávajú."
+      },
+      "chron_draws": {
+        "single": "V databáze {sloveso} {remízy}. Na ATP Tour nemožné, {miesto} bežná realita, keď dôjde zaplatený čas na kurte."
+      },
+      "riv_el_clasico": {
+        "single": "Najčastejším singlovým súbojom histórie je rivalita {hráča} s {hráčom2} – v dvojhre sa stretli už {počet}-krát!"
+      },
+      "riv_derby": {
+        "single": "{hráč} s {hráčom2} si v singli nič nedarujú ({bilancia}). Keby sa ich zápasy vysielali, Eurosport by zrušil reprízy snookeru."
+      },
+      "inact_year_2": {
+        "single": "Posledný zápas {hráča} ({dátum}) si už pamätajú len kronikári. Jeho raketa zrejme zapadá prachom."
+      },
+      "league_hib_1": {
+        "single": "V lige sa neodohral žiaden zápas už {dniTxt}! Rakety {miesto} obalila pavučina a loptičky obrastajú machom."
+      },
+      "league_hib_3": {
+        "single": "Posledný zápas sa hral pred {dni} dňami – body nekomprosmisne expirujú a admin zvažuje, že začne udeľovať mínusové body aj za lenivosť!"
+      },
+      "club_doubles_alchemy": {
+        "sleeping": true
+      },
+      "tip_1": {
+        "sleeping": true
+      },
+      "tip_2": {
+        "single": "Chceš zmeniť vzhľad aplikácie? Stačí kliknúť na logo TT v ľavom hornom rohu a okamžite prepínaš medzi  farebnými motívmi (+ vlastným motívom z Nastavení)!"
+      },
+      "tip_3": {
+        "sleeping": true
+      },
+      "tip_4": {
+        "sleeping": true
+      },
+      "tip_5": {
+        "sleeping": true
+      },
+      "tip_6": {
+        "sleeping": true
+      },
+      "tip_7": {
+        "single": "Kliknutím na meno ľubovoľného hráča v priebežnej tabuľke otvoríš jeho detailnú kartu vrátane kalendára expirácie bodov, spoluhráčskej chémie a bilancie proti súperom."
+      },
+      "tip_9": {
+        "sleeping": true
+      },
+      "tip_10": {
+        "sleeping": true
+      },
+      "tip_12": {
+        "sleeping": true
       }
     }
   },
-  "updatedAt": 1795878170390,
-  "exportedAtIso": "2026-11-28T15:09:59.042Z"
+  "updatedAt": 1795882132445,
+  "exportedAtIso": "2026-11-28T16:10:28.154Z"
 }
