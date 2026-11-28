@@ -1399,6 +1399,241 @@
             }
         }
 
+        /* V3SOFT ADMIN v1.84 – OPRAVA VÝŠKY TITULKU, ZBALITEĽNÉ KARTY, DVOJITÝ NÁHĽAD, TESTER SKLOŇOVANIA, STRÁŽCA ZMIEN */
+        .an-tpl-card .amn-row-tag-inp {
+            flex: 0 0 auto !important;
+            width: 100% !important;
+            min-width: 0 !important;
+            min-height: 0 !important;
+            height: auto !important;
+            padding: 6px 9px !important;
+            line-height: 1.25 !important;
+        }
+
+        .an-tpl-head.is-toggleable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .an-tpl-chevron {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 19px;
+            height: 19px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: var(--tennis-lime);
+            font-size: 0.68rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            transition: transform 0.16s ease, background 0.16s ease;
+        }
+
+        .an-tpl-card:not(.is-collapsed) .an-tpl-chevron {
+            transform: rotate(90deg);
+            background: rgba(190, 242, 100, 0.18);
+            border-color: rgba(190, 242, 100, 0.45);
+        }
+
+        .an-tpl-card.is-collapsed {
+            padding: 8px 11px;
+            gap: 0;
+        }
+
+        .an-tpl-card.is-collapsed .an-tpl-body {
+            display: none;
+        }
+
+        .an-tpl-body {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            padding-top: 4px;
+        }
+
+        .an-tpl-subtag {
+            font-size: 0.63rem;
+            font-weight: 800;
+            color: #fca5a5;
+            background: rgba(220, 38, 38, 0.18);
+            border: 1px solid rgba(248, 113, 113, 0.35);
+            border-radius: 5px;
+            padding: 1px 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.25px;
+        }
+
+        .an-bulk-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .an-bulk-bar .btn {
+            padding: 7px 6px;
+            font-size: 0.71rem;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 520px) {
+            .an-bulk-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .an-tester-box {
+            margin-top: 8px;
+            padding: 8px 9px;
+            border-radius: 10px;
+            background: rgba(4, 14, 26, 0.74);
+            border: 1px solid rgba(125, 211, 252, 0.26);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .an-tester-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .an-tester-mode-group {
+            display: inline-flex;
+            gap: 5px;
+        }
+
+        .an-tester-mode-group .preset-btn {
+            padding: 4px 9px;
+            font-size: 0.69rem;
+            flex: 0 0 auto;
+            min-width: auto;
+        }
+
+        .an-tester-selects {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .an-tester-selects select {
+            padding: 6px 8px;
+            font-size: 0.74rem;
+        }
+
+        .an-tester-cases {
+            font-size: 0.68rem;
+            color: var(--blue-accent);
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        /* Dvojitý náhľad (1× / 2+) */
+        .an-prev-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .an-prev-row + .an-prev-row {
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px dashed rgba(15, 23, 42, 0.20);
+        }
+
+        .an-prev-pill {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            padding: 1px 5px;
+            border-radius: 5px;
+            font-size: 0.62rem;
+            font-weight: 900;
+            letter-spacing: 0.2px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #7dd3fc;
+        }
+
+        .an-prev-pill.is-plural {
+            background: #f3e8ff;
+            color: #6b21a8;
+            border-color: #d8b4fe;
+        }
+
+        .an-prev-text {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        /* Plánovaná osobná správa */
+        .admin-news-item.is-scheduled {
+            border-left-color: #38bdf8;
+        }
+
+        .admin-news-meta-pill.st-scheduled {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: rgba(125, 211, 252, 0.48);
+            color: #7dd3fc;
+        }
+
+        /* Strážca neexportovaných zmien v päte V3SOFT ADMIN */
+        .an-unexported-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            border-radius: 9px;
+            background: rgba(245, 158, 11, 0.18);
+            border: 1px solid rgba(251, 191, 36, 0.56);
+            color: #fef08a;
+            font-size: 0.72rem;
+            font-weight: 800;
+            line-height: 1.3;
+        }
+
+        .an-unexported-bar.is-visible {
+            display: flex;
+        }
+
+        .btn.has-unexported {
+            background: linear-gradient(180deg, #eab308 0%, #ca8a04 100%) !important;
+            border-color: #fef08a !important;
+            color: #1c1917 !important;
+            text-shadow: none !important;
+            box-shadow: 0 3px 0 #713f12, 0 0 18px rgba(250, 204, 21, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+        }
+
+        .an-dirty-badge {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-width: 19px;
+            height: 19px;
+            padding: 0 5px;
+            border-radius: 999px;
+            background: #dc2626;
+            color: #ffffff;
+            font-size: 0.68rem;
+            font-weight: 900;
+            border: 1.5px solid #ffffff;
+            line-height: 1;
+        }
+
+        .btn.has-unexported .an-dirty-badge {
+            display: inline-flex;
+        }
+
         @media (max-width: 520px) {
             .amn-toolbar-grid {
                 grid-template-columns: 1fr;
@@ -7561,7 +7796,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.83</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.84</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -7604,7 +7839,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.83</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.84</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -9054,8 +9289,29 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="admin-news-starts">Plánovaný štart – Zobraziť od (voliteľné · prázdne = ihneď)</label>
+                            <div class="admin-news-exp-presets" id="admin-news-start-presets">
+                                <button type="button" class="preset-btn active" data-start-days="-1" onclick="setAdminNewsStartPreset(-1)"
+                                    data-ctx-title="Štart: Ihneď"
+                                    data-ctx-desc="Zruší odložený štart – osobná správa sa začne zobrazovať okamžite po uložení.">Ihneď</button>
+                                <button type="button" class="preset-btn" data-start-days="1" onclick="setAdminNewsStartPreset(1)"
+                                    data-ctx-title="Štart: Zajtra"
+                                    data-ctx-desc="Naplánuje zobrazenie správy od zajtrajšieho dňa.">Zajtra</button>
+                                <button type="button" class="preset-btn" data-start-days="3" onclick="setAdminNewsStartPreset(3)"
+                                    data-ctx-title="Štart: O 3 dni"
+                                    data-ctx-desc="Naplánuje zobrazenie správy s 3-dňovým predstihom.">+3 dni</button>
+                                <button type="button" class="preset-btn" data-start-days="7" onclick="setAdminNewsStartPreset(7)"
+                                    data-ctx-title="Štart: O týždeň"
+                                    data-ctx-desc="Naplánuje zobrazenie správy o 7 dní od dneška.">+7 dní</button>
+                            </div>
+                            <input type="date" id="admin-news-starts" oninput="syncAdminNewsStartPresetButtons()"
+                                data-ctx-title="Dátum štartu (Zobraziť od)"
+                                data-ctx-desc="Pred týmto dátumom bude správa v stave Naplánovaná a v lište NEWS sa ešte nezobrazí. Prázdne pole znamená ihneď.">
+                        </div>
+
+                        <div class="form-group">
                             <label for="admin-news-expires">Expirácia (platí do konca zvoleného dňa · prázdne = natrvalo)</label>
-                            <div class="admin-news-exp-presets">
+                            <div class="admin-news-exp-presets" id="admin-news-exp-presets">
                                 <button type="button" class="preset-btn" data-exp-days="0" onclick="setAdminNewsExpiryPreset(0)"
                                     data-ctx-title="Expirácia: Len dnes"
                                     data-ctx-desc="Nastaví platnosť správy do dnešnej polnoci. Od zajtra sa automaticky prestane zobrazovať.">Len dnes</button>
@@ -9289,6 +9545,43 @@
                                 data-ctx-title="Hľadanie v odznakových NEWS"
                                 data-ctx-desc="Rýchlo vyfiltruje odznaky podľa názvu, štítku alebo textu.">
                         </div>
+
+                        <div class="an-bulk-bar">
+                            <button type="button" class="btn btn-secondary" id="btn-ab-toggle-expand" onclick="toggleAdminExpandAll('badges')"
+                                data-ctx-title="Rozbaliť / Zbaliť zoznam"
+                                data-ctx-desc="Prepína zobrazenie medzi kompaktným 1-riadkovým zoznamom a plne rozbalenými kartami pre vyfiltrovanú skupinu.">📂 Rozbaliť všetky</button>
+                            <button type="button" class="btn btn-secondary" id="btn-ab-bulk-sleep" onclick="bulkSetSystemTemplateSleep('badges', true)"
+                                data-ctx-title="Hromadne uspať vyfiltrovanú skupinu"
+                                data-ctx-desc="Jedným klikom uspí (skryje z NEWS) všetky odznaky, ktoré práve vidíš pod aktívnym filtrom.">💤 Uspať skupinu</button>
+                            <button type="button" class="btn btn-secondary" id="btn-ab-bulk-wake" onclick="bulkSetSystemTemplateSleep('badges', false)"
+                                data-ctx-title="Hromadne prebudiť vyfiltrovanú skupinu"
+                                data-ctx-desc="Jedným klikom prebudí všetky uspaté odznaky v práve zobrazenej skupine späť do NEWS.">👁️ Prebudiť skupinu</button>
+                        </div>
+
+                        <div class="an-tester-box">
+                            <div class="an-tester-head">
+                                <span style="font-size:0.70rem; font-weight:800; color:var(--blue-accent);">🧪 Tester skloňovania a zhody (1× / 2+)</span>
+                                <div class="an-tester-mode-group">
+                                    <button type="button" class="preset-btn active" id="ab-tester-real" onclick="setAdminTesterMode('real')"
+                                        data-ctx-title="Náhľad z reálnej tabuľky"
+                                        data-ctx-desc="V náhľadoch zobrazuje skutočných držiteľov odznakov z tvojej databázy.">Reálne dáta</button>
+                                    <button type="button" class="preset-btn" id="ab-tester-custom" onclick="setAdminTesterMode('custom')"
+                                        data-ctx-title="Test skloňovania ľubovoľných hráčov"
+                                        data-ctx-desc="Umožní zvoliť dvoch ľubovoľných hráčov z klubu a okamžite skontrolovať ich skloňovanie v ukážkach 1× aj 2+.">Test hráčov</button>
+                                </div>
+                            </div>
+                            <div id="ab-tester-controls" style="display:none;">
+                                <div class="an-tester-selects">
+                                    <select id="ab-tester-p1" onchange="setAdminTesterPlayer(1, this.value)"
+                                        data-ctx-title="Testovací hráč 1"
+                                        data-ctx-desc="Meno použité pre náhľad 1× aj ako prvý hráč v zhode 2+."></select>
+                                    <select id="ab-tester-p2" onchange="setAdminTesterPlayer(2, this.value)"
+                                        data-ctx-title="Testovací hráč 2"
+                                        data-ctx-desc="Druhé meno pre náhľad zhody 2+ a premennú {hráč2}."></select>
+                                </div>
+                                <div class="an-tester-cases" id="ab-tester-cases" style="margin-top:5px;">—</div>
+                            </div>
+                        </div>
                     </div>
                     <div id="admin-badges-news-list" class="admin-news-list"></div>
                 </div>
@@ -9325,17 +9618,57 @@
                                 data-ctx-title="Hľadanie v ostatných NEWS"
                                 data-ctx-desc="Vyfiltruje správy podľa titulku, opisu alebo textu šablóny.">
                         </div>
+
+                        <div class="an-bulk-bar">
+                            <button type="button" class="btn btn-secondary" id="btn-ao-toggle-expand" onclick="toggleAdminExpandAll('other')"
+                                data-ctx-title="Rozbaliť / Zbaliť zoznam"
+                                data-ctx-desc="Prepína zobrazenie medzi kompaktným 1-riadkovým zoznamom a plne rozbalenými kartami pre vyfiltrovanú skupinu.">📂 Rozbaliť všetky</button>
+                            <button type="button" class="btn btn-secondary" id="btn-ao-bulk-sleep" onclick="bulkSetSystemTemplateSleep('other', true)"
+                                data-ctx-title="Hromadne uspať vyfiltrovanú skupinu"
+                                data-ctx-desc="Jedným klikom uspí (skryje z NEWS) celú práve vyfiltrovanú skupinu správ – napr. všetky Tipy alebo Bulvár.">💤 Uspať skupinu</button>
+                            <button type="button" class="btn btn-secondary" id="btn-ao-bulk-wake" onclick="bulkSetSystemTemplateSleep('other', false)"
+                                data-ctx-title="Hromadne prebudiť vyfiltrovanú skupinu"
+                                data-ctx-desc="Jedným klikom prebudí všetky uspaté správy v práve vyfiltrovanej skupine späť do NEWS.">👁️ Prebudiť skupinu</button>
+                        </div>
+
+                        <div class="an-tester-box">
+                            <div class="an-tester-head">
+                                <span style="font-size:0.70rem; font-weight:800; color:var(--blue-accent);">🧪 Tester skloňovania a zhody (1× / 2+)</span>
+                                <div class="an-tester-mode-group">
+                                    <button type="button" class="preset-btn active" id="ao-tester-real" onclick="setAdminTesterMode('real')"
+                                        data-ctx-title="Náhľad z reálnej tabuľky"
+                                        data-ctx-desc="V náhľadoch zobrazuje reálnych hráčov z čela tabuľky.">Reálne dáta</button>
+                                    <button type="button" class="preset-btn" id="ao-tester-custom" onclick="setAdminTesterMode('custom')"
+                                        data-ctx-title="Test skloňovania ľubovoľných hráčov"
+                                        data-ctx-desc="Vyber dvoch ľubovoľných hráčov z klubu a over si skloňovanie v ukážkach 1× aj 2+.">Test hráčov</button>
+                                </div>
+                            </div>
+                            <div id="ao-tester-controls" style="display:none;">
+                                <div class="an-tester-selects">
+                                    <select id="ao-tester-p1" onchange="setAdminTesterPlayer(1, this.value)"
+                                        data-ctx-title="Testovací hráč 1"
+                                        data-ctx-desc="Meno použité pre náhľad 1× aj ako prvý hráč v zhode 2+."></select>
+                                    <select id="ao-tester-p2" onchange="setAdminTesterPlayer(2, this.value)"
+                                        data-ctx-title="Testovací hráč 2"
+                                        data-ctx-desc="Druhé meno pre náhľad zhody 2+ a premennú {hráč2}."></select>
+                                </div>
+                                <div class="an-tester-cases" id="ao-tester-cases" style="margin-top:5px;">—</div>
+                            </div>
+                        </div>
                     </div>
                     <div id="admin-other-news-list" class="admin-news-list"></div>
                 </div>
             </div>
 
             <div class="tv-modal-foot">
+                <div class="an-unexported-bar" id="admin-unexported-bar">
+                    <span id="admin-unexported-text">⚠️ Máš neexportované zmeny – nezabudni stiahnuť Databázu.</span>
+                </div>
                 <div class="grid-3 admin-modal-foot-grid">
-                    <button type="button" class="btn btn-primary" onclick="exportBackupJSON('databaza.json')" title="Stiahnuť databaza.json"
-                        data-ctx-title="Stiahnuť databaza.json"
-                        data-ctx-desc="Exportuje kompletnú databázu vrátane všetkých úprav z V3SOFT ADMIN (osobné, zápasové, počasie, odznaky aj ostatné NEWS)."
-                        data-ctx-tip="Nahraj súbor na GitHub vedľa index.html, aby zmeny videli všetci hráči."><i class="fa-solid fa-download"></i> Databáza</button>
+                    <button type="button" class="btn btn-primary" id="btn-admin-export-db" onclick="exportBackupJSON('databaza.json')" title="Stiahnuť databaza.json"
+                        data-ctx-title="Stiahnuť databaza.json (Strážca zmien)"
+                        data-ctx-desc="Exportuje kompletnú databázu vrátane všetkých úprav z V3SOFT ADMIN. Ak svieti žlto s číslom, máš neexportované zmeny."
+                        data-ctx-tip="Nahraj súbor na GitHub vedľa index.html, aby zmeny videli všetci hráči."><i class="fa-solid fa-download"></i> Databáza <span class="an-dirty-badge" id="admin-db-dirty-badge">0</span></button>
                     <button type="button" class="btn btn-secondary" onclick="previewAdminActiveTabInTicker()"
                         data-ctx-title="Náhľad v lište NEWS"
                         data-ctx-desc="Zavrie editor a okamžite spustí bielu lištu NEWS s tvojimi aktuálnymi úpravami od začiatku."><i class="fa-solid fa-play"></i> Náhľad v lište</button>
@@ -10267,12 +10600,14 @@
                 seen.add(id);
                 const prioRaw = String(item.priority ?? "top").trim();
                 const priority = VALID_CUSTOM_NEWS_PRIORITIES.includes(prioRaw) ? prioRaw : "top";
+                const startRaw = String(item.startsAt ?? "").trim();
+                const startsAt = (startRaw && parseIsoLocal(startRaw)) ? startRaw : "";
                 const expRaw = String(item.expiresAt ?? "").trim();
                 const expiresAt = (expRaw && parseIsoLocal(expRaw)) ? expRaw : "";
                 const enabled = item.enabled !== false;
                 const createdRaw = Number(item.createdAt);
                 const createdAt = (isFinite(createdRaw) && createdRaw > 0) ? createdRaw : Date.now();
-                out.push({
+                const entry = {
                     id,
                     tag: tag || "OZNAM",
                     text,
@@ -10280,7 +10615,9 @@
                     expiresAt,
                     enabled,
                     createdAt
-                });
+                };
+                if (startsAt) entry.startsAt = startsAt;
+                out.push(entry);
             });
             return out;
         }
@@ -10845,6 +11182,7 @@
                     updatedAt: remoteUpdated || Date.now()
                 };
                 normalizeState();
+                clearAdminUnexportedChanges();
                 sortMatchesChronologically();
                 let cacheSaved = true;
                 try {
@@ -18459,6 +18797,7 @@
             const filename = customFilename || `TenisTAB_zaloha_${getTodayIso()}.json`;
             triggerBlobDownload(blob, filename);
             if (customFilename === "databaza.json") {
+                clearAdminUnexportedChanges();
                 showToast("Súbor databaza.json stiahnutý! Nahraj ho na GitHub vedľa index.html.");
             } else {
                 showToast("Záloha JSON bola stiahnutá.");
@@ -18525,6 +18864,7 @@
                         updatedAt: Date.now()
                     };
                     normalizeState();
+                    clearAdminUnexportedChanges();
                     sortMatchesChronologically();
                     const savedOk = saveState(true);
                     recalculateAll();
@@ -18591,6 +18931,7 @@
                 chartVisiblePlayers: {},
                 updatedAt: 0
             };
+            clearAdminUnexportedChanges();
             tvCustomBgImage = null;
             reportCustomBgImage = null;
             resetTvPhotoTransform(false);
@@ -21844,7 +22185,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.83${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.84${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -22875,7 +23216,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.83${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.84${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -22959,7 +23300,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.83${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.84${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -25771,7 +26112,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.83! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.84! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -26557,9 +26898,12 @@
                 document.getElementById("admin-news-edit-id").value = draft.editId || "";
                 document.getElementById("admin-news-tag").value = draft.tag || "";
                 document.getElementById("admin-news-text").value = draft.text || "";
+                const stInp = document.getElementById("admin-news-starts");
+                if (stInp) stInp.value = draft.startsAt || "";
                 document.getElementById("admin-news-expires").value = draft.expiresAt || "";
                 document.getElementById("admin-news-enabled").checked = draft.enabled !== false;
                 setAdminNewsPriority(draft.priority || "top");
+                syncAdminNewsStartPresetButtons();
                 syncAdminNewsExpPresetButtons();
                 updateAdminNewsCounters();
             } else {
@@ -26568,16 +26912,21 @@
             renderAdminNewsList();
             populateAdminMatchSelect(adminMatchEditorMatchId);
             setAdminModalTab(initialTab || adminModalActiveTab || "personal");
+            updateAdminUnexportedGuardUI();
             mod.classList.add("open");
             const bodyEl = mod.querySelector(".tv-modal-body");
             if (bodyEl) bodyEl.scrollTop = 0;
             syncModalBodyScrollLock();
         }
 
-        function closeAdminNewsModal() {
+        function closeAdminNewsModal(suppressGuardToast = false) {
             const mod = document.getElementById("admin-news-modal");
+            const wasOpen = Boolean(mod && mod.classList.contains("open"));
             if (mod) mod.classList.remove("open");
             syncModalBodyScrollLock();
+            if (wasOpen && !suppressGuardToast && adminUnexportedChangeKeys.size > 0) {
+                showToast(`⚠️ Máš ${skCount(adminUnexportedChangeKeys.size, "neexportovanú zmenu", "neexportované zmeny", "neexportovaných zmien")} – nezabudni stiahnuť databaza.json.`);
+            }
         }
 
         function updateAdminNewsLivePreview() {
@@ -26627,6 +26976,31 @@
             return dateToIsoLocal(dt);
         }
 
+        function setAdminNewsStartPreset(daysOffset) {
+            const stInp = document.getElementById("admin-news-starts");
+            if (!stInp) return;
+            const d = Number(daysOffset);
+            stInp.value = d < 0 ? "" : addDaysToTodayIso(d);
+            syncAdminNewsStartPresetButtons();
+        }
+
+        function syncAdminNewsStartPresetButtons() {
+            const stInp = document.getElementById("admin-news-starts");
+            const val = stInp ? String(stInp.value || "").trim() : "";
+            const d1 = addDaysToTodayIso(1);
+            const d3 = addDaysToTodayIso(3);
+            const d7 = addDaysToTodayIso(7);
+            document.querySelectorAll("#admin-news-start-presets .preset-btn").forEach(btn => {
+                const days = Number(btn.getAttribute("data-start-days"));
+                let isActive = false;
+                if (days < 0) isActive = val === "";
+                else if (days === 1) isActive = val === d1;
+                else if (days === 3) isActive = val === d3;
+                else if (days === 7) isActive = val === d7;
+                btn.classList.toggle("active", isActive);
+            });
+        }
+
         function setAdminNewsExpiryPreset(daysOffset) {
             const expInp = document.getElementById("admin-news-expires");
             if (!expInp) return;
@@ -26641,7 +27015,7 @@
             const d0 = addDaysToTodayIso(0);
             const d2 = addDaysToTodayIso(2);
             const d6 = addDaysToTodayIso(6);
-            document.querySelectorAll(".admin-news-exp-presets .preset-btn").forEach(btn => {
+            document.querySelectorAll("#admin-news-exp-presets .preset-btn").forEach(btn => {
                 const days = Number(btn.getAttribute("data-exp-days"));
                 let isActive = false;
                 if (days < 0) isActive = val === "";
@@ -26656,6 +27030,7 @@
             const editIdEl = document.getElementById("admin-news-edit-id");
             const tagEl = document.getElementById("admin-news-tag");
             const txtEl = document.getElementById("admin-news-text");
+            const stEl = document.getElementById("admin-news-starts");
             const expEl = document.getElementById("admin-news-expires");
             const enEl = document.getElementById("admin-news-enabled");
             const titleEl = document.getElementById("admin-news-form-title");
@@ -26665,6 +27040,7 @@
             if (editIdEl) editIdEl.value = "";
             if (tagEl) tagEl.value = "";
             if (txtEl) txtEl.value = "";
+            if (stEl) stEl.value = "";
             if (expEl) expEl.value = "";
             if (enEl) enEl.checked = true;
             if (titleEl) titleEl.textContent = "Nová osobná správa do NEWS";
@@ -26672,6 +27048,7 @@
             if (cancelBtn) cancelBtn.style.display = "none";
 
             setAdminNewsPriority("top");
+            syncAdminNewsStartPresetButtons();
             syncAdminNewsExpPresetButtons();
             updateAdminNewsCounters();
         }
@@ -26684,6 +27061,8 @@
             document.getElementById("admin-news-edit-id").value = item.id;
             document.getElementById("admin-news-tag").value = item.tag || "";
             document.getElementById("admin-news-text").value = item.text || "";
+            const stEl = document.getElementById("admin-news-starts");
+            if (stEl) stEl.value = item.startsAt || "";
             document.getElementById("admin-news-expires").value = item.expiresAt || "";
             document.getElementById("admin-news-enabled").checked = item.enabled !== false;
             document.getElementById("admin-news-form-title").textContent = "Upraviť uloženú správu";
@@ -26691,6 +27070,7 @@
             document.getElementById("btn-admin-news-cancel-edit").style.display = "inline-flex";
 
             setAdminNewsPriority(item.priority || "top");
+            syncAdminNewsStartPresetButtons();
             syncAdminNewsExpPresetButtons();
             updateAdminNewsCounters();
 
@@ -26703,6 +27083,7 @@
             const rawTag = String(document.getElementById("admin-news-tag").value || "").trim().slice(0, 36);
             const rawText = String(document.getElementById("admin-news-text").value || "").trim().slice(0, 240);
             const prio = String(document.getElementById("admin-news-priority").value || "top").trim();
+            const startRaw = String(document.getElementById("admin-news-starts")?.value || "").trim();
             const expRaw = String(document.getElementById("admin-news-expires").value || "").trim();
             const enabled = Boolean(document.getElementById("admin-news-enabled").checked);
 
@@ -26714,14 +27095,21 @@
 
             const cleanTag = rawTag || "OZNAM";
             const cleanPrio = VALID_CUSTOM_NEWS_PRIORITIES.includes(prio) ? prio : "top";
+            const cleanStart = (startRaw && parseIsoLocal(startRaw)) ? startRaw : "";
             const cleanExp = (expRaw && parseIsoLocal(expRaw)) ? expRaw : "";
 
+            if (cleanStart && cleanExp && cleanStart > cleanExp) {
+                showToast("Dátum štartu (Od) nemôže byť neskorší ako dátum expirácie (Do)!", true);
+                return;
+            }
+
             if (!Array.isArray(state.customNews)) state.customNews = [];
+            let savedId = editId;
 
             if (editId) {
                 const idx = state.customNews.findIndex(x => x.id === editId);
                 if (idx !== -1) {
-                    state.customNews[idx] = {
+                    const updatedObj = {
                         ...state.customNews[idx],
                         tag: cleanTag,
                         text: rawText,
@@ -26729,25 +27117,35 @@
                         expiresAt: cleanExp,
                         enabled
                     };
+                    if (cleanStart) updatedObj.startsAt = cleanStart;
+                    else delete updatedObj.startsAt;
+                    state.customNews[idx] = updatedObj;
                 }
             } else {
-                state.customNews.unshift({
-                    id: generateUniqueId("cn"),
+                savedId = generateUniqueId("cn");
+                const newObj = {
+                    id: savedId,
                     tag: cleanTag,
                     text: rawText,
                     priority: cleanPrio,
                     expiresAt: cleanExp,
                     enabled,
                     createdAt: Date.now()
-                });
+                };
+                if (cleanStart) newObj.startsAt = cleanStart;
+                state.customNews.unshift(newObj);
             }
 
             adminNewsDraftPreview = null;
             saveState(true);
+            markAdminUnexportedChange(`personal:${savedId}`);
             resetAdminNewsForm();
             renderAdminNewsList();
             renderNewsTicker(true);
-            showToast(editId ? "Správa upravená a pridaná do NEWS! Nezabudni stiahnuť databaza.json." : "Správa pridaná do NEWS! Pre zverejnenie stiahni databaza.json.");
+            const isFuture = Boolean(cleanStart && cleanStart > getTodayIso());
+            showToast(isFuture
+                ? `Správa naplánovaná od ${formatDateSk(cleanStart)}! Nezabudni stiahnuť Databázu.`
+                : (editId ? "Správa upravená a pridaná do NEWS! Nezabudni stiahnuť Databázu." : "Správa pridaná do NEWS! Pre zverejnenie stiahni Databázu."));
         }
 
         function toggleAdminNewsEnabled(id) {
@@ -26755,9 +27153,10 @@
             if (!item) return;
             item.enabled = item.enabled === false;
             saveState(true);
+            markAdminUnexportedChange(`personal:${id}`);
             renderAdminNewsList();
             renderNewsTicker(true);
-            showToast(item.enabled ? "Správa je aktívna v NEWS." : "Správa bola skrytá z NEWS.");
+            showToast(item.enabled ? "Správa je aktívna v NEWS." : "Správa bola uspatá z NEWS.");
         }
 
         function moveAdminNewsItem(id, delta) {
@@ -26768,6 +27167,7 @@
             const [moved] = arr.splice(idx, 1);
             arr.splice(target, 0, moved);
             saveState(true);
+            markAdminUnexportedChange(`personal_order`);
             renderAdminNewsList();
             renderNewsTicker(true);
         }
@@ -26782,6 +27182,7 @@
                 resetAdminNewsForm();
             }
             saveState(true);
+            markAdminUnexportedChange(`personal_del:${id}`);
             renderAdminNewsList();
             renderNewsTicker(true);
             showToast("Vlastná správa bola zmazaná.");
@@ -26798,17 +27199,18 @@
                 if (d.editId) {
                     const idx = baseList.findIndex(x => x.id === d.editId);
                     if (idx !== -1) {
-                        baseList[idx] = { ...baseList[idx], tag: d.tag, text: d.text, priority: d.priority, expiresAt: d.expiresAt, enabled: d.enabled };
+                        baseList[idx] = { ...baseList[idx], tag: d.tag, text: d.text, priority: d.priority, startsAt: d.startsAt || "", expiresAt: d.expiresAt, enabled: d.enabled, _isDraft: true };
                     } else {
-                        baseList.unshift({ id: "__draft__", tag: d.tag, text: d.text, priority: d.priority, expiresAt: d.expiresAt, enabled: d.enabled });
+                        baseList.unshift({ id: "__draft__", tag: d.tag, text: d.text, priority: d.priority, startsAt: d.startsAt || "", expiresAt: d.expiresAt, enabled: d.enabled, _isDraft: true });
                     }
                 } else {
-                    baseList.unshift({ id: "__draft__", tag: d.tag, text: d.text, priority: d.priority, expiresAt: d.expiresAt, enabled: d.enabled });
+                    baseList.unshift({ id: "__draft__", tag: d.tag, text: d.text, priority: d.priority, startsAt: d.startsAt || "", expiresAt: d.expiresAt, enabled: d.enabled, _isDraft: true });
                 }
             }
 
             baseList.forEach(item => {
                 if (!item || item.enabled === false || !item.text) return;
+                if (!item._isDraft && item.startsAt && item.startsAt > todayIso) return;
                 if (item.expiresAt && item.expiresAt < todayIso) return;
                 const p = VALID_CUSTOM_NEWS_PRIORITIES.includes(item.priority) ? item.priority : "top";
                 buckets[p].push({ tag: item.tag || "OZNAM", text: item.text });
@@ -26819,17 +27221,10 @@
         function renderAdminNewsList() {
             const listEl = document.getElementById("admin-news-list");
             const totEl = document.getElementById("admin-news-total-count");
-            const activePill = document.getElementById("admin-news-count-pill");
             if (!listEl) return;
 
             const arr = Array.isArray(state.customNews) ? state.customNews : [];
             const todayIso = getTodayIso();
-            let activeCount = 0;
-
-            arr.forEach(item => {
-                const isExp = Boolean(item.expiresAt && item.expiresAt < todayIso);
-                if (item.enabled !== false && !isExp) activeCount++;
-            });
 
             if (totEl) totEl.textContent = String(arr.length);
             updateAdminHeaderStatsPill();
@@ -26841,12 +27236,18 @@
 
             listEl.innerHTML = arr.map((item, idx) => {
                 const isExp = Boolean(item.expiresAt && item.expiresAt < todayIso);
+                const isSched = Boolean(item.startsAt && item.startsAt > todayIso);
                 const isHidden = item.enabled === false;
-                const itemCls = isHidden ? "is-hidden is-sleeping" : (isExp ? "is-expired" : "");
+                const itemCls = isHidden ? "is-hidden is-sleeping" : (isExp ? "is-expired" : (isSched ? "is-scheduled" : ""));
                 const stPill = isHidden
                     ? `<span class="admin-news-meta-pill st-hidden">Uspatá</span>`
-                    : (isExp ? `<span class="admin-news-meta-pill st-expired">Expirovaná</span>` : `<span class="admin-news-meta-pill st-active">Aktívna</span>`);
+                    : (isExp
+                        ? `<span class="admin-news-meta-pill st-expired">Expirovaná</span>`
+                        : (isSched
+                            ? `<span class="admin-news-meta-pill st-scheduled">🕒 Naplánovaná</span>`
+                            : `<span class="admin-news-meta-pill st-active">Aktívna</span>`));
                 const prioLabel = ADMIN_NEWS_PRIO_LABELS[item.priority] || ADMIN_NEWS_PRIO_LABELS.top;
+                const startPill = item.startsAt ? `<span class="admin-news-meta-pill">Od ${formatDateSk(item.startsAt)}</span>` : "";
                 const expLabel = item.expiresAt ? `Do ${formatDateSk(item.expiresAt)}` : "Natrvalo";
                 return `
                     <div class="admin-news-item ${itemCls}">
@@ -26855,6 +27256,7 @@
                                 <span class="admin-news-tag-pill">${escapeHtml(item.tag || "OZNAM")}</span>
                                 ${stPill}
                                 <span class="admin-news-meta-pill">${escapeHtml(prioLabel)}</span>
+                                ${startPill}
                                 <span class="admin-news-meta-pill">${escapeHtml(expLabel)}</span>
                             </div>
                         </div>
@@ -26863,7 +27265,7 @@
                             <button type="button" class="icon-btn" onclick="moveAdminNewsItem('${escapeHtml(item.id)}', -1)" ${idx === 0 ? "disabled style='opacity:0.38;'" : ""} data-ctx-title="Posunúť správu vyššie" data-ctx-desc="Posunie túto osobnú správu o jednu pozíciu dopredu v rámci rovnakej priority.">▲</button>
                             <button type="button" class="icon-btn" onclick="moveAdminNewsItem('${escapeHtml(item.id)}', 1)" ${idx === arr.length - 1 ? "disabled style='opacity:0.38;'" : ""} data-ctx-title="Posunúť správu nižšie" data-ctx-desc="Posunie túto osobnú správu o jednu pozíciu dozadu v rámci rovnakej priority.">▼</button>
                             <button type="button" class="icon-btn" onclick="toggleAdminNewsEnabled('${escapeHtml(item.id)}')" data-ctx-title="${isHidden ? "Prebudiť osobnú správu" : "Uspať osobnú správu"}" data-ctx-desc="${isHidden ? "Znovu aktivuje správu, aby sa zobrazovala v lište NEWS." : "Uspí správu (šedý podklad) bez jej zmazania – v lište NEWS sa nezobrazí."}">${isHidden ? "👁️ Prebudiť" : "💤 Uspať"}</button>
-                            <button type="button" class="icon-btn" onclick="editAdminNewsItem('${escapeHtml(item.id)}')" data-ctx-title="Upraviť správu" data-ctx-desc="Načíta titulok, text, prioritu aj expiráciu tejto správy do formulára vyššie.">Upraviť</button>
+                            <button type="button" class="icon-btn" onclick="editAdminNewsItem('${escapeHtml(item.id)}')" data-ctx-title="Upraviť správu" data-ctx-desc="Načíta titulok, text, prioritu, plánovaný štart aj expiráciu tejto správy do formulára vyššie.">Upraviť</button>
                             <button type="button" class="icon-btn" style="background:linear-gradient(180deg,#dc2626,#991b1b); border-color:#f87171;" onclick="deleteAdminNewsItem('${escapeHtml(item.id)}')" data-ctx-title="Natrvalo zmazať osobnú správu" data-ctx-desc="Úplne odstráni túto osobnú správu zo zoznamu (po potvrdení).">✕</button>
                         </div>
                     </div>
@@ -26876,6 +27278,7 @@
             const rawTag = String(document.getElementById("admin-news-tag")?.value || "").trim().slice(0, 36);
             const rawText = String(document.getElementById("admin-news-text")?.value || "").trim().slice(0, 240);
             const prio = String(document.getElementById("admin-news-priority")?.value || "top").trim();
+            const startRaw = String(document.getElementById("admin-news-starts")?.value || "").trim();
             const expRaw = String(document.getElementById("admin-news-expires")?.value || "").trim();
             const enabled = Boolean(document.getElementById("admin-news-enabled")?.checked);
 
@@ -26886,6 +27289,7 @@
                     tag: rawTag || "OZNAM",
                     text: rawText,
                     priority: VALID_CUSTOM_NEWS_PRIORITIES.includes(prio) ? prio : "top",
+                    startsAt: (startRaw && parseIsoLocal(startRaw)) ? startRaw : "",
                     expiresAt: (expRaw && parseIsoLocal(expRaw)) ? expRaw : "",
                     enabled
                 };
@@ -26902,7 +27306,7 @@
             if (label) label.textContent = "NEWS";
             if (vp) vp.setAttribute("aria-pressed", "false");
 
-            closeAdminNewsModal();
+            closeAdminNewsModal(true);
             renderNewsTicker(true, true);
 
             const firstItem = cachedNewsItems && cachedNewsItems[0] ? cachedNewsItems[0] : null;
@@ -27463,6 +27867,7 @@
             adminMatchNewsDraftPreview = null;
 
             saveState(true);
+            markAdminUnexportedChange(`match:${adminMatchEditorMatchId}`);
             recalculateAll();
             populateAdminMatchSelect(adminMatchEditorMatchId);
             renderAdminMatchNewsEditorUI();
@@ -27487,6 +27892,7 @@
             delete rawMatch.newsOverrideRandomCount;
             adminMatchNewsDraftPreview = null;
             saveState(true);
+            markAdminUnexportedChange(`match_clear:${adminMatchEditorMatchId}`);
             recalculateAll();
             populateAdminMatchSelect(adminMatchEditorMatchId);
             loadAdminMatchNewsEditor(adminMatchEditorMatchId);
@@ -27502,20 +27908,57 @@
                 }
             }
             const targetId = adminMatchEditorMatchId;
-            closeAdminNewsModal();
+            closeAdminNewsModal(true);
             openMatchReportModal(targetId);
         }
 
-        /* ==================== V3SOFT ADMIN: POČASIE, ODZNAKY & OSTATNÉ NEWS (v1.83) ==================== */
+        /* ==================== V3SOFT ADMIN: POČASIE, ODZNAKY, OSTATNÉ, TESTER & STRÁŽCA ZMIEN (v1.84) ==================== */
         let adminWeatherSelectedMonth = new Date().getMonth() + 1;
         let adminWeatherSelectedBucket = "outdoor"; // "outdoor" | "indoor"
         let adminTplLastFocusedEl = null;
+
+        // Strážca neexportovaných zmien (v1.84)
+        const adminUnexportedChangeKeys = new Set();
+        // Zbaliteľné karty (kľúč "badges:unstoppable" alebo "other:leader_throne") – predvolene všetko zbalené (1-riadkový zoznam)
+        const adminExpandedTplKeys = new Set();
+        // Tester skloňovania a zhody (spoločný pre Odznaky & Ostatné)
+        let adminTesterMode = "real"; // "real" | "custom"
+        let adminTesterP1Id = "";
+        let adminTesterP2Id = "";
+
+        function markAdminUnexportedChange(changeKey) {
+            if (changeKey) adminUnexportedChangeKeys.add(String(changeKey));
+            updateAdminUnexportedGuardUI();
+        }
+
+        function clearAdminUnexportedChanges() {
+            adminUnexportedChangeKeys.clear();
+            updateAdminUnexportedGuardUI();
+        }
+
+        function updateAdminUnexportedGuardUI() {
+            const cnt = adminUnexportedChangeKeys.size;
+            const bar = document.getElementById("admin-unexported-bar");
+            const txt = document.getElementById("admin-unexported-text");
+            const btn = document.getElementById("btn-admin-export-db");
+            const badge = document.getElementById("admin-db-dirty-badge");
+            if (bar) bar.classList.toggle("is-visible", cnt > 0);
+            if (txt && cnt > 0) {
+                txt.textContent = `⚠️ Máš ${skCount(cnt, "neexportovanú zmenu", "neexportované zmeny", "neexportovaných zmien")} – stiahni Databázu a nahraj na GitHub.`;
+            }
+            if (btn) btn.classList.toggle("has-unexported", cnt > 0);
+            if (badge) badge.textContent = String(cnt);
+        }
 
         function updateAdminHeaderStatsPill() {
             const pill = document.getElementById("admin-news-count-pill");
             if (!pill) return;
             const todayIso = getTodayIso();
-            const activeCustom = (state.customNews || []).filter(item => item.enabled !== false && !(item.expiresAt && item.expiresAt < todayIso)).length;
+            const activeCustom = (state.customNews || []).filter(item =>
+                item.enabled !== false &&
+                !(item.startsAt && item.startsAt > todayIso) &&
+                !(item.expiresAt && item.expiresAt < todayIso)
+            ).length;
             const nt = state.newsTemplates || createEmptyNewsTemplates();
             let modCnt = 0, sleepCnt = 0;
 
@@ -27548,6 +27991,7 @@
             else if (adminModalActiveTab === "badges") renderAdminBadgesTab();
             else if (adminModalActiveTab === "other") renderAdminOtherTab();
             updateAdminHeaderStatsPill();
+            updateAdminUnexportedGuardUI();
         }
 
         function insertAdminTplToken(tokenStr) {
@@ -27573,9 +28017,72 @@
 
         function getAdminSamplePlayersPair() {
             const ranked = (computedPlayers || []).filter(p => !p.isInactive && p.matches > 0);
-            const p1 = ranked[0] || (computedPlayers && computedPlayers[0]) || { name: "Vlado", points: 14.5, pts2H: 9.0, pts4H: 5.5, matches: 18, wins: 13, draws: 1, losses: 4, gemsWon: 142, gemsLost: 98, curWinStreak: 4, curLossStreak: 3, expiring30: 2.0, daysSinceLastMatch: 210, lastMatchDate: getTodayIso() };
-            const p2 = ranked[1] || (computedPlayers && computedPlayers[1]) || { name: "Tibor", points: 11.0, pts2H: 6.5, pts4H: 4.5, matches: 15, wins: 9, draws: 2, losses: 4, gemsWon: 118, gemsLost: 105, curWinStreak: 2, curLossStreak: 1, expiring30: 1.0, daysSinceLastMatch: 400, lastMatchDate: getTodayIso() };
+            const allPl = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
+            const fallback1 = { id: "__s1", name: "Vlado", points: 14.5, pts2H: 9.0, pts4H: 5.5, matches: 18, wins: 13, draws: 1, losses: 4, gemsWon: 142, gemsLost: 98, curWinStreak: 4, curLossStreak: 3, expiring30: 2.0, daysSinceLastMatch: 210, lastMatchDate: getTodayIso() };
+            const fallback2 = { id: "__s2", name: "Tibor", points: 11.0, pts2H: 6.5, pts4H: 4.5, matches: 15, wins: 9, draws: 2, losses: 4, gemsWon: 118, gemsLost: 105, curWinStreak: 2, curLossStreak: 1, expiring30: 1.0, daysSinceLastMatch: 400, lastMatchDate: getTodayIso() };
+            const p1 = ranked[0] || allPl[0] || fallback1;
+            const p2 = ranked[1] || allPl.find(x => x.id !== p1.id) || fallback2;
             return [p1, p2];
+        }
+
+        function getAdminTesterPlayersPair() {
+            const [def1, def2] = getAdminSamplePlayersPair();
+            const pool = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
+            const p1 = (adminTesterP1Id && pool.find(x => x.id === adminTesterP1Id)) || def1;
+            const p2 = (adminTesterP2Id && pool.find(x => x.id === adminTesterP2Id)) || pool.find(x => x.id !== p1.id) || def2;
+            return [p1, p2];
+        }
+
+        function syncAdminTesterControlsUI() {
+            const pool = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
+            const [p1, p2] = getAdminTesterPlayersPair();
+            if (!adminTesterP1Id && p1 && p1.id) adminTesterP1Id = p1.id;
+            if (!adminTesterP2Id && p2 && p2.id) adminTesterP2Id = p2.id;
+
+            const isCustom = adminTesterMode === "custom";
+            const optsHtml = pool.length > 0
+                ? pool.map(pl => `<option value="${escapeHtml(pl.id)}">${escapeHtml(pl.name)}</option>`).join("")
+                : `<option value="__s1">Vlado</option><option value="__s2">Tibor</option>`;
+
+            ["ab", "ao"].forEach(pref => {
+                const btnReal = document.getElementById(`${pref}-tester-real`);
+                const btnCust = document.getElementById(`${pref}-tester-custom`);
+                const ctrls = document.getElementById(`${pref}-tester-controls`);
+                const sel1 = document.getElementById(`${pref}-tester-p1`);
+                const sel2 = document.getElementById(`${pref}-tester-p2`);
+                const casesEl = document.getElementById(`${pref}-tester-cases`);
+                if (btnReal) btnReal.classList.toggle("active", !isCustom);
+                if (btnCust) btnCust.classList.toggle("active", isCustom);
+                if (ctrls) ctrls.style.display = isCustom ? "block" : "none";
+                if (sel1) {
+                    sel1.innerHTML = optsHtml;
+                    sel1.value = p1.id;
+                }
+                if (sel2) {
+                    sel2.innerHTML = optsHtml;
+                    sel2.value = p2.id;
+                }
+                if (casesEl) {
+                    const c1 = `${p1.name} · ${skName(p1.name, "gen")} · ${skName(p1.name, "dat")} · ${skName(p1.name, "ins")}`;
+                    const c2 = `${p2.name} · ${skName(p2.name, "gen")} · ${skName(p2.name, "dat")} · ${skName(p2.name, "ins")}`;
+                    casesEl.textContent = `1×: ${c1}  |  2.: ${c2}`;
+                }
+            });
+        }
+
+        function setAdminTesterMode(mode) {
+            adminTesterMode = mode === "custom" ? "custom" : "real";
+            syncAdminTesterControlsUI();
+            if (adminModalActiveTab === "badges") renderAdminBadgesTab();
+            else if (adminModalActiveTab === "other") renderAdminOtherTab();
+        }
+
+        function setAdminTesterPlayer(slotNum, playerId) {
+            if (slotNum === 1) adminTesterP1Id = String(playerId || "");
+            else adminTesterP2Id = String(playerId || "");
+            syncAdminTesterControlsUI();
+            if (adminModalActiveTab === "badges") renderAdminBadgesTab();
+            else if (adminModalActiveTab === "other") renderAdminOtherTab();
         }
 
         // ---- ZÁLOŽKA 3: POČASIE ----
@@ -27605,6 +28112,7 @@
             if (nextSleep) arr[idx].sleeping = true;
             else delete arr[idx].sleeping;
             saveState(true);
+            markAdminUnexportedChange(`wq:${bucketKey}:${idx}`);
             renderNewsTicker(true);
             renderAdminWeatherTab();
             showToast(nextSleep ? "Poznámka k počasiu uspatá (v NEWS sa nezobrazí)." : "Poznámka k počasiu prebudená.");
@@ -27615,6 +28123,7 @@
             if (!arr[idx]) return;
             arr[idx].text = String(val || "").slice(0, 220);
             saveState(true);
+            markAdminUnexportedChange(`wq:${bucketKey}:${idx}`);
             renderNewsTicker(true);
             const prevEl = document.getElementById(`aw-quip-prev-${idx}`);
             if (prevEl) {
@@ -27632,6 +28141,7 @@
             const arr = ensureWeatherBucketArray(bKey);
             arr.push({ text: "" });
             saveState(true);
+            markAdminUnexportedChange(`wq_add:${bKey}:${arr.length}`);
             renderAdminWeatherTab();
             const listEl = document.getElementById("admin-weather-quips-list");
             const tas = listEl ? listEl.querySelectorAll("textarea") : [];
@@ -27649,6 +28159,7 @@
             delete state.newsTemplates.weatherQuips[`${m}_outdoor`];
             delete state.newsTemplates.weatherQuips[`${m}_indoor`];
             saveState(true);
+            markAdminUnexportedChange(`wq_reset:${m}`);
             renderNewsTicker(true);
             renderAdminWeatherTab();
             showToast(`Poznámky pre mesiac ${WEATHER_MONTH_NAMES_SK[m - 1]} boli obnovené na pôvodné.`);
@@ -27664,6 +28175,7 @@
             if (Object.keys(cur).length === 0) delete bucket[evKey];
             else bucket[evKey] = cur;
             saveState(true);
+            markAdminUnexportedChange(`we:${evKey}`);
             renderNewsTicker(true);
             renderAdminWeatherTab();
             showToast(willSleep ? "Meteo udalosť uspatá (v NEWS sa nezobrazí)." : "Meteo udalosť prebudená.");
@@ -27684,6 +28196,7 @@
             else bucket[evKey] = cur;
 
             saveState(true);
+            markAdminUnexportedChange(`we:${evKey}`);
             renderNewsTicker(true);
             const prevEl = document.getElementById(`aw-ev-prev-${evKey}`);
             if (prevEl) {
@@ -27705,6 +28218,7 @@
             if (!state.newsTemplates || !state.newsTemplates.weatherEvents) return;
             delete state.newsTemplates.weatherEvents[evKey];
             saveState(true);
+            markAdminUnexportedChange(`we_reset:${evKey}`);
             renderNewsTicker(true);
             renderAdminWeatherTab();
             showToast("Meteo udalosť obnovená na pôvodné znenie.");
@@ -27837,6 +28351,129 @@
                 statsPill.textContent = (modMonths + modEv === 0) ? "Živé dáta · originál" : `${modMonths} mes. · ${modEv} udal.`;
             }
             updateAdminHeaderStatsPill();
+            updateAdminUnexportedGuardUI();
+        }
+
+        // ---- ZBALITEĽNÝ ZOZNAM & HROMADNÉ USPANIE / PREBUDENIE (v1.84) ----
+        function getFilteredSystemCatalog(sectionKey) {
+            const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
+            if (sectionKey === "badges") {
+                const catFilter = document.getElementById("ab-filter-cat")?.value || "all";
+                const q = String(document.getElementById("ab-filter-search")?.value || "").trim().toLowerCase();
+                return BADGE_NEWS_CATALOG.filter(def => {
+                    const ov = store[def.id];
+                    if (catFilter === "modified") {
+                        if (!ov) return false;
+                    } else if (catFilter !== "all" && def.cat !== catFilter) {
+                        return false;
+                    }
+                    if (q) {
+                        const hay = `${def.title} ${def.tag} ${def.single} ${def.plural} ${(ov && ov.tag) || ""} ${(ov && ov.single) || ""}`.toLowerCase();
+                        if (!hay.includes(q)) return false;
+                    }
+                    return true;
+                });
+            }
+            const grpFilter = document.getElementById("ao-filter-group")?.value || "all";
+            const q = String(document.getElementById("ao-filter-search")?.value || "").trim().toLowerCase();
+            return OTHER_NEWS_CATALOG.filter(def => {
+                const ov = store[def.id];
+                if (grpFilter === "modified") {
+                    if (!ov) return false;
+                } else if (grpFilter !== "all" && def.group !== grpFilter) {
+                    return false;
+                }
+                if (q) {
+                    const hay = `${def.title} ${def.tag} ${def.single} ${def.plural} ${(ov && ov.tag) || ""} ${(ov && ov.single) || ""}`.toLowerCase();
+                    if (!hay.includes(q)) return false;
+                }
+                return true;
+            });
+        }
+
+        function toggleAdminTplCardExpand(sectionKey, itemKey) {
+            const fullKey = `${sectionKey}:${itemKey}`;
+            const cardEl = document.getElementById(`an-card-${sectionKey}-${itemKey}`);
+            if (adminExpandedTplKeys.has(fullKey)) {
+                adminExpandedTplKeys.delete(fullKey);
+                if (cardEl) cardEl.classList.add("is-collapsed");
+            } else {
+                adminExpandedTplKeys.add(fullKey);
+                if (cardEl) cardEl.classList.remove("is-collapsed");
+            }
+            updateAdminBulkBarLabels(sectionKey);
+        }
+
+        function toggleAdminExpandAll(sectionKey) {
+            const filtered = getFilteredSystemCatalog(sectionKey);
+            if (filtered.length === 0) return;
+            const allOpen = filtered.every(def => adminExpandedTplKeys.has(`${sectionKey}:${def.id}`));
+            filtered.forEach(def => {
+                const k = `${sectionKey}:${def.id}`;
+                if (allOpen) adminExpandedTplKeys.delete(k);
+                else adminExpandedTplKeys.add(k);
+            });
+            if (sectionKey === "badges") renderAdminBadgesTab();
+            else renderAdminOtherTab();
+        }
+
+        function updateAdminBulkBarLabels(sectionKey) {
+            const pref = sectionKey === "badges" ? "ab" : "ao";
+            const filtered = getFilteredSystemCatalog(sectionKey);
+            const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
+            const allOpen = filtered.length > 0 && filtered.every(def => adminExpandedTplKeys.has(`${sectionKey}:${def.id}`));
+            const awakeCnt = filtered.filter(def => !(store[def.id] && store[def.id].sleeping)).length;
+            const sleepCnt = filtered.length - awakeCnt;
+
+            const expBtn = document.getElementById(`btn-${pref}-toggle-expand`);
+            const slpBtn = document.getElementById(`btn-${pref}-bulk-sleep`);
+            const wakBtn = document.getElementById(`btn-${pref}-bulk-wake`);
+            if (expBtn) expBtn.textContent = allOpen ? "📁 Zbaliť všetky" : "📂 Rozbaliť všetky";
+            if (slpBtn) {
+                slpBtn.textContent = `💤 Uspať (${awakeCnt})`;
+                slpBtn.disabled = awakeCnt === 0;
+            }
+            if (wakBtn) {
+                wakBtn.textContent = `👁️ Prebudiť (${sleepCnt})`;
+                wakBtn.disabled = sleepCnt === 0;
+            }
+        }
+
+        function bulkSetSystemTemplateSleep(sectionKey, sleepState) {
+            const filtered = getFilteredSystemCatalog(sectionKey);
+            if (filtered.length === 0) return;
+            if (!state.newsTemplates) state.newsTemplates = createEmptyNewsTemplates();
+            const bucket = state.newsTemplates[sectionKey];
+            const affected = filtered.filter(def => Boolean(bucket[def.id] && bucket[def.id].sleeping) !== sleepState);
+            if (affected.length === 0) {
+                showToast(sleepState ? "Všetky správy v tejto skupine sú už uspaté." : "Žiadna správa v tejto skupine nie je uspatá.");
+                return;
+            }
+            if (affected.length > 1) {
+                const verb = sleepState ? "uspať (skryť z NEWS)" : "prebudiť späť do NEWS";
+                if (!confirm(`Naozaj chceš hromadne ${verb} ${skCount(affected.length, "správu", "správy", "správ")} v aktuálne vyfiltrovanej skupine?`)) return;
+            }
+
+            affected.forEach(def => {
+                const cur = bucket[def.id] ? { ...bucket[def.id] } : {};
+                if (sleepState) {
+                    cur.sleeping = true;
+                    bucket[def.id] = cur;
+                } else {
+                    delete cur.sleeping;
+                    if (Object.keys(cur).length === 0) delete bucket[def.id];
+                    else bucket[def.id] = cur;
+                }
+                markAdminUnexportedChange(`${sectionKey}:${def.id}`);
+            });
+
+            saveState(true);
+            renderNewsTicker(true);
+            if (sectionKey === "badges") renderAdminBadgesTab();
+            else renderAdminOtherTab();
+            showToast(sleepState
+                ? `Uspatých ${skCount(affected.length, "správa", "správy", "správ")} (skryté z NEWS).`
+                : `Prebudených ${skCount(affected.length, "správa", "správy", "správ")} späť do NEWS.`);
         }
 
         // ---- SPOLOČNÉ POMOCNÉ FUNKCIE PRE ODZNAKY & OSTATNÉ ----
@@ -27852,6 +28489,7 @@
             else bucket[itemKey] = cur;
 
             saveState(true);
+            markAdminUnexportedChange(`${sectionKey}:${itemKey}`);
             renderNewsTicker(true);
             refreshActiveAdminTabUI();
             showToast(willSleep ? "Správa uspatá (šedý podklad · skrytá v NEWS)." : "Správa prebudená späť do NEWS.");
@@ -27875,6 +28513,7 @@
             else bucket[itemKey] = cur;
 
             saveState(true);
+            markAdminUnexportedChange(`${sectionKey}:${itemKey}`);
             renderNewsTicker(true);
             updateSystemTemplateLivePreview(sectionKey, itemKey);
             updateAdminHeaderStatsPill();
@@ -27884,104 +28523,184 @@
             if (!state.newsTemplates || !state.newsTemplates[sectionKey]) return;
             delete state.newsTemplates[sectionKey][itemKey];
             saveState(true);
+            markAdminUnexportedChange(`${sectionKey}_reset:${itemKey}`);
             renderNewsTicker(true);
             refreshActiveAdminTabUI();
             showToast("Obnovený pôvodný text správy.");
         }
 
-        function getBadgeLivePreviewContext(def) {
+        // Vybuduje kontext pre oba náhľady: singleVars (1×) aj pluralVars (2+) s podporou Testera skloňovania
+        function getBadgeDualPreviewContext(def) {
             const wm = Number(state.config.windowMonths) || 0;
-            const [s1, s2] = getAdminSamplePlayersPair();
+            const [t1, t2] = adminTesterMode === "custom" ? getAdminTesterPlayersPair() : getAdminSamplePlayersPair();
             const isWindowBadges = badgesScope === "window" && wm > 0;
             const achScopeLabel = isWindowBadges ? `v ${wm}-mesačnom okne` : "histórie";
             const achRecCap = isWindowBadges ? `Rekord (${wm}M)` : "Historický rekord";
             const achRecLow = isWindowBadges ? `rekord (${wm}M)` : "historický rekord";
+            const isPairBadge = def.cat === "4";
+
+            const makePairVars = (baseVars, pA, pB, pC) => {
+                const pair1 = `${pA.name} / ${pB.name}`;
+                const pair2 = `${pB.name} / ${pC.name}`;
+                return {
+                    singleVars: { ...baseVars, "hráč": pair1, "hráča": pair1, "hráčovi": pair1, "hráčom": pair1 },
+                    pluralVars: { ...baseVars, "hráč": `${pair1} a ${pair2}`, "hráča": `${pair1} a ${pair2}`, "hráčovi": `${pair1} a ${pair2}`, "hráčom": `${pair1} a ${pair2}` }
+                };
+            };
+
+            const pool = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
+            const pickSecondFor = (firstHolder) => {
+                if (adminTesterMode === "custom") return t2;
+                const found = pool.find(p => p.id !== (firstHolder && firstHolder.id) && p.name !== (firstHolder && firstHolder.name));
+                return found || t2;
+            };
+            const pickThirdFor = (pA, pB) => {
+                const found = pool.find(p => p.id !== pA.id && p.id !== pB.id);
+                return found || { name: "Belo" };
+            };
 
             if (def.cat !== "hall") {
                 const foundAch = (computedAchievements || []).find(a => a.id === def.id);
-                if (foundAch) {
-                    const liveCtx = buildAchievementNewsContext(foundAch, computedPlayers || [], wm, false);
-                    if (liveCtx) return { isLive: true, isPlural: liveCtx.isPlural, vars: liveCtx.vars };
+                const liveCtx = foundAch ? buildAchievementNewsContext(foundAch, computedPlayers || [], wm, false) : null;
+                const isLive = Boolean(liveCtx);
+
+                if (liveCtx && adminTesterMode !== "custom") {
+                    if (isPairBadge) {
+                        const pNames = Array.isArray(foundAch.pairNames) && foundAch.pairNames.length > 0 ? foundAch.pairNames : [`${t1.name} / ${t2.name}`];
+                        const secondPair = pNames.length > 1 ? pNames[1] : `${t2.name} / ${pickThirdFor(t1, t2).name}`;
+                        const sStr = pNames[0];
+                        const pStr = pNames.length > 1 ? pNames.join(" a ") : `${pNames[0]} a ${secondPair}`;
+                        return {
+                            isLive: true,
+                            singleVars: { ...liveCtx.vars, "hráč": sStr, "hráča": sStr, "hráčovi": sStr, "hráčom": sStr },
+                            pluralVars: { ...liveCtx.vars, "hráč": pStr, "hráča": pStr, "hráčovi": pStr, "hráčom": pStr }
+                        };
+                    }
+                    const realHolders = foundAch.holders || [t1];
+                    const h1 = realHolders[0] || t1;
+                    const hPlural = realHolders.length > 1 ? realHolders : [h1, pickSecondFor(h1)];
+                    return {
+                        isLive: true,
+                        singleVars: { ...liveCtx.vars, ...buildPlayerCaseVars([h1]) },
+                        pluralVars: { ...liveCtx.vars, ...buildPlayerCaseVars(hPlural) }
+                    };
                 }
-                const isPair = def.cat === "4";
+
+                const baseVars = liveCtx
+                    ? { ...liveCtx.vars }
+                    : { "hodnota": isPairBadge ? "5 výhier v rade" : "5×", "rozsah": achScopeLabel, "rekordCap": achRecCap, "rekordLow": achRecLow, "skóre": ", 6:0 6:0" };
+
+                if (isPairBadge) {
+                    const p3 = pickThirdFor(t1, t2);
+                    return { isLive, ...makePairVars(baseVars, t1, t2, p3) };
+                }
+                const pairForPlural = t1.name === t2.name ? [t1, { name: "Tibor" }] : [t1, t2];
                 return {
-                    isLive: false,
-                    isPlural: false,
-                    vars: isPair
-                        ? { "hráč": `${s1.name} / ${s2.name}`, "hráča": `${s1.name} / ${s2.name}`, "hráčovi": `${s1.name} / ${s2.name}`, "hráčom": `${s1.name} / ${s2.name}`, "hodnota": "5 výhier v rade", "rekordLow": achRecLow }
-                        : { ...buildPlayerCaseVars(s1), "hodnota": "5×", "rozsah": achScopeLabel, "rekordCap": achRecCap, "rekordLow": achRecLow, "skóre": ", 6:0 6:0" }
+                    isLive,
+                    singleVars: { ...baseVars, ...buildPlayerCaseVars([t1]) },
+                    pluralVars: { ...baseVars, ...buildPlayerCaseVars(pairForPlural) }
                 };
             }
 
             // Sieň slávy – Klietka & Grand Slam
             const cc = buildCanaryCageData();
             const gs = buildSeasonalGrandSlamData();
+            const pairCustom = t1.name === t2.name ? [t1, { name: "Tibor" }] : [t1, t2];
+
             if (def.id === "cage_near_gold") {
                 const hit = cc.members.find(r => r.total % 10 === 9);
-                const pl = hit || s1;
+                const pl = (adminTesterMode === "custom" || !hit) ? t1 : hit;
                 const tot = hit ? hit.total : 9;
-                return { isLive: Boolean(hit), isPlural: false, vars: { ...buildPlayerCaseVars(pl), "počet": String(tot), "cieľ": "svojho prvého Zlatého kanárika" } };
+                const v = { ...buildPlayerCaseVars([pl]), "počet": String(tot), "cieľ": "svojho prvého Zlatého kanárika" };
+                return { isLive: Boolean(hit), singleVars: v, pluralVars: v };
             }
             if (def.id === "cage_near_voliera") {
                 const hit = cc.members.find(r => r.total === 4);
-                return { isLive: Boolean(hit), isPlural: false, vars: buildPlayerCaseVars(hit || s1) };
+                const pl = (adminTesterMode === "custom" || !hit) ? t1 : hit;
+                const v = buildPlayerCaseVars([pl]);
+                return { isLive: Boolean(hit), singleVars: v, pluralVars: v };
             }
             if (def.id === "cage_gold") {
-                if (cc.goldHolders.length > 0) {
-                    const isPl = cc.goldHolders.length > 1;
-                    const hVal = isPl ? cc.goldHolders.map(g => `${g.name} (${g.goldCount}×)`).join(", ") : `${cc.goldHolders[0].total}× 0:6`;
-                    return { isLive: true, isPlural: isPl, vars: { ...buildPlayerCaseVars(cc.goldHolders), "hodnota": hVal } };
-                }
-                return { isLive: false, isPlural: false, vars: { ...buildPlayerCaseVars(s1), "hodnota": "10× 0:6" } };
+                const hasReal = cc.goldHolders.length > 0;
+                const h1 = (adminTesterMode === "custom" || !hasReal) ? t1 : cc.goldHolders[0];
+                const hPl = (adminTesterMode === "custom" || !hasReal)
+                    ? pairCustom
+                    : (cc.goldHolders.length > 1 ? cc.goldHolders : [h1, pickSecondFor(h1)]);
+                const sVal = (hasReal && adminTesterMode !== "custom") ? `${cc.goldHolders[0].total}× 0:6` : "10× 0:6";
+                const pVal = (hasReal && adminTesterMode !== "custom" && cc.goldHolders.length > 1)
+                    ? cc.goldHolders.map(g => `${g.name} (${g.goldCount}×)`).join(", ")
+                    : `${hPl[0].name} (1×), ${hPl[1].name} (1×)`;
+                return {
+                    isLive: hasReal,
+                    singleVars: { ...buildPlayerCaseVars([h1]), "hodnota": sVal },
+                    pluralVars: { ...buildPlayerCaseVars(hPl), "hodnota": pVal }
+                };
             }
             if (def.id === "cage_breeder") {
                 const topB = cc.members[0];
                 const hit = Boolean(topB && cc.goldHolders.length === 0 && topB.total >= 5);
-                return { isLive: hit, isPlural: false, vars: { ...buildPlayerCaseVars(topB || s1), "hodnota": skCount(topB ? topB.total : 6, "kanárika", "kanáriky", "kanárikov") } };
+                const pl = (adminTesterMode === "custom" || !topB) ? t1 : topB;
+                const v = { ...buildPlayerCaseVars([pl]), "hodnota": skCount(topB ? topB.total : 6, "kanárika", "kanáriky", "kanárikov") };
+                return { isLive: hit, singleVars: v, pluralVars: v };
             }
             if (def.id === "cage_collector") {
                 const topB = cc.members[0];
                 const hit = Boolean(topB && cc.goldHolders.length === 0 && topB.total < 5);
-                return { isLive: hit, isPlural: false, vars: { ...buildPlayerCaseVars(topB || s1), "hodnota": `${topB ? topB.total : 3}×`, "celkom": skCount(cc.totalCanaries || 5, "kanárik", "kanáriky", "kanárikov") } };
+                const pl = (adminTesterMode === "custom" || !topB) ? t1 : topB;
+                const v = { ...buildPlayerCaseVars([pl]), "hodnota": `${topB ? topB.total : 3}×`, "celkom": skCount(cc.totalCanaries || 5, "kanárik", "kanáriky", "kanárikov") };
+                return { isLive: hit, singleVars: v, pluralVars: v };
             }
             if (def.id === "gs_almost") {
                 const hit = gs.curYearEntries.find(e => e.hitCount === 3 && e.missing.length === 1);
-                return { isLive: Boolean(hit), isPlural: false, vars: { ...buildPlayerCaseVars(hit || s1), "rok": String(gs.curYear), "obdobie": hit ? hit.missing[0].inPhrase : "v zime" } };
+                const pl = (adminTesterMode === "custom" || !hit) ? t1 : hit;
+                const v = { ...buildPlayerCaseVars([pl]), "rok": String(gs.curYear), "obdobie": hit ? hit.missing[0].inPhrase : "v zime" };
+                return { isLive: Boolean(hit), singleVars: v, pluralVars: v };
             }
             if (def.id === "gs_current") {
                 const winners = gs.byYear[gs.curYear] || [];
-                return { isLive: winners.length > 0, isPlural: winners.length > 1, vars: { ...buildPlayerCaseVars(winners.length > 0 ? winners : [s1]), "rok": String(gs.curYear) } };
+                const h1 = (adminTesterMode === "custom" || winners.length === 0) ? t1 : winners[0];
+                const hPl = (adminTesterMode === "custom" || winners.length === 0) ? pairCustom : (winners.length > 1 ? winners : [h1, pickSecondFor(h1)]);
+                return {
+                    isLive: winners.length > 0,
+                    singleVars: { ...buildPlayerCaseVars([h1]), "rok": String(gs.curYear) },
+                    pluralVars: { ...buildPlayerCaseVars(hPl), "rok": String(gs.curYear) }
+                };
             }
             if (def.id === "gs_hall") {
-                if (gs.holders.length > 0) {
-                    const topSlam = gs.holders[0];
-                    const topGroup = gs.holders.filter(h => h.rank === 1);
-                    const isPl = topGroup.length > 1;
-                    const valTxt = isPl ? skCount(topSlam.count, "Grand Slam", "Grand Slamy", "Grand Slamov") : skCount(topSlam.count, "Sezónny Grand Slam", "Sezónne Grand Slamy", "Sezónnych Grand Slamov");
-                    return { isLive: true, isPlural: isPl, vars: { ...buildPlayerCaseVars(topGroup), "hodnota": valTxt, "roky": topSlam.years.join(", ") } };
-                }
-                return { isLive: false, isPlural: false, vars: { ...buildPlayerCaseVars(s1), "hodnota": "1 Sezónny Grand Slam", "roky": String(gs.curYear) } };
+                const hasReal = gs.holders.length > 0;
+                const topSlam = hasReal ? gs.holders[0] : null;
+                const topGroup = hasReal ? gs.holders.filter(h => h.rank === 1) : [];
+                const h1 = (adminTesterMode === "custom" || !hasReal) ? t1 : topGroup[0];
+                const hPl = (adminTesterMode === "custom" || !hasReal) ? pairCustom : (topGroup.length > 1 ? topGroup : [h1, pickSecondFor(h1)]);
+                const cnt = topSlam ? topSlam.count : 2;
+                const yrs = topSlam ? topSlam.years.join(", ") : `${gs.curYear - 1}, ${gs.curYear}`;
+                return {
+                    isLive: hasReal,
+                    singleVars: { ...buildPlayerCaseVars([h1]), "hodnota": skCount(cnt, "Sezónny Grand Slam", "Sezónne Grand Slamy", "Sezónnych Grand Slamov"), "roky": yrs },
+                    pluralVars: { ...buildPlayerCaseVars(hPl), "hodnota": skCount(cnt, "Grand Slam", "Grand Slamy", "Grand Slamov"), "roky": yrs }
+                };
             }
-            return { isLive: false, isPlural: false, vars: buildPlayerCaseVars(s1) };
+            const base = buildPlayerCaseVars([t1]);
+            return { isLive: false, singleVars: base, pluralVars: buildPlayerCaseVars(pairCustom) };
         }
 
-        function getOtherLivePreviewContext(def) {
+        function getOtherDualPreviewContext(def) {
             const wm = Number(state.config.windowMonths) || 0;
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
-            const [s1, s2] = getAdminSamplePlayersPair();
-            const isPluralOnly = Boolean(!def.single && def.plural);
-            const playersForVars = isPluralOnly ? [s1, s2] : [s1];
+            const [s1, s2] = adminTesterMode === "custom" ? getAdminTesterPlayersPair() : getAdminSamplePlayersPair();
+            const pairForPlural = s1.name === s2.name ? [s1, { name: "Tibor" }] : [s1, s2];
             const loc = getLocationContext();
             const totalM = (computedMatches || []).length;
-            const vars = {
-                ...buildPlayerCaseVars(playersForVars),
-                ...buildPlayerCaseVars(s2, "2"),
+
+            const baseVars = {
+                ...buildPlayerCaseVars([s1]),
+                ...buildPlayerCaseVars([s2], "2"),
                 "okno": wmTxt,
                 "body": skPts(s1.points || 12.5, "gen"),
                 "rozpis": `2H: ${skNum(s1.pts2H || 7, 2)} b · 4H: ${skNum(s1.pts4H || 5.5, 2)} b`,
                 "rozdiel": skPts(1.5, "nom"),
                 "kedy": ` (najbližšie platí do ${formatDateSk(getTodayIso())} vrátane)`,
-                "hodnota": def.id.includes("elo_mom") ? "+24,5" : (def.id.includes("pct") || def.id === "stat_win_machine" || def.id === "stat_gems_top" || def.id === "stat_save_energy" ? "64,2 %" : "4 výhry"),
+                "hodnota": def.id.includes("elo_mom_up") ? "+24,5" : (def.id.includes("elo_mom_dn") ? "-18,4" : (def.id === "stat_win_machine" || def.id === "stat_gems_top" || def.id === "stat_save_energy" ? "64,2 %" : "4 výhry")),
                 "počet": "5",
                 "bilancia": "8:3",
                 "gemy": "142:98",
@@ -28000,14 +28719,60 @@
                 "elo": " (+18,4 ELO 2H)",
                 "miestoTxt": " a drží 2. miesto v tabuľke"
             };
-            if (def.id === "leader_tied") vars["body"] = skPts(s1.points || 12.5, "loc");
-            if (def.id === "leader_monopoly" || def.id === "close_equal" || def.id === "defending_pts") vars["body"] = skPts(s1.points || 12.5, "nom");
-            if (def.id === "leader_monopoly" || def.id === "close_gap" || def.id === "stat_class_gap") vars["rozdiel"] = skPts(3.5, "gen");
-            if (def.id === "team_streak_1" || def.id === "team_streak_2") vars["hráč"] = `${s1.name} / ${s2.name}`;
-            if (def.id === "chron_draws") vars["sloveso"] = "svieti už";
-            if (def.id === "chron_balls") vars["gemy"] = String(Math.max(120, totalM * 14));
-            if (def.id === "comeback_win_up" || def.id === "comeback_loss_dn") vars["miesto"] = "2";
-            return { isPlural: isPluralOnly, vars };
+            if (def.id === "leader_tied") baseVars["body"] = skPts(s1.points || 12.5, "loc");
+            if (def.id === "leader_monopoly" || def.id === "close_equal" || def.id === "defending_pts") baseVars["body"] = skPts(s1.points || 12.5, "nom");
+            if (def.id === "leader_monopoly" || def.id === "close_gap" || def.id === "stat_class_gap") baseVars["rozdiel"] = skPts(3.5, "gen");
+            if (def.id === "team_streak_1" || def.id === "team_streak_2") baseVars["hráč"] = `${s1.name} / ${s2.name}`;
+            if (def.id === "chron_draws") baseVars["sloveso"] = "svieti už";
+            if (def.id === "chron_balls") baseVars["gemy"] = String(Math.max(120, totalM * 14));
+            if (def.id === "comeback_win_up" || def.id === "comeback_loss_dn") baseVars["miesto"] = "2";
+
+            const singleVars = { ...baseVars };
+            const pluralVars = { ...baseVars, ...buildPlayerCaseVars(pairForPlural) };
+
+            if (def.id === "stat_motor") {
+                singleVars["hodnota"] = skCount(18, "odohratý zápas", "odohraté zápasy", "odohratých zápasov");
+                pluralVars["hodnota"] = skCount(18, "odohratom zápase", "odohratých zápasoch", "odohratých zápasoch");
+            } else if (def.id === "stat_doubles_mage") {
+                singleVars["hodnota"] = skPts(5.5, "gen");
+                pluralVars["hodnota"] = skPts(5.5, "nom");
+            } else if (def.id === "stat_sponsor") {
+                singleVars["hodnota"] = skCount(7, "prehru", "prehry", "prehier");
+                pluralVars["hodnota"] = skCount(7, "prehre", "prehrách", "prehrách");
+            } else if (def.id === "stat_all_or_nothing") {
+                singleVars["hodnota"] = skCount(10, "zápas", "zápasy", "zápasov");
+                pluralVars["hodnota"] = skCount(10, "zápase", "zápasoch", "zápasoch");
+            } else if (def.id === "riv_drama3") {
+                singleVars["hodnota"] = skCount(5, "vyrovnaný trojsetový zápas", "vyrovnané trojsetové zápasy", "vyrovnaných trojsetových zápasov");
+                pluralVars["hodnota"] = singleVars["hodnota"];
+            }
+            return { isLive: false, singleVars, pluralVars };
+        }
+
+        function renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx) {
+            const hasSingle = Boolean(def.single);
+            const hasPlural = Boolean(def.plural);
+            const tagHtml = `<span class="news-tag">${escapeHtml(curTag)}:</span>`;
+            if (hasSingle && hasPlural) {
+                const sTxt = applySkNewsTemplate(curSingle, dualCtx.singleVars);
+                const pTxt = applySkNewsTemplate(curPlural, dualCtx.pluralVars);
+                return `
+                    <div class="an-prev-row">
+                        <span class="an-prev-pill">1×</span>
+                        <span class="an-prev-text">${tagHtml}${escapeHtml(sTxt)}</span>
+                    </div>
+                    <div class="an-prev-row">
+                        <span class="an-prev-pill is-plural">2+</span>
+                        <span class="an-prev-text">${tagHtml}${escapeHtml(pTxt)}</span>
+                    </div>
+                `;
+            }
+            if (hasPlural && !hasSingle) {
+                const pTxt = applySkNewsTemplate(curPlural, dualCtx.pluralVars);
+                return `<div class="an-prev-row"><span class="an-prev-pill is-plural">2+</span><span class="an-prev-text">${tagHtml}${escapeHtml(pTxt)}</span></div>`;
+            }
+            const sTxt = applySkNewsTemplate(curSingle, dualCtx.singleVars);
+            return `${tagHtml}${escapeHtml(sTxt)}`;
         }
 
         function updateSystemTemplateLivePreview(sectionKey, itemKey) {
@@ -28018,16 +28783,16 @@
             if (!prevEl) return;
             const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
             const ov = store[itemKey] || null;
-            const ctx = sectionKey === "badges" ? getBadgeLivePreviewContext(def) : getOtherLivePreviewContext(def);
+            const dualCtx = sectionKey === "badges" ? getBadgeDualPreviewContext(def) : getOtherDualPreviewContext(def);
             const curTag = (ov && ov.tag) ? ov.tag : def.tag;
-            const curTpl = (ctx.isPlural && (ov && ov.plural ? ov.plural : def.plural))
-                ? (ov && ov.plural ? ov.plural : def.plural)
-                : ((ov && ov.single) ? ov.single : (def.single || def.plural));
-            const rendered = applySkNewsTemplate(curTpl, ctx.vars);
-            prevEl.innerHTML = `<span class="news-tag">${escapeHtml(curTag)}:</span>${escapeHtml(rendered)}`;
+            const curSingle = (ov && ov.single) ? ov.single : (def.single || "");
+            const curPlural = (ov && ov.plural) ? ov.plural : (def.plural || "");
+            prevEl.innerHTML = renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx);
+            const subTagEl = document.getElementById(`an-subtag-${sectionKey}-${itemKey}`);
+            if (subTagEl) subTagEl.textContent = curTag;
         }
 
-        function buildSystemTemplateCardHtml(sectionKey, def, liveCtx) {
+        function buildSystemTemplateCardHtml(sectionKey, def, dualCtx) {
             const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
             const ov = store[def.id] || null;
             const sleeping = Boolean(ov && ov.sleeping);
@@ -28037,9 +28802,9 @@
             const curPlural = (ov && ov.plural) ? ov.plural : (def.plural || "");
             const hasSingle = Boolean(def.single);
             const hasPlural = Boolean(def.plural);
+            const isCollapsed = !adminExpandedTplKeys.has(`${sectionKey}:${def.id}`);
 
-            const activeTpl = (liveCtx.isPlural && curPlural) ? curPlural : (curSingle || curPlural);
-            const prevRendered = applySkNewsTemplate(activeTpl, liveCtx.vars);
+            const previewInner = renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx);
 
             const varsHtml = (def.vars && def.vars.length > 0)
                 ? `<div class="an-var-chips">${def.vars.map(v => `
@@ -28050,15 +28815,19 @@
                 : "";
 
             return `
-                <div class="an-tpl-card ${sleeping ? "is-sleeping" : (isMod ? "is-modified" : "")}">
-                    <div class="an-tpl-head">
+                <div id="an-card-${sectionKey}-${def.id}" class="an-tpl-card ${isCollapsed ? "is-collapsed" : ""} ${sleeping ? "is-sleeping" : (isMod ? "is-modified" : "")}">
+                    <div class="an-tpl-head is-toggleable" onclick="toggleAdminTplCardExpand('${sectionKey}', '${def.id}')"
+                        data-ctx-title="Rozbaliť / Zbaliť kartu správy"
+                        data-ctx-desc="Kliknutím na hlavičku rozbalíš alebo zbalíš editor a dvojitý náhľad (1× / 2+) pre položku „${escapeHtml(def.title)}“.">
                         <span class="an-tpl-title">
+                            <span class="an-tpl-chevron" aria-hidden="true">▸</span>
                             <span>${escapeHtml(def.title)}</span>
-                            ${liveCtx.isLive ? `<span class="an-live-badge">● Živá v tabuľke</span>` : ""}
+                            <span class="an-tpl-subtag" id="an-subtag-${sectionKey}-${def.id}">${escapeHtml(curTag)}</span>
+                            ${dualCtx.isLive ? `<span class="an-live-badge">● Živá</span>` : ""}
                             ${sleeping ? `<span class="an-sleep-badge">💤 Uspatá</span>` : ""}
                             ${isMod ? `<span class="an-mod-badge">✏️ Upravená</span>` : ""}
                         </span>
-                        <div class="amn-row-btns">
+                        <div class="amn-row-btns" onclick="event.stopPropagation()">
                             ${(isMod || sleeping) ? `<button type="button" class="icon-btn" onclick="resetSystemTemplateItem('${sectionKey}', '${def.id}')" data-ctx-title="Obnoviť pôvodné znenie" data-ctx-desc="Vráti túto správu na originálny text aplikácie a prebudí ju.">↺</button>` : ""}
                             <button type="button" class="an-sleep-btn ${sleeping ? "is-wake" : ""}" onclick="toggleSystemTemplateSleep('${sectionKey}', '${def.id}')"
                                 data-ctx-title="${sleeping ? "Prebudiť správu do NEWS" : "Uspať správu (skryť z NEWS)"}"
@@ -28067,30 +28836,32 @@
                             </button>
                         </div>
                     </div>
-                    ${varsHtml}
-                    <input type="text" class="amn-row-tag-inp" maxlength="42" value="${escapeHtml(curTag)}" placeholder="TITULOK SPRÁVY..." onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'tag', this.value)"
-                        data-ctx-title="Červený titulok správy"
-                        data-ctx-desc="Štítok zobrazený pred textom správy v bielej lište NEWS (max. 42 znakov).">
-                    ${hasSingle ? `
-                        <div>
-                            ${hasPlural ? `<div class="an-sub-lbl">Text pre 1 hráča / jednotné číslo</div>` : ""}
-                            <textarea class="admin-news-textarea" style="min-height:50px;" maxlength="280" onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'single', this.value)"
-                                data-ctx-title="${hasPlural ? "Šablóna pre 1 hráča (jednotné číslo)" : "Šablóna textu správy"}"
-                                data-ctx-desc="Uprav text podľa seba a ponechaj premenné v zložených zátvorkách – mená aj čísla sa budú samy aktualizovať a skloňovať.">${escapeHtml(curSingle)}</textarea>
+                    <div class="an-tpl-body">
+                        ${varsHtml}
+                        <input type="text" class="amn-row-tag-inp" maxlength="42" value="${escapeHtml(curTag)}" placeholder="TITULOK SPRÁVY..." onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'tag', this.value)"
+                            data-ctx-title="Červený titulok správy"
+                            data-ctx-desc="Štítok zobrazený pred textom správy v bielej lište NEWS (max. 42 znakov).">
+                        ${hasSingle ? `
+                            <div>
+                                ${hasPlural ? `<div class="an-sub-lbl">Text pre 1 hráča / jednotné číslo (1×)</div>` : ""}
+                                <textarea class="admin-news-textarea" style="min-height:50px;" maxlength="280" onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'single', this.value)"
+                                    data-ctx-title="${hasPlural ? "Šablóna pre 1 hráča (jednotné číslo)" : "Šablóna textu správy"}"
+                                    data-ctx-desc="Uprav text podľa seba a ponechaj premenné v zložených zátvorkách – mená aj čísla sa budú samy aktualizovať a skloňovať.">${escapeHtml(curSingle)}</textarea>
+                            </div>
+                        ` : ""}
+                        ${hasPlural ? `
+                            <div>
+                                <div class="an-sub-lbl">Text pre viacerých hráčov naraz (zhoda / množné číslo · 2+)</div>
+                                <textarea class="admin-news-textarea" style="min-height:48px;" maxlength="280" onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'plural', this.value)"
+                                    data-ctx-title="Šablóna pre viacerých hráčov (množné číslo)"
+                                    data-ctx-desc="Použije sa automaticky pri zhode viacerých držiteľov (napr. „Vlado a Tibor rozdali...“), aby sedeli slovenské slovesá.">${escapeHtml(curPlural)}</textarea>
+                            </div>
+                        ` : ""}
+                        <div class="amn-row-preview" id="an-prev-${sectionKey}-${def.id}"
+                            data-ctx-title="${(hasSingle && hasPlural) ? "Dvojitý živý náhľad (1× / 2+)" : "Živý náhľad výslednej správy"}"
+                            data-ctx-desc="${(hasSingle && hasPlural) ? "Zobrazuje naraz výsledok pre jedného hráča (1×) aj pre zhodu viacerých hráčov (2+) vrátane slovenského skloňovania." : "Presne takto bude správa vyzerať v NEWS po dosadení vyskloňovaných mien a čísel."}">
+                            ${previewInner}
                         </div>
-                    ` : ""}
-                    ${hasPlural ? `
-                        <div>
-                            <div class="an-sub-lbl">Text pre viacerých hráčov naraz (zhoda / množné číslo)</div>
-                            <textarea class="admin-news-textarea" style="min-height:48px;" maxlength="280" onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'plural', this.value)"
-                                data-ctx-title="Šablóna pre viacerých hráčov (množné číslo)"
-                                data-ctx-desc="Použije sa automaticky pri zhode viacerých držiteľov (napr. „Vlado a Tibor rozdali...“), aby sedeli slovenské slovesá.">${escapeHtml(curPlural)}</textarea>
-                        </div>
-                    ` : ""}
-                    <div class="amn-row-preview" id="an-prev-${sectionKey}-${def.id}"
-                        data-ctx-title="Živý náhľad výslednej správy"
-                        data-ctx-desc="Presne takto bude správa vyzerať v NEWS po dosadení vyskloňovaných mien a čísel.">
-                        <span class="news-tag">${escapeHtml(curTag)}:</span>${escapeHtml(prevRendered)}
                     </div>
                 </div>
             `;
@@ -28101,9 +28872,8 @@
             const statsEl = document.getElementById("ab-stats-pill");
             if (!listEl) return;
 
+            syncAdminTesterControlsUI();
             const store = (state.newsTemplates && state.newsTemplates.badges) || {};
-            const catFilter = document.getElementById("ab-filter-cat")?.value || "all";
-            const q = String(document.getElementById("ab-filter-search")?.value || "").trim().toLowerCase();
 
             let modCnt = 0, sleepCnt = 0;
             BADGE_NEWS_CATALOG.forEach(def => {
@@ -28113,27 +28883,17 @@
             });
             if (statsEl) statsEl.textContent = `${modCnt} uprav. · ${sleepCnt} uspatých`;
 
-            const filtered = BADGE_NEWS_CATALOG.filter(def => {
-                const ov = store[def.id];
-                if (catFilter === "modified") {
-                    if (!ov) return false;
-                } else if (catFilter !== "all" && def.cat !== catFilter) {
-                    return false;
-                }
-                if (q) {
-                    const hay = `${def.title} ${def.tag} ${def.single} ${def.plural} ${(ov && ov.tag) || ""} ${(ov && ov.single) || ""}`.toLowerCase();
-                    if (!hay.includes(q)) return false;
-                }
-                return true;
-            });
+            const filtered = getFilteredSystemCatalog("badges");
+            updateAdminBulkBarLabels("badges");
 
             if (filtered.length === 0) {
                 listEl.innerHTML = `<div class="settings-section-card" style="font-size:0.78rem; color:var(--text-muted); text-align:center;">Žiadny odznak nezodpovedá aktuálnemu filtru.</div>`;
                 return;
             }
 
-            listEl.innerHTML = filtered.map(def => buildSystemTemplateCardHtml("badges", def, getBadgeLivePreviewContext(def))).join("");
+            listEl.innerHTML = filtered.map(def => buildSystemTemplateCardHtml("badges", def, getBadgeDualPreviewContext(def))).join("");
             updateAdminHeaderStatsPill();
+            updateAdminUnexportedGuardUI();
         }
 
         function renderAdminOtherTab() {
@@ -28141,9 +28901,8 @@
             const statsEl = document.getElementById("ao-stats-pill");
             if (!listEl) return;
 
+            syncAdminTesterControlsUI();
             const store = (state.newsTemplates && state.newsTemplates.other) || {};
-            const grpFilter = document.getElementById("ao-filter-group")?.value || "all";
-            const q = String(document.getElementById("ao-filter-search")?.value || "").trim().toLowerCase();
 
             let modCnt = 0, sleepCnt = 0;
             OTHER_NEWS_CATALOG.forEach(def => {
@@ -28153,27 +28912,17 @@
             });
             if (statsEl) statsEl.textContent = `${modCnt} uprav. · ${sleepCnt} uspatých`;
 
-            const filtered = OTHER_NEWS_CATALOG.filter(def => {
-                const ov = store[def.id];
-                if (grpFilter === "modified") {
-                    if (!ov) return false;
-                } else if (grpFilter !== "all" && def.group !== grpFilter) {
-                    return false;
-                }
-                if (q) {
-                    const hay = `${def.title} ${def.tag} ${def.single} ${def.plural} ${(ov && ov.tag) || ""} ${(ov && ov.single) || ""}`.toLowerCase();
-                    if (!hay.includes(q)) return false;
-                }
-                return true;
-            });
+            const filtered = getFilteredSystemCatalog("other");
+            updateAdminBulkBarLabels("other");
 
             if (filtered.length === 0) {
                 listEl.innerHTML = `<div class="settings-section-card" style="font-size:0.78rem; color:var(--text-muted); text-align:center;">Žiadna správa nezodpovedá aktuálnemu filtru.</div>`;
                 return;
             }
 
-            listEl.innerHTML = filtered.map(def => buildSystemTemplateCardHtml("other", def, getOtherLivePreviewContext(def))).join("");
+            listEl.innerHTML = filtered.map(def => buildSystemTemplateCardHtml("other", def, getOtherDualPreviewContext(def))).join("");
             updateAdminHeaderStatsPill();
+            updateAdminUnexportedGuardUI();
         }
 
         function previewAdminActiveTabInTicker() {
@@ -28189,7 +28938,7 @@
                 if (bar) bar.classList.remove("is-paused", "ignore-hover");
                 if (label) label.textContent = "NEWS";
                 if (vp) vp.setAttribute("aria-pressed", "false");
-                closeAdminNewsModal();
+                closeAdminNewsModal(true);
                 renderNewsTicker(true, true);
                 showToast("NEWS lišta aktualizovaná s tvojimi úpravami z V3SOFT ADMIN!");
                 return;
@@ -28221,7 +28970,7 @@
             if (label) label.textContent = "NEWS";
             if (vp) vp.setAttribute("aria-pressed", "false");
 
-            closeAdminNewsModal();
+            closeAdminNewsModal(true);
             renderNewsTicker(true, true);
             const shownCnt = mode === "rotate" ? (pinnedCnt + Math.min(cleaned.length - pinnedCnt, randCnt)) : cleaned.length;
             const modeInfo = mode === "rotate" ? `${pinnedCnt} fix. + ${Math.min(cleaned.length - pinnedCnt, randCnt)} náh.` : `${shownCnt}×`;
@@ -28248,7 +28997,7 @@
                 locSig,
                 draftPrev: adminNewsDraftPreview || null,
                 matchDraftPrev: adminMatchNewsDraftPreview || null,
-                customNews: (state.customNews || []).map(c => ({ id: c.id, tg: c.tag, tx: c.text, pr: c.priority, ex: c.expiresAt, en: c.enabled })),
+                customNews: (state.customNews || []).map(c => ({ id: c.id, tg: c.tag, tx: c.text, pr: c.priority, st: c.startsAt || '', ex: c.expiresAt, en: c.enabled })),
                 newsTemplates: state.newsTemplates || null,
                 players: computedPlayers.map(p => ({ id: p.id, n: p.name, pts: p.points, r: p.rank, m: p.matches, e30: p.expiring30 })),
                 matches: computedMatches.map(m => ({ id: m.id, d: m.date || "", t: m.type, s1: m.sets1, s2: m.sets2, g: m.gems || "", sf: m.surface || "", n: m.note || "", no: m.newsOverride || null, nom: m.newsOverrideMode || "all", nor: m.newsOverrideRandomCount ?? null }))
