@@ -852,6 +852,353 @@
             word-break: break-word;
         }
 
+        /* ADMIN EDITOR SPRÁV K ZÁPASU (v1.80) */
+        .admin-sub-panel {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .admin-sub-panel.active {
+            display: flex;
+        }
+
+        .amn-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .amn-mode-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 0.69rem;
+            font-weight: 800;
+            background: rgba(125, 211, 252, 0.16);
+            border: 1px solid rgba(125, 211, 252, 0.42);
+            color: var(--blue-accent);
+        }
+
+        .amn-mode-pill.is-burned {
+            background: rgba(250, 204, 21, 0.18);
+            border-color: rgba(250, 204, 21, 0.56);
+            color: #fde047;
+        }
+
+        .amn-mode-pill.is-dirty {
+            background: rgba(251, 146, 60, 0.22);
+            border-color: rgba(251, 146, 60, 0.58);
+            color: #fdba74;
+        }
+
+        .amn-facts-box {
+            background: rgba(4, 14, 26, 0.78);
+            border: 1px solid rgba(190, 242, 100, 0.28);
+            border-radius: 11px;
+            padding: 8px 10px;
+            margin-top: 10px;
+        }
+
+        .amn-facts-head {
+            font-size: 0.69rem;
+            font-weight: 800;
+            color: var(--tennis-lime);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .amn-facts-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .amn-fact-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: rgba(190, 242, 100, 0.12);
+            border: 1px solid rgba(190, 242, 100, 0.40);
+            color: #ecfccb;
+            font-size: 0.70rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.14s ease, border-color 0.14s ease, transform 0.1s ease;
+        }
+
+        .amn-fact-chip:hover {
+            background: rgba(190, 242, 100, 0.26);
+            border-color: var(--tennis-lime);
+            color: #ffffff;
+        }
+
+        .amn-fact-chip:active {
+            transform: scale(0.95);
+        }
+
+        .amn-fact-chip-lbl {
+            font-size: 0.62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--tennis-lime);
+            opacity: 0.88;
+        }
+
+        .amn-row-card {
+            background: rgba(6, 16, 28, 0.86);
+            border: 1px solid rgba(186, 230, 253, 0.22);
+            border-left: 4px solid #dc2626;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .amn-row-card.kind-leader {
+            border-left-color: #facc15;
+            background: rgba(250, 204, 21, 0.06);
+        }
+
+        .amn-row-card.kind-note {
+            border-left-color: var(--tennis-lime);
+            background: rgba(190, 242, 100, 0.06);
+        }
+
+        .amn-row-card.kind-joke {
+            border-left-color: #a855f7;
+            background: rgba(168, 85, 247, 0.07);
+        }
+
+        .amn-row-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .amn-row-tag-inp {
+            flex: 1 1 140px;
+            min-width: 110px;
+            padding: 5px 8px !important;
+            font-size: 0.72rem !important;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            background: rgba(220, 38, 38, 0.86) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.30) !important;
+        }
+
+        .amn-row-card.kind-leader .amn-row-tag-inp {
+            background: #facc15 !important;
+            color: #2b1803 !important;
+        }
+
+        .amn-row-card.kind-note .amn-row-tag-inp {
+            background: #bef264 !important;
+            color: #052e16 !important;
+        }
+
+        .amn-row-card.kind-joke .amn-row-tag-inp {
+            background: #7e22ce !important;
+            color: #ffffff !important;
+        }
+
+        .amn-row-kind-sel {
+            width: auto !important;
+            flex: 0 0 auto;
+            padding: 5px 7px !important;
+            font-size: 0.70rem !important;
+            font-weight: 700;
+        }
+
+        .amn-row-btns {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .amn-row-btns .icon-btn {
+            padding: 4px 7px;
+            font-size: 0.70rem;
+        }
+
+        .amn-row-preview {
+            padding: 6px 9px;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #111827;
+            font-size: 0.74rem;
+            font-weight: 600;
+            line-height: 1.42;
+            word-break: break-word;
+            border: 1px solid rgba(15, 23, 42, 0.16);
+        }
+
+        .amn-var {
+            display: inline;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background: #fef08a;
+            color: #713f12;
+            font-weight: 800;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+        }
+
+        .amn-var.is-player {
+            background: #dbeafe;
+            color: #1e3a8a;
+        }
+
+        .amn-var.is-metric {
+            background: #dcfce7;
+            color: #14532d;
+        }
+
+        /* REŽIM ROTÁCIE A RAZÍTKO FIXNÝCH SPRÁV (v1.81) */
+        .amn-rotation-box {
+            margin-top: 10px;
+            padding: 9px 10px;
+            border-radius: 11px;
+            background: rgba(4, 14, 26, 0.76);
+            border: 1px solid rgba(186, 230, 253, 0.24);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .amn-rotation-toggle {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .amn-rotation-toggle .preset-btn {
+            padding: 7px 6px;
+            font-size: 0.73rem;
+        }
+
+        .amn-rotation-count-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-top: 6px;
+            border-top: 1px solid rgba(186, 230, 253, 0.14);
+            font-size: 0.73rem;
+            color: var(--text-muted);
+        }
+
+        .amn-rotation-summary {
+            font-size: 0.69rem;
+            color: #fda4af;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        /* Orazítkovaná (fixná) správa – výrazný bordový podklad */
+        .amn-row-card.is-pinned {
+            background: linear-gradient(145deg, rgba(136, 19, 55, 0.90) 0%, rgba(76, 5, 25, 0.95) 100%) !important;
+            border-color: rgba(251, 113, 133, 0.68) !important;
+            border-left-color: #fde047 !important;
+            box-shadow: 0 5px 16px rgba(76, 5, 25, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+        }
+
+        .amn-row-card.is-pinned .admin-news-textarea {
+            background: rgba(34, 4, 14, 0.68);
+            border-color: rgba(253, 164, 175, 0.42);
+        }
+
+        .amn-stamp-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            background: rgba(15, 23, 42, 0.76);
+            color: rgba(226, 232, 240, 0.85);
+            font-size: 0.70rem;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.1s ease, box-shadow 0.16s ease;
+        }
+
+        .amn-stamp-btn:hover {
+            background: rgba(136, 19, 55, 0.65);
+            border-color: #fda4af;
+            color: #ffffff;
+        }
+
+        .amn-stamp-btn:active {
+            transform: scale(0.94);
+        }
+
+        .amn-stamp-btn.is-stamped {
+            background: linear-gradient(180deg, #be123c 0%, #881337 100%);
+            border-color: #fde047;
+            color: #fef08a;
+            box-shadow: 0 2px 8px rgba(136, 19, 55, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.30);
+        }
+
+        .amn-stamp-btn.is-stamped:hover {
+            background: linear-gradient(180deg, #e11d48 0%, #9f1239 100%);
+            color: #ffffff;
+        }
+
+        .amn-toolbar-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .amn-toolbar-grid .btn {
+            padding: 8px 6px;
+            font-size: 0.73rem;
+            gap: 5px;
+        }
+
+        .admin-modal-foot-grid .btn {
+            padding: 10px 6px;
+            font-size: 0.78rem;
+            gap: 5px;
+            white-space: nowrap;
+            min-width: 0;
+        }
+
+        @media (max-width: 520px) {
+            .amn-toolbar-grid {
+                grid-template-columns: 1fr;
+            }
+            .admin-modal-foot-grid {
+                gap: 6px;
+            }
+            .admin-modal-foot-grid .btn {
+                padding: 9px 4px;
+                font-size: 0.72rem;
+                gap: 4px;
+            }
+        }
+
         /* UVÍTACIA KARTA PRE PRÁZDNU DATABÁZU */
         .welcome-card {
             background: linear-gradient(145deg, rgba(12, 34, 48, 0.88), rgba(6, 20, 32, 0.86));
@@ -7000,7 +7347,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.79</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.81b</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -7043,7 +7390,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.79</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.81b</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -8389,109 +8736,187 @@
         </div>
     </div>
 
-    <!-- MODAL: ADMIN EDITOR VLASTNÝCH NEWS (v1.78) -->
+    <!-- MODAL: ADMIN EDITOR NEWS & SPRÁV K ZÁPASU (v1.80) -->
     <div class="modal-backdrop" id="admin-news-modal" onclick="if(event.target===this) closeAdminNewsModal()">
         <div class="modal-box tv-modal-box">
             <div class="tv-modal-head">
                 <div class="tv-modal-head-top">
                     <div class="card-title">
                         <span class="card-title-dot" style="background: #ef4444;"></span>
-                        <span><i class="fa-solid fa-bullhorn" style="margin-right:6px; color:var(--tennis-lime);"></i>ADMIN · Editor vlastných NEWS</span>
+                        <span><i class="fa-solid fa-bullhorn" style="margin-right:6px; color:var(--tennis-lime);"></i>ADMIN · Editor NEWS</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:6px;">
                         <span class="chart-range-pill" id="admin-news-count-pill">0 aktívnych</span>
                         <button type="button" class="icon-btn" onclick="closeAdminNewsModal()">Zavrieť ✕</button>
                     </div>
                 </div>
+                <div class="tv-modal-tabs" style="grid-template-columns: repeat(2, 1fr);">
+                    <button type="button" id="admin-tab-btn-personal" class="preset-btn tv-mode-btn active" onclick="setAdminModalTab('personal')">📢 Osobné NEWS</button>
+                    <button type="button" id="admin-tab-btn-match" class="preset-btn tv-mode-btn" onclick="setAdminModalTab('match')">🎾 Správy k zápasu</button>
+                </div>
             </div>
 
             <div class="tv-modal-body">
-                <!-- FORMULÁR PRE PRIDANIE / ÚPRAVU SPRÁVY -->
-                <div class="settings-section-card" style="border-color: rgba(190, 242, 100, 0.34);">
-                    <div class="settings-section-head">
-                        <div class="card-title" style="font-size:0.88rem;">
-                            <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
-                            <span id="admin-news-form-title">Nová osobná správa do NEWS</span>
+                <!-- ZÁLOŽKA 1: OSOBNÉ SPRÁVY DO NEWS -->
+                <div id="admin-panel-personal" class="admin-sub-panel active">
+                    <!-- FORMULÁR PRE PRIDANIE / ÚPRAVU SPRÁVY -->
+                    <div class="settings-section-card" style="border-color: rgba(190, 242, 100, 0.34);">
+                        <div class="settings-section-head">
+                            <div class="card-title" style="font-size:0.88rem;">
+                                <span class="card-title-dot" style="background: var(--tennis-lime);"></span>
+                                <span id="admin-news-form-title">Nová osobná správa do NEWS</span>
+                            </div>
+                            <button type="button" id="btn-admin-news-cancel-edit" class="chart-quick-btn" onclick="resetAdminNewsForm()" style="display:none;">Zrušiť úpravu</button>
                         </div>
-                        <button type="button" id="btn-admin-news-cancel-edit" class="chart-quick-btn" onclick="resetAdminNewsForm()" style="display:none;">Zrušiť úpravu</button>
-                    </div>
 
-                    <input type="hidden" id="admin-news-edit-id" value="">
+                        <input type="hidden" id="admin-news-edit-id" value="">
 
-                    <div class="form-group">
-                        <label for="admin-news-tag" class="note-label-row">
-                            <span>Titulok správy (červený štítok v NEWS)</span>
-                            <span class="note-counter" id="admin-news-tag-count">0 / 36</span>
-                        </label>
-                        <input type="text" id="admin-news-tag" maxlength="36" placeholder="napr. TAJNÝ TRÉNING, OZNAM, SPRÁVA DŇA..." oninput="updateAdminNewsCounters()">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="admin-news-text" class="note-label-row">
-                            <span>Text správy</span>
-                            <span class="note-counter" id="admin-news-text-count">0 / 240</span>
-                        </label>
-                        <textarea id="admin-news-text" class="admin-news-textarea" maxlength="240" placeholder="napr. Dvojica bola videná na tajnom rannom tréningu pred sobotným turnajom..." oninput="updateAdminNewsCounters()"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Priorita zobrazenia v lište NEWS</label>
-                        <input type="hidden" id="admin-news-priority" value="top">
-                        <div class="admin-news-prio-grid" id="admin-news-prio-bar">
-                            <button type="button" class="preset-btn active" data-prio="top" onclick="setAdminNewsPriority('top')">1. Úplne prvá</button>
-                            <button type="button" class="preset-btn" data-prio="after_matches" onclick="setAdminNewsPriority('after_matches')">2. Po zápasoch</button>
-                            <button type="button" class="preset-btn" data-prio="after_weather" onclick="setAdminNewsPriority('after_weather')">3. Po počasí</button>
-                            <button type="button" class="preset-btn" data-prio="random" onclick="setAdminNewsPriority('random')">4. Medzi ostatné</button>
+                        <div class="form-group">
+                            <label for="admin-news-tag" class="note-label-row">
+                                <span>Titulok správy (červený štítok v NEWS)</span>
+                                <span class="note-counter" id="admin-news-tag-count">0 / 36</span>
+                            </label>
+                            <input type="text" id="admin-news-tag" maxlength="36" placeholder="napr. TAJNÝ TRÉNING, OZNAM, SPRÁVA DŇA..." oninput="updateAdminNewsCounters()">
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="admin-news-expires">Expirácia (platí do konca zvoleného dňa · prázdne = natrvalo)</label>
-                        <div class="admin-news-exp-presets">
-                            <button type="button" class="preset-btn" data-exp-days="0" onclick="setAdminNewsExpiryPreset(0)">Len dnes</button>
-                            <button type="button" class="preset-btn" data-exp-days="2" onclick="setAdminNewsExpiryPreset(2)">3 dni</button>
-                            <button type="button" class="preset-btn" data-exp-days="6" onclick="setAdminNewsExpiryPreset(6)">7 dní</button>
-                            <button type="button" class="preset-btn active" data-exp-days="-1" onclick="setAdminNewsExpiryPreset(-1)">Natrvalo</button>
+                        <div class="form-group">
+                            <label for="admin-news-text" class="note-label-row">
+                                <span>Text správy</span>
+                                <span class="note-counter" id="admin-news-text-count">0 / 240</span>
+                            </label>
+                            <textarea id="admin-news-text" class="admin-news-textarea" maxlength="240" placeholder="napr. Dvojica bola videná na tajnom rannom tréningu pred sobotným turnajom..." oninput="updateAdminNewsCounters()"></textarea>
                         </div>
-                        <input type="date" id="admin-news-expires" oninput="syncAdminNewsExpPresetButtons()">
-                    </div>
 
-                    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
-                        <label style="display:inline-flex; align-items:center; gap:8px; margin:0; cursor:pointer; color:#ffffff; font-size:0.80rem;">
-                            <input type="checkbox" id="admin-news-enabled" checked style="width:17px; height:17px; cursor:pointer;">
-                            <span>Aktívna (zobrazovať v lište NEWS)</span>
-                        </label>
-                    </div>
-
-                    <div class="admin-news-preview-strip" aria-label="Náhľad správy v NEWS">
-                        <span class="admin-news-preview-badge">NÁHĽAD</span>
-                        <div class="admin-news-preview-text" id="admin-news-live-preview">
-                            <span style="color:#64748b;">Zadaj titulok a text správy…</span>
+                        <div class="form-group">
+                            <label>Priorita zobrazenia v lište NEWS</label>
+                            <input type="hidden" id="admin-news-priority" value="top">
+                            <div class="admin-news-prio-grid" id="admin-news-prio-bar">
+                                <button type="button" class="preset-btn active" data-prio="top" onclick="setAdminNewsPriority('top')">1. Úplne prvá</button>
+                                <button type="button" class="preset-btn" data-prio="after_matches" onclick="setAdminNewsPriority('after_matches')">2. Po zápasoch</button>
+                                <button type="button" class="preset-btn" data-prio="after_weather" onclick="setAdminNewsPriority('after_weather')">3. Po počasí</button>
+                                <button type="button" class="preset-btn" data-prio="random" onclick="setAdminNewsPriority('random')">4. Medzi ostatné</button>
+                            </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="admin-news-expires">Expirácia (platí do konca zvoleného dňa · prázdne = natrvalo)</label>
+                            <div class="admin-news-exp-presets">
+                                <button type="button" class="preset-btn" data-exp-days="0" onclick="setAdminNewsExpiryPreset(0)">Len dnes</button>
+                                <button type="button" class="preset-btn" data-exp-days="2" onclick="setAdminNewsExpiryPreset(2)">3 dni</button>
+                                <button type="button" class="preset-btn" data-exp-days="6" onclick="setAdminNewsExpiryPreset(6)">7 dní</button>
+                                <button type="button" class="preset-btn active" data-exp-days="-1" onclick="setAdminNewsExpiryPreset(-1)">Natrvalo</button>
+                            </div>
+                            <input type="date" id="admin-news-expires" oninput="syncAdminNewsExpPresetButtons()">
+                        </div>
+
+                        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+                            <label style="display:inline-flex; align-items:center; gap:8px; margin:0; cursor:pointer; color:#ffffff; font-size:0.80rem;">
+                                <input type="checkbox" id="admin-news-enabled" checked style="width:17px; height:17px; cursor:pointer;">
+                                <span>Aktívna (zobrazovať v lište NEWS)</span>
+                            </label>
+                        </div>
+
+                        <div class="admin-news-preview-strip" aria-label="Náhľad správy v NEWS">
+                            <span class="admin-news-preview-badge">NÁHĽAD</span>
+                            <div class="admin-news-preview-text" id="admin-news-live-preview">
+                                <span style="color:#64748b;">Zadaj titulok a text správy…</span>
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-admin-news-save" class="btn btn-primary" onclick="saveAdminNewsItem()">
+                            <i class="fa-solid fa-plus"></i> Uložiť správu do databázy
+                        </button>
                     </div>
 
-                    <button type="button" id="btn-admin-news-save" class="btn btn-primary" onclick="saveAdminNewsItem()">
-                        <i class="fa-solid fa-plus"></i> Uložiť správu do databázy
-                    </button>
+                    <!-- ZOZNAM ULOŽENÝCH VLASTNÝCH SPRÁV -->
+                    <div class="settings-section-card">
+                        <div class="settings-section-head">
+                            <div class="card-title" style="font-size:0.88rem;">
+                                <span class="card-title-dot" style="background: var(--blue-accent);"></span>
+                                <span>Uložené vlastné správy (<span id="admin-news-total-count">0</span>)</span>
+                            </div>
+                            <span style="font-size:0.70rem; color:var(--text-muted);">Ukladá sa priamo do databaza.json</span>
+                        </div>
+                        <div id="admin-news-list" class="admin-news-list"></div>
+                    </div>
                 </div>
 
-                <!-- ZOZNAM ULOŽENÝCH VLASTNÝCH SPRÁV -->
-                <div class="settings-section-card">
-                    <div class="settings-section-head">
-                        <div class="card-title" style="font-size:0.88rem;">
-                            <span class="card-title-dot" style="background: var(--blue-accent);"></span>
-                            <span>Uložené vlastné správy (<span id="admin-news-total-count">0</span>)</span>
+                <!-- ZÁLOŽKA 2: REDAKČNÝ STÔL SPRÁV K ZÁPASU (NEWS + PNG REPORT) -->
+                <div id="admin-panel-match" class="admin-sub-panel">
+                    <div class="settings-section-card" style="border-color: rgba(250, 204, 21, 0.36);">
+                        <div class="settings-section-head">
+                            <div class="card-title" style="font-size:0.88rem;">
+                                <span class="card-title-dot" style="background: #facc15;"></span>
+                                <span>Redakčný stôl zápasu (NEWS + PNG Report)</span>
+                            </div>
+                            <span class="amn-mode-pill" id="amn-mode-pill">🤖 Automatika</span>
                         </div>
-                        <span style="font-size:0.70rem; color:var(--text-muted);">Ukladá sa priamo do databaza.json</span>
+
+                        <div class="form-group" style="margin-bottom: 6px;">
+                            <label for="admin-match-select">Vyber zápas (predvolene najnovší · 🔥 = vypálené správy)</label>
+                            <select id="admin-match-select" onchange="loadAdminMatchNewsEditor(this.value)"></select>
+                        </div>
+
+                        <div class="amn-status-row">
+                            <span id="amn-match-summary" style="font-size:0.73rem; color:var(--text-muted);">—</span>
+                            <span id="amn-rows-count" style="font-size:0.73rem; font-weight:800; color:var(--tennis-lime);">0 správ</span>
+                        </div>
+
+                        <div class="amn-rotation-box" id="amn-rotation-box">
+                            <div class="amn-rotation-toggle">
+                                <button type="button" id="amn-mode-btn-all" class="preset-btn active" onclick="setAdminMatchNewsMode('all')">📋 Všetky v poradí</button>
+                                <button type="button" id="amn-mode-btn-rotate" class="preset-btn" onclick="setAdminMatchNewsMode('rotate')">🎲 Fixné + rotácia</button>
+                            </div>
+                            <div id="amn-rotation-controls" style="display:none;">
+                                <div class="amn-rotation-count-row">
+                                    <span>Náhodné správy navyše k fixným (bordovým):</span>
+                                    <div class="tv-ctrl-steppers">
+                                        <button type="button" class="tv-step-btn" onclick="stepAdminMatchRandomCount(-1)">−</button>
+                                        <span class="tv-pct-badge" id="amn-random-count-val" style="min-width:48px;">+2 ks</span>
+                                        <button type="button" class="tv-step-btn" onclick="stepAdminMatchRandomCount(1)">+</button>
+                                    </div>
+                                </div>
+                                <div class="amn-rotation-summary" id="amn-rotation-summary" style="margin-top:5px;">—</div>
+                            </div>
+                        </div>
+
+                        <div class="amn-facts-box" id="amn-facts-box" style="display:none;">
+                            <div class="amn-facts-head">
+                                <span>✨ Premenné / Fakty zo zápasu (ťuknutím vložíš do textu)</span>
+                                <span style="font-size:0.64rem; color:var(--text-muted); font-weight:600;">v náhľade sú farebne vyznačené</span>
+                            </div>
+                            <div class="amn-facts-chips" id="amn-facts-chips"></div>
+                        </div>
+
+                        <div class="amn-toolbar-grid">
+                            <button type="button" class="btn btn-secondary" onclick="addAdminMatchNewsRow()"><i class="fa-solid fa-plus"></i> Pridať hlášku</button>
+                            <button type="button" class="btn btn-secondary" onclick="reloadAdminMatchAutoPool()"><i class="fa-solid fa-wand-magic-sparkles"></i> Načítať auto-pool</button>
+                            <button type="button" class="btn btn-secondary" id="btn-amn-reset-auto" onclick="clearAdminMatchNewsOverride()"><i class="fa-solid fa-rotate-left"></i> Vrátiť automatiku</button>
+                        </div>
                     </div>
-                    <div id="admin-news-list" class="admin-news-list"></div>
+
+                    <div id="admin-match-news-list" class="admin-news-list"></div>
+
+                    <div class="settings-section-card" style="padding: 11px;">
+                        <div class="grid-2">
+                            <button type="button" class="btn btn-primary" id="btn-amn-burn" onclick="saveAdminMatchNewsOverride()">
+                                <i class="fa-solid fa-fire"></i> Vypáliť správy (NEWS + PNG)
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="btn-amn-open-png" onclick="openAdminMatchPngReport()">
+                                <i class="fa-regular fa-image"></i> Otvoriť PNG Report
+                            </button>
+                        </div>
+                        <div style="margin-top:7px; font-size:0.70rem; color:var(--text-muted); line-height:1.38;">
+                            Po vypálení uvidia všetci hráči presne tieto správy v lište <strong>NEWS</strong> a rovnaká zostava sa automaticky predvyplní aj v <strong>9:16 PNG Reporte</strong> tohto zápasu. Bez zásahu zostáva pôvodná automatika.
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="tv-modal-foot">
-                <div class="grid-3">
-                    <button type="button" class="btn btn-primary" onclick="exportBackupJSON('databaza.json')"><i class="fa-solid fa-download"></i> databaza.json</button>
-                    <button type="button" class="btn btn-secondary" onclick="previewAdminNewsInTicker()"><i class="fa-solid fa-play"></i> Náhľad v lište</button>
+                <div class="grid-3 admin-modal-foot-grid">
+                    <button type="button" class="btn btn-primary" onclick="exportBackupJSON('databaza.json')" title="Stiahnuť databaza.json"><i class="fa-solid fa-download"></i> Databáza</button>
+                    <button type="button" class="btn btn-secondary" onclick="previewAdminActiveTabInTicker()"><i class="fa-solid fa-play"></i> Náhľad v lište</button>
                     <button type="button" class="btn btn-secondary" onclick="closeAdminNewsModal()">Zavrieť</button>
                 </div>
             </div>
@@ -9351,6 +9776,57 @@
 
         /* ==================== VALIDÁCIA, NORMALIZÁCIA A UKLADANIE STAVU (v1.40) ==================== */
         const VALID_CUSTOM_NEWS_PRIORITIES = ["top", "after_matches", "after_weather", "random"];
+        const VALID_MATCH_NEWS_KINDS = ["match", "leader", "note", "joke"];
+
+        function sanitizeMatchNewsMode(rawMode) {
+            return String(rawMode || "").trim() === "rotate" ? "rotate" : "all";
+        }
+
+        function sanitizeMatchNewsRandomCount(rawVal) {
+            const n = Number(rawVal);
+            if (!Number.isFinite(n)) return 2;
+            return Math.max(0, Math.min(10, Math.round(n)));
+        }
+
+        function sanitizeMatchNewsOverride(rawList) {
+            if (!Array.isArray(rawList) || rawList.length === 0) return null;
+            const seen = new Set();
+            const out = [];
+            rawList.forEach((item, idx) => {
+                if (!item || typeof item !== "object" || Array.isArray(item)) return;
+                const tag = String(item.tag ?? "").trim().slice(0, 42);
+                const text = String(item.text ?? "").trim().slice(0, 240);
+                if (!text) return;
+                let id = String(item.id ?? "").trim() || `mno_${idx + 1}`;
+                if (seen.has(id)) id = `mno_${idx + 1}_${Math.random().toString(36).slice(2, 5)}`;
+                seen.add(id);
+                const kindRaw = String(item.kind ?? "match").trim();
+                const kind = VALID_MATCH_NEWS_KINDS.includes(kindRaw) ? kindRaw : "match";
+                const entry = {
+                    id,
+                    kind,
+                    tag: tag || "ZÁPAS",
+                    text
+                };
+                if (item.pinned === true) entry.pinned = true;
+                out.push(entry);
+            });
+            return out.length > 0 ? out : null;
+        }
+
+        function resolveMatchNewsOverrideForTicker(items, mode = "all", randomCount = 2) {
+            if (!Array.isArray(items) || items.length === 0) return null;
+            const cleanMode = sanitizeMatchNewsMode(mode);
+            if (cleanMode !== "rotate") {
+                return items.map(it => ({ tag: it.tag || "ZÁPAS", text: it.text }));
+            }
+            const pinned = items.filter(it => it.pinned === true);
+            const pool = items.filter(it => !it.pinned);
+            const pickN = Math.max(0, Math.min(pool.length, sanitizeMatchNewsRandomCount(randomCount)));
+            const chosenPool = pickN > 0 ? shuffleNewsArray(pool).slice(0, pickN) : [];
+            const combined = [...pinned, ...chosenPool];
+            return combined.map(it => ({ tag: it.tag || "ZÁPAS", text: it.text }));
+        }
 
         function sanitizeCustomNewsList(rawList) {
             if (!Array.isArray(rawList)) return [];
@@ -9540,6 +10016,14 @@
                     note
                 };
                 if (surface) cleanMatchObj.surface = surface;
+                const cleanNewsOverride = sanitizeMatchNewsOverride(rawM.newsOverride);
+                if (cleanNewsOverride) {
+                    cleanMatchObj.newsOverride = cleanNewsOverride;
+                    if (sanitizeMatchNewsMode(rawM.newsOverrideMode) === "rotate") {
+                        cleanMatchObj.newsOverrideMode = "rotate";
+                        cleanMatchObj.newsOverrideRandomCount = sanitizeMatchNewsRandomCount(rawM.newsOverrideRandomCount);
+                    }
+                }
                 sanitizedMatches.push(cleanMatchObj);
             });
 
@@ -9661,6 +10145,14 @@
                         note: String(m.note || "").trim().slice(0, 160)
                     };
                     if (surface) normMatch.surface = surface;
+                    const normOverride = sanitizeMatchNewsOverride(m.newsOverride);
+                    if (normOverride) {
+                        normMatch.newsOverride = normOverride;
+                        if (sanitizeMatchNewsMode(m.newsOverrideMode) === "rotate") {
+                            normMatch.newsOverrideMode = "rotate";
+                            normMatch.newsOverrideRandomCount = sanitizeMatchNewsRandomCount(m.newsOverrideRandomCount);
+                        }
+                    }
                     return normMatch;
                 });
             state.customNews = sanitizeCustomNewsList(state.customNews);
@@ -16426,7 +16918,17 @@
             if (idx === -1) return;
 
             if (!confirmDuplicateMatchIfNeeded(payload, id)) return;
-            state.matches[idx] = { id, ...payload };
+            const origM = state.matches[idx];
+            const preservedOverride = sanitizeMatchNewsOverride(origM && origM.newsOverride);
+            const nextMatchObj = { id, ...payload };
+            if (preservedOverride) {
+                nextMatchObj.newsOverride = preservedOverride;
+                if (sanitizeMatchNewsMode(origM && origM.newsOverrideMode) === "rotate") {
+                    nextMatchObj.newsOverrideMode = "rotate";
+                    nextMatchObj.newsOverrideRandomCount = sanitizeMatchNewsRandomCount(origM && origM.newsOverrideRandomCount);
+                }
+            }
+            state.matches[idx] = nextMatchObj;
             closeEditMatchModal();
             sortMatchesChronologically();
             const savedOk = saveState();
@@ -20160,7 +20662,7 @@
             return out;
         }
 
-        function buildMatchReportItems(m) {
+        function buildMatchReportItems(m, ignoreOverride = false) {
             const items = [];
             let seq = 1;
             const seen = new Set();
@@ -20173,6 +20675,26 @@
                 seen.add(sig);
                 items.push({ id: id || `rep_${seq++}`, kind, tag: cleanTag, text: cleanText, removed: false });
             };
+
+            // Ak má zápas vypálené redakčné správy z ADMIN editora (v1.81), predvyplň PNG report všetkými (najprv fixné orazítkované, pod nimi ostatné)
+            const burnedOverride = (!ignoreOverride && m) ? sanitizeMatchNewsOverride(m.newsOverride) : null;
+            if (burnedOverride && burnedOverride.length > 0) {
+                const orderedForPng = [
+                    ...burnedOverride.filter(ov => ov.pinned === true),
+                    ...burnedOverride.filter(ov => !ov.pinned)
+                ];
+                orderedForPng.forEach((ov, idx) => {
+                    items.push({
+                        id: ov.id || `ovr_${idx + 1}`,
+                        kind: VALID_MATCH_NEWS_KINDS.includes(ov.kind) ? ov.kind : "match",
+                        tag: ov.tag,
+                        text: ov.text,
+                        removed: false,
+                        fromAdminOverride: true
+                    });
+                });
+                return items;
+            }
 
             // 1. Poznámka k zápasu – vždy prítomná na 1. mieste (predvyplnená z m.note alebo pripravená na doplnenie)
             const existingNote = (m && m.note) ? String(m.note).trim() : "";
@@ -20807,7 +21329,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.79${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.81b${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -20960,11 +21482,13 @@
             matchReportMatchId = targetM.id;
             matchReportItems = buildMatchReportItems(targetM);
 
+            const hasBurned = Boolean(sanitizeMatchNewsOverride(targetM.newsOverride));
             const titleEl = document.getElementById("report-modal-title");
             if (titleEl) {
-                titleEl.textContent = isLatest
+                const baseTitle = isLatest
                     ? "Report posledného zápasu (PNG)"
                     : `Report zápasu #${targetM.index} · ${formatDateSk(targetM.date)} (PNG)`;
+                titleEl.textContent = hasBurned ? `${baseTitle} · 🔥 ADMIN` : baseTitle;
             }
 
             syncTvControlsUI();
@@ -21836,7 +22360,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.79${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.81b${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -21920,7 +22444,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.79${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.81b${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -23748,6 +24272,34 @@
             const pastMatches = matches.filter(m => getMatchAgeDays(m.date) >= 0);
             if (pastMatches.length === 0) return [];
 
+            const getMatchOverrideNews = (m) => {
+                if (!m) return null;
+                if (adminMatchNewsDraftPreview && adminMatchNewsDraftPreview.matchId === m.id && Array.isArray(adminMatchNewsDraftPreview.items) && adminMatchNewsDraftPreview.items.length > 0) {
+                    return resolveMatchNewsOverrideForTicker(
+                        adminMatchNewsDraftPreview.items,
+                        adminMatchNewsDraftPreview.mode,
+                        adminMatchNewsDraftPreview.randomCount
+                    );
+                }
+                const savedOv = sanitizeMatchNewsOverride(m.newsOverride);
+                if (savedOv && savedOv.length > 0) {
+                    return resolveMatchNewsOverrideForTicker(savedOv, m.newsOverrideMode, m.newsOverrideRandomCount);
+                }
+                return null;
+            };
+
+            // Ak je aktívny živý náhľad konkrétneho zápasu z ADMIN editora (aj staršieho), ukáž ho hneď na čele zápasových správ
+            if (adminMatchNewsDraftPreview && Array.isArray(adminMatchNewsDraftPreview.items) && adminMatchNewsDraftPreview.items.length > 0) {
+                const draftTarget = matches.find(x => x.id === adminMatchNewsDraftPreview.matchId);
+                if (draftTarget && getMatchAgeDays(draftTarget.date) >= 30) {
+                    return resolveMatchNewsOverrideForTicker(
+                        adminMatchNewsDraftPreview.items,
+                        adminMatchNewsDraftPreview.mode,
+                        adminMatchNewsDraftPreview.randomCount
+                    ) || [];
+                }
+            }
+
             const lastM = pastMatches[pastMatches.length - 1];
             const lastAge = getMatchAgeDays(lastM.date);
 
@@ -23758,8 +24310,10 @@
                 ? buildRecentMatchPool4H(m, matches)
                 : buildRecentMatchPool2H(m, matches);
 
-            // 7 až 29 dní -> výsledok + poznámka (ak je) + prípadný hlavný dopad zápasu
+            // 7 až 29 dní -> ak má vypálené správy z ADMIN, použi presne tie; inak automatika
             if (lastAge > 6) {
+                const burnedLast = getMatchOverrideNews(lastM);
+                if (burnedLast) return burnedLast;
                 const { resultItem, specialItems, jokeItems } = buildPool(lastM);
                 const impactItems = buildMatchImpactItems(lastM, matches);
                 const noteItem = buildReporterNoteItem(lastM);
@@ -23778,10 +24332,24 @@
                 return age >= 0 && age <= 6;
             }).slice(-3).reverse();
 
+            // Ak je aktívny náhľad staršieho zápasu (7-29 dní), zaraď ho na prvé miesto náhľadu
+            if (adminMatchNewsDraftPreview && Array.isArray(adminMatchNewsDraftPreview.items) && adminMatchNewsDraftPreview.items.length > 0) {
+                const inRecent = recentMatches.some(rm => rm.id === adminMatchNewsDraftPreview.matchId);
+                if (!inRecent) {
+                    const draftM = matches.find(x => x.id === adminMatchNewsDraftPreview.matchId);
+                    if (draftM) recentMatches.unshift(draftM);
+                }
+            }
+
             const result = [];
             const usedJokeTags = new Set();
 
             recentMatches.forEach((m, idx) => {
+                const burned = getMatchOverrideNews(m);
+                if (burned) {
+                    burned.forEach(item => result.push(item));
+                    return;
+                }
                 const { resultItem, specialItems, jokeItems } = buildPool(m);
                 const noteItem = buildReporterNoteItem(m);
 
@@ -24326,7 +24894,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.79! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.81b! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -25286,7 +25854,15 @@
         /* ==================== ADMIN EDITOR VLASTNÝCH NEWS (PIN 324380 · v1.78) ==================== */
         const ADMIN_NEWS_PIN = "324380";
         let adminNewsUnlocked = false;
+        let adminModalActiveTab = "personal"; // "personal" | "match"
         let adminNewsDraftPreview = null;
+        let adminMatchNewsDraftPreview = null;
+        let adminMatchEditorMatchId = null;
+        let adminMatchEditorRows = [];
+        let adminMatchEditorMode = "all"; // "all" | "rotate"
+        let adminMatchEditorRandomCount = 2;
+        let adminMatchEditorDirty = false;
+        let adminMatchLastFocusedEl = null;
         let newsRestartRaf1 = null;
         let newsRestartRaf2 = null;
         const ADMIN_NEWS_PRIO_LABELS = {
@@ -25337,7 +25913,33 @@
             }
         }
 
-        function openAdminNewsModal() {
+        function setAdminModalTab(tabKey) {
+            adminModalActiveTab = tabKey === "match" ? "match" : "personal";
+            const isMatch = adminModalActiveTab === "match";
+            const btnP = document.getElementById("admin-tab-btn-personal");
+            const btnM = document.getElementById("admin-tab-btn-match");
+            const panP = document.getElementById("admin-panel-personal");
+            const panM = document.getElementById("admin-panel-match");
+            if (btnP) btnP.classList.toggle("active", !isMatch);
+            if (btnM) btnM.classList.toggle("active", isMatch);
+            if (panP) panP.classList.toggle("active", !isMatch);
+            if (panM) panM.classList.toggle("active", isMatch);
+            if (isMatch) {
+                populateAdminMatchSelect(adminMatchEditorMatchId);
+                if (!adminMatchEditorMatchId || !computedMatches.some(x => x.id === adminMatchEditorMatchId)) {
+                    const latest = computedMatches.length > 0 ? computedMatches[computedMatches.length - 1] : null;
+                    loadAdminMatchNewsEditor(latest ? latest.id : null);
+                } else if (!adminMatchEditorDirty) {
+                    loadAdminMatchNewsEditor(adminMatchEditorMatchId);
+                } else {
+                    renderAdminMatchNewsEditorUI();
+                }
+            }
+            const bodyEl = document.querySelector("#admin-news-modal .tv-modal-body");
+            if (bodyEl) bodyEl.scrollTop = 0;
+        }
+
+        function openAdminNewsModal(initialTab = null) {
             const mod = document.getElementById("admin-news-modal");
             if (!mod) return;
             if (adminNewsDraftPreview) {
@@ -25354,6 +25956,8 @@
                 resetAdminNewsForm();
             }
             renderAdminNewsList();
+            populateAdminMatchSelect(adminMatchEditorMatchId);
+            setAdminModalTab(initialTab || adminModalActiveTab || "personal");
             mod.classList.add("open");
             const bodyEl = mod.querySelector(".tv-modal-body");
             if (bodyEl) bodyEl.scrollTop = 0;
@@ -25700,6 +26304,622 @@
             }
         }
 
+        /* ==================== ADMIN: REDAKČNÝ STÔL SPRÁV K ZÁPASU (v1.80) ==================== */
+        function buildAllCandidateNewsForMatch(m) {
+            if (!m) return [];
+            const out = [];
+            const seen = new Set();
+            const pushUniq = (kind, tag, text) => {
+                const cTag = String(tag || "").trim().slice(0, 42);
+                const cText = String(text || "").trim().slice(0, 240);
+                if (!cText) return;
+                const sig = `${cTag}|${cText}`;
+                if (seen.has(sig)) return;
+                seen.add(sig);
+                out.push({
+                    id: `mno_${out.length + 1}`,
+                    kind: VALID_MATCH_NEWS_KINDS.includes(kind) ? kind : "match",
+                    tag: cTag || "ZÁPAS",
+                    text: cText
+                });
+            };
+
+            const pool = m.type === "4H"
+                ? buildRecentMatchPool4H(m, computedMatches)
+                : buildRecentMatchPool2H(m, computedMatches);
+
+            const isLatest = computedMatches.length > 0 && computedMatches[computedMatches.length - 1].id === m.id;
+            if (pool && pool.resultItem) {
+                const resTag = isLatest
+                    ? pool.resultItem.tag
+                    : (m.type === "4H" ? "VÝSLEDOK ŠTVORHRY" : "VÝSLEDOK DVOJHRY");
+                pushUniq("match", resTag, pool.resultItem.text);
+            }
+
+            const noteItem = buildReporterNoteItem(m);
+            if (noteItem) {
+                pushUniq("note", noteItem.tag, noteItem.text);
+            }
+
+            buildLeaderChangesForMatch(m).forEach(lc => {
+                pushUniq("leader", lc.tag, lc.text);
+            });
+
+            buildMatchImpactItems(m, computedMatches).forEach(imp => {
+                pushUniq(imp.kind || "match", imp.tag, imp.text);
+            });
+
+            ((pool && pool.specialItems) || []).forEach(sp => {
+                pushUniq("match", sp.tag, sp.text);
+            });
+
+            if (typeof m.eloDeltaA === "number" && !isNaN(m.eloDeltaA)) {
+                const s1 = Number(m.sets1) || 0;
+                const s2 = Number(m.sets2) || 0;
+                const swapOrder = s2 > s1;
+                const topName = swapOrder ? m.teamNameB : m.teamNameA;
+                const botName = swapOrder ? m.teamNameA : m.teamNameB;
+                const topDelta = swapOrder ? m.eloDeltaB : m.eloDeltaA;
+                const botDelta = swapOrder ? m.eloDeltaA : m.eloDeltaB;
+                const topTeam = swapOrder ? m.eloTeam2 : m.eloTeam1;
+                const botTeam = swapOrder ? m.eloTeam1 : m.eloTeam2;
+                const fmtD = (d) => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+                const eloLabel = m.type === "4H" ? "ELO 4H" : "ELO 2H";
+                const topAfter = Array.isArray(topTeam) && topTeam.length > 0
+                    ? ` (${topTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    : "";
+                const botAfter = Array.isArray(botTeam) && botTeam.length > 0
+                    ? ` (${botTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    : "";
+                pushUniq("match", `POSUN ${eloLabel}`, `${topName}: ${fmtD(topDelta)}${topAfter} · ${botName}: ${fmtD(botDelta)}${botAfter}.`);
+            }
+
+            ((pool && pool.jokeItems) || []).forEach(jk => {
+                pushUniq("joke", jk.tag, jk.text);
+            });
+
+            return out;
+        }
+
+        function buildMatchVariableChips(m) {
+            if (!m) return [];
+            const chips = [];
+            const seenVal = new Set();
+            const addChip = (label, value) => {
+                const v = String(value || "").trim();
+                if (!v || seenVal.has(v)) return;
+                seenVal.add(v);
+                chips.push({ label, value: v });
+            };
+
+            const s1 = Number(m.sets1) || 0;
+            const s2 = Number(m.sets2) || 0;
+            const swap = s2 > s1;
+            const topName = swap ? m.teamNameB : m.teamNameA;
+            const botName = swap ? m.teamNameA : m.teamNameB;
+            const topSets = swap ? s2 : s1;
+            const botSets = swap ? s1 : s2;
+            const topPts = swap ? m.ptsB : m.ptsA;
+
+            addChip("Duel", `#${m.index}`);
+            addChip("Dátum", formatDateSk(m.date));
+            addChip(s1 === s2 ? "Strana A" : "Víťaz", topName);
+            addChip(s1 === s2 ? "Strana B" : "Súper", botName);
+
+            // Jednotliví hráči zo zápasu (pre pohodlné vkladanie mien)
+            [...(m.team1 || []), ...(m.team2 || [])].forEach(pid => {
+                const pl = state.players.find(p => p.id === pid);
+                if (pl && pl.name) addChip("Hráč", pl.name);
+            });
+
+            addChip("Sety", `${topSets}:${botSets}`);
+            const orderedGems = formatGemsForOrder(m.gems, !swap);
+            if (orderedGems) addChip("Gemy", orderedGems);
+
+            const surfMeta = getSurfaceMeta(m.surface);
+            if (surfMeta) addChip("Povrch", surfMeta.label);
+
+            if (topPts > 0) addChip("Body", `+${formatPts(topPts)} b`);
+
+            if (typeof m.eloDeltaA === "number" && !isNaN(m.eloDeltaA)) {
+                const topDelta = swap ? m.eloDeltaB : m.eloDeltaA;
+                const dSign = topDelta > 0 ? `+${topDelta.toFixed(1)}` : topDelta.toFixed(1);
+                addChip(`Δ ELO ${m.type}`, dSign);
+            }
+
+            // Rýchla bilancia H2H po tento zápas (pre 2H)
+            if (m.type === "2H" && m.team1.length === 1 && m.team2.length === 1) {
+                const idTop = swap ? m.team2[0] : m.team1[0];
+                const idBot = swap ? m.team1[0] : m.team2[0];
+                let wTop = 0, wBot = 0, dr = 0;
+                for (let i = 0; i < computedMatches.length; i++) {
+                    const cm = computedMatches[i];
+                    if (cm.type === "2H") {
+                        const a = cm.team1[0], b = cm.team2[0];
+                        if ((a === idTop && b === idBot) || (a === idBot && b === idTop)) {
+                            const cs1 = Number(cm.sets1) || 0, cs2 = Number(cm.sets2) || 0;
+                            if (cs1 === cs2) dr++;
+                            else if ((a === idTop && cs1 > cs2) || (b === idTop && cs2 > cs1)) wTop++;
+                            else wBot++;
+                        }
+                    }
+                    if (cm.id === m.id) break;
+                }
+                addChip("H2H", dr > 0 ? `${wTop}:${wBot} (${dr}R)` : `${wTop}:${wBot}`);
+            }
+
+            return chips;
+        }
+
+        function highlightMatchVarsInText(rawText, m) {
+            const safe = escapeHtml(rawText || "");
+            if (!safe || !m) return safe;
+
+            const playerTokens = new Set();
+            [...(m.team1 || []), ...(m.team2 || [])].forEach(pid => {
+                const pl = state.players.find(p => p.id === pid);
+                if (!pl || !pl.name) return;
+                [pl.name, skName(pl.name, "gen"), skName(pl.name, "dat"), skName(pl.name, "acc"), skName(pl.name, "ins")]
+                    .filter(f => f && f.length >= 2)
+                    .forEach(f => playerTokens.add(escapeHtml(f)));
+            });
+            const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const sortedPlayers = [...playerTokens].sort((a, b) => b.length - a.length);
+
+            const parts = [];
+            if (sortedPlayers.length > 0) {
+                parts.push(`(?<player>(?<![\\p{L}\\d])(?:${sortedPlayers.map(escRe).join("|")})(?![\\p{L}\\d]))`);
+            }
+            // Metriky: ELO posuny (+12.4 / -8.5), body (+0.50 b / 1.00 bodu), percentá (62,5 %), #číslo zápasu
+            parts.push(`(?<metric>#\\d+|[+-]\\d+(?:[.,]\\d+)?\\s*(?:b(?:od(?:u|y|ov)?)?|ELO|%)?|\\d+(?:[.,]\\d+)?\\s*(?:%|b(?:od(?:u|y|ov)?)?)(?![\\p{L}\\d]))`);
+            // Skóre (6:4, 7:6, 2:1), dátumy (21.11.2026)
+            parts.push(`(?<score>\\b\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\b|\\b\\d{1,2}:\\d{1,2}\\b)`);
+
+            try {
+                const rx = new RegExp(parts.join("|"), "giu");
+                return safe.replace(rx, (match, ...args) => {
+                    const groups = args[args.length - 1] || {};
+                    if (groups.player) return `<mark class="amn-var is-player">${match}</mark>`;
+                    if (groups.metric) return `<mark class="amn-var is-metric">${match}</mark>`;
+                    return `<mark class="amn-var">${match}</mark>`;
+                });
+            } catch (e) {
+                return safe;
+            }
+        }
+
+        function populateAdminMatchSelect(selectedId = null) {
+            const sel = document.getElementById("admin-match-select");
+            if (!sel) return;
+            if (computedMatches.length === 0) {
+                sel.innerHTML = `<option value="">— Zatiaľ nie sú zapísané žiadne zápasy —</option>`;
+                sel.disabled = true;
+                return;
+            }
+            sel.disabled = false;
+            const listDesc = [...computedMatches].reverse();
+            const targetId = (selectedId && computedMatches.some(x => x.id === selectedId))
+                ? selectedId
+                : listDesc[0].id;
+
+            sel.innerHTML = listDesc.map(m => {
+                const hasOv = Boolean(sanitizeMatchNewsOverride(m.newsOverride));
+                const flag = hasOv ? "🔥 " : "";
+                const s1 = Number(m.sets1) || 0, s2 = Number(m.sets2) || 0;
+                const swap = s2 > s1;
+                const tA = swap ? m.teamNameB : m.teamNameA;
+                const tB = swap ? m.teamNameA : m.teamNameB;
+                const sc = `${swap ? s2 : s1}:${swap ? s1 : s2}`;
+                return `<option value="${escapeHtml(m.id)}">${flag}#${m.index} · ${formatDateSk(m.date)} · ${escapeHtml(m.type)} · ${escapeHtml(tA)} vs ${escapeHtml(tB)} (${sc})</option>`;
+            }).join("");
+            sel.value = targetId;
+        }
+
+        function loadAdminMatchNewsEditor(matchId) {
+            const m = matchId ? computedMatches.find(x => x.id === matchId) : null;
+            adminMatchEditorMatchId = m ? m.id : null;
+            adminMatchEditorDirty = false;
+            adminMatchLastFocusedEl = null;
+
+            if (!m) {
+                adminMatchEditorRows = [];
+                adminMatchEditorMode = "all";
+                adminMatchEditorRandomCount = 2;
+                renderAdminMatchNewsEditorUI();
+                return;
+            }
+
+            const existingOv = sanitizeMatchNewsOverride(m.newsOverride);
+            if (existingOv && existingOv.length > 0) {
+                adminMatchEditorRows = existingOv.map((it, idx) => ({
+                    id: it.id || `mno_${idx + 1}`,
+                    kind: it.kind || "match",
+                    tag: it.tag,
+                    text: it.text,
+                    pinned: it.pinned === true
+                }));
+                adminMatchEditorMode = sanitizeMatchNewsMode(m.newsOverrideMode);
+                adminMatchEditorRandomCount = sanitizeMatchNewsRandomCount(m.newsOverrideRandomCount);
+            } else {
+                adminMatchEditorRows = buildAllCandidateNewsForMatch(m).map(it => ({ ...it, pinned: false }));
+                adminMatchEditorMode = "all";
+                adminMatchEditorRandomCount = 2;
+            }
+            renderAdminMatchNewsEditorUI();
+        }
+
+        function setAdminMatchNewsMode(mode) {
+            const next = sanitizeMatchNewsMode(mode);
+            if (adminMatchEditorMode !== next) {
+                adminMatchEditorMode = next;
+                adminMatchEditorDirty = true;
+            }
+            renderAdminMatchNewsEditorUI();
+        }
+
+        function stepAdminMatchRandomCount(delta) {
+            const next = sanitizeMatchNewsRandomCount(adminMatchEditorRandomCount + Number(delta || 0));
+            if (adminMatchEditorRandomCount !== next) {
+                adminMatchEditorRandomCount = next;
+                adminMatchEditorDirty = true;
+            }
+            renderAdminMatchNewsEditorUI();
+        }
+
+        function toggleAdminMatchRowPinned(idx) {
+            const row = adminMatchEditorRows[idx];
+            if (!row) return;
+            row.pinned = !row.pinned;
+            adminMatchEditorDirty = true;
+            renderAdminMatchNewsEditorUI();
+        }
+
+        function renderAdminMatchNewsEditorUI() {
+            const m = adminMatchEditorMatchId ? computedMatches.find(x => x.id === adminMatchEditorMatchId) : null;
+            const pillEl = document.getElementById("amn-mode-pill");
+            const sumEl = document.getElementById("amn-match-summary");
+            const cntEl = document.getElementById("amn-rows-count");
+            const factsBox = document.getElementById("amn-facts-box");
+            const factsChips = document.getElementById("amn-facts-chips");
+            const listEl = document.getElementById("admin-match-news-list");
+            const resetBtn = document.getElementById("btn-amn-reset-auto");
+            const burnBtn = document.getElementById("btn-amn-burn");
+            const pngBtn = document.getElementById("btn-amn-open-png");
+
+            if (!m) {
+                if (pillEl) { pillEl.textContent = "Bez zápasov"; pillEl.className = "amn-mode-pill"; }
+                if (sumEl) sumEl.textContent = "Najprv zapíš aspoň jeden zápas.";
+                if (cntEl) cntEl.textContent = "0 správ";
+                const rotBoxEmpty = document.getElementById("amn-rotation-box");
+                if (rotBoxEmpty) rotBoxEmpty.style.display = "none";
+                if (factsBox) factsBox.style.display = "none";
+                if (listEl) listEl.innerHTML = `<div style="font-size:0.78rem; color:var(--text-muted); padding:6px;">Žiadny zápas na úpravu.</div>`;
+                if (resetBtn) resetBtn.disabled = true;
+                if (burnBtn) burnBtn.disabled = true;
+                if (pngBtn) pngBtn.disabled = true;
+                return;
+            }
+
+            const savedOv = sanitizeMatchNewsOverride(m.newsOverride);
+            const hasSaved = Boolean(savedOv && savedOv.length > 0);
+            if (pillEl) {
+                if (adminMatchEditorDirty) {
+                    pillEl.textContent = "✏️ Neuložené úpravy";
+                    pillEl.className = "amn-mode-pill is-dirty";
+                } else if (hasSaved) {
+                    const isSavedRot = sanitizeMatchNewsMode(m.newsOverrideMode) === "rotate";
+                    pillEl.textContent = isSavedRot
+                        ? `🔥 Vypálené · rotácia (${savedOv.length})`
+                        : `🔥 Vypálené natvrdo (${savedOv.length})`;
+                    pillEl.className = "amn-mode-pill is-burned";
+                } else {
+                    pillEl.textContent = "🤖 Automatika (všetky návrhy)";
+                    pillEl.className = "amn-mode-pill";
+                }
+            }
+
+            const pinnedCnt = adminMatchEditorRows.filter(r => r.pinned === true).length;
+            const poolCnt = adminMatchEditorRows.length - pinnedCnt;
+            const isRotate = adminMatchEditorMode === "rotate";
+            const effRandom = Math.min(poolCnt, adminMatchEditorRandomCount);
+
+            const age = getMatchAgeDays(m.date);
+            const ageNote = age < 7 ? "aktívny v NEWS (0–6 dní)" : (age < 30 ? "starší v NEWS (7–29 dní)" : "archívny (>29 dní · platí pre PNG Report)");
+            if (sumEl) sumEl.textContent = `Zápas #${m.index} · ${formatDateSk(m.date)} · ${ageNote}`;
+            if (cntEl) {
+                cntEl.textContent = pinnedCnt > 0
+                    ? `${skCount(adminMatchEditorRows.length, "správa", "správy", "správ")} (${pinnedCnt} fix.)`
+                    : skCount(adminMatchEditorRows.length, "správa", "správy", "správ");
+            }
+            if (resetBtn) resetBtn.disabled = !hasSaved;
+            if (burnBtn) burnBtn.disabled = false;
+            if (pngBtn) pngBtn.disabled = false;
+
+            const rotBox = document.getElementById("amn-rotation-box");
+            const modeAllBtn = document.getElementById("amn-mode-btn-all");
+            const modeRotBtn = document.getElementById("amn-mode-btn-rotate");
+            const rotCtrls = document.getElementById("amn-rotation-controls");
+            const rotVal = document.getElementById("amn-random-count-val");
+            const rotSum = document.getElementById("amn-rotation-summary");
+            if (rotBox) rotBox.style.display = "flex";
+            if (modeAllBtn) modeAllBtn.classList.toggle("active", !isRotate);
+            if (modeRotBtn) modeRotBtn.classList.toggle("active", isRotate);
+            if (rotCtrls) rotCtrls.style.display = isRotate ? "block" : "none";
+            if (rotVal) rotVal.textContent = `+${adminMatchEditorRandomCount} ks`;
+            if (rotSum) {
+                const totalShown = pinnedCnt + effRandom;
+                rotSum.textContent = `V NEWS pôjde vždy ${pinnedCnt} fix. (bordové) + náhodne ${effRandom} z ${poolCnt} ostatných = spolu ${skCount(totalShown, "správa", "správy", "správ")}. (PNG Report predvyplní všetkých ${adminMatchEditorRows.length}.)`;
+            }
+
+            const chips = buildMatchVariableChips(m);
+            if (factsBox && factsChips) {
+                factsBox.style.display = chips.length > 0 ? "block" : "none";
+                factsChips.innerHTML = chips.map((c, idx) => `
+                    <button type="button" class="amn-fact-chip" data-fact-idx="${idx}" onclick="insertAdminMatchFactChip(${idx})" title="Vložiť „${escapeHtml(c.value)}“ na miesto kurzora">
+                        <span class="amn-fact-chip-lbl">${escapeHtml(c.label)}</span>
+                        <span>${escapeHtml(c.value)}</span>
+                    </button>
+                `).join("");
+            }
+
+            if (!listEl) return;
+            if (adminMatchEditorRows.length === 0) {
+                listEl.innerHTML = `<div class="settings-section-card" style="font-size:0.78rem; color:var(--text-muted); text-align:center;">Zoznam správ je prázdny. Klikni na <strong>+ Pridať hlášku</strong> alebo <strong>Načítať auto-pool</strong>.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = adminMatchEditorRows.map((row, idx) => {
+                const k = VALID_MATCH_NEWS_KINDS.includes(row.kind) ? row.kind : "match";
+                const isPinned = row.pinned === true;
+                const previewHtml = `<span class="news-tag">${escapeHtml(row.tag || "ZÁPAS")}:</span>${highlightMatchVarsInText(row.text, m)}`;
+                const stampTip = isPinned
+                    ? "Orazítkované (VŽDY sa zobrazí v NEWS) – kliknutím zrušíš razítko"
+                    : "Orazítkovať ako fixnú správu (zobrazí sa vždy · bordový podklad)";
+                return `
+                    <div class="amn-row-card kind-${k} ${isPinned ? "is-pinned" : ""}" data-amn-idx="${idx}">
+                        <div class="amn-row-top">
+                            <input type="text" class="amn-row-tag-inp" maxlength="42" value="${escapeHtml(row.tag || "")}" placeholder="TITULOK SPRÁVY..." onfocus="adminMatchLastFocusedEl = this" oninput="updateAdminMatchRowField(${idx}, 'tag', this.value)">
+                            <select class="amn-row-kind-sel" onchange="updateAdminMatchRowField(${idx}, 'kind', this.value)" title="Farba / kategória riadku (pre PNG Report)">
+                                <option value="match" ${k === "match" ? "selected" : ""}>Zápas</option>
+                                <option value="leader" ${k === "leader" ? "selected" : ""}>Líder</option>
+                                <option value="note" ${k === "note" ? "selected" : ""}>Poznámka</option>
+                                <option value="joke" ${k === "joke" ? "selected" : ""}>Fór</option>
+                            </select>
+                            <div class="amn-row-btns">
+                                <button type="button" class="amn-stamp-btn ${isPinned ? "is-stamped" : ""}" onclick="toggleAdminMatchRowPinned(${idx})" title="${escapeHtml(stampTip)}" aria-pressed="${isPinned ? "true" : "false"}">
+                                    <i class="fa-solid fa-stamp"></i>${isPinned ? " VŽDY" : ""}
+                                </button>
+                                <button type="button" class="icon-btn" onclick="moveAdminMatchNewsRow(${idx}, -1)" ${idx === 0 ? "disabled style='opacity:0.35;'" : ""} title="Posunúť vyššie">▲</button>
+                                <button type="button" class="icon-btn" onclick="moveAdminMatchNewsRow(${idx}, 1)" ${idx === adminMatchEditorRows.length - 1 ? "disabled style='opacity:0.35;'" : ""} title="Posunúť nižšie">▼</button>
+                                <button type="button" class="icon-btn" style="background:linear-gradient(180deg,#dc2626,#991b1b); border-color:#f87171;" onclick="deleteAdminMatchNewsRow(${idx})" title="Odstrániť túto správu">✕</button>
+                            </div>
+                        </div>
+                        <textarea class="admin-news-textarea" style="min-height:54px;" maxlength="240" placeholder="Text správy k zápasu..." onfocus="adminMatchLastFocusedEl = this" oninput="updateAdminMatchRowField(${idx}, 'text', this.value)">${escapeHtml(row.text || "")}</textarea>
+                        <div class="amn-row-preview" id="amn-row-prev-${idx}">${previewHtml}</div>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function updateAdminMatchRowField(idx, field, val) {
+            const row = adminMatchEditorRows[idx];
+            if (!row) return;
+            adminMatchEditorDirty = true;
+            if (field === "tag") {
+                row.tag = String(val || "").slice(0, 42);
+            } else if (field === "text") {
+                row.text = String(val || "").slice(0, 240);
+            } else if (field === "kind") {
+                row.kind = VALID_MATCH_NEWS_KINDS.includes(val) ? val : "match";
+                renderAdminMatchNewsEditorUI();
+                return;
+            }
+            const m = adminMatchEditorMatchId ? computedMatches.find(x => x.id === adminMatchEditorMatchId) : null;
+            const prevEl = document.getElementById(`amn-row-prev-${idx}`);
+            if (prevEl && m) {
+                prevEl.innerHTML = `<span class="news-tag">${escapeHtml(row.tag || "ZÁPAS")}:</span>${highlightMatchVarsInText(row.text, m)}`;
+            }
+            const pillEl = document.getElementById("amn-mode-pill");
+            if (pillEl) {
+                pillEl.textContent = "✏️ Neuložené úpravy";
+                pillEl.className = "amn-mode-pill is-dirty";
+            }
+        }
+
+        function insertAdminMatchFactChip(chipIdx) {
+            const m = adminMatchEditorMatchId ? computedMatches.find(x => x.id === adminMatchEditorMatchId) : null;
+            if (!m) return;
+            const chips = buildMatchVariableChips(m);
+            const chip = chips[chipIdx];
+            if (!chip) return;
+
+            let target = adminMatchLastFocusedEl;
+            if (!target || !document.body.contains(target)) {
+                target = document.querySelector("#admin-match-news-list textarea");
+            }
+            if (!target) {
+                addAdminMatchNewsRow();
+                target = document.querySelector("#admin-match-news-list textarea");
+            }
+            if (!target) return;
+
+            const start = typeof target.selectionStart === "number" ? target.selectionStart : target.value.length;
+            const end = typeof target.selectionEnd === "number" ? target.selectionEnd : target.value.length;
+            const before = target.value.slice(0, start);
+            const after = target.value.slice(end);
+            const needSpaceBefore = before.length > 0 && !/\s$/.test(before);
+            const insertStr = (needSpaceBefore ? " " : "") + chip.value;
+            const maxLen = Number(target.getAttribute("maxlength")) || 240;
+            const nextVal = (before + insertStr + after).slice(0, maxLen);
+            target.value = nextVal;
+            target.focus();
+            const caret = Math.min(nextVal.length, start + insertStr.length);
+            try { target.setSelectionRange(caret, caret); } catch (e) {}
+            target.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+
+        function addAdminMatchNewsRow() {
+            if (!adminMatchEditorMatchId) return;
+            adminMatchEditorDirty = true;
+            adminMatchEditorRows.push({
+                id: generateUniqueId("mno"),
+                kind: "joke",
+                tag: "ZO ZÁKULISIA",
+                text: "",
+                pinned: false
+            });
+            renderAdminMatchNewsEditorUI();
+            const listEl = document.getElementById("admin-match-news-list");
+            const textareas = listEl ? listEl.querySelectorAll("textarea") : [];
+            const lastTa = textareas.length > 0 ? textareas[textareas.length - 1] : null;
+            if (lastTa) {
+                lastTa.scrollIntoView({ behavior: "smooth", block: "center" });
+                setTimeout(() => lastTa.focus(), 120);
+            }
+        }
+
+        function moveAdminMatchNewsRow(idx, delta) {
+            const target = idx + delta;
+            if (idx < 0 || target < 0 || target >= adminMatchEditorRows.length) return;
+            const [moved] = adminMatchEditorRows.splice(idx, 1);
+            adminMatchEditorRows.splice(target, 0, moved);
+            adminMatchEditorDirty = true;
+            renderAdminMatchNewsEditorUI();
+        }
+
+        function deleteAdminMatchNewsRow(idx) {
+            if (idx < 0 || idx >= adminMatchEditorRows.length) return;
+            adminMatchEditorRows.splice(idx, 1);
+            adminMatchEditorDirty = true;
+            renderAdminMatchNewsEditorUI();
+        }
+
+        function reloadAdminMatchAutoPool() {
+            const m = adminMatchEditorMatchId ? computedMatches.find(x => x.id === adminMatchEditorMatchId) : null;
+            if (!m) return;
+            adminMatchEditorRows = buildAllCandidateNewsForMatch(m).map(it => ({ ...it, pinned: false }));
+            adminMatchEditorDirty = true;
+            renderAdminMatchNewsEditorUI();
+            showToast(`Načítaných všetkých ${adminMatchEditorRows.length} automatických návrhov k zápasu #${m.index}.`);
+        }
+
+        function saveAdminMatchNewsOverride(silent = false) {
+            if (!adminMatchEditorMatchId) return false;
+            const rawMatch = state.matches.find(x => x.id === adminMatchEditorMatchId);
+            if (!rawMatch) return false;
+
+            const cleaned = sanitizeMatchNewsOverride(adminMatchEditorRows);
+            if (!cleaned || cleaned.length === 0) {
+                showToast("Nechaj aspoň jednu vyplnenú správu, alebo klikni „Vrátiť automatiku“.", true);
+                return false;
+            }
+
+            const mode = sanitizeMatchNewsMode(adminMatchEditorMode);
+            const randCnt = sanitizeMatchNewsRandomCount(adminMatchEditorRandomCount);
+            const pinnedCnt = cleaned.filter(it => it.pinned === true).length;
+            if (mode === "rotate" && pinnedCnt === 0 && randCnt === 0) {
+                showToast("Pri rotácii nastav aspoň +1 náhodnú správu alebo orazítkuj aspoň 1 fixnú správu.", true);
+                return false;
+            }
+
+            rawMatch.newsOverride = cleaned;
+            if (mode === "rotate") {
+                rawMatch.newsOverrideMode = "rotate";
+                rawMatch.newsOverrideRandomCount = randCnt;
+            } else {
+                delete rawMatch.newsOverrideMode;
+                delete rawMatch.newsOverrideRandomCount;
+            }
+
+            adminMatchEditorRows = cleaned.map(it => ({ ...it, pinned: it.pinned === true }));
+            adminMatchEditorDirty = false;
+            adminMatchNewsDraftPreview = null;
+
+            saveState(true);
+            recalculateAll();
+            populateAdminMatchSelect(adminMatchEditorMatchId);
+            renderAdminMatchNewsEditorUI();
+            renderNewsTicker(true);
+            if (!silent) {
+                const rotInfo = mode === "rotate"
+                    ? ` (rotácia: ${pinnedCnt} fix. + ${Math.min(cleaned.length - pinnedCnt, randCnt)} náh.)`
+                    : "";
+                showToast(`Vypálených ${skCount(cleaned.length, "správa", "správy", "správ")}${rotInfo}! Stiahni databázu.`);
+            }
+            return true;
+        }
+
+        function clearAdminMatchNewsOverride() {
+            if (!adminMatchEditorMatchId) return;
+            const rawMatch = state.matches.find(x => x.id === adminMatchEditorMatchId);
+            if (!rawMatch) return;
+            if (!confirm("Vymazať vypálené správy pre tento zápas a vrátiť pôvodnú automatiku?")) return;
+
+            delete rawMatch.newsOverride;
+            delete rawMatch.newsOverrideMode;
+            delete rawMatch.newsOverrideRandomCount;
+            adminMatchNewsDraftPreview = null;
+            saveState(true);
+            recalculateAll();
+            populateAdminMatchSelect(adminMatchEditorMatchId);
+            loadAdminMatchNewsEditor(adminMatchEditorMatchId);
+            renderNewsTicker(true);
+            showToast("Zápas bol vrátený do automatického režimu správ.");
+        }
+
+        function openAdminMatchPngReport() {
+            if (!adminMatchEditorMatchId) return;
+            if (adminMatchEditorDirty) {
+                if (confirm("Máš neuložené úpravy správ k tomuto zápasu. Chceš ich najprv vypáliť, aby sa hneď prepísali do PNG Reportu?")) {
+                    if (!saveAdminMatchNewsOverride(true)) return;
+                }
+            }
+            const targetId = adminMatchEditorMatchId;
+            closeAdminNewsModal();
+            openMatchReportModal(targetId);
+        }
+
+        function previewAdminActiveTabInTicker() {
+            if (adminModalActiveTab !== "match") {
+                previewAdminNewsInTicker();
+                return;
+            }
+            const cleaned = sanitizeMatchNewsOverride(adminMatchEditorRows);
+            if (!adminMatchEditorMatchId || !cleaned || cleaned.length === 0) {
+                showToast("Nie sú žiadne vyplnené správy k zápasu na náhľad.", true);
+                return;
+            }
+            const mode = sanitizeMatchNewsMode(adminMatchEditorMode);
+            const randCnt = sanitizeMatchNewsRandomCount(adminMatchEditorRandomCount);
+            const pinnedCnt = cleaned.filter(it => it.pinned === true).length;
+            if (mode === "rotate" && pinnedCnt === 0 && randCnt === 0) {
+                showToast("Pri rotácii nastav aspoň +1 náhodnú správu alebo orazítkuj aspoň 1 fixnú správu.", true);
+                return;
+            }
+
+            adminMatchNewsDraftPreview = {
+                matchId: adminMatchEditorMatchId,
+                items: cleaned,
+                mode,
+                randomCount: randCnt
+            };
+            newsTickerPaused = false;
+            const bar = document.getElementById("news-bar");
+            const label = document.getElementById("news-badge-label");
+            const vp = document.getElementById("news-viewport");
+            if (bar) bar.classList.remove("is-paused", "ignore-hover");
+            if (label) label.textContent = "NEWS";
+            if (vp) vp.setAttribute("aria-pressed", "false");
+
+            closeAdminNewsModal();
+            renderNewsTicker(true, true);
+            const shownCnt = mode === "rotate" ? (pinnedCnt + Math.min(cleaned.length - pinnedCnt, randCnt)) : cleaned.length;
+            const modeInfo = mode === "rotate" ? `${pinnedCnt} fix. + ${Math.min(cleaned.length - pinnedCnt, randCnt)} náh.` : `${shownCnt}×`;
+            showToast(adminMatchEditorDirty
+                ? `Náhľad správ zápasu v lište (${modeInfo}) – nezabudni ich v ADMIN vypáliť!`
+                : `NEWS lišta spustená so správami zápasu (${modeInfo})!`);
+        }
+
         function renderNewsTicker(forceReshuffle = false, immediateStartFromLeft = false) {
             renderTableWeatherBox();
             const groupA = document.getElementById("news-ticker-group-a");
@@ -25717,9 +26937,10 @@
                 elo: { K: getEloK(), D: getEloD() },
                 locSig,
                 draftPrev: adminNewsDraftPreview || null,
+                matchDraftPrev: adminMatchNewsDraftPreview || null,
                 customNews: (state.customNews || []).map(c => ({ id: c.id, tg: c.tag, tx: c.text, pr: c.priority, ex: c.expiresAt, en: c.enabled })),
                 players: computedPlayers.map(p => ({ id: p.id, n: p.name, pts: p.points, r: p.rank, m: p.matches, e30: p.expiring30 })),
-                matches: computedMatches.map(m => ({ id: m.id, d: m.date || "", t: m.type, s1: m.sets1, s2: m.sets2, g: m.gems || "", sf: m.surface || "", n: m.note || "" }))
+                matches: computedMatches.map(m => ({ id: m.id, d: m.date || "", t: m.type, s1: m.sets1, s2: m.sets2, g: m.gems || "", sf: m.surface || "", n: m.note || "", no: m.newsOverride || null, nom: m.newsOverrideMode || "all", nor: m.newsOverrideRandomCount ?? null }))
             });
             const weatherSig = JSON.stringify({ fetchedAt: homeWeatherFetchedAt, failed: homeWeatherFailed ? 1 : 0, seed: weatherQuipSeed });
             const fullSig = `${dataSig}__${weatherSig}`;
