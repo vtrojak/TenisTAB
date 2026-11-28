@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 808,
+  "databaseRevision": 858,
   "config": {
     "windowMonths": 12,
     "K": 32,
@@ -1430,14 +1430,8 @@
       "leader_monopoly": {
         "single": "{hráč} kraľuje tabuľke ({body}) s náskokom {rozdiel} pred {hráčom2}. Zvyšok ligy tajne rokuje, či mu nepridelia drevenú raketu."
       },
-      "close_equal": {
-        "single": "{hráč} s {hráčom2} majú v tabuľke zhodne {body} – o poradí rozhodujú pomocné kritériá!"
-      },
-      "close_gap": {
-        "single": "{hráča} a {hráča2} v tabuľke delí iba {rozdiel}."
-      },
       "defending_pts": {
-        "single": "{hráča} v najbližších 30 dňoch čaká obhajoba {body}{kedy}."
+        "single": "{hráča} v najbližších 30 dňoch čaká obhajoba {bodyGen}{kedy}."
       },
       "streak_fire_1": {
         "single": "{hráč} je v tranze – ťahá už {hodnota} v rade! Súperi si myslia, že má nelegálne vypletenú raketu."
@@ -1463,7 +1457,8 @@
       },
       "stat_sponsor": {
         "tag": "DARCA",
-        "plural": "{hráč} majú na konte zhodne po {hodnota} – v klube im zvažujú udeliť čestný titul „Bodoví mecenáši“."
+        "single": "{hráč1} má na konte už {hodnota} – špekuluje sa, že občas hráva s raketou na bedminton.",
+        "plural": "{hráč1} a {ostatní} majú na konte zhodne po {hodnota} – v klube im zvažujú udeliť čestný titul „Bodoví mecenáši“."
       },
       "stat_basement": {
         "tag": "NA DNE"
@@ -1524,9 +1519,15 @@
       },
       "tip_12": {
         "sleeping": true
+      },
+      "close_equal": {
+        "single": "{hráč} s {hráčom2} majú v tabuľke zhodne {bodyNom} – o poradí rozhodujú pomocné kritériá!"
+      },
+      "leader_drama": {
+        "single": "{hráč2} dýcha na chrbát lídrovi {hráčovi} – rozdiel medzi nimi? {rozdielNom}!"
       }
     }
   },
-  "updatedAt": 1795882132445,
-  "exportedAtIso": "2026-11-28T16:10:28.154Z"
+  "updatedAt": 1795889579746,
+  "exportedAtIso": "2026-11-28T18:15:22.708Z"
 }
