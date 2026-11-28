@@ -6413,6 +6413,14 @@
             border-color: #334155;
         }
 
+        .ks-season-chip.is-missed {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #f87171;
+            text-decoration: line-through;
+            opacity: 0.90;
+        }
+
         .ks-empty {
             font-size: 0.77rem;
             font-weight: 700;
@@ -7826,7 +7834,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.88</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.89</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -7869,7 +7877,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.88</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.89</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -9563,7 +9571,7 @@
                             <select id="ab-filter-cat" onchange="renderAdminBadgesTab()"
                                 data-ctx-title="Filter kategórie odznakov"
                                 data-ctx-desc="Zobrazí všetky odznaky alebo iba vybranú skupinu (Série, Kanáre, Míľniky, Dvojice, Sieň slávy, Upravené/Uspaté).">
-                                <option value="all">Všetky odznaky + Sieň slávy (47)</option>
+                                <option value="all">Všetky odznaky + Sieň slávy (48)</option>
                                 <option value="1">1. Série a forma</option>
                                 <option value="2">2. Kanáre, tiebreaky a skóre</option>
                                 <option value="3">3. Bodové míľniky a aktivita</option>
@@ -16630,11 +16638,35 @@
         }
 
         const GRAND_SLAM_SEASONS = [
-            { key: "spring", label: "Jar",   icon: "🌸", inPhrase: "na jar",   periodTxt: "marec – máj" },
-            { key: "summer", label: "Leto",  icon: "☀️", inPhrase: "v lete",   periodTxt: "jún – august" },
-            { key: "autumn", label: "Jeseň", icon: "🍂", inPhrase: "na jeseň", periodTxt: "september – november" },
-            { key: "winter", label: "Zima",  icon: "❄️", inPhrase: "v zime",   periodTxt: "január, február, december" }
+            { key: "spring", label: "Jar",   icon: "🌸", inPhrase: "na jar",   periodTxt: "marec – máj",               lastMonth: 5 },
+            { key: "summer", label: "Leto",  icon: "☀️", inPhrase: "v lete",   periodTxt: "jún – august",              lastMonth: 8 },
+            { key: "autumn", label: "Jeseň", icon: "🍂", inPhrase: "na jeseň", periodTxt: "september – november",      lastMonth: 11 },
+            { key: "winter", label: "Zima",  icon: "❄️", inPhrase: "v zime",   periodTxt: "január, február, december", lastMonth: 12 }
         ];
+
+        function isGrandSlamSeasonExpired(seasonKey, refDate = null) {
+            const sn = GRAND_SLAM_SEASONS.find(s => s.key === seasonKey);
+            if (!sn) return false;
+            const dt = refDate || getTodayMidnight();
+            const curMonth = dt.getMonth() + 1;
+            return curMonth > sn.lastMonth;
+        }
+
+        function groupGrandSlamThreeOfFourByMissing(entries, wantExpired = false, refDate = null) {
+            const bySeason = {};
+            const dt = refDate || getTodayMidnight();
+            (entries || []).forEach(e => {
+                if (!e || e.hitCount !== 3 || !Array.isArray(e.missing) || e.missing.length !== 1) return;
+                const miss = e.missing[0];
+                const expired = isGrandSlamSeasonExpired(miss.key, dt);
+                if (expired !== Boolean(wantExpired)) return;
+                if (!bySeason[miss.key]) bySeason[miss.key] = { season: miss, players: [] };
+                bySeason[miss.key].players.push(e);
+            });
+            return GRAND_SLAM_SEASONS
+                .map(s => bySeason[s.key])
+                .filter(Boolean);
+        }
 
         function getCalendarSeasonKeyFromIso(isoDate) {
             const dt = parseIsoLocal(isoDate);
@@ -16920,6 +16952,8 @@
                 const hitKeys = GRAND_SLAM_SEASONS.filter(s => Boolean(sObj[s.key])).map(s => s.key);
                 if (hitKeys.length === 0) return;
                 const missing = GRAND_SLAM_SEASONS.filter(s => !sObj[s.key]);
+                const hasMissedSeason = missing.some(s => isGrandSlamSeasonExpired(s.key));
+                const stillAlive = hitKeys.length === 4 || !hasMissedSeason;
                 const ys = (yearPlayedStats[pid] && yearPlayedStats[pid][curYear])
                     ? yearPlayedStats[pid][curYear]
                     : { matches: 0, sets: 0, gems: 0 };
@@ -16930,6 +16964,8 @@
                     hitCount: hitKeys.length,
                     seasons: sObj,
                     missing,
+                    hasMissedSeason,
+                    stillAlive,
                     seasonMatches: ys.matches,
                     seasonSets: ys.sets,
                     seasonGems: ys.gems
@@ -16937,6 +16973,7 @@
             });
             curYearEntries.sort((a, b) =>
                 (b.hitCount - a.hitCount) ||
+                (Number(b.stillAlive) - Number(a.stillAlive)) ||
                 (a.seasonMatches - b.seasonMatches) ||
                 (a.seasonSets - b.seasonSets) ||
                 (a.seasonGems - b.seasonGems) ||
@@ -17528,8 +17565,17 @@
                                 <div class="ks-radar-seasons">
                                     ${GRAND_SLAM_SEASONS.map(sn => {
                                         const hitDate = e.seasons[sn.key];
-                                        const tip = hitDate ? `${sn.label}: prvá výhra ${formatDateSk(hitDate)}` : `${sn.label} (${sn.periodTxt}): zatiaľ bez výhry`;
-                                        return `<span class="ks-season-chip ${hitDate ? 'is-hit' : ''}" title="${escapeHtml(tip)}">${sn.icon} ${sn.label}</span>`;
+                                        if (hitDate) {
+                                            const tip = `${sn.label}: prvá výhra ${formatDateSk(hitDate)}`;
+                                            return `<span class="ks-season-chip is-hit" title="${escapeHtml(tip)}">${sn.icon} ${sn.label}</span>`;
+                                        }
+                                        const isExpired = isGrandSlamSeasonExpired(sn.key);
+                                        if (isExpired) {
+                                            const tip = `${sn.label} (${sn.periodTxt}): obdobie už bez výhry skončilo – Grand Slam ${gs.curYear} už ušiel`;
+                                            return `<span class="ks-season-chip is-missed" title="${escapeHtml(tip)}">✕ ${sn.label}</span>`;
+                                        }
+                                        const tip = `${sn.label} (${sn.periodTxt}): ešte v hre – zatiaľ bez výhry`;
+                                        return `<span class="ks-season-chip" title="${escapeHtml(tip)}">${sn.icon} ${sn.label}</span>`;
                                     }).join("")}
                                 </div>
                             </div>
@@ -22222,7 +22268,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.88${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.89${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -23253,7 +23299,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.88${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.89${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -23337,7 +23383,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.88${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.89${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -26064,7 +26110,8 @@
             { id: "cage_gold", cat: "hall", title: "Klietka: Držiteľ Zlatého kanárika", tag: "ZLATÝ KANÁRIK", single: "Zlatého slávika kedysi bral vo veľkom Karel Gott, nášho Zlatého kanárika v Klietke si už prebral Majster {hráč} ({hodnota}) – to bola naozaj božská nula!", plural: "Karel Gott kedysi bral Zlatých slávikov po desiatkach – v našej Klietke si sošku Zlatého kanárika a titul Majster už držia {hráč1} s {ostatnými}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{zoznam}"] },
             { id: "cage_breeder", cat: "hall", title: "Klietka: Vedúci Chovateľ (5–9× 0:6)", tag: "CHOVATEĽ", single: "Najväčšiu voliéru v Klietke zatiaľ vedie Chovateľ {hráč} – v zbierke má už {hodnota} (0:6)!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
             { id: "cage_collector", cat: "hall", title: "Klietka: Vedúci Zberateľ (1–4× 0:6)", tag: "ZBERATEĽ", single: "V ružovej Klietke Klubovne už čviriká {celkom} – poradie Zberateľov zatiaľ vedie {hráč} ({hodnota}).", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{celkom}"] },
-            { id: "gs_almost", cat: "hall", title: "Grand Slam: Chýba 1 ročné obdobie", tag: "NA DOSTREL GRAND SLAMU", single: "{hráč} má už 3 zo 4 ročných období vo vrecku – na Sezónny Grand Slam {rok} mu chýba už len jediná výhra {obdobie}!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obdobie}"] },
+            { id: "gs_almost", cat: "hall", title: "Grand Slam: Chýba 1 ročné obdobie (Na dostrel)", tag: "NA DOSTREL GRAND SLAMU", single: "{hráč} má už 3 zo 4 ročných období vo vrecku – na Sezónny Grand Slam {rok} mu chýba už len jediná výhra {obdobie}!", plural: "{hráč1} s {ostatnými} majú už 3 zo 4 ročných období vo vrecku – na Sezónny Grand Slam {rok} im chýba už len jediná výhra {obdobie}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obdobie}"] },
+            { id: "gs_missed", cat: "hall", title: "Grand Slam: Zmeškané obdobie (Ušiel Grand Slam)", tag: "UŠIEL GRAND SLAM", single: "Smola sezóny! {hráč} v roku {rok} vyhral v 3 zo 4 období, no Sezónny Grand Slam mu ušiel pomedzi prsty – chýbala mu jediná výhra {obdobie}!", plural: "Smola sezóny! {hráč1} s {ostatnými} v roku {rok} vyhrali v 3 zo 4 období, no Sezónny Grand Slam im ušiel pomedzi prsty – chýbala im jediná výhra {obdobie}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obdobie}"] },
             { id: "gs_current", cat: "hall", title: "Grand Slam: Skompletizovaný tento rok", tag: "SEZÓNNY GRAND SLAM", single: "Celoročná dominancia! {hráč} už skompletizoval Sezónny Grand Slam {rok} – dokázal vyhrať na jar, v lete, na jeseň aj v zime!", plural: "Celoročná dominancia! {hráč1} s {ostatnými} už skompletizovali Sezónny Grand Slam {rok} – dokázali vyhrať na jar, v lete, na jeseň aj v zime!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}"] },
             { id: "gs_hall", cat: "hall", title: "Grand Slam: Celkový líder Siene Grand Slamu", tag: "SIEŇ GRAND SLAMU", single: "Chrómovej vitríne Sezónneho Grand Slamu kraľuje {hráč} – na konte má už {hodnota} ({roky})!", plural: "V chrómovej vitríne Sezónneho Grand Slamu sa o čelo delia {hráč1} s {ostatnými} – každý s bilanciou {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{roky}"] },
             { id: "gs_january_honor", cat: "hall", title: "Grand Slam: Januárové vyznamenanie (1.–31. 1.)", tag: "VYZNAMENANIE · GRAND SLAM {rok}", single: "Čestná salva v Sieni slávy! {hráč} je jediným držiteľom Sezónneho Grand Slamu {rok} – ako jediný dokázal v uplynulom roku víťaziť na jar, v lete, na jeseň aj v zime!{obhajoba}", plural: "Vyznamenanie Siene slávy: Sezónny Grand Slam {rok} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali {hráč1} s {ostatnými}. Klobúk dole pred celoročnou výdržou!{obhajoba}", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obhajoba}"] }
@@ -26316,7 +26363,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.88! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.89! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -26837,10 +26884,22 @@
             }
 
             const gsNews = buildSeasonalGrandSlamData();
-            const almostSlam = gsNews.curYearEntries.filter(e => e.hitCount === 3 && e.missing.length === 1);
-            almostSlam.slice(0, 2).forEach(e => {
-                const miss = e.missing[0];
-                addBadgeTpl("gs_almost", { ...buildPlayerCaseVars(e), "rok": String(gsNews.curYear), "obdobie": miss.inPhrase }, false);
+            const almostSlamGroups = shuffleNewsArray(groupGrandSlamThreeOfFourByMissing(gsNews.curYearEntries, false));
+            almostSlamGroups.slice(0, 2).forEach(grp => {
+                addBadgeTpl(
+                    "gs_almost",
+                    { ...buildPlayerCaseVars(grp.players), "rok": String(gsNews.curYear), "obdobie": grp.season.inPhrase },
+                    grp.players.length > 1
+                );
+            });
+
+            const missedSlamGroups = shuffleNewsArray(groupGrandSlamThreeOfFourByMissing(gsNews.curYearEntries, true));
+            missedSlamGroups.slice(0, 2).forEach(grp => {
+                addBadgeTpl(
+                    "gs_missed",
+                    { ...buildPlayerCaseVars(grp.players), "rok": String(gsNews.curYear), "obdobie": grp.season.inPhrase },
+                    grp.players.length > 1
+                );
             });
 
             const curYearSlamWinners = gsNews.byYear[gsNews.curYear] || [];
@@ -29061,11 +29120,25 @@
                 const v = { ...buildPlayerCaseVars([pl]), "hodnota": `${topB ? topB.total : 3}×`, "celkom": skCount(cc.totalCanaries || 5, "kanárik", "kanáriky", "kanárikov") };
                 return { isLive: hit, pluralCount: 2, singleVars: v, pluralVars: v };
             }
-            if (def.id === "gs_almost") {
-                const hit = gs.curYearEntries.find(e => e.hitCount === 3 && e.missing.length === 1);
-                const pl = (adminTesterMode === "custom" || !hit) ? t1 : hit;
-                const v = { ...buildPlayerCaseVars([pl]), "rok": String(gs.curYear), "obdobie": hit ? hit.missing[0].inPhrase : "v zime" };
-                return { isLive: Boolean(hit), pluralCount: 2, singleVars: v, pluralVars: v };
+            if (def.id === "gs_almost" || def.id === "gs_missed") {
+                const wantExpired = def.id === "gs_missed";
+                const groups = groupGrandSlamThreeOfFourByMissing(gs.curYearEntries, wantExpired);
+                const isLive = groups.length > 0;
+                const grp = isLive ? groups[0] : null;
+                const fallbackSeason = wantExpired
+                    ? (GRAND_SLAM_SEASONS.find(s => isGrandSlamSeasonExpired(s.key)) || GRAND_SLAM_SEASONS[1])
+                    : (GRAND_SLAM_SEASONS.find(s => !isGrandSlamSeasonExpired(s.key)) || GRAND_SLAM_SEASONS[3]);
+                const obd = grp ? grp.season.inPhrase : fallbackSeason.inPhrase;
+                const h1 = (adminTesterMode === "custom" || !grp) ? t1 : grp.players[0];
+                const hPl = (adminTesterMode === "custom" || !grp)
+                    ? customPluralList
+                    : (grp.players.length > 1 ? grp.players : [h1, pickSecondFor(h1)]);
+                return {
+                    isLive,
+                    pluralCount: hPl.length,
+                    singleVars: { ...buildPlayerCaseVars([h1]), "rok": String(gs.curYear), "obdobie": obd },
+                    pluralVars: { ...buildPlayerCaseVars(hPl), "rok": String(gs.curYear), "obdobie": obd }
+                };
             }
             if (def.id === "gs_current") {
                 const winners = gs.byYear[gs.curYear] || [];
