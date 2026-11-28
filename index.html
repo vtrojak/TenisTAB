@@ -5404,46 +5404,46 @@
             box-shadow: 0 6px 18px rgba(15, 23, 42, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.94);
         }
 
-        /* KLUBOVÉ MÍĽNIKY – rozbaľovacia dlaždica v štýle Klubu 100 (purpurová + klub_100.png · v1.77) */
+        /* KLUBOVÉ MÍĽNIKY – nepriesvitná tmavá chróm farba s kovovým leskom v štýle Grand Slam (v1.82) */
         .klubovna-showcase.ks-milestones {
             grid-column: 1 / -1;
-            background: linear-gradient(145deg, #86198f 0%, #6b21a8 56%, #4a044e 100%);
-            border: 1.5px solid #c026d3;
-            color: #ffffff;
-            box-shadow: 0 6px 18px rgba(74, 4, 78, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+            background: linear-gradient(145deg, #475569 0%, #334155 36%, #1e293b 72%, #334155 100%);
+            border: 1.5px solid #94a3b8;
+            color: #f8fafc;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.42), inset 0 1px 1px rgba(226, 232, 240, 0.48);
         }
 
         .ks-milestones .ks-chevron {
-            background: rgba(46, 3, 50, 0.42);
-            border: 1px solid rgba(245, 208, 254, 0.52);
-            color: #fae8ff;
+            background: rgba(15, 23, 42, 0.48);
+            border: 1px solid rgba(203, 213, 225, 0.48);
+            color: #f1f5f9;
         }
 
         .ks-milestones .ks-title {
-            color: #ffffff;
-            text-shadow: 0 1px 2px rgba(46, 3, 50, 0.45);
+            color: #f8fafc;
+            text-shadow: 0 1px 2px rgba(2, 6, 23, 0.65);
         }
 
         .ks-milestones .ks-sub {
-            color: #f5d0fe;
+            color: #cbd5e1;
         }
 
         .ks-milestones .ks-badge {
-            background: #4a044e;
-            color: #fae8ff;
-            border: 1px solid #e879f9;
+            background: #0f172a;
+            color: #f1f5f9;
+            border: 1px solid #94a3b8;
         }
 
         .ks-milestones .ks-sub-detail {
-            background: rgba(46, 3, 50, 0.34);
-            color: #fae8ff;
+            background: rgba(15, 23, 42, 0.46);
+            color: #e2e8f0;
         }
 
         .ks-milestones-inner {
             border-radius: 12px;
             padding: 10px;
-            background: rgba(255, 255, 255, 0.14);
-            border: 1px solid rgba(245, 208, 254, 0.30);
+            background: rgba(15, 23, 42, 0.34);
+            border: 1px solid rgba(148, 163, 184, 0.38);
         }
 
         .ks-head {
@@ -7347,7 +7347,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.81b</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.82</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -7390,7 +7390,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.81b</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.82</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -21329,7 +21329,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.81b${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.82${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -22360,7 +22360,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.81b${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.82${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -22444,7 +22444,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.81b${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.82${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -24894,7 +24894,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.81b! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.82! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
