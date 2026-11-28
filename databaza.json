@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 393,
+  "databaseRevision": 539,
   "config": {
     "windowMonths": 12,
     "K": 32,
@@ -1377,12 +1377,22 @@
       "surface": "tvrdy"
     }
   ],
-  "customNews": [],
+  "customNews": [
+    {
+      "id": "cn_1795877340623_m6egq",
+      "tag": "Vieme prví",
+      "text": "Peťo s Vladom zahájili zimnú prípravu na novú sezónu 2027!",
+      "priority": "top",
+      "expiresAt": "2026-12-04",
+      "enabled": true,
+      "createdAt": 1795877340623
+    }
+  ],
   "newsTemplates": {
     "weatherQuips": {
       "11": [
         {
-          "text": "Vlekári už intenzívne zasnežujú."
+          "text": "Vlekári už intenzívne zasnežujú!"
         },
         {
           "text": "Tenis vonku? V novembrovej hmle jedine v reflexnej veste.",
@@ -1400,49 +1410,43 @@
     },
     "weatherEvents": {
       "frost": {
-        "text": "{miesto} mrzne ({teplota} °C). Dnes si nezabudni čiapku a rukavice!"
+        "text": "{miesto} mrzne ({teplota} °C). Nezabudni si doma čiapku a rukavice!"
       }
     },
     "badges": {},
     "other": {
-      "club_doubles_alchemy": {
-        "sleeping": true
-      },
-      "tip_1": {
-        "sleeping": true
-      },
-      "tip_3": {
-        "sleeping": true
-      },
-      "tip_4": {
-        "sleeping": true
-      },
-      "tip_5": {
-        "sleeping": true
-      },
-      "tip_6": {
-        "sleeping": true
-      },
-      "tip_8": {
-        "sleeping": true
-      },
-      "tip_9": {
-        "sleeping": true
-      },
-      "tip_10": {
-        "sleeping": true
-      },
-      "tip_12": {
-        "sleeping": true
-      },
       "inact_half_3": {
-        "single": "Pátracia akcia: {hráč} chýba na kurte už {dniTxt}. Bol videný, ako v parku kŕmi holuby."
+        "single": "Pátracia akcia: {hráč} chýba na kurte už {dniTxt}. Svedkovia tvrdia, že ho videli ako v parku kŕmi holuby."
       },
       "inact_year_1": {
         "single": "{hráč} nehral už {dniTxt}. Zákulisné zdroje tvrdia, že vymenil raketu za šípky."
+      },
+      "leader_throne": {
+        "single": "Lídrom celkového poradia v {okno} je {hráč} so ziskom {body} ({rozpis})."
+      },
+      "leader_tied": {
+        "plural": "{hráč} majú na čele tabuľky v {okno} zhodne po {body} – boj o trón je otvorený!"
+      },
+      "leader_monopoly": {
+        "single": "{hráč} kraľuje tabuľke ({body}) s náskokom {rozdiel} pred {hráčom2}. Zvyšok ligy tajne rokuje, či mu nepridelia drevenú raketu."
+      },
+      "close_equal": {
+        "single": "{hráč} s {hráčom2} majú v tabuľke zhodne {body} – o poradí rozhodujú pomocné kritériá!"
+      },
+      "close_gap": {
+        "single": "{hráča} a {hráča2} v tabuľke delí iba {rozdiel}."
+      },
+      "defending_pts": {
+        "single": "{hráča} v najbližších 30 dňoch čaká obhajoba {body}{kedy}."
+      },
+      "streak_fire_1": {
+        "single": "{hráč} je v tranze – ťahá už {hodnota} v rade! Súperi si myslia, že má nelegálne vypletenú raketu."
+      },
+      "streak_crisis": {
+        "single": "{hráč} prehral už {hodnota} po sebe. Odborníci odporúčajú vymeniť výplet aj omotávku."
       }
     }
   },
-  "updatedAt": 1795854628879,
-  "exportedAtIso": "2026-11-28T08:30:52.231Z"
+  "updatedAt": 1795878170390,
+  "exportedAtIso": "2026-11-28T15:09:59.042Z"
 }
