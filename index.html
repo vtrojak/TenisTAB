@@ -7826,7 +7826,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.86</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.88</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -7869,7 +7869,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.86</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.88</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -21638,13 +21638,13 @@
                 const botDelta = swapOrder ? m.eloDeltaA : m.eloDeltaB;
                 const topTeam = swapOrder ? m.eloTeam2 : m.eloTeam1;
                 const botTeam = swapOrder ? m.eloTeam1 : m.eloTeam2;
-                const fmtD = (d) => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+                const fmtD = (d) => d > 0 ? `+${skNum(d, 1)}` : skNum(d, 1);
                 const eloLabel = m.type === "4H" ? "ELO 4H" : "ELO 2H";
                 const topAfter = Array.isArray(topTeam) && topTeam.length > 0
-                    ? ` (${topTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    ? ` (${topTeam.map(x => `${x.name} ${skNum(x.after, 1)}`).join(" / ")})`
                     : "";
                 const botAfter = Array.isArray(botTeam) && botTeam.length > 0
-                    ? ` (${botTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    ? ` (${botTeam.map(x => `${x.name} ${skNum(x.after, 1)}`).join(" / ")})`
                     : "";
                 pushUnique(
                     "elo_shift",
@@ -22222,7 +22222,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.86${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.88${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -23253,7 +23253,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.86${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.88${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -23337,7 +23337,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.86${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.88${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -23700,10 +23700,24 @@
             return getTodayUtcDays() - matchUtc;
         }
 
+        function skTrimTrailingZeros(str) {
+            return String(str ?? "").replace(/(\d),(\d*?[1-9])?0+(?!\d)/g, (m, intPart, fracPart) =>
+                fracPart ? `${intPart},${fracPart}` : intPart
+            );
+        }
+
         function skNum(val, decimals = 1) {
             const num = Number(val);
             if (isNaN(num)) return String(val);
-            return num.toFixed(decimals).replace(".", ",");
+            const dec = Math.max(0, Number(decimals) || 0);
+            const factor = Math.pow(10, dec);
+            const rounded = Math.round(num * factor) / factor;
+            const clean = Math.abs(rounded) === 0 ? 0 : rounded;
+            let s = clean.toFixed(dec);
+            if (dec > 0) {
+                s = s.replace(/\.0+$/, "").replace(/(\.\d*?[1-9])0+$/, "$1");
+            }
+            return s.replace(".", ",");
         }
 
         function shuffleNewsArray(arr) {
@@ -25926,14 +25940,31 @@
             return vocalizeSkPrepositions(replaced);
         }
 
+        function buildPtsCaseVars(val, prefix = "body", defaultCase = "nom") {
+            const nom = skPts(val, "nom");
+            const gen = skPts(val, "gen");
+            const loc = skPts(val, "loc");
+            const defVal = defaultCase === "gen" ? gen : (defaultCase === "loc" ? loc : nom);
+            return {
+                [prefix]: defVal,
+                [`${prefix}Nom`]: nom,
+                [`${prefix}Gen`]: gen,
+                [`${prefix}Loc`]: loc
+            };
+        }
+
         let liveOtherNewsMap = {};
-        function recordLiveOtherNews(itemKey, vars, isPlural = false, pluralCount = 2) {
+        function recordLiveOtherNews(itemKey, vars, isPlural = false, meta = null) {
             if (!itemKey) return;
             if (!liveOtherNewsMap[itemKey]) {
+                const mObj = (meta && typeof meta === "object") ? meta : { pluralCount: Number(meta) || 0 };
+                const pCnt = Number(mObj.pluralCount) || (isPlural ? 2 : 1);
                 liveOtherNewsMap[itemKey] = {
                     isPlural: Boolean(isPlural),
-                    pluralCount: Number(pluralCount) || (isPlural ? 2 : 1),
-                    vars: vars ? { ...vars } : {}
+                    pluralCount: pCnt,
+                    vars: vars ? { ...vars } : {},
+                    singleVarsOverride: mObj.singleVarsOverride || null,
+                    pluralVarsOverride: mObj.pluralVarsOverride || null
                 };
             }
         }
@@ -25987,69 +26018,69 @@
             return getDefaultWeatherQuipsForBucket(bucketKey);
         }
 
-        // Katalóg predvolených šablón pre všetkých 38 odznakov + 8 správ Siene slávy (Klietka & Grand Slam)
+        // Katalóg predvolených šablón pre všetkých 38 odznakov + 9 správ Siene slávy (Klietka & Grand Slam) · v1.87
         const BADGE_NEWS_CATALOG = [
-            { id: "unstoppable", cat: "1", title: "Nezastaviteľný", tag: "NEZASTAVITEĽNÝ", single: "{rekordCap} víťaznej série ({hodnota}) stále drží {hráč}.", plural: "O {rekordLow} víťaznej série ({hodnota}) sa delia {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rekordCap}", "{rekordLow}"] },
-            { id: "hot_hand", cat: "1", title: "Horúca ruka", tag: "HORÚCA RUKA", single: "Najdlhšiu práve prebiehajúcu víťaznú šnúru ({hodnota}) má {hráč}.", plural: "Najdlhšiu práve prebiehajúcu víťaznú šnúru ({hodnota}) majú {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "free_fall", cat: "1", title: "Voľný pád", tag: "ČIERNA KRONIKA", single: "Odznak Voľný pád ({hodnota}) má v zbierke {hráč}.", plural: "Odznak Voľný pád ({hodnota}) majú v zbierke {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "bulletproof", cat: "1", title: "Nepriestrelný", tag: "NEPRIESTRELNÝ", single: "Najdlhšiu šnúru bez jedinej prehry ({hodnota}) zaznamenal {hráč}.", plural: "Najdlhšiu šnúru bez jedinej prehry ({hodnota}) zaznamenali {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "master_baker", cat: "2", title: "Majster pekár (Kanáre)", tag: "POZOR NA KANÁRE", single: "{hráč} rozdal súperom už {hodnota}. V šatni mu hovoria Čistič!", plural: "{hráč} rozdali súperom už {hodnota}. V šatni im hovoria Čističi!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "bagel_receiver", cat: "2", title: "Ornitológ (Prijaté kanáre)", tag: "OCHRANA PRÍRODY", single: "{hráč} nazbieral už {hodnota} – titul Ornitológ mu patrí právom.", plural: "{hráč} nazbierali už {hodnota} – titul Ornitológ im patrí právom.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "surgeon", cat: "2", title: "Chirurg kurtu / Bez milosti", tag: "CHIRURG KURTU", single: "{hráč} vybavil súpera bez straty jediného setu už {hodnota}.", plural: "{hráč} vybavili súperov bez straty jediného setu už {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "nerves_of_steel", cat: "2", title: "Nervy zo železa (Tiebreaky)", tag: "NERVY ZO ŽELEZA", single: "{hráč} odohral už {hodnota} (7:6 / 6:7). Kardiológ tento šport neodporúča.", plural: "{hráč} odohrali už {hodnota} (7:6 / 6:7). Kardiológ tento šport neodporúča.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "sniper", cat: "2", title: "Sniper kurtu", tag: "SNIPER KURTU", single: "Najlepšiu priemernú gemovú bilanciu ({hodnota}) si drží {hráč}.", plural: "Najlepšiu priemernú gemovú bilanciu ({hodnota}) si držia {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "phoenix", cat: "2", title: "Fénix kurtu", tag: "FÉNIX KURTU", single: "Kráľom obratov po prehratom prvom sete ({hodnota}) je {hráč} – proti nemu nie je vyhraté ani po prvom sete.", plural: "Králi obratov po prehratom prvom sete ({hodnota}): {hráč} nikdy neskladajú zbrane.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "marathoner", cat: "2", title: "Maratónec", tag: "MARATÓNEC", single: "Najviac 3+ setových bitiek ({hodnota}) má v nohách {hráč}.", plural: "Najviac 3+ setových bitiek ({hodnota}) absolvovali {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "unlucky", cat: "2", title: "Smoliar", tag: "SMOLIAR", single: "Odznak Smoliar ({hodnota} do 2 gemov) patrí {hráčovi} – šťastena mu pri tesných záveroch dlhuje kávu.", plural: "Odznak Smoliar ({hodnota} do 2 gemov) si delia {hráč} – občas stačí centimeter na čiare.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "steamroller", cat: "2", title: "Parný valec", tag: "PARNÝ VALEC", single: "Rekordný debakel {rozsah} ({hodnota}{skóre}) má na svedomí {hráč}.", plural: "Rekordný debakel {rozsah} ({hodnota}{skóre}) majú na svedomí {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{skóre}", "{rozsah}"] },
-            { id: "rocky_balboa", cat: "2", title: "Rocky Balboa 2H", tag: "ROCKY BALBOA 2H", single: "Titul Rocky Balboa patrí {hráčovi} – jeho dvojhry {rozsah} majú priemerne až {hodnota}!", plural: "Titul Rocky Balboa za najdlhšie singlové bitky {rozsah} si delia {hráč} – priemerne až {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rozsah}"] },
-            { id: "sizyfos", cat: "2", title: "Sizyfos 4H", tag: "SIZYFOS 4H", single: "Deblovým Sizyfom {rozsah} je {hráč} – jeho štvorhry sa v priemere natiahnu až na {hodnota}!", plural: "Nekonečné štvorhry {rozsah} tlačia do kopca {hráč} – priemerne až {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rozsah}"] },
-            { id: "points_king", cat: "3", title: "Kráľ bodov", tag: "KRÁĽ BODOV", single: "Najviac kombinovaných bodov ({hodnota}) nazbieral {hráč}.", plural: "Najviac kombinovaných bodov ({hodnota}) nazbierali {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "giant_killer", cat: "3", title: "Lovec obrov", tag: "LOVEC OBROV", single: "Lovcom obrov je {hráč} – v jednom zápase ulovil rekordných {hodnota}!", plural: "Najväčší jednorazový zisk ELO v jednom zápase ({hodnota}) si delia {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "terminator", cat: "3", title: "Terminátor", tag: "TERMINÁTOR", single: "Terminátorom kurtu je {hráč} ({hodnota}) – na kurte má trvalý pobyt.", plural: "Titul Terminátor ({hodnota}) si delia {hráč} – na kurte majú trvalý pobyt.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "diplomat", cat: "3", title: "Diplomat ligy", tag: "DIPLOMAT LIGY", single: "{hráč} vedie tabuľku mierotvorcov ({hodnota}). Nikoho nechce nahnevať.", plural: "{hráč} vedú tabuľku mierotvorcov ({hodnota}). Nikoho nechcú nahnevať.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "chameleon", cat: "3", title: "Chameleón / Tenisový Tinder", tag: "CHAMELEÓN", single: "Spoločenský typ: {hráč} si v debli zahral už {hodnota}.", plural: "Spoločenskí hráči: {hráč} si v debli zahrali už {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "singles_king", cat: "3", title: "Kráľ dvojhry", tag: "KRÁĽ DVOJHRY", single: "Kráľom dvojhry 2H je {hráč} so ziskom {hodnota}.", plural: "Najviac singlových bodov 2H ({hodnota}) nazbierali {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "doubles_king", cat: "3", title: "Kráľ štvorhry", tag: "KRÁĽ ŠTVORHRY", single: "Historickým kráľom štvorhry 4H je {hráč} so ziskom {hodnota}.", plural: "Historicky najviac deblových bodov 4H ({hodnota}) nazbierali {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "winter_wolf", cat: "3", title: "Zimný vlk", tag: "ZIMNÝ VLK", single: "Zimným vlkom sezóny (november – apríl) je {hráč} – nazbieral {hodnota}.", plural: "Zimnej sezóne (november – apríl) vládnu {hráč} so ziskom {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "beach_boy", cat: "3", title: "Plážový chlapec", tag: "PLÁŽOVÝ CHLAPEC", single: "Plážovým chlapcom letnej sezóny (máj – október) je {hráč} – nazbieral {hodnota}.", plural: "Letnej sezóne (máj – október) kraľujú {hráč} so ziskom {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "roland_garros", cat: "3", title: "Roland Garros (Antuka)", tag: "ROLAND GARROS", single: "Odznak Roland Garros pre najlepšieho hráča na antuke za posledných 12 mesiacov drží {hráč} ({hodnota})!", plural: "Antukovým kurtom za posledných 12 mesiacov vládnu {hráč} so ziskom {hodnota} – Paríž volá!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "betonar", cat: "3", title: "Betonár (Tvrdý povrch)", tag: "BETONÁR", single: "Titul Betonár pre najlepšieho hráča na tvrdom povrchu za posledných 12 mesiacov patrí {hráčovi} ({hodnota})!", plural: "Na tvrdom povrchu za posledných 12 mesiacov kraľujú {hráč} so ziskom {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "janosik", cat: "3", title: "Jánošík kurtu", tag: "JÁNOŠÍK KURTU", single: "Titul Jánošík drží {hráč} – v jedinej dvojhre rozdal súperovi rekordných {hodnota}!", plural: "Titul Jánošík za najštedrejšie rozdanie ELO v jednej dvojhre ({hodnota}) si delia {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "sponsor", cat: "3", title: "Sponzor klubu", tag: "SPONZOR KLUBU", single: "Historickým Sponzorom ligy je {hráč} ({hodnota}) – bez neho by tabuľka bola oveľa chudobnejšia.", plural: "Historický titul Sponzor ({hodnota}) zdieľajú {hráč} – bodový poklad pre zvyšok ligy.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "comeback", cat: "3", title: "Najdlhší comeback", tag: "NAJDLHŠÍ COMEBACK", single: "Rekordný návrat na kurt po pauze {hodnota} si pripísal {hráč}!", plural: "Najdlhšiu prestávku pred návratom na kurt ({hodnota}) zvládli {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "nostalgia", cat: "3", title: "Nostalgia", tag: "NOSTALGIA", single: "Odznak Nostalgia patrí {hráčovi} – za posledných 6 mesiacov mu z tabuľky v tichosti vypršalo {hodnota}!", plural: "Odznak Nostalgia si delia {hráč} – za posledných 6 mesiacov im z tabuľky vypršalo zhodne {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "obhajca", cat: "3", title: "Obhajca", tag: "OBHAJCA", single: "Obhajcom sezóny je {hráč} – v najbližších 6 mesiacoch má v hre až {hodnota}, ktoré musí obhájiť!", plural: "Najväčší tlak v najbližších 6 mesiacoch čaká na {hráča} – každý obhajuje {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "scalp_collector", cat: "3", title: "Zberateľ skalpov", tag: "ZBERATEĽ SKALPOV", single: "Zberateľom skalpov {rozsah} je {hráč} – vo dvojhre už dokázal poraziť {hodnota}!", plural: "Titul Zberateľ skalpov {rozsah} si delia {hráč} – každý už vo dvojhre porazil {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rozsah}"] },
-            { id: "dynamic_duo", cat: "4", title: "Dynamické duo (4H)", tag: "DYNAMICKÉ DUO", single: "Najúspešnejšia pevná dvojica 4H ({hráč}) nazbierala už {hodnota}.", plural: "Najúspešnejšie pevné dvojice 4H ({hráč}) nazbierali zhodne po {hodnota}.", vars: ["{hráč}", "{hodnota}"] },
-            { id: "inseparable_pair", cat: "4", title: "Nerozlučná dvojka (4H)", tag: "NEROZLUČNÁ DVOJKA", single: "Parťáci na kurte: {hráč} spolu nastúpili už do {hodnota}!", plural: "Nerozlučné dvojice na kurte: {hráč} nastúpili zhodne do {hodnota}!", vars: ["{hráč}", "{hodnota}"] },
-            { id: "good_chemistry", cat: "4", title: "Dobrá chémia (4H)", tag: "DOBRÁ CHÉMIA", single: "Najlepšiu chémiu v debli má dvojica {hráč} ({hodnota})!", plural: "Najvyššiu úspešnosť v štvorhre ({hodnota}) držia zhodne páry {hráč}.", vars: ["{hráč}", "{hodnota}"] },
-            { id: "unbeatable_duo", cat: "4", title: "Dream Team 4H", tag: "DREAM TEAM 4H", single: "Dream Team štvorhry: pár {hráč} dokázal potiahnuť šnúru {hodnota}!", plural: "O {rekordLow} deblovej víťaznej série ({hodnota}) sa delia dvojice {hráč}.", vars: ["{hráč}", "{hodnota}", "{rekordLow}"] },
-            { id: "dramatics", cat: "4", title: "Dramatici 4H", tag: "DRAMATICI 4H", single: "Pár {hráč} je postrachom záverov štvorhier – na konte má už {hodnota}!", plural: "Králi tesných deblových drám ({hodnota}): dvojice {hráč}.", vars: ["{hráč}", "{hodnota}"] },
-            { id: "pat_mat", cat: "4", title: "Pat a Mat (4H)", tag: "PAT A MAT", single: "Pár {hráč} zbiera odznak Pat a Mat ({hodnota} v 4H) – aspoň sa pri tom dobre zabávajú!", plural: "Klubový titul Pat a Mat ({hodnota} v 4H) si delia dvojice {hráč}.", vars: ["{hráč}", "{hodnota}"] },
-            // Sieň slávy – Klietka & Grand Slam (8)
+            { id: "unstoppable", cat: "1", title: "Nezastaviteľný", tag: "NEZASTAVITEĽNÝ", single: "{rekordCap} víťaznej série ({hodnota}) stále drží {hráč}.", plural: "O {rekordLow} víťaznej série ({hodnota}) sa delia {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rekordCap}", "{rekordLow}"] },
+            { id: "hot_hand", cat: "1", title: "Horúca ruka", tag: "HORÚCA RUKA", single: "Najdlhšiu práve prebiehajúcu víťaznú šnúru ({hodnota}) má {hráč}.", plural: "Najdlhšiu práve prebiehajúcu víťaznú šnúru ({hodnota}) majú {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "free_fall", cat: "1", title: "Voľný pád", tag: "ČIERNA KRONIKA", single: "Odznak Voľný pád ({hodnota}) má v zbierke {hráč}.", plural: "Odznak Voľný pád ({hodnota}) majú v zbierke {hráč1} a {ostatní}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "bulletproof", cat: "1", title: "Nepriestrelný", tag: "NEPRIESTRELNÝ", single: "Najdlhšiu šnúru bez jedinej prehry ({hodnota}) zaznamenal {hráč}.", plural: "Najdlhšiu šnúru bez jedinej prehry ({hodnota}) zaznamenali {hráč1} a {ostatní}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "master_baker", cat: "2", title: "Majster pekár (Kanáre)", tag: "POZOR NA KANÁRE", single: "{hráč} rozdal súperom už {hodnota}. V šatni mu hovoria Čistič!", plural: "{hráč1} s {ostatnými} rozdali súperom už {hodnota}. V šatni im hovoria Čističi!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "bagel_receiver", cat: "2", title: "Ornitológ (Prijaté kanáre)", tag: "OCHRANA PRÍRODY", single: "{hráč} nazbieral už {hodnota} – titul Ornitológ mu patrí právom.", plural: "{hráč1} a {ostatní} nazbierali už {hodnota} – titul Ornitológ im patrí právom.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "surgeon", cat: "2", title: "Chirurg kurtu / Bez milosti", tag: "CHIRURG KURTU", single: "{hráč} vybavil súpera bez straty jediného setu už {hodnota}.", plural: "{hráč1} s {ostatnými} vybavili súperov bez straty jediného setu už {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "nerves_of_steel", cat: "2", title: "Nervy zo železa (Tiebreaky)", tag: "NERVY ZO ŽELEZA", single: "{hráč} odohral už {hodnota} (7:6 / 6:7). Kardiológ tento šport neodporúča.", plural: "{hráč1} a {ostatní} odohrali už {hodnota} (7:6 / 6:7). Kardiológ tento šport neodporúča.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "sniper", cat: "2", title: "Sniper kurtu", tag: "SNIPER KURTU", single: "Najlepšiu priemernú gemovú bilanciu ({hodnota}) si drží {hráč}.", plural: "Najlepšiu priemernú gemovú bilanciu ({hodnota}) si držia {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "phoenix", cat: "2", title: "Fénix kurtu", tag: "FÉNIX KURTU", single: "Kráľom obratov po prehratom prvom sete ({hodnota}) je {hráč} – proti nemu nie je vyhraté ani po prvom sete.", plural: "Králi obratov po prehratom prvom sete ({hodnota}): {hráč1} ani {ostatní} nikdy neskladajú zbrane.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "marathoner", cat: "2", title: "Maratónec", tag: "MARATÓNEC", single: "Najviac 3+ setových bitiek ({hodnota}) má v nohách {hráč}.", plural: "Najviac 3+ setových bitiek ({hodnota}) absolvovali {hráč1} a {ostatní}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "unlucky", cat: "2", title: "Smoliar", tag: "SMOLIAR", single: "Odznak Smoliar ({hodnota} do 2 gemov) patrí {hráčovi} – šťastena mu pri tesných záveroch dlhuje kávu.", plural: "Odznak Smoliar ({hodnota} do 2 gemov) si delia {hráč1} s {ostatnými} – občas stačí centimeter na čiare.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "steamroller", cat: "2", title: "Parný valec", tag: "PARNÝ VALEC", single: "Rekordný debakel {rozsah} ({hodnota}{skóre}) má na svedomí {hráč}.", plural: "Rekordný debakel {rozsah} ({hodnota}{skóre}) majú na svedomí {hráč1} a {ostatní}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{skóre}", "{rozsah}"] },
+            { id: "rocky_balboa", cat: "2", title: "Rocky Balboa 2H", tag: "ROCKY BALBOA 2H", single: "Titul Rocky Balboa patrí {hráčovi} – jeho dvojhry {rozsah} majú priemerne až {hodnota}!", plural: "Titul Rocky Balboa za najdlhšie singlové bitky {rozsah} si delia {hráč1} s {ostatnými} – priemerne až {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rozsah}"] },
+            { id: "sizyfos", cat: "2", title: "Sizyfos 4H", tag: "SIZYFOS 4H", single: "Deblovým Sizyfom {rozsah} je {hráč} – jeho štvorhry sa v priemere natiahnu až na {hodnota}!", plural: "Nekonečné štvorhry {rozsah} tlačia do kopca {hráč1} s {ostatnými} – priemerne až {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rozsah}"] },
+            { id: "points_king", cat: "3", title: "Kráľ bodov", tag: "KRÁĽ BODOV", single: "Najviac kombinovaných bodov ({hodnota}) nazbieral {hráč}.", plural: "Najviac kombinovaných bodov ({hodnota}) nazbierali {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{hodnotaGen}"] },
+            { id: "giant_killer", cat: "3", title: "Lovec obrov", tag: "LOVEC OBROV", single: "Lovcom obrov je {hráč} – v jednom zápase ulovil rekordných {hodnota}!", plural: "Najväčší jednorazový zisk ELO v jednom zápase ({hodnota}) si delia {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "terminator", cat: "3", title: "Terminátor", tag: "TERMINÁTOR", single: "Terminátorom kurtu je {hráč} ({hodnota}) – na kurte má trvalý pobyt.", plural: "Titul Terminátor ({hodnota}) si delia {hráč1} s {ostatnými} – na kurte majú trvalý pobyt.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "diplomat", cat: "3", title: "Diplomat ligy", tag: "DIPLOMAT LIGY", single: "{hráč} vedie tabuľku mierotvorcov ({hodnota}). Nikoho nechce nahnevať.", plural: "{hráč1} s {ostatnými} vedú tabuľku mierotvorcov ({hodnota}). Nikoho nechcú nahnevať.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "chameleon", cat: "3", title: "Chameleón / Tenisový Tinder", tag: "CHAMELEÓN", single: "Spoločenský typ: {hráč} si v debli zahral už {hodnota}.", plural: "Spoločenskí hráči: {hráč1} a {ostatní} si v debli zahrali už {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "singles_king", cat: "3", title: "Kráľ dvojhry", tag: "KRÁĽ DVOJHRY", single: "Kráľom dvojhry 2H je {hráč} so ziskom {hodnotaGen}.", plural: "Najviac singlových bodov 2H ({hodnota}) nazbierali {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{hodnotaGen}"] },
+            { id: "doubles_king", cat: "3", title: "Kráľ štvorhry", tag: "KRÁĽ ŠTVORHRY", single: "Historickým kráľom štvorhry 4H je {hráč} so ziskom {hodnotaGen}.", plural: "Historicky najviac deblových bodov 4H ({hodnota}) nazbierali {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{hodnotaGen}"] },
+            { id: "winter_wolf", cat: "3", title: "Zimný vlk", tag: "ZIMNÝ VLK", single: "Zimným vlkom sezóny (november – apríl) je {hráč} – nazbieral {hodnota}.", plural: "Zimnej sezóne (november – apríl) vládnu {hráč1} s {ostatnými} so ziskom {hodnotaGen}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{hodnotaGen}"] },
+            { id: "beach_boy", cat: "3", title: "Plážový chlapec", tag: "PLÁŽOVÝ CHLAPEC", single: "Plážovým chlapcom letnej sezóny (máj – október) je {hráč} – nazbieral {hodnota}.", plural: "Letnej sezóne (máj – október) kraľujú {hráč1} s {ostatnými} so ziskom {hodnotaGen}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{hodnotaGen}"] },
+            { id: "roland_garros", cat: "3", title: "Roland Garros (Antuka)", tag: "ROLAND GARROS", single: "Odznak Roland Garros pre najlepšieho hráča na antuke za posledných 12 mesiacov drží {hráč} ({hodnota})!", plural: "Antukovým kurtom za posledných 12 mesiacov vládnu {hráč1} s {ostatnými} so ziskom {hodnotaGen} – Paríž volá!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{hodnotaGen}"] },
+            { id: "betonar", cat: "3", title: "Betonár (Tvrdý povrch)", tag: "BETONÁR", single: "Titul Betonár pre najlepšieho hráča na tvrdom povrchu za posledných 12 mesiacov patrí {hráčovi} ({hodnota})!", plural: "Na tvrdom povrchu za posledných 12 mesiacov kraľujú {hráč1} s {ostatnými} so ziskom {hodnotaGen}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{hodnotaGen}"] },
+            { id: "janosik", cat: "3", title: "Jánošík kurtu", tag: "JÁNOŠÍK KURTU", single: "Titul Jánošík drží {hráč} – v jedinej dvojhre rozdal súperovi rekordných {hodnota}!", plural: "Titul Jánošík za najštedrejšie rozdanie ELO v jednej dvojhre ({hodnota}) si delia {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "sponsor", cat: "3", title: "Sponzor klubu", tag: "SPONZOR KLUBU", single: "Historickým Sponzorom ligy je {hráč} ({hodnota}) – bez neho by tabuľka bola oveľa chudobnejšia.", plural: "Historický titul Sponzor ({hodnota}) zdieľajú {hráč1} s {ostatnými} – bodový poklad pre zvyšok ligy.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "comeback", cat: "3", title: "Najdlhší comeback", tag: "NAJDLHŠÍ COMEBACK", single: "Rekordný návrat na kurt po pauze {hodnota} si pripísal {hráč}!", plural: "Najdlhšiu prestávku pred návratom na kurt ({hodnota}) zvládli {hráč1} a {ostatní}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "nostalgia", cat: "3", title: "Nostalgia", tag: "NOSTALGIA", single: "Odznak Nostalgia patrí {hráčovi} – za posledných 6 mesiacov mu z tabuľky v tichosti vypršalo {hodnota}!", plural: "Odznak Nostalgia si delia {hráč1} s {ostatnými} – za posledných 6 mesiacov im z tabuľky vypršalo zhodne {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "obhajca", cat: "3", title: "Obhajca", tag: "OBHAJCA", single: "Obhajcom sezóny je {hráč} – v najbližších 6 mesiacoch má v hre až {hodnota}, ktoré musí obhájiť!", plural: "Najväčší tlak v najbližších 6 mesiacoch čaká na {hráča1} a {ostatných} – každý obhajuje {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "scalp_collector", cat: "3", title: "Zberateľ skalpov", tag: "ZBERATEĽ SKALPOV", single: "Zberateľom skalpov {rozsah} je {hráč} – vo dvojhre už dokázal poraziť {hodnota}!", plural: "Titul Zberateľ skalpov {rozsah} si delia {hráč1} s {ostatnými} – každý už vo dvojhre porazil {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{rozsah}"] },
+            { id: "dynamic_duo", cat: "4", title: "Dynamické duo (4H)", tag: "DYNAMICKÉ DUO", single: "Najúspešnejšia pevná dvojica 4H ({hráč}) nazbierala už {hodnota}.", plural: "Najúspešnejšie pevné dvojice 4H ({hráč1} a {ostatní}) nazbierali zhodne {hodnota}.", vars: ["{hráč}", "{hodnota}"] },
+            { id: "inseparable_pair", cat: "4", title: "Nerozlučná dvojka (4H)", tag: "NEROZLUČNÁ DVOJKA", single: "Parťáci na kurte: {hráč} spolu nastúpili už do {hodnota}!", plural: "Nerozlučné dvojice na kurte: {hráč1} a {ostatní} nastúpili zhodne do {hodnota}!", vars: ["{hráč}", "{hodnota}"] },
+            { id: "good_chemistry", cat: "4", title: "Dobrá chémia (4H)", tag: "DOBRÁ CHÉMIA", single: "Najlepšiu chémiu v debli má dvojica {hráč} ({hodnota})!", plural: "Najvyššiu úspešnosť v štvorhre ({hodnota}) držia zhodne páry {hráč1} a {ostatní}.", vars: ["{hráč}", "{hodnota}"] },
+            { id: "unbeatable_duo", cat: "4", title: "Dream Team 4H", tag: "DREAM TEAM 4H", single: "Dream Team štvorhry: pár {hráč} dokázal potiahnuť šnúru {hodnota}!", plural: "O {rekordLow} deblovej víťaznej série ({hodnota}) sa delia dvojice {hráč1} a {ostatní}.", vars: ["{hráč}", "{hodnota}", "{rekordLow}"] },
+            { id: "dramatics", cat: "4", title: "Dramatici 4H", tag: "DRAMATICI 4H", single: "Pár {hráč} je postrachom záverov štvorhier – na konte má už {hodnota}!", plural: "Králi tesných deblových drám ({hodnota}): dvojice {hráč1} a {ostatní}.", vars: ["{hráč}", "{hodnota}"] },
+            { id: "pat_mat", cat: "4", title: "Pat a Mat (4H)", tag: "PAT A MAT", single: "Pár {hráč} zbiera odznak Pat a Mat ({hodnota} v 4H) – aspoň sa pri tom dobre zabávajú!", plural: "Klubový titul Pat a Mat ({hodnota} v 4H) si delia dvojice {hráč1} a {ostatní}.", vars: ["{hráč}", "{hodnota}"] },
+            // Sieň slávy – Klietka & Grand Slam (9)
             { id: "cage_near_gold", cat: "hall", title: "Klietka: Na krok od Zlatého kanárika", tag: "POZOR NA KLIETKU", single: "{hráč} má v Klietke už {počet} kanárikov – stačí jediný set 0:6 a ako kedysi Karel Gott po Slávika si pôjde po {cieľ}!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{počet}", "{cieľ}"] },
             { id: "cage_near_voliera", cat: "hall", title: "Klietka: Povýšenie na Chovateľa (4 kanáriky)", tag: "POZOR NA KLIETKU", single: "{hráč} má v Klietke už 4 kanáriky – ešte jeden set 0:6 a zo Zberateľa povyšuje na Chovateľa s vlastnou voliérou!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}"] },
-            { id: "cage_gold", cat: "hall", title: "Klietka: Držiteľ Zlatého kanárika", tag: "ZLATÝ KANÁRIK", single: "Zlatého slávika kedysi bral vo veľkom Karel Gott, nášho Zlatého kanárika v Klietke si už prebral Majster {hráč} ({hodnota}) – to bola naozaj božská nula!", plural: "Karel Gott kedysi bral Zlatých slávikov po desiatkach – v našej Klietke si sošku Zlatého kanárika a titul Majster už držia {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "cage_gold", cat: "hall", title: "Klietka: Držiteľ Zlatého kanárika", tag: "ZLATÝ KANÁRIK", single: "Zlatého slávika kedysi bral vo veľkom Karel Gott, nášho Zlatého kanárika v Klietke si už prebral Majster {hráč} ({hodnota}) – to bola naozaj božská nula!", plural: "Karel Gott kedysi bral Zlatých slávikov po desiatkach – v našej Klietke si sošku Zlatého kanárika a titul Majster už držia {hráč1} s {ostatnými}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{zoznam}"] },
             { id: "cage_breeder", cat: "hall", title: "Klietka: Vedúci Chovateľ (5–9× 0:6)", tag: "CHOVATEĽ", single: "Najväčšiu voliéru v Klietke zatiaľ vedie Chovateľ {hráč} – v zbierke má už {hodnota} (0:6)!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
             { id: "cage_collector", cat: "hall", title: "Klietka: Vedúci Zberateľ (1–4× 0:6)", tag: "ZBERATEĽ", single: "V ružovej Klietke Klubovne už čviriká {celkom} – poradie Zberateľov zatiaľ vedie {hráč} ({hodnota}).", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{celkom}"] },
             { id: "gs_almost", cat: "hall", title: "Grand Slam: Chýba 1 ročné obdobie", tag: "NA DOSTREL GRAND SLAMU", single: "{hráč} má už 3 zo 4 ročných období vo vrecku – na Sezónny Grand Slam {rok} mu chýba už len jediná výhra {obdobie}!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obdobie}"] },
-            { id: "gs_current", cat: "hall", title: "Grand Slam: Skompletizovaný tento rok", tag: "SEZÓNNY GRAND SLAM", single: "Celoročná dominancia! {hráč} už skompletizoval Sezónny Grand Slam {rok} – dokázal vyhrať na jar, v lete, na jeseň aj v zime!", plural: "Celoročná dominancia! {hráč} už skompletizovali Sezónny Grand Slam {rok} – dokázali vyhrať na jar, v lete, na jeseň aj v zime!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}"] },
-            { id: "gs_hall", cat: "hall", title: "Grand Slam: Celkový líder Siene Grand Slamu", tag: "SIEŇ GRAND SLAMU", single: "Chrómovej vitríne Sezónneho Grand Slamu kraľuje {hráč} – na konte má už {hodnota} ({roky})!", plural: "V chrómovej vitríne Sezónneho Grand Slamu sa o čelo delia {hráč} – každý s bilanciou {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{roky}"] },
-            { id: "gs_january_honor", cat: "hall", title: "Grand Slam: Januárové vyznamenanie (1.–31. 1.)", tag: "VYZNAMENANIE · GRAND SLAM {rok}", single: "Čestná salva v Sieni slávy! {hráč} je jediným držiteľom Sezónneho Grand Slamu {rok} – ako jediný dokázal v uplynulom roku víťaziť na jar, v lete, na jeseň aj v zime!{obhajoba}", plural: "Vyznamenanie Siene slávy: Sezónny Grand Slam {rok} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali {hráč}. Klobúk dole pred celoročnou výdržou!{obhajoba}", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obhajoba}"] }
+            { id: "gs_current", cat: "hall", title: "Grand Slam: Skompletizovaný tento rok", tag: "SEZÓNNY GRAND SLAM", single: "Celoročná dominancia! {hráč} už skompletizoval Sezónny Grand Slam {rok} – dokázal vyhrať na jar, v lete, na jeseň aj v zime!", plural: "Celoročná dominancia! {hráč1} s {ostatnými} už skompletizovali Sezónny Grand Slam {rok} – dokázali vyhrať na jar, v lete, na jeseň aj v zime!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}"] },
+            { id: "gs_hall", cat: "hall", title: "Grand Slam: Celkový líder Siene Grand Slamu", tag: "SIEŇ GRAND SLAMU", single: "Chrómovej vitríne Sezónneho Grand Slamu kraľuje {hráč} – na konte má už {hodnota} ({roky})!", plural: "V chrómovej vitríne Sezónneho Grand Slamu sa o čelo delia {hráč1} s {ostatnými} – každý s bilanciou {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{roky}"] },
+            { id: "gs_january_honor", cat: "hall", title: "Grand Slam: Januárové vyznamenanie (1.–31. 1.)", tag: "VYZNAMENANIE · GRAND SLAM {rok}", single: "Čestná salva v Sieni slávy! {hráč} je jediným držiteľom Sezónneho Grand Slamu {rok} – ako jediný dokázal v uplynulom roku víťaziť na jar, v lete, na jeseň aj v zime!{obhajoba}", plural: "Vyznamenanie Siene slávy: Sezónny Grand Slam {rok} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali {hráč1} s {ostatnými}. Klobúk dole pred celoročnou výdržou!{obhajoba}", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obhajoba}"] }
         ];
 
-        // Katalóg predvolených šablón pre všetky OSTATNÉ systémové NEWS
+        // Katalóg predvolených šablón pre všetky OSTATNÉ systémové NEWS (74 položiek · v1.87)
         const OTHER_NEWS_CATALOG = [
             // LÍDER, BOJ NA ČELE & OBHAJOBA
-            { id: "leader_throne", group: "leader", title: "Líder tabuľky (Na tróne)", tag: "NA TRÓNE", single: "Lídrom TenisTAB v {okno} je {hráč} so ziskom {body} ({rozpis}).", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{body}", "{rozpis}"] },
-            { id: "leader_tied", group: "leader", title: "Zhodné body na čele (Dráma na čele)", tag: "DRÁMA NA ČELE", single: "", plural: "{hráč} majú na čele tabuľky v {okno} zhodne po {body} – boj o trón je úplne otvorený!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{body}"] },
-            { id: "leader_monopoly", group: "leader", title: "Veľký náskok lídra (Monopol)", tag: "MONOPOL", single: "{hráč} kraľuje tabuľke ({body}) s náskokom {rozdiel} pred {hráčom2}. Zvyšok ligy vraj tajne rokuje, či mu nepridelia drevenú raketu.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{body}", "{rozdiel}"] },
-            { id: "leader_drama", group: "leader", title: "Tesný rozdiel na čele (Dráma)", tag: "DRÁMA NA ČELE", single: "{hráč2} dýcha na chrbát lídrovi {hráčovi} – delí ich už len {rozdiel}!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{rozdiel}"] },
-            { id: "leader_chase", group: "leader", title: "Prenasledovateľ na 2. mieste (Boj o čelo)", tag: "BOJ O ČELO", single: "{hráč2} stráca na prvého {hráča} v {okno} presne {rozdiel}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{okno}", "{rozdiel}"] },
-            { id: "close_equal", group: "leader", title: "Rovnaké body u susedov v tabuľke", tag: "NA CHLP ROVNAKO", single: "{hráč} a {hráč2} majú v tabuľke zhodne {body} – rozhodujú až pomocné kritériá!", plural: "", vars: ["{hráč}", "{hráč2}", "{body}"] },
-            { id: "close_gap", group: "leader", title: "Najtesnejší rozdiel susedov v tabuľke", tag: "NA CHLP ROVNAKO", single: "{hráč} a {hráč2} sú v tabuľke natlačení na rozdiel iba {rozdiel}.", plural: "", vars: ["{hráč}", "{hráč2}", "{rozdiel}"] },
-            { id: "defending_pts", group: "leader", title: "Obhajoba bodov do 30 dní", tag: "OBHAJOBA BODOV", single: "{hráč} obhajuje v najbližších 30 dňoch {body}{kedy}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{body}", "{kedy}"] },
+            { id: "leader_throne", group: "leader", title: "Líder tabuľky (Na tróne)", tag: "NA TRÓNE", single: "Lídrom TenisTAB v {okno} je {hráč} so ziskom {bodyGen} ({rozpis}).", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{bodyNom}", "{bodyGen}", "{bodyLoc}", "{rozpis}"] },
+            { id: "leader_tied", group: "leader", title: "Zhodné body na čele (Dráma na čele)", tag: "DRÁMA NA ČELE", single: "", plural: "{hráč1} s {ostatnými} majú na čele tabuľky v {okno} zhodne po {bodyLoc} – boj o trón je úplne otvorený!", vars: ["{hráč}", "{okno}", "{bodyNom}", "{bodyGen}", "{bodyLoc}"] },
+            { id: "leader_monopoly", group: "leader", title: "Veľký náskok lídra (Monopol)", tag: "MONOPOL", single: "{hráč} kraľuje tabuľke ({bodyNom}) s náskokom {rozdielGen} pred {hráčom2}. Zvyšok ligy vraj tajne rokuje, či mu nepridelia drevenú raketu.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{bodyNom}", "{bodyGen}", "{rozdielNom}", "{rozdielGen}"] },
+            { id: "leader_drama", group: "leader", title: "Tesný rozdiel na čele (Dráma)", tag: "DRÁMA NA ČELE", single: "{hráč2} dýcha na chrbát lídrovi {hráčovi} – delí ich už len {rozdielNom}!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{rozdielNom}", "{rozdielGen}"] },
+            { id: "leader_chase", group: "leader", title: "Prenasledovateľ na 2. mieste (Boj o čelo)", tag: "BOJ O ČELO", single: "{hráč2} stráca na prvého {hráča} v {okno} presne {rozdielNom}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{okno}", "{rozdielNom}", "{rozdielGen}"] },
+            { id: "close_equal", group: "leader", title: "Rovnaké body u susedov v tabuľke", tag: "NA CHLP ROVNAKO", single: "{hráč} s {hráčom2} majú v tabuľke zhodne {bodyNom} – rozhodujú až pomocné kritériá!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{bodyNom}", "{bodyGen}", "{bodyLoc}"] },
+            { id: "close_gap", group: "leader", title: "Najtesnejší rozdiel susedov v tabuľke", tag: "NA CHLP ROVNAKO", single: "{hráč} s {hráčom2} sú v tabuľke natlačení na rozdiel iba {rozdielGen}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{rozdielNom}", "{rozdielGen}"] },
+            { id: "defending_pts", group: "leader", title: "Obhajoba bodov do 30 dní", tag: "OBHAJOBA BODOV", single: "{hráč} obhajuje v najbližších 30 dňoch {bodyNom}{kedy}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{bodyNom}", "{bodyGen}", "{bodyLoc}", "{kedy}"] },
             { id: "leader_expiry_coup", group: "leader", title: "Zmena lídra bodov expiráciou (Trón bez boja)", tag: "TRÓN BEZ BOJA", single: "Škandál v rebríčku! {hráč} zasadol na trón bez jediného úderu raketou – {hráč2} prišiel o prvé miesto, lebo mu vypršali staré body!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}"] },
             { id: "leader_coup_pts", group: "leader", title: "Zmena lídra bodovej tabuľky (Prevrat)", tag: "PALÁCOVÝ PREVRAT", single: "{hráč} zosadil z trónu {hráča2}! Jeho nepretržitá vláda na čele tabuľky trvala {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{trvanie}", "{zápas}"] },
             { id: "leader_reign_pts", group: "leader", title: "Dĺžka kraľovania lídra bodov", tag: "VLÁDCA REBRÍČKA", single: "Aktuálny líder {hráč} nepretržite kraľuje bodovej tabuľke TenisTAB už {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{trvanie}"] },
@@ -26066,22 +26097,22 @@
             { id: "streak_crisis", group: "streaks", title: "Krízový štáb (3+ prehier v rade)", tag: "KRÍZOVÝ ŠTÁB", single: "{hráč} prehral už {hodnota} po sebe. Odborníci odporúčajú vymeniť výplet alebo aspoň ponožky.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
             { id: "team_streak_1", group: "streaks", title: "Tímová séria 4H (Postrach štvorhry)", tag: "POSTRACH ŠTVORHRY", single: "Dvojica {hráč} ničí všetko, čo im príde do cesty – v debli ťahajú už {hodnota} v rade! Ostatné páry zrazu záhadne bolia lakte.", plural: "", vars: ["{hráč}", "{hodnota}"] },
             { id: "team_streak_2", group: "streaks", title: "Tímová séria 4H (Nelegálna chémia)", tag: "NELEGÁLNA CHÉMIA", single: "{hráč} vyhrali už {hodnota} po sebe bez jedinej chybičky! V šatni sa šepká, že ich budú musieť rozdeliť dekrétom.", plural: "", vars: ["{hráč}", "{hodnota}"] },
-            { id: "elo_mom_up_2h", group: "streaks", title: "ELO Momentum 2H (+15 ELO / 5 záp.)", tag: "ELO MOMENTUM 2H", single: "{hráč} chytil singlovú fazónu – za posledných 5 dvojhier nabral spolu {hodnota} ELO (najrýchlejší rast v lige)!", plural: "{hráč} chytili singlovú fazónu – za posledných 5 dvojhier nabrali zhodne po {hodnota} ELO!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "elo_mom_up_4h", group: "streaks", title: "ELO Momentum 4H (+15 ELO / 5 záp.)", tag: "ELO MOMENTUM 4H", single: "{hráč} je vo štvorhre na vlne – za posledných 5 deblov nabral spolu {hodnota} ELO (najrýchlejší rast v 4H)!", plural: "{hráč} sú vo štvorhre na vlne – za posledných 5 deblov nabrali zhodne po {hodnota} ELO!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "elo_mom_dn_2h", group: "streaks", title: "ELO Ochladenie 2H (−15 ELO / 5 záp.)", tag: "ELO OCHLADENIE 2H", single: "{hráč} za posledných 5 dvojhier pustil spolu {hodnota} ELO – súperi mu v poslednom čase berú drahocenné body.", plural: "{hráč} za posledných 5 dvojhier pustili zhodne po {hodnota} ELO – hľadajú stratený singlový rytmus.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "elo_mom_dn_4h", group: "streaks", title: "ELO Ochladenie 4H (−15 ELO / 5 záp.)", tag: "ELO OCHLADENIE 4H", single: "{hráč} za posledných 5 štvorhier pustil spolu {hodnota} ELO – v debli čaká na obrat.", plural: "{hráč} za posledných 5 štvorhier pustili zhodne po {hodnota} ELO – v debli čakajú na obrat.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "elo_mom_up_2h", group: "streaks", title: "ELO Momentum 2H (+15 ELO / 5 záp.)", tag: "ELO MOMENTUM 2H", single: "{hráč} chytil singlovú fazónu – za posledných 5 dvojhier nabral spolu {hodnota} ELO (najrýchlejší rast v lige)!", plural: "{hráč1} s {ostatnými} chytili singlovú fazónu – za posledných 5 dvojhier nabrali zhodne po {hodnota} ELO!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "elo_mom_up_4h", group: "streaks", title: "ELO Momentum 4H (+15 ELO / 5 záp.)", tag: "ELO MOMENTUM 4H", single: "{hráč} je vo štvorhre na vlne – za posledných 5 deblov nabral spolu {hodnota} ELO (najrýchlejší rast v 4H)!", plural: "{hráč1} s {ostatnými} sú vo štvorhre na vlne – za posledných 5 deblov nabrali zhodne po {hodnota} ELO!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "elo_mom_dn_2h", group: "streaks", title: "ELO Ochladenie 2H (−15 ELO / 5 záp.)", tag: "ELO OCHLADENIE 2H", single: "{hráč} za posledných 5 dvojhier pustil spolu {hodnota} ELO – súperi mu v poslednom čase berú drahocenné body.", plural: "{hráč1} s {ostatnými} za posledných 5 dvojhier pustili zhodne po {hodnota} ELO – hľadajú stratený singlový rytmus.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "elo_mom_dn_4h", group: "streaks", title: "ELO Ochladenie 4H (−15 ELO / 5 záp.)", tag: "ELO OCHLADENIE 4H", single: "{hráč} za posledných 5 štvorhier pustil spolu {hodnota} ELO – v debli čaká na obrat.", plural: "{hráč1} s {ostatnými} za posledných 5 štvorhier pustili zhodne po {hodnota} ELO – v debli čakajú na obrat.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
 
             // HRÁČSKE ŠTATISTIKY
-            { id: "stat_motor", group: "stats", title: "Neúnavný motor (najviac zápasov v okne)", tag: "NEÚNAVNÝ MOTOR", single: "{hráč} má v {okno} na konte už {hodnota} – na kurte má zrejme trvalý pobyt.", plural: "{hráč} majú v {okno} na konte zhodne po {hodnota} – na kurte majú zrejme trvalý pobyt.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{hodnota}"] },
-            { id: "stat_win_machine", group: "stats", title: "Stroj na výhry (najvyššia úspešnosť %)", tag: "STROJ NA VÝHRY", single: "Najvyššiu úspešnosť v {okno} drží {hráč} – boduje na úrovni {hodnota} ({bilancia}).", plural: "Najvyššiu úspešnosť v {okno} zhodne držia {hráč} – bodujú na úrovni {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{hodnota}", "{bilancia}"] },
-            { id: "stat_gems_top", group: "stats", title: "Štatistika dňa (najvyššie % gemov)", tag: "ŠTATISTIKA DŇA", single: "{hráč} vyhráva až {hodnota} všetkých svojich odohratých gemov ({gemy}).", plural: "{hráč} zhodne vyhrávajú až {hodnota} všetkých svojich odohratých gemov.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{gemy}"] },
-            { id: "stat_save_energy", group: "stats", title: "Šetrí sily (najnižšie % gemov < 45 %)", tag: "ŠETRÍ SILY", single: "{hráč} vyhráva len {hodnota} svojich gemov. Podľa trénera ide o sofistikovanú stratégiu, ako sa na kurte zbytočne nenabehať.", plural: "{hráč} vyhrávajú len {hodnota} svojich gemov. Podľa trénera ide o sofistikovanú stratégiu, ako sa na kurte zbytočne nenabehať.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
-            { id: "stat_doubles_mage", group: "stats", title: "Deblový mág (najviac bodov 4H v okne)", tag: "DEBLOVÝ MÁG", single: "Deblovým lídrom v {okno} je {hráč} so ziskom {hodnota} zo štvorhier 4H.", plural: "Najviac bodov zo štvorhier 4H ({hodnota}) majú v {okno} zhodne {hráč}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{hodnota}"] },
+            { id: "stat_motor", group: "stats", title: "Neúnavný motor (najviac zápasov v okne)", tag: "NEÚNAVNÝ MOTOR", single: "{hráč} má v {okno} na konte už {hodnota} – na kurte má zrejme trvalý pobyt.", plural: "{hráč1} s {ostatnými} majú v {okno} na konte zhodne po {hodnota} – na kurte majú zrejme trvalý pobyt.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{hodnota}"] },
+            { id: "stat_win_machine", group: "stats", title: "Stroj na výhry (najvyššia úspešnosť %)", tag: "STROJ NA VÝHRY", single: "Najvyššiu úspešnosť v {okno} drží {hráč} – boduje na úrovni {hodnota} ({bilancia}).", plural: "Najvyššiu úspešnosť v {okno} zhodne držia {hráč1} s {ostatnými} – bodujú na úrovni {hodnota}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{hodnota}", "{bilancia}"] },
+            { id: "stat_gems_top", group: "stats", title: "Štatistika dňa (najvyššie % gemov)", tag: "ŠTATISTIKA DŇA", single: "{hráč} vyhráva až {hodnota} všetkých svojich odohratých gemov ({gemy}).", plural: "{hráč1} s {ostatnými} zhodne vyhrávajú až {hodnota} všetkých svojich odohratých gemov.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{gemy}"] },
+            { id: "stat_save_energy", group: "stats", title: "Šetrí sily (najnižšie % gemov < 45 %)", tag: "ŠETRÍ SILY", single: "{hráč} vyhráva len {hodnota} svojich gemov. Podľa trénera ide o sofistikovanú stratégiu, ako sa na kurte zbytočne nenabehať.", plural: "{hráč1} s {ostatnými} vyhrávajú len {hodnota} svojich gemov. Podľa trénera ide o sofistikovanú stratégiu, ako sa na kurte zbytočne nenabehať.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "stat_doubles_mage", group: "stats", title: "Deblový mág (najviac bodov 4H v okne)", tag: "DEBLOVÝ MÁG", single: "Deblovým lídrom v {okno} je {hráč} so ziskom {hodnota} zo štvorhier 4H.", plural: "Najviac bodov zo štvorhier 4H ({hodnota}) majú v {okno} zhodne {hráč1} s {ostatnými}.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{hodnota}"] },
             { id: "stat_universal", group: "stats", title: "Univerzál kurtu (body v 2H aj 4H)", tag: "UNIVERZÁL KURTU", single: "{hráč} zbiera body na všetkých frontoch – v {okno} má {body2h} z dvojhier aj {body4h} zo štvorhier!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{okno}", "{body2h}", "{body4h}"] },
-            { id: "stat_sponsor", group: "stats", title: "Sponzor bodov (najviac prehier v okne)", tag: "SPONZOR BODOV", single: "{hráč} má na konte už {hodnota} – špekuluje sa, že občas hráva s raketou na bedminton.", plural: "{hráč} majú na konte zhodne po {hodnota} – v klube im zvažujú udeliť čestný titul „Hlavní sponzori bodov“.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "stat_sponsor", group: "stats", title: "Sponzor bodov (najviac prehier v okne)", tag: "SPONZOR BODOV", single: "{hráč} má na konte už {hodnota} – špekuluje sa, že občas hráva s raketou na bedminton.", plural: "{hráč1} s {ostatnými} majú na konte zhodne po {hodnota} – v klube im zvažujú udeliť čestný titul „Hlavní sponzori bodov“.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
             { id: "stat_basement", group: "stats", title: "Pivnica rebríčka (posledný aktívny)", tag: "PIVNICA REBRÍČKA", single: "Aktívnu časť tabuľky zospodu statočne istí {hráč}. Výhoda? Hlbšie sa už padnúť nedá, cesta vedie len hore (alebo rovno na pivo).", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}"] },
-            { id: "stat_class_gap", group: "stats", title: "Triedny rozdiel (1. vs posledný aktívny)", tag: "TRIEDNY ROZDIEL", single: "Medzi prvým ({hráč}) a posledným aktívnym ({hráč2}) v tabuľke je priepasť {rozdiel}. Na ich zápas by stávkovky vypísali kurz 1,01.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{rozdiel}"] },
-            { id: "stat_all_or_nothing", group: "stats", title: "Všetko alebo nič (najviac zápasov bez remízy)", tag: "VŠETKO ALEBO NIČ", single: "{hráč} odohral už {hodnota} bez jedinej remízy – polovičné riešenia a kompromisy zjavne neuznáva.", plural: "{hráč} odohrali už po {hodnota} bez jedinej remízy – polovičné riešenia a kompromisy zjavne neuznávajú.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "stat_class_gap", group: "stats", title: "Triedny rozdiel (1. vs posledný aktívny)", tag: "TRIEDNY ROZDIEL", single: "Medzi prvým ({hráč}) a posledným aktívnym ({hráč2}) v tabuľke je priepasť {rozdielGen}. Na ich zápas by stávkovky vypísali kurz 1,01.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{rozdielNom}", "{rozdielGen}"] },
+            { id: "stat_all_or_nothing", group: "stats", title: "Všetko alebo nič (najviac zápasov bez remízy)", tag: "VŠETKO ALEBO NIČ", single: "{hráč} odohral už {hodnota} bez jedinej remízy – polovičné riešenia a kompromisy zjavne neuznáva.", plural: "{hráč1} s {ostatnými} odohrali už po {hodnota} bez jedinej remízy – polovičné riešenia a kompromisy zjavne neuznávajú.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
 
             // RIVALITA & KLUBOVÁ KRONIKA
             { id: "chron_summary", group: "rivalry", title: "Klubová kronika (súčet databázy)", tag: "KLUBOVÁ KRONIKA", single: "V databáze TenisTAB {sloveso} {zápasy} ({rozpis}), {sety} a celkovo {gemy}.", plural: "", vars: ["{sloveso}", "{zápasy}", "{rozpis}", "{sety}", "{gemy}"] },
@@ -26090,8 +26121,8 @@
             { id: "chron_balls", group: "rivalry", title: "Ekonomika športu (loptičky)", tag: "EKONOMIKA ŠPORTU", single: "Pri {gemy} odohratých gemoch už v tejto lige padlo za vlasť niekoľko tuctov tenisových loptičiek. Česť ich pamiatke.", plural: "", vars: ["{gemy}"] },
             { id: "riv_el_clasico", group: "rivalry", title: "El Clásico (najčastejšia dvojhra)", tag: "EL CLÁSICO", single: "Najčastejším singlovým súbojom histórie je rivalita {hráč} vs {hráč2} – v dvojhre sa stretli už {počet}-krát!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{počet}"] },
             { id: "riv_sparring", group: "rivalry", title: "Súkromný sparing (jednostranné H2H)", tag: "SÚKROMNÝ SPARING", single: "{hráč} má v dvojhre proti {hráčovi2} bilanciu {bilancia}. To už nie je rivalita, to začína pripomínať platené kondičné lekcie.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{bilancia}"] },
-            { id: "riv_derby", group: "rivalry", title: "Večné derby (vyrovnané H2H)", tag: "VEČNÉ DERBY", single: "{hráč} a {hráč2} si v singli nič nedarujú ({bilancia}). Keby sa ich zápasy vysielali, Eurosport by zrušil reprízy snookeru.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{bilancia}"] },
-            { id: "riv_drama3", group: "rivalry", title: "Dráma na objednávku (3-setové zápasy)", tag: "DRÁMA NA OBJEDNÁVKU", single: "{hráč} má v nohách už {hodnota} – evidentne si platí kurt od hodiny a chce využiť každú minútu.", plural: "{hráč} majú v nohách už {hodnota} – evidentne si platia kurt od hodiny a chcú využiť každú minútu.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
+            { id: "riv_derby", group: "rivalry", title: "Večné derby (vyrovnané H2H)", tag: "VEČNÉ DERBY", single: "{hráč} s {hráčom2} si v singli nič nedarujú ({bilancia}). Keby sa ich zápasy vysielali, Eurosport by zrušil reprízy snookeru.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{bilancia}"] },
+            { id: "riv_drama3", group: "rivalry", title: "Dráma na objednávku (3-setové zápasy)", tag: "DRÁMA NA OBJEDNÁVKU", single: "{hráč} má v nohách už {hodnota} – evidentne si platí kurt od hodiny a chce využiť každú minútu.", plural: "{hráč1} s {ostatnými} majú v nohách už {hodnota} – evidentne si platia kurt od hodiny a chcú využiť každú minútu.", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}"] },
 
             // NEAKTIVITA (BULVÁR) & NÁVRATY
             { id: "inact_half_1", group: "inactivity", title: "Neaktivita 180–364 dní (variant 1)", tag: "ŠOKUJÚCE ZÁBERY", single: "{hráča} videli, ako potajomky trénuje o stenu. Po {dni} dňoch pauzy sa očakáva jeho návrat na kurty!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{dni}", "{dniTxt}", "{dátum}"] },
@@ -26128,6 +26159,8 @@
             { id: "tip_13", group: "tips", title: "Tip 13 – Ikony formy (🔥 / ❄️ / ⚫)", tag: "VEDELI STE?", single: "Ikony pri menách v tabuľke prezrádzajú formu – 🔥 znamená 3 a viac výhier v rade, ❄️ sériu 3 a viac prehier a ⚫ označuje hráča, ktorý nehral viac ako rok (radí sa pod aktívnych).", plural: "", vars: [] }
         ];
 
+        const POINT_UNIT_BADGE_IDS = ["points_king", "singles_king", "doubles_king", "winter_wolf", "beach_boy", "roland_garros", "betonar"];
+
         function buildAchievementNewsContext(a, players, wm, useBezMilostiOverChirurg = false) {
             if (!a || !Array.isArray(a.holders) || a.holders.length === 0) return null;
             const isWindowBadges = badgesScope === "window" && wm > 0;
@@ -26155,7 +26188,7 @@
 
             let valFormatted = String(a.valueText || "");
             if (["sniper", "points_king", "giant_killer", "dynamic_duo", "singles_king", "doubles_king", "winter_wolf", "beach_boy", "roland_garros", "betonar", "janosik", "nostalgia", "obhajca", "rocky_balboa", "sizyfos", "good_chemistry"].includes(a.id)) {
-                valFormatted = valFormatted.replace(".", ",");
+                valFormatted = skTrimTrailingZeros(valFormatted.replace(".", ","));
             }
             if (a.id === "surgeon") {
                 valFormatted = valFormatted.replace("× bez straty setu", "-krát");
@@ -26173,10 +26206,21 @@
                 valFormatted = skCount(cnt, "spoločného štartu", "spoločných štartov", "spoločných štartov");
             }
 
+            // Genitív bodov pre odznaky s „so ziskom {hodnotaGen}“ (v1.87: 1 bodu / 2 bodov / 5 bodov / 5,5 bodu)
+            let valGen = valFormatted;
+            if (POINT_UNIT_BADGE_IDS.includes(a.id)) {
+                const numVal = parseFloat(String(a.valueText || "").replace(",", "."));
+                if (isFinite(numVal)) {
+                    valFormatted = skPts(numVal, "nom");
+                    valGen = skPts(numVal, "gen");
+                }
+            }
+
             const vars = isPairBadge
                 ? {
                     ...buildPairGroupVars(pNames),
                     "hodnota": valFormatted,
+                    "hodnotaGen": valGen,
                     "rozsah": achScopeLabel,
                     "rekordCap": achRecCap,
                     "rekordLow": achRecLow,
@@ -26185,6 +26229,7 @@
                 : {
                     ...buildPlayerCaseVars(activeHolders),
                     "hodnota": valFormatted,
+                    "hodnotaGen": valGen,
                     "rozsah": achScopeLabel,
                     "rekordCap": achRecCap,
                     "rekordLow": achRecLow,
@@ -26197,13 +26242,13 @@
             let defaultTag = catDef.tag;
             let defaultTpl = (isPlural && catDef.plural) ? catDef.plural : catDef.single;
 
-            // Zachovanie pôvodného striedania variantov iba vtedy, keď položka NIE JE ručne upravená v editore (v1.86)
+            // Zachovanie pôvodného striedania variantov iba vtedy, keď položka NIE JE ručne upravená v editore
             const badgeUserOv = (state.newsTemplates && state.newsTemplates.badges && state.newsTemplates.badges[a.id]) || null;
             const hasBadgeUserEdit = Boolean(badgeUserOv && (badgeUserOv.tag || badgeUserOv.single || badgeUserOv.plural));
             if (!hasBadgeUserEdit && a.id === "surgeon" && useBezMilostiOverChirurg) {
                 defaultTag = "BEZ MILOSTI";
                 defaultTpl = isPlural
-                    ? "{hráč} vybavili súperov bez straty setu už {hodnota}. Žiadne zdržiavanie, rýchla sprcha a ide sa na jedno čapované."
+                    ? "{hráč1} s {ostatnými} vybavili súperov bez straty setu už {hodnota}. Žiadne zdržiavanie, rýchla sprcha a ide sa na jedno čapované."
                     : "{hráč} vybavil súpera bez straty setu už {hodnota}. Žiadne zdržiavanie, rýchla sprcha a ide sa na jedno čapované.";
             } else if (!hasBadgeUserEdit && a.id === "chameleon") {
                 const num = parseInt(a.valueText, 10) || 0;
@@ -26211,7 +26256,7 @@
                     defaultTag = "TENISOVÝ TINDER";
                     const tinderCnt = skCount(num, "rôzneho spoluhráča", "rôznych spoluhráčov", "rôznych spoluhráčov");
                     defaultTpl = isPlural
-                        ? `{hráč} už v štvorhre vystriedali ${tinderCnt}. Buď sú takí obľúbení, alebo s nimi nikto nevydrží dvakrát po sebe.`
+                        ? `{hráč1} a {ostatní} už v štvorhre vystriedali ${tinderCnt}. Buď sú takí obľúbení, alebo s nimi nikto nevydrží dvakrát po sebe.`
                         : `{hráč} už v štvorhre vystriedal ${tinderCnt}. Buď je taký obľúbený, alebo s ním nikto nevydrží dvakrát po sebe.`;
                 }
             }
@@ -26244,10 +26289,10 @@
                 const res = resolveSystemNewsItem(sectionKey, itemKey, defTag, defText, ctx);
                 if (res && res.text) items.push(res);
             };
-            const addOtherTpl = (itemKey, vars, isPlural = false, overrideDefTag = null, overrideDefText = null) => {
+            const addOtherTpl = (itemKey, vars, isPlural = false, overrideDefTag = null, overrideDefText = null, liveMeta = null) => {
                 const def = OTHER_NEWS_CATALOG.find(x => x.id === itemKey);
                 if (!def) return;
-                recordLiveOtherNews(itemKey, vars || {}, isPlural);
+                recordLiveOtherNews(itemKey, vars || {}, isPlural, liveMeta);
                 const dTag = overrideDefTag || def.tag;
                 const dTpl = overrideDefText || ((isPlural && def.plural) ? def.plural : (def.single || def.plural));
                 const dText = applySkNewsTemplate(dTpl, vars || {});
@@ -26271,7 +26316,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.86! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.88! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -26388,31 +26433,31 @@
                 const topRozpis = `2H: ${skNum(top.pts2H, 2)} b · 4H: ${skNum(top.pts4H, 2)} b`;
 
                 if (activeRanked.length === 1) {
-                    addOtherTpl("leader_throne", { ...buildPlayerCaseVars(top), "okno": wmTxt, "body": skPts(top.points, "gen"), "rozpis": topRozpis }, false);
+                    addOtherTpl("leader_throne", { ...buildPlayerCaseVars(top), "okno": wmTxt, ...buildPtsCaseVars(top.points, "body", "gen"), "rozpis": topRozpis }, false);
                 } else if (isTiedTop) {
                     const topPtsTied = activeRanked.filter(p => Math.abs(p.points - top.points) < 0.001);
-                    addOtherTpl("leader_tied", { ...buildPlayerCaseVars(topPtsTied), "okno": wmTxt, "body": skPts(top.points, "loc") }, true);
+                    addOtherTpl("leader_tied", { ...buildPlayerCaseVars(topPtsTied), "okno": wmTxt, ...buildPtsCaseVars(top.points, "body", "loc") }, true, null, null, { pluralCount: topPtsTied.length });
                 } else if (isMonopoly) {
                     addOtherTpl("leader_monopoly", {
                         ...buildPlayerCaseVars(top),
                         ...buildPlayerCaseVars(activeRanked[1], "2"),
-                        "body": skPts(top.points, "nom"),
-                        "rozdiel": skPts(gap, "gen")
+                        ...buildPtsCaseVars(top.points, "body", "nom"),
+                        ...buildPtsCaseVars(gap, "rozdiel", "gen")
                     }, false);
                 } else {
-                    addOtherTpl("leader_throne", { ...buildPlayerCaseVars(top), "okno": wmTxt, "body": skPts(top.points, "gen"), "rozpis": topRozpis }, false);
+                    addOtherTpl("leader_throne", { ...buildPlayerCaseVars(top), "okno": wmTxt, ...buildPtsCaseVars(top.points, "body", "gen"), "rozpis": topRozpis }, false);
                     if (gap <= dramaThreshold) {
                         addOtherTpl("leader_drama", {
                             ...buildPlayerCaseVars(top),
                             ...buildPlayerCaseVars(activeRanked[1], "2"),
-                            "rozdiel": skPts(gap, "nom")
+                            ...buildPtsCaseVars(gap, "rozdiel", "nom")
                         }, false);
                     } else {
                         addOtherTpl("leader_chase", {
                             ...buildPlayerCaseVars(top),
                             ...buildPlayerCaseVars(activeRanked[1], "2"),
                             "okno": wmTxt,
-                            "rozdiel": skPts(gap, "nom")
+                            ...buildPtsCaseVars(gap, "rozdiel", "nom")
                         }, false);
                     }
                 }
@@ -26430,9 +26475,9 @@
                         if (closePair) {
                             const pairV = { ...buildPlayerCaseVars(closePair[0]), ...buildPlayerCaseVars(closePair[1], "2") };
                             if (minGap === 0) {
-                                addOtherTpl("close_equal", { ...pairV, "body": skPts(closePair[0].points, "nom") }, false);
+                                addOtherTpl("close_equal", { ...pairV, ...buildPtsCaseVars(closePair[0].points, "body", "nom") }, false);
                             } else {
-                                addOtherTpl("close_gap", { ...pairV, "rozdiel": skPts(minGap, "gen") }, false);
+                                addOtherTpl("close_gap", { ...pairV, ...buildPtsCaseVars(minGap, "rozdiel", "gen") }, false);
                             }
                         }
                     }
@@ -26445,7 +26490,7 @@
                 defending.slice(0, 3).forEach(p => {
                     const nextD = p.expiringDetails && p.expiringDetails[0];
                     const whenTxt = nextD ? ` (najbližšie platí do ${nextD.expiryStr} vrátane)` : "";
-                    addOtherTpl("defending_pts", { ...buildPlayerCaseVars(p), "body": skPts(p.expiring30, "nom"), "kedy": whenTxt }, false);
+                    addOtherTpl("defending_pts", { ...buildPlayerCaseVars(p), ...buildPtsCaseVars(p.expiring30, "body", "nom"), "kedy": whenTxt }, false);
                 });
             }
 
@@ -26486,13 +26531,13 @@
                 const upRes = getMaxHolders(eligible, p => p.momentum5);
                 if (upRes.holders.length > 0 && upRes.maxVal >= 15.0) {
                     const vTxt = `+${skNum(upRes.maxVal, 1)}`;
-                    addOtherTpl(is4H ? "elo_mom_up_4h" : "elo_mom_up_2h", { ...buildPlayerCaseVars(upRes.holders), "hodnota": vTxt }, upRes.holders.length > 1);
+                    addOtherTpl(is4H ? "elo_mom_up_4h" : "elo_mom_up_2h", { ...buildPlayerCaseVars(upRes.holders), "hodnota": vTxt }, upRes.holders.length > 1, null, null, { pluralCount: upRes.holders.length });
                 }
 
                 const downRes = getMinHolders(eligible, p => p.momentum5);
                 if (downRes.holders.length > 0 && downRes.minVal <= -15.0) {
                     const vTxt = skNum(downRes.minVal, 1);
-                    addOtherTpl(is4H ? "elo_mom_dn_4h" : "elo_mom_dn_2h", { ...buildPlayerCaseVars(downRes.holders), "hodnota": vTxt }, downRes.holders.length > 1);
+                    addOtherTpl(is4H ? "elo_mom_dn_4h" : "elo_mom_dn_2h", { ...buildPlayerCaseVars(downRes.holders), "hodnota": vTxt }, downRes.holders.length > 1, null, null, { pluralCount: downRes.holders.length });
                 }
             };
             emitEloMomentumNews(computedElo2H, false);
@@ -26503,10 +26548,13 @@
                 const mpRes = getMaxHolders(activeRanked, p => p.matches);
                 if (mpRes.holders.length > 0 && mpRes.maxVal >= 3) {
                     const isPl = mpRes.holders.length > 1;
-                    const hVal = isPl
-                        ? skCount(mpRes.maxVal, "odohratom zápase", "odohratých zápasoch", "odohratých zápasoch")
-                        : skCount(mpRes.maxVal, "odohratý zápas", "odohraté zápasy", "odohratých zápasov");
-                    addOtherTpl("stat_motor", { ...buildPlayerCaseVars(mpRes.holders), "okno": wmTxt, "hodnota": hVal }, isPl);
+                    const hSingle = skCount(mpRes.maxVal, "odohratý zápas", "odohraté zápasy", "odohratých zápasov");
+                    const hPlural = skCount(mpRes.maxVal, "odohratom zápase", "odohratých zápasoch", "odohratých zápasoch");
+                    addOtherTpl("stat_motor", { ...buildPlayerCaseVars(mpRes.holders), "okno": wmTxt, "hodnota": isPl ? hPlural : hSingle }, isPl, null, null, {
+                        pluralCount: mpRes.holders.length,
+                        singleVarsOverride: { "hodnota": hSingle },
+                        pluralVarsOverride: { "hodnota": hPlural }
+                    });
                 }
 
                 const qualified = activeRanked.filter(p => p.matches >= 3);
@@ -26515,7 +26563,7 @@
                     if (wpRes.holders.length > 0) {
                         const pctW = `${skNum(wpRes.maxVal * 100, 1)} %`;
                         const bil = `${wpRes.holders[0].wins}V-${wpRes.holders[0].draws}R-${wpRes.holders[0].losses}P`;
-                        addOtherTpl("stat_win_machine", { ...buildPlayerCaseVars(wpRes.holders), "okno": wmTxt, "hodnota": pctW, "bilancia": bil }, wpRes.holders.length > 1);
+                        addOtherTpl("stat_win_machine", { ...buildPlayerCaseVars(wpRes.holders), "okno": wmTxt, "hodnota": pctW, "bilancia": bil }, wpRes.holders.length > 1, null, null, { pluralCount: wpRes.holders.length });
                     }
 
                     const withGems = qualified.filter(p => (p.gemsWon + p.gemsLost) > 0);
@@ -26524,12 +26572,12 @@
                         if (gpRes.holders.length > 0) {
                             const gPct = `${skNum(gpRes.maxVal * 100, 1)} %`;
                             const gRatio = `${gpRes.holders[0].gemsWon}:${gpRes.holders[0].gemsLost}`;
-                            addOtherTpl("stat_gems_top", { ...buildPlayerCaseVars(gpRes.holders), "hodnota": gPct, "gemy": gRatio }, gpRes.holders.length > 1);
+                            addOtherTpl("stat_gems_top", { ...buildPlayerCaseVars(gpRes.holders), "hodnota": gPct, "gemy": gRatio }, gpRes.holders.length > 1, null, null, { pluralCount: gpRes.holders.length });
                         }
 
                         const lgRes = getMinHolders(withGems, p => (p.gemsWon / (p.gemsWon + p.gemsLost)) * 100);
                         if (lgRes.holders.length > 0 && lgRes.minVal < 45) {
-                            addOtherTpl("stat_save_energy", { ...buildPlayerCaseVars(lgRes.holders), "hodnota": `${skNum(lgRes.minVal, 1)} %` }, lgRes.holders.length > 1);
+                            addOtherTpl("stat_save_energy", { ...buildPlayerCaseVars(lgRes.holders), "hodnota": `${skNum(lgRes.minVal, 1)} %` }, lgRes.holders.length > 1, null, null, { pluralCount: lgRes.holders.length });
                         }
                     }
                 }
@@ -26537,7 +26585,13 @@
                 const top4HRes = getMaxHolders(activeRanked, p => p.pts4H);
                 if (top4HRes.holders.length > 0 && top4HRes.maxVal >= 1) {
                     const isPl = top4HRes.holders.length > 1;
-                    addOtherTpl("stat_doubles_mage", { ...buildPlayerCaseVars(top4HRes.holders), "okno": wmTxt, "hodnota": skPts(top4HRes.maxVal, isPl ? "nom" : "gen") }, isPl);
+                    const hSingle = skPts(top4HRes.maxVal, "gen");
+                    const hPlural = skPts(top4HRes.maxVal, "nom");
+                    addOtherTpl("stat_doubles_mage", { ...buildPlayerCaseVars(top4HRes.holders), "okno": wmTxt, "hodnota": isPl ? hPlural : hSingle }, isPl, null, null, {
+                        pluralCount: top4HRes.holders.length,
+                        singleVarsOverride: { "hodnota": hSingle },
+                        pluralVarsOverride: { "hodnota": hPlural }
+                    });
                 }
 
                 const universals = activeRanked.filter(p => p.pts2H >= 1 && p.pts4H >= 1);
@@ -26554,10 +26608,13 @@
                 const mlRes = getMaxHolders(activeRanked, p => p.losses);
                 if (mlRes.holders.length > 0 && mlRes.maxVal >= 3) {
                     const isPl = mlRes.holders.length > 1;
-                    const hVal = isPl
-                        ? skCount(mlRes.maxVal, "prehre", "prehrách", "prehrách")
-                        : skCount(mlRes.maxVal, "prehru", "prehry", "prehier");
-                    addOtherTpl("stat_sponsor", { ...buildPlayerCaseVars(mlRes.holders), "hodnota": hVal }, isPl);
+                    const hSingle = skCount(mlRes.maxVal, "prehru", "prehry", "prehier");
+                    const hPlural = skCount(mlRes.maxVal, "prehre", "prehrách", "prehrách");
+                    addOtherTpl("stat_sponsor", { ...buildPlayerCaseVars(mlRes.holders), "hodnota": isPl ? hPlural : hSingle }, isPl, null, null, {
+                        pluralCount: mlRes.holders.length,
+                        singleVarsOverride: { "hodnota": hSingle },
+                        pluralVarsOverride: { "hodnota": hPlural }
+                    });
                 }
 
                 if (activeRanked.length >= 3) {
@@ -26570,7 +26627,7 @@
                         addOtherTpl("stat_class_gap", {
                             ...buildPlayerCaseVars(topActive),
                             ...buildPlayerCaseVars(lastActive, "2"),
-                            "rozdiel": skPts(classGap, "gen")
+                            ...buildPtsCaseVars(classGap, "rozdiel", "gen")
                         }, false);
                     }
                 }
@@ -26580,10 +26637,13 @@
                     const ndRes = getMaxHolders(noDraws, p => p.matches);
                     if (ndRes.holders.length > 0) {
                         const isPl = ndRes.holders.length > 1;
-                        const hVal = isPl
-                            ? skCount(ndRes.maxVal, "zápase", "zápasoch", "zápasoch")
-                            : skCount(ndRes.maxVal, "zápas", "zápasy", "zápasov");
-                        addOtherTpl("stat_all_or_nothing", { ...buildPlayerCaseVars(ndRes.holders), "hodnota": hVal }, isPl);
+                        const hSingle = skCount(ndRes.maxVal, "zápas", "zápasy", "zápasov");
+                        const hPlural = skCount(ndRes.maxVal, "zápase", "zápasoch", "zápasoch");
+                        addOtherTpl("stat_all_or_nothing", { ...buildPlayerCaseVars(ndRes.holders), "hodnota": isPl ? hPlural : hSingle }, isPl, null, null, {
+                            pluralCount: ndRes.holders.length,
+                            singleVarsOverride: { "hodnota": hSingle },
+                            pluralVarsOverride: { "hodnota": hPlural }
+                        });
                     }
                 }
             }
@@ -26696,7 +26756,7 @@
                         addOtherTpl("riv_drama3", {
                             ...buildPlayerCaseVars(holders3),
                             "hodnota": skCount(maxDramaVal, "vyrovnaný trojsetový zápas", "vyrovnané trojsetové zápasy", "vyrovnaných trojsetových zápasov")
-                        }, holders3.length > 1);
+                        }, holders3.length > 1, null, null, { pluralCount: holders3.length });
                     }
                 }
 
@@ -26756,11 +26816,11 @@
                             : `Zlatého slávika kedysi bral vo veľkom Karel Gott, nášho Zlatého kanárika v Klietke si už prebral Majster ${g.name} (${g.total}× 0:6) – to bola naozaj božská nula!`;
                         addSys("badges", "cage_gold", "ZLATÝ KANÁRIK", defTxt, {
                             isPlural: false,
-                            vars: { ...buildPlayerCaseVars(g), "hodnota": `${g.total}× 0:6` }
+                            vars: { ...buildPlayerCaseVars(g), "hodnota": `${g.total}× 0:6`, "zoznam": `${g.name} (${g.goldCount}×)` }
                         });
                     } else {
                         const gList = ccNews.goldHolders.map(g => `${g.name} (${g.goldCount}×)`).join(", ");
-                        addBadgeTpl("cage_gold", { ...buildPlayerCaseVars(ccNews.goldHolders), "hodnota": gList }, true);
+                        addBadgeTpl("cage_gold", { ...buildPlayerCaseVars(ccNews.goldHolders), "hodnota": gList, "zoznam": gList }, true);
                     }
                 } else {
                     const topBreeder = ccNews.members[0];
@@ -27547,13 +27607,13 @@
                 const botDelta = swapOrder ? m.eloDeltaA : m.eloDeltaB;
                 const topTeam = swapOrder ? m.eloTeam2 : m.eloTeam1;
                 const botTeam = swapOrder ? m.eloTeam1 : m.eloTeam2;
-                const fmtD = (d) => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1);
+                const fmtD = (d) => d > 0 ? `+${skNum(d, 1)}` : skNum(d, 1);
                 const eloLabel = m.type === "4H" ? "ELO 4H" : "ELO 2H";
                 const topAfter = Array.isArray(topTeam) && topTeam.length > 0
-                    ? ` (${topTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    ? ` (${topTeam.map(x => `${x.name} ${skNum(x.after, 1)}`).join(" / ")})`
                     : "";
                 const botAfter = Array.isArray(botTeam) && botTeam.length > 0
-                    ? ` (${botTeam.map(x => `${x.name} ${x.after.toFixed(1)}`).join(" / ")})`
+                    ? ` (${botTeam.map(x => `${x.name} ${skNum(x.after, 1)}`).join(" / ")})`
                     : "";
                 pushUniq("match", `POSUN ${eloLabel}`, `${topName}: ${fmtD(topDelta)}${topAfter} · ${botName}: ${fmtD(botDelta)}${botAfter}.`);
             }
@@ -27603,11 +27663,11 @@
             const surfMeta = getSurfaceMeta(m.surface);
             if (surfMeta) addChip("Povrch", surfMeta.label);
 
-            if (topPts > 0) addChip("Body", `+${formatPts(topPts)} b`);
+            if (topPts > 0) addChip("Body", `+${skNum(topPts, 2)} b`);
 
             if (typeof m.eloDeltaA === "number" && !isNaN(m.eloDeltaA)) {
                 const topDelta = swap ? m.eloDeltaB : m.eloDeltaA;
-                const dSign = topDelta > 0 ? `+${topDelta.toFixed(1)}` : topDelta.toFixed(1);
+                const dSign = topDelta > 0 ? `+${skNum(topDelta, 1)}` : skNum(topDelta, 1);
                 addChip(`Δ ELO ${m.type}`, dSign);
             }
 
@@ -28449,7 +28509,7 @@
                 const sampleVars = {
                     "miesto": loc.inPlaceCap,
                     "vietor": "26",
-                    "teplota": evKey === "frost" ? "-4,5" : (evKey === "heat" ? "31,2" : "21,0"),
+                    "teplota": evKey === "frost" ? "-4,5" : (evKey === "heat" ? "31,2" : "21"),
                     "zrážky": "Vonku prší (3,4 mm)."
                 };
                 const tg = (cur.tag) || def.tag;
@@ -28564,7 +28624,7 @@
                     const sampleVars = {
                         "miesto": loc.inPlaceCap,
                         "vietor": "26",
-                        "teplota": def.key === "frost" ? "-4,5" : (def.key === "heat" ? "31,2" : "21,0"),
+                        "teplota": def.key === "frost" ? "-4,5" : (def.key === "heat" ? "31,2" : "21"),
                         "zrážky": "Vonku prší (3,4 mm)."
                     };
                     const prevText = applySkNewsTemplate(curText, sampleVars);
@@ -28819,7 +28879,7 @@
             showToast("Obnovený pôvodný text správy.");
         }
 
-        // Realistické náhradné ukážkové hodnoty pre každý neobsadený odznak (v1.86)
+        // Realistické náhradné ukážkové hodnoty pre každý neobsadený odznak (v1.87)
         const BADGE_FALLBACK_PREVIEW_VALS = {
             unstoppable: "6 výhier v rade",
             hot_hand: "4 výhry v rade",
@@ -28835,33 +28895,33 @@
             terminator: "42 zápasov",
             diplomat: "5 remíz",
             chameleon: "s 5 rôznymi spoluhráčmi",
-            dynamic_duo: "9,5 bodu",
+            dynamic_duo: "9,5 b",
             phoenix: "4 obraty",
             marathoner: "7 bitiek",
             unlucky: "4 tesné prehry",
-            singles_king: "14,0 bodu",
+            singles_king: "14 bodov",
             doubles_king: "8,5 bodu",
             winter_wolf: "11,5 bodu",
             beach_boy: "12,5 bodu",
-            roland_garros: "10,0 bodu",
+            roland_garros: "10 bodov",
             betonar: "9,5 bodu",
             janosik: "-26,8 ELO",
             sponsor: "14 prehier",
             comeback: "145 dní",
-            nostalgia: "6,5 bodu",
-            obhajca: "8,0 bodu",
+            nostalgia: "6,5 b",
+            obhajca: "8 b",
             steamroller: "+12 gemov",
             rocky_balboa: "19,5 gemu/záp.",
             sizyfos: "20,4 gemu/záp.",
             scalp_collector: "6 rôznych súperov",
             inseparable_pair: "12 spoločných štartov",
-            good_chemistry: "75,0 %",
+            good_chemistry: "75 %",
             unbeatable_duo: "5 výhier v rade",
             dramatics: "4 trojsetové 4H",
             pat_mat: "4 prehry"
         };
 
-        // Vybuduje kontext pre oba náhľady: singleVars (1×) aj pluralVars (2+ / 3×) s podporou Testera skloňovania (v1.86)
+        // Vybuduje kontext pre oba náhľady: singleVars (1×) aj pluralVars (2+ / 3×) s podporou Testera skloňovania (v1.87)
         function getBadgeDualPreviewContext(def) {
             const wm = Number(state.config.windowMonths) || 0;
             const testerGrp = getAdminTesterPlayersGroup();
@@ -28931,9 +28991,14 @@
                 }
 
                 const fbVal = BADGE_FALLBACK_PREVIEW_VALS[def.id] || (isPairBadge ? "5 výhier v rade" : "5×");
+                let fbGen = fbVal;
+                if (POINT_UNIT_BADGE_IDS.includes(def.id)) {
+                    const nFb = parseFloat(String(fbVal).replace(",", "."));
+                    if (isFinite(nFb)) fbGen = skPts(nFb, "gen");
+                }
                 const baseVars = liveCtx
                     ? { ...liveCtx.vars }
-                    : { "hodnota": fbVal, "rozsah": achScopeLabel, "rekordCap": achRecCap, "rekordLow": achRecLow, "skóre": ", 6:0 6:0" };
+                    : { "hodnota": fbVal, "hodnotaGen": fbGen, "rozsah": achScopeLabel, "rekordCap": achRecCap, "rekordLow": achRecLow, "skóre": ", 6:0 6:0" };
 
                 if (isPairBadge) {
                     const p3 = pickThirdFor(t1, t2);
@@ -28971,14 +29036,15 @@
                     ? customPluralList
                     : (cc.goldHolders.length > 1 ? cc.goldHolders : [h1, pickSecondFor(h1)]);
                 const sVal = (hasReal && adminTesterMode !== "custom") ? `${cc.goldHolders[0].total}× 0:6` : "10× 0:6";
+                const sZoznam = (hasReal && adminTesterMode !== "custom") ? `${cc.goldHolders[0].name} (${cc.goldHolders[0].goldCount}×)` : `${h1.name} (1×)`;
                 const pVal = (hasReal && adminTesterMode !== "custom" && cc.goldHolders.length > 1)
                     ? cc.goldHolders.map(g => `${g.name} (${g.goldCount}×)`).join(", ")
                     : hPl.map(g => `${g.name} (1×)`).join(", ");
                 return {
                     isLive: hasReal,
                     pluralCount: hPl.length,
-                    singleVars: { ...buildPlayerCaseVars([h1]), "hodnota": sVal },
-                    pluralVars: { ...buildPlayerCaseVars(hPl), "hodnota": pVal }
+                    singleVars: { ...buildPlayerCaseVars([h1]), "hodnota": sVal, "zoznam": sZoznam },
+                    pluralVars: { ...buildPlayerCaseVars(hPl), "hodnota": pVal, "zoznam": pVal }
                 };
             }
             if (def.id === "cage_breeder") {
@@ -29084,14 +29150,19 @@
             });
             const sampleSets = totalSetsReal > 0 ? totalSetsReal : 96;
             const sampleGems = totalGemsReal > 0 ? totalGemsReal : 850;
+            const samplePts = (def.id === "defending_pts") ? 2 : (s1.points || 12.5);
+            const sampleDiff = (def.id === "leader_monopoly" || def.id === "stat_class_gap") ? 4 : 2;
+
+            const defBodyCase = def.id === "leader_tied" ? "loc" : (def.id === "leader_throne" ? "gen" : "nom");
+            const defDiffCase = (def.id === "leader_monopoly" || def.id === "close_gap" || def.id === "stat_class_gap") ? "gen" : "nom";
 
             const baseVars = {
                 ...buildPlayerCaseVars([s1]),
                 ...buildPlayerCaseVars([s2], "2"),
                 "okno": wmTxt,
-                "body": skPts(s1.points || 12.5, "gen"),
+                ...buildPtsCaseVars(samplePts, "body", defBodyCase),
                 "rozpis": `2H: ${skNum(s1.pts2H || 7, 2)} b · 4H: ${skNum(s1.pts4H || 5.5, 2)} b`,
-                "rozdiel": skPts(1.5, "nom"),
+                ...buildPtsCaseVars(sampleDiff, "rozdiel", defDiffCase),
                 "kedy": ` (najbližšie platí do ${formatDateSk(getTodayIso())} vrátane)`,
                 "hodnota": "4 výhry",
                 "počet": "5",
@@ -29115,11 +29186,7 @@
                 "zápas": `#${Math.max(1, totalM || 42)}`
             };
 
-            // Presné špecifické ukážkové hodnoty pre každú správu (v1.86)
-            if (def.id === "leader_tied") baseVars["body"] = skPts(s1.points || 12.5, "loc");
-            else if (def.id === "leader_monopoly" || def.id === "close_equal" || def.id === "defending_pts") baseVars["body"] = skPts(s1.points || 12.5, "nom");
-
-            if (def.id === "leader_monopoly" || def.id === "close_gap" || def.id === "stat_class_gap") baseVars["rozdiel"] = skPts(3.5, "gen");
+            // Presné špecifické ukážkové hodnoty pre každú správu (v1.87)
             if (def.id === "streak_crisis") baseVars["hodnota"] = skCount(4, "zápas", "zápasy", "zápasov");
             else if (def.id === "team_streak_1") {
                 baseVars["hráč"] = `${s1.name} / ${s2.name}`;
@@ -29193,26 +29260,26 @@
             const isLive = Boolean(liveEntry);
             let outPluralCount = pluralList.length;
 
-            // V režime Reálne dáta uprednostníme skutočné dáta z tabuľky, keď je správa živá
+            // V režime Reálne dáta uprednostníme skutočné dáta z tabuľky a zachováme správne pády v oboch riadkoch 1× aj 2+ (v1.87)
             if (isLive && adminTesterMode !== "custom" && liveEntry.vars) {
                 const lv = liveEntry.vars;
+                const sOv = liveEntry.singleVarsOverride || {};
+                const pOv = liveEntry.pluralVarsOverride || {};
                 if (liveEntry.isPlural) {
-                    pluralVars = { ...pluralVars, ...lv };
+                    pluralVars = { ...pluralVars, ...lv, ...pOv };
                     outPluralCount = Math.max(2, liveEntry.pluralCount || 2);
                     const firstOnly = lv["hráč1"] ? buildPlayerCaseVars([lv["hráč1"]]) : {};
-                    singleVars = { ...singleVars, ...lv, ...firstOnly };
+                    singleVars = { ...singleVars, ...lv, ...firstOnly, ...sOv };
                 } else {
-                    singleVars = { ...singleVars, ...lv };
-                    // Pri plural náhľade zachováme reálne čísla, no doplníme 2. hráča pre ukážku zhody 2+
+                    singleVars = { ...singleVars, ...lv, ...sOv };
                     const liveFirst = lv["hráč"] || s1.name;
                     const secondForLive = pool.find(p => p.name !== liveFirst) || s2;
                     const pluralNames = [liveFirst, secondForLive.name === liveFirst ? "Tibor" : secondForLive.name];
-                    const keepPluralHodnota = ["stat_motor", "stat_doubles_mage", "stat_sponsor", "stat_all_or_nothing"].includes(def.id);
                     pluralVars = {
                         ...pluralVars,
                         ...lv,
                         ...buildPlayerCaseVars(pluralNames),
-                        ...(keepPluralHodnota ? { "hodnota": pluralVars["hodnota"] } : {})
+                        ...pOv
                     };
                 }
             }
@@ -29283,6 +29350,23 @@
             { tok: "{ostatní}", title: "Zvyšné páry v zhode", desc: "Ostatné zhodné dvojice 4H (napr. Belo / Peťo)." }
         ];
 
+        function getAdminVarChipMeta(v) {
+            const map = {
+                "{bodyNom}":    ["Body – nominatív / akuzatív", "Tvar kto/čo (napr. 1 bod, 2 body, 5 bodov, 5,5 bodu). Použi pri „obhajuje {bodyNom}“ alebo „majú {bodyNom}“."],
+                "{bodyGen}":    ["Body – genitív (koho/čoho)", "Tvar koho/čoho (napr. 1 bodu, 2 bodov, 5 bodov, 5,5 bodu). Použi pri „so ziskom {bodyGen}“ alebo „obhajoba {bodyGen}“."],
+                "{bodyLoc}":    ["Body – lokál (po čom)", "Tvar po kom/čom (napr. 1 bode, 2 bodoch, 5 bodoch, 5,5 bodu). Použi pri „zhodne po {bodyLoc}“."],
+                "{rozdielNom}": ["Rozdiel bodov – nominatív", "Tvar kto/čo (napr. 1 bod, 2 body, 5 bodov). Použi pri „delí ich len {rozdielNom}“ alebo „stráca {rozdielNom}“."],
+                "{rozdielGen}": ["Rozdiel bodov – genitív", "Tvar koho/čoho (napr. 1 bodu, 2 bodov, 5 bodov). Použi pri „s náskokom {rozdielGen}“ alebo „priepasť {rozdielGen}“."],
+                "{hodnotaGen}": ["Hodnota bodov – genitív", "Bodová hodnota v genitíve (napr. 1 bodu, 2 bodov, 5 bodov, 5,5 bodu). Ideálne po „so ziskom {hodnotaGen}“."],
+                "{zoznam}":     ["Zoznam držiteľov s počtami", "Vypíše mená držiteľov Zlatého kanárika vrátane počtu sošiek, napr. „Vlado (1×), Tibor (1×)“."]
+            };
+            if (map[v]) return { title: map[v][0], desc: map[v][1] };
+            return {
+                title: `Vložiť premennú ${v}`,
+                desc: `Kliknutím vloží značku ${v} na pozíciu kurzora. Meno hráča aj číslovky sa vyskloňujú automaticky podľa slovenských pravidiel.`
+            };
+        }
+
         function buildSystemTemplateCardHtml(sectionKey, def, dualCtx) {
             const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
             const ov = store[def.id] || null;
@@ -29293,18 +29377,25 @@
             const curPlural = (ov && ov.plural) ? ov.plural : (def.plural || "");
             const hasSingle = Boolean(def.single);
             const hasPlural = Boolean(def.plural);
+            const isPluralOnly = hasPlural && !hasSingle;
             const isCollapsed = !adminExpandedTplKeys.has(`${sectionKey}:${def.id}`);
             const pluralTaId = `an-ta-pl-${sectionKey}-${def.id}`;
             const subTagText = applySkNewsTemplate(curTag, dualCtx.singleVars);
 
             const previewInner = renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx);
 
-            const varsHtml = (def.vars && def.vars.length > 0)
-                ? `<div class="an-var-chips">${def.vars.map(v => `
-                    <button type="button" class="an-var-chip" onclick="insertAdminTplToken('${v}')"
-                        data-ctx-title="Vložiť premennú ${v}"
-                        data-ctx-desc="Kliknutím vloží značku ${v} na pozíciu kurzora. Meno hráča sa vyskloňuje automaticky podľa slovenských pravidiel (napr. Vlado → Vladovi).">${v}</button>
-                `).join("")}</div>`
+            // Pri čisto množných správach (napr. leader_tied) skryjeme horné jednotné čipy {hráč}/{hráča}/{hráčovi}/{hráčom}, lebo nižšie sú fialové skupinové
+            const singularPlayerChips = ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}"];
+            const topVars = (def.vars || []).filter(v => !(isPluralOnly && singularPlayerChips.includes(v)));
+            const varsHtml = topVars.length > 0
+                ? `<div class="an-var-chips">${topVars.map(v => {
+                    const meta = getAdminVarChipMeta(v);
+                    return `
+                        <button type="button" class="an-var-chip" onclick="insertAdminTplToken('${v}'${isPluralOnly ? `, '${pluralTaId}'` : ""})"
+                            data-ctx-title="${escapeHtml(meta.title)}"
+                            data-ctx-desc="${escapeHtml(meta.desc)}">${v}</button>
+                    `;
+                }).join("")}</div>`
                 : "";
 
             const showPluralGroupBar = Boolean(hasPlural && Array.isArray(def.vars) && def.vars.includes("{hráč}"));
@@ -29359,7 +29450,7 @@
                                 ${pluralGroupChipsHtml}
                                 <textarea id="${pluralTaId}" class="admin-news-textarea" style="min-height:48px;" maxlength="280" onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'plural', this.value)"
                                     data-ctx-title="Šablóna pre viacerých hráčov (množné číslo)"
-                                    data-ctx-desc="Použije sa automaticky pri zhode viacerých držiteľov. Môžeš použiť {hráč} (Vlado a Tibor) alebo voľnú väzbu {hráč1} s {ostatnými} (Vlado s Tiborom / Vlado so Stanom).">${escapeHtml(curPlural)}</textarea>
+                                    data-ctx-desc="Použije sa automaticky pri zhode viacerých držiteľov. Použi {hráč1} s {ostatnými} (Vlado s Tiborom / so Stanom) alebo {hráč1} a {ostatní}.">${escapeHtml(curPlural)}</textarea>
                             </div>
                         ` : ""}
                         <div class="amn-row-preview" id="an-prev-${sectionKey}-${def.id}"
