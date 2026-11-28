@@ -1518,8 +1518,38 @@
 
         .an-tester-selects {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 6px;
+        }
+
+        @media (max-width: 480px) {
+            .an-tester-selects {
+                grid-template-columns: 1fr 1fr;
+            }
+            .an-tester-selects select:nth-child(3) {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* Skupinové premenné pre pole 2+ (hráč1 + ostatní) · v1.85 */
+        .an-plural-var-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            margin: 4px 0 5px;
+        }
+
+        .an-var-chip.is-group {
+            background: rgba(168, 85, 247, 0.16);
+            border-color: rgba(216, 180, 254, 0.44);
+            color: #f3e8ff;
+        }
+
+        .an-var-chip.is-group:hover {
+            background: rgba(168, 85, 247, 0.34);
+            border-color: #d8b4fe;
+            color: #ffffff;
         }
 
         .an-tester-selects select {
@@ -7796,7 +7826,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.84</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.85</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -7839,7 +7869,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.84</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.85</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -9574,10 +9604,13 @@
                                 <div class="an-tester-selects">
                                     <select id="ab-tester-p1" onchange="setAdminTesterPlayer(1, this.value)"
                                         data-ctx-title="Testovací hráč 1"
-                                        data-ctx-desc="Meno použité pre náhľad 1× aj ako prvý hráč v zhode 2+."></select>
+                                        data-ctx-desc="Meno použité pre náhľad 1× aj ako prvý hráč ({hráč1}) v zhode 2+."></select>
                                     <select id="ab-tester-p2" onchange="setAdminTesterPlayer(2, this.value)"
                                         data-ctx-title="Testovací hráč 2"
-                                        data-ctx-desc="Druhé meno pre náhľad zhody 2+ a premennú {hráč2}."></select>
+                                        data-ctx-desc="Druhé meno pre náhľad zhody 2+ ({ostatní}/{ostatnými}). Obsahuje aj demo meno Stano na otestovanie vokalizácie s → so."></select>
+                                    <select id="ab-tester-p3" onchange="setAdminTesterPlayer(3, this.value)"
+                                        data-ctx-title="Testovací hráč 3 (zhoda troch)"
+                                        data-ctx-desc="Voliteľné tretie meno na overenie zhody 3 hráčov naraz (napr. Vlado s Tiborom a Belom)."></select>
                                 </div>
                                 <div class="an-tester-cases" id="ab-tester-cases" style="margin-top:5px;">—</div>
                             </div>
@@ -9647,10 +9680,13 @@
                                 <div class="an-tester-selects">
                                     <select id="ao-tester-p1" onchange="setAdminTesterPlayer(1, this.value)"
                                         data-ctx-title="Testovací hráč 1"
-                                        data-ctx-desc="Meno použité pre náhľad 1× aj ako prvý hráč v zhode 2+."></select>
+                                        data-ctx-desc="Meno použité pre náhľad 1× aj ako prvý hráč ({hráč1}) v zhode 2+."></select>
                                     <select id="ao-tester-p2" onchange="setAdminTesterPlayer(2, this.value)"
                                         data-ctx-title="Testovací hráč 2"
-                                        data-ctx-desc="Druhé meno pre náhľad zhody 2+ a premennú {hráč2}."></select>
+                                        data-ctx-desc="Druhé meno pre náhľad zhody 2+ ({ostatní}/{ostatnými}) a {hráč2}. Obsahuje aj demo meno Stano na otestovanie vokalizácie s → so."></select>
+                                    <select id="ao-tester-p3" onchange="setAdminTesterPlayer(3, this.value)"
+                                        data-ctx-title="Testovací hráč 3 (zhoda troch)"
+                                        data-ctx-desc="Voliteľné tretie meno na overenie zhody 3 hráčov naraz (napr. Vlado s Tiborom a Belom)."></select>
                                 </div>
                                 <div class="an-tester-cases" id="ao-tester-cases" style="margin-top:5px;">—</div>
                             </div>
@@ -22185,7 +22221,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.84${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.85${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -23216,7 +23252,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.84${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.85${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -23300,7 +23336,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.84${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.85${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -25785,26 +25821,73 @@
 
         function buildPlayerCaseVars(holdersOrName, suffix = "") {
             const arr = Array.isArray(holdersOrName)
-                ? holdersOrName
+                ? holdersOrName.filter(Boolean)
                 : (holdersOrName ? [holdersOrName] : []);
-            return {
+            const out = {
                 [`hráč${suffix}`]:   skJoinNames(arr, "nom"),
                 [`hráča${suffix}`]:  skJoinNames(arr, "gen"),
                 [`hráčovi${suffix}`]: skJoinNames(arr, "dat"),
                 [`hráčom${suffix}`]: skJoinNames(arr, "ins")
             };
+            // Skupinové pádové premenné pre pole viacerých hráčov (2+): prvý hráč + zvyšok skupiny (v1.85)
+            if (!suffix) {
+                const first = arr.length > 0 ? [arr[0]] : [];
+                const rest = arr.length > 1 ? arr.slice(1) : [];
+                out["hráč1"] = skJoinNames(first, "nom");
+                out["hráča1"] = skJoinNames(first, "gen");
+                out["hráčovi1"] = skJoinNames(first, "dat");
+                out["hráčom1"] = skJoinNames(first, "ins");
+                out["ostatní"] = skJoinNames(rest, "nom");
+                out["ostatných"] = skJoinNames(rest, "gen");
+                out["ostatným"] = skJoinNames(rest, "dat");
+                out["ostatnými"] = skJoinNames(rest, "ins");
+            }
+            return out;
+        }
+
+        function buildPairGroupVars(pairNamesList) {
+            const list = Array.isArray(pairNamesList) ? pairNamesList.filter(Boolean) : [];
+            const joined = list.join(" a ");
+            const first = list[0] || "";
+            const rest = list.slice(1).join(" a ");
+            return {
+                "hráč": joined,
+                "hráča": joined,
+                "hráčovi": joined,
+                "hráčom": joined,
+                "hráč1": first,
+                "hráča1": first,
+                "hráčovi1": first,
+                "hráčom1": first,
+                "ostatní": rest,
+                "ostatných": rest,
+                "ostatným": rest,
+                "ostatnými": rest
+            };
+        }
+
+        // Automatická slovenská vokalizácia predložky s -> so pred sykavkami (s, z, š, ž) (v1.85)
+        function vocalizeSkPrepositions(text) {
+            const str = String(text ?? "");
+            if (!str) return str;
+            return str.replace(/(^|[\s(„"–—\-])([sS])(\s+[„"]?)([szšžSZŠŽ])/g, (m, pre, sChar, sp, nextChar) => {
+                return `${pre}${sChar}o${sp}${nextChar}`;
+            });
         }
 
         function applySkNewsTemplate(templateText, varsObj) {
-            const out = String(templateText ?? "");
-            if (!out || !varsObj) return out;
-            return out.replace(/\{([^{}]+)\}/g, (full, rawKey) => {
-                const key = String(rawKey || "").trim();
-                if (Object.prototype.hasOwnProperty.call(varsObj, key) && varsObj[key] !== undefined && varsObj[key] !== null) {
-                    return String(varsObj[key]);
-                }
-                return full;
-            });
+            const raw = String(templateText ?? "");
+            if (!raw) return raw;
+            const replaced = varsObj
+                ? raw.replace(/\{([^{}]+)\}/g, (full, rawKey) => {
+                    const key = String(rawKey || "").trim();
+                    if (Object.prototype.hasOwnProperty.call(varsObj, key) && varsObj[key] !== undefined && varsObj[key] !== null) {
+                        return String(varsObj[key]);
+                    }
+                    return full;
+                })
+                : raw;
+            return vocalizeSkPrepositions(replaced);
         }
 
         function resolveSystemNewsItem(sectionKey, itemKey, defaultTag, defaultText, ctx = {}) {
@@ -26033,10 +26116,7 @@
 
             const vars = isPairBadge
                 ? {
-                    "hráč": pNames.join(" a "),
-                    "hráča": pNames.join(" a "),
-                    "hráčovi": pNames.join(" a "),
-                    "hráčom": pNames.join(" a "),
+                    ...buildPairGroupVars(pNames),
                     "hodnota": valFormatted,
                     "rozsah": achScopeLabel,
                     "rekordCap": achRecCap,
@@ -26112,7 +26192,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.84! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.85! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -27921,10 +28001,11 @@
         const adminUnexportedChangeKeys = new Set();
         // Zbaliteľné karty (kľúč "badges:unstoppable" alebo "other:leader_throne") – predvolene všetko zbalené (1-riadkový zoznam)
         const adminExpandedTplKeys = new Set();
-        // Tester skloňovania a zhody (spoločný pre Odznaky & Ostatné)
+        // Tester skloňovania a zhody (spoločný pre Odznaky & Ostatné · až 3 hráči v1.85)
         let adminTesterMode = "real"; // "real" | "custom"
         let adminTesterP1Id = "";
         let adminTesterP2Id = "";
+        let adminTesterP3Id = "";
 
         function markAdminUnexportedChange(changeKey) {
             if (changeKey) adminUnexportedChangeKeys.add(String(changeKey));
@@ -27994,8 +28075,15 @@
             updateAdminUnexportedGuardUI();
         }
 
-        function insertAdminTplToken(tokenStr) {
-            const target = adminTplLastFocusedEl;
+        function insertAdminTplToken(tokenStr, preferredElId = "") {
+            let target = adminTplLastFocusedEl;
+            if (preferredElId) {
+                const prefEl = document.getElementById(preferredElId);
+                if (prefEl && target !== prefEl) {
+                    target = prefEl;
+                    adminTplLastFocusedEl = prefEl;
+                }
+            }
             if (!target || !document.body.contains(target)) {
                 showToast("Najprv klikni do textového poľa správy, kam chceš premennú vložiť.", true);
                 return;
@@ -28025,24 +28113,43 @@
             return [p1, p2];
         }
 
-        function getAdminTesterPlayersPair() {
+        const ADMIN_TESTER_DEMO_STANO = { id: "__test_stano", name: "Stano", points: 10.0, pts2H: 6.0, pts4H: 4.0, matches: 12, wins: 7, draws: 1, losses: 4, gemsWon: 100, gemsLost: 90, curWinStreak: 2, curLossStreak: 1, expiring30: 1.0, daysSinceLastMatch: 190, lastMatchDate: "" };
+
+        function resolveAdminTesterSlot(playerId, pool) {
+            if (!playerId) return null;
+            if (playerId === "__test_stano") return { ...ADMIN_TESTER_DEMO_STANO, lastMatchDate: getTodayIso() };
+            return pool.find(x => x.id === playerId) || null;
+        }
+
+        function getAdminTesterPlayersGroup() {
             const [def1, def2] = getAdminSamplePlayersPair();
             const pool = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
-            const p1 = (adminTesterP1Id && pool.find(x => x.id === adminTesterP1Id)) || def1;
-            const p2 = (adminTesterP2Id && pool.find(x => x.id === adminTesterP2Id)) || pool.find(x => x.id !== p1.id) || def2;
-            return [p1, p2];
+            const p1 = resolveAdminTesterSlot(adminTesterP1Id, pool) || def1;
+            const p2 = resolveAdminTesterSlot(adminTesterP2Id, pool) || pool.find(x => x.id !== p1.id) || def2;
+            const p3 = resolveAdminTesterSlot(adminTesterP3Id, pool);
+            const pluralGroup = [p1];
+            if (p2 && p2.name !== p1.name) pluralGroup.push(p2);
+            else pluralGroup.push({ name: p1.name === "Tibor" ? "Belo" : "Tibor" });
+            if (p3 && !pluralGroup.some(x => x.name === p3.name)) pluralGroup.push(p3);
+            return { p1, p2, p3, pluralGroup };
         }
 
         function syncAdminTesterControlsUI() {
             const pool = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
-            const [p1, p2] = getAdminTesterPlayersPair();
+            const { p1, p2, p3, pluralGroup } = getAdminTesterPlayersGroup();
             if (!adminTesterP1Id && p1 && p1.id) adminTesterP1Id = p1.id;
             if (!adminTesterP2Id && p2 && p2.id) adminTesterP2Id = p2.id;
 
             const isCustom = adminTesterMode === "custom";
-            const optsHtml = pool.length > 0
+            const baseOpts = pool.length > 0
                 ? pool.map(pl => `<option value="${escapeHtml(pl.id)}">${escapeHtml(pl.name)}</option>`).join("")
                 : `<option value="__s1">Vlado</option><option value="__s2">Tibor</option>`;
+            const demoOpt = `<option value="__test_stano">Stano (test s→so)</option>`;
+            const optsWithDemo = baseOpts + demoOpt;
+            const optsP3 = `<option value="">— (len 2 hráči)</option>` + optsWithDemo;
+
+            const groupVars = buildPlayerCaseVars(pluralGroup);
+            const sSoSample = applySkNewsTemplate("{hráč1} s {ostatnými}", groupVars);
 
             ["ab", "ao"].forEach(pref => {
                 const btnReal = document.getElementById(`${pref}-tester-real`);
@@ -28050,22 +28157,26 @@
                 const ctrls = document.getElementById(`${pref}-tester-controls`);
                 const sel1 = document.getElementById(`${pref}-tester-p1`);
                 const sel2 = document.getElementById(`${pref}-tester-p2`);
+                const sel3 = document.getElementById(`${pref}-tester-p3`);
                 const casesEl = document.getElementById(`${pref}-tester-cases`);
                 if (btnReal) btnReal.classList.toggle("active", !isCustom);
                 if (btnCust) btnCust.classList.toggle("active", isCustom);
                 if (ctrls) ctrls.style.display = isCustom ? "block" : "none";
                 if (sel1) {
-                    sel1.innerHTML = optsHtml;
+                    sel1.innerHTML = optsWithDemo;
                     sel1.value = p1.id;
                 }
                 if (sel2) {
-                    sel2.innerHTML = optsHtml;
+                    sel2.innerHTML = optsWithDemo;
                     sel2.value = p2.id;
+                }
+                if (sel3) {
+                    sel3.innerHTML = optsP3;
+                    sel3.value = p3 ? p3.id : "";
                 }
                 if (casesEl) {
                     const c1 = `${p1.name} · ${skName(p1.name, "gen")} · ${skName(p1.name, "dat")} · ${skName(p1.name, "ins")}`;
-                    const c2 = `${p2.name} · ${skName(p2.name, "gen")} · ${skName(p2.name, "dat")} · ${skName(p2.name, "ins")}`;
-                    casesEl.textContent = `1×: ${c1}  |  2.: ${c2}`;
+                    casesEl.textContent = `1×: ${c1}  |  s/so (${pluralGroup.length}×): ${sSoSample}`;
                 }
             });
         }
@@ -28078,8 +28189,10 @@
         }
 
         function setAdminTesterPlayer(slotNum, playerId) {
-            if (slotNum === 1) adminTesterP1Id = String(playerId || "");
-            else adminTesterP2Id = String(playerId || "");
+            const val = String(playerId || "");
+            if (slotNum === 1) adminTesterP1Id = val;
+            else if (slotNum === 2) adminTesterP2Id = val;
+            else adminTesterP3Id = val;
             syncAdminTesterControlsUI();
             if (adminModalActiveTab === "badges") renderAdminBadgesTab();
             else if (adminModalActiveTab === "other") renderAdminOtherTab();
@@ -28529,24 +28642,22 @@
             showToast("Obnovený pôvodný text správy.");
         }
 
-        // Vybuduje kontext pre oba náhľady: singleVars (1×) aj pluralVars (2+) s podporou Testera skloňovania
+        // Vybuduje kontext pre oba náhľady: singleVars (1×) aj pluralVars (2+ / 3×) s podporou Testera skloňovania (v1.85)
         function getBadgeDualPreviewContext(def) {
             const wm = Number(state.config.windowMonths) || 0;
-            const [t1, t2] = adminTesterMode === "custom" ? getAdminTesterPlayersPair() : getAdminSamplePlayersPair();
+            const testerGrp = getAdminTesterPlayersGroup();
+            const [s1, s2] = getAdminSamplePlayersPair();
+            const t1 = adminTesterMode === "custom" ? testerGrp.p1 : s1;
+            const t2 = adminTesterMode === "custom" ? testerGrp.p2 : s2;
+            const customPluralList = adminTesterMode === "custom"
+                ? testerGrp.pluralGroup
+                : (t1.name === t2.name ? [t1, { name: "Tibor" }] : [t1, t2]);
+
             const isWindowBadges = badgesScope === "window" && wm > 0;
             const achScopeLabel = isWindowBadges ? `v ${wm}-mesačnom okne` : "histórie";
             const achRecCap = isWindowBadges ? `Rekord (${wm}M)` : "Historický rekord";
             const achRecLow = isWindowBadges ? `rekord (${wm}M)` : "historický rekord";
             const isPairBadge = def.cat === "4";
-
-            const makePairVars = (baseVars, pA, pB, pC) => {
-                const pair1 = `${pA.name} / ${pB.name}`;
-                const pair2 = `${pB.name} / ${pC.name}`;
-                return {
-                    singleVars: { ...baseVars, "hráč": pair1, "hráča": pair1, "hráčovi": pair1, "hráčom": pair1 },
-                    pluralVars: { ...baseVars, "hráč": `${pair1} a ${pair2}`, "hráča": `${pair1} a ${pair2}`, "hráčovi": `${pair1} a ${pair2}`, "hráčom": `${pair1} a ${pair2}` }
-                };
-            };
 
             const pool = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
             const pickSecondFor = (firstHolder) => {
@@ -28555,8 +28666,21 @@
                 return found || t2;
             };
             const pickThirdFor = (pA, pB) => {
+                if (adminTesterMode === "custom" && testerGrp.p3) return testerGrp.p3;
                 const found = pool.find(p => p.id !== pA.id && p.id !== pB.id);
                 return found || { name: "Belo" };
+            };
+
+            const makePairVars = (baseVars, pA, pB, pC) => {
+                const pair1 = `${pA.name} / ${pB.name}`;
+                const pair2 = `${pB.name} / ${pC.name}`;
+                const pair3 = `${pA.name} / ${pC.name}`;
+                const pluralPairs = (adminTesterMode === "custom" && testerGrp.p3) ? [pair1, pair2, pair3] : [pair1, pair2];
+                return {
+                    pluralCount: pluralPairs.length,
+                    singleVars: { ...baseVars, ...buildPairGroupVars([pair1]) },
+                    pluralVars: { ...baseVars, ...buildPairGroupVars(pluralPairs) }
+                };
             };
 
             if (def.cat !== "hall") {
@@ -28568,12 +28692,12 @@
                     if (isPairBadge) {
                         const pNames = Array.isArray(foundAch.pairNames) && foundAch.pairNames.length > 0 ? foundAch.pairNames : [`${t1.name} / ${t2.name}`];
                         const secondPair = pNames.length > 1 ? pNames[1] : `${t2.name} / ${pickThirdFor(t1, t2).name}`;
-                        const sStr = pNames[0];
-                        const pStr = pNames.length > 1 ? pNames.join(" a ") : `${pNames[0]} a ${secondPair}`;
+                        const pluralPairs = pNames.length > 1 ? pNames : [pNames[0], secondPair];
                         return {
                             isLive: true,
-                            singleVars: { ...liveCtx.vars, "hráč": sStr, "hráča": sStr, "hráčovi": sStr, "hráčom": sStr },
-                            pluralVars: { ...liveCtx.vars, "hráč": pStr, "hráča": pStr, "hráčovi": pStr, "hráčom": pStr }
+                            pluralCount: pluralPairs.length,
+                            singleVars: { ...liveCtx.vars, ...buildPairGroupVars([pNames[0]]) },
+                            pluralVars: { ...liveCtx.vars, ...buildPairGroupVars(pluralPairs) }
                         };
                     }
                     const realHolders = foundAch.holders || [t1];
@@ -28581,6 +28705,7 @@
                     const hPlural = realHolders.length > 1 ? realHolders : [h1, pickSecondFor(h1)];
                     return {
                         isLive: true,
+                        pluralCount: hPlural.length,
                         singleVars: { ...liveCtx.vars, ...buildPlayerCaseVars([h1]) },
                         pluralVars: { ...liveCtx.vars, ...buildPlayerCaseVars(hPlural) }
                     };
@@ -28594,44 +28719,44 @@
                     const p3 = pickThirdFor(t1, t2);
                     return { isLive, ...makePairVars(baseVars, t1, t2, p3) };
                 }
-                const pairForPlural = t1.name === t2.name ? [t1, { name: "Tibor" }] : [t1, t2];
                 return {
                     isLive,
+                    pluralCount: customPluralList.length,
                     singleVars: { ...baseVars, ...buildPlayerCaseVars([t1]) },
-                    pluralVars: { ...baseVars, ...buildPlayerCaseVars(pairForPlural) }
+                    pluralVars: { ...baseVars, ...buildPlayerCaseVars(customPluralList) }
                 };
             }
 
             // Sieň slávy – Klietka & Grand Slam
             const cc = buildCanaryCageData();
             const gs = buildSeasonalGrandSlamData();
-            const pairCustom = t1.name === t2.name ? [t1, { name: "Tibor" }] : [t1, t2];
 
             if (def.id === "cage_near_gold") {
                 const hit = cc.members.find(r => r.total % 10 === 9);
                 const pl = (adminTesterMode === "custom" || !hit) ? t1 : hit;
                 const tot = hit ? hit.total : 9;
                 const v = { ...buildPlayerCaseVars([pl]), "počet": String(tot), "cieľ": "svojho prvého Zlatého kanárika" };
-                return { isLive: Boolean(hit), singleVars: v, pluralVars: v };
+                return { isLive: Boolean(hit), pluralCount: 2, singleVars: v, pluralVars: v };
             }
             if (def.id === "cage_near_voliera") {
                 const hit = cc.members.find(r => r.total === 4);
                 const pl = (adminTesterMode === "custom" || !hit) ? t1 : hit;
                 const v = buildPlayerCaseVars([pl]);
-                return { isLive: Boolean(hit), singleVars: v, pluralVars: v };
+                return { isLive: Boolean(hit), pluralCount: 2, singleVars: v, pluralVars: v };
             }
             if (def.id === "cage_gold") {
                 const hasReal = cc.goldHolders.length > 0;
                 const h1 = (adminTesterMode === "custom" || !hasReal) ? t1 : cc.goldHolders[0];
                 const hPl = (adminTesterMode === "custom" || !hasReal)
-                    ? pairCustom
+                    ? customPluralList
                     : (cc.goldHolders.length > 1 ? cc.goldHolders : [h1, pickSecondFor(h1)]);
                 const sVal = (hasReal && adminTesterMode !== "custom") ? `${cc.goldHolders[0].total}× 0:6` : "10× 0:6";
                 const pVal = (hasReal && adminTesterMode !== "custom" && cc.goldHolders.length > 1)
                     ? cc.goldHolders.map(g => `${g.name} (${g.goldCount}×)`).join(", ")
-                    : `${hPl[0].name} (1×), ${hPl[1].name} (1×)`;
+                    : hPl.map(g => `${g.name} (1×)`).join(", ");
                 return {
                     isLive: hasReal,
+                    pluralCount: hPl.length,
                     singleVars: { ...buildPlayerCaseVars([h1]), "hodnota": sVal },
                     pluralVars: { ...buildPlayerCaseVars(hPl), "hodnota": pVal }
                 };
@@ -28641,27 +28766,28 @@
                 const hit = Boolean(topB && cc.goldHolders.length === 0 && topB.total >= 5);
                 const pl = (adminTesterMode === "custom" || !topB) ? t1 : topB;
                 const v = { ...buildPlayerCaseVars([pl]), "hodnota": skCount(topB ? topB.total : 6, "kanárika", "kanáriky", "kanárikov") };
-                return { isLive: hit, singleVars: v, pluralVars: v };
+                return { isLive: hit, pluralCount: 2, singleVars: v, pluralVars: v };
             }
             if (def.id === "cage_collector") {
                 const topB = cc.members[0];
                 const hit = Boolean(topB && cc.goldHolders.length === 0 && topB.total < 5);
                 const pl = (adminTesterMode === "custom" || !topB) ? t1 : topB;
                 const v = { ...buildPlayerCaseVars([pl]), "hodnota": `${topB ? topB.total : 3}×`, "celkom": skCount(cc.totalCanaries || 5, "kanárik", "kanáriky", "kanárikov") };
-                return { isLive: hit, singleVars: v, pluralVars: v };
+                return { isLive: hit, pluralCount: 2, singleVars: v, pluralVars: v };
             }
             if (def.id === "gs_almost") {
                 const hit = gs.curYearEntries.find(e => e.hitCount === 3 && e.missing.length === 1);
                 const pl = (adminTesterMode === "custom" || !hit) ? t1 : hit;
                 const v = { ...buildPlayerCaseVars([pl]), "rok": String(gs.curYear), "obdobie": hit ? hit.missing[0].inPhrase : "v zime" };
-                return { isLive: Boolean(hit), singleVars: v, pluralVars: v };
+                return { isLive: Boolean(hit), pluralCount: 2, singleVars: v, pluralVars: v };
             }
             if (def.id === "gs_current") {
                 const winners = gs.byYear[gs.curYear] || [];
                 const h1 = (adminTesterMode === "custom" || winners.length === 0) ? t1 : winners[0];
-                const hPl = (adminTesterMode === "custom" || winners.length === 0) ? pairCustom : (winners.length > 1 ? winners : [h1, pickSecondFor(h1)]);
+                const hPl = (adminTesterMode === "custom" || winners.length === 0) ? customPluralList : (winners.length > 1 ? winners : [h1, pickSecondFor(h1)]);
                 return {
                     isLive: winners.length > 0,
+                    pluralCount: hPl.length,
                     singleVars: { ...buildPlayerCaseVars([h1]), "rok": String(gs.curYear) },
                     pluralVars: { ...buildPlayerCaseVars(hPl), "rok": String(gs.curYear) }
                 };
@@ -28671,24 +28797,30 @@
                 const topSlam = hasReal ? gs.holders[0] : null;
                 const topGroup = hasReal ? gs.holders.filter(h => h.rank === 1) : [];
                 const h1 = (adminTesterMode === "custom" || !hasReal) ? t1 : topGroup[0];
-                const hPl = (adminTesterMode === "custom" || !hasReal) ? pairCustom : (topGroup.length > 1 ? topGroup : [h1, pickSecondFor(h1)]);
+                const hPl = (adminTesterMode === "custom" || !hasReal) ? customPluralList : (topGroup.length > 1 ? topGroup : [h1, pickSecondFor(h1)]);
                 const cnt = topSlam ? topSlam.count : 2;
                 const yrs = topSlam ? topSlam.years.join(", ") : `${gs.curYear - 1}, ${gs.curYear}`;
                 return {
                     isLive: hasReal,
+                    pluralCount: hPl.length,
                     singleVars: { ...buildPlayerCaseVars([h1]), "hodnota": skCount(cnt, "Sezónny Grand Slam", "Sezónne Grand Slamy", "Sezónnych Grand Slamov"), "roky": yrs },
                     pluralVars: { ...buildPlayerCaseVars(hPl), "hodnota": skCount(cnt, "Grand Slam", "Grand Slamy", "Grand Slamov"), "roky": yrs }
                 };
             }
             const base = buildPlayerCaseVars([t1]);
-            return { isLive: false, singleVars: base, pluralVars: buildPlayerCaseVars(pairCustom) };
+            return { isLive: false, pluralCount: customPluralList.length, singleVars: base, pluralVars: buildPlayerCaseVars(customPluralList) };
         }
 
         function getOtherDualPreviewContext(def) {
             const wm = Number(state.config.windowMonths) || 0;
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
-            const [s1, s2] = adminTesterMode === "custom" ? getAdminTesterPlayersPair() : getAdminSamplePlayersPair();
-            const pairForPlural = s1.name === s2.name ? [s1, { name: "Tibor" }] : [s1, s2];
+            const testerGrp = getAdminTesterPlayersGroup();
+            const [d1, d2] = getAdminSamplePlayersPair();
+            const s1 = adminTesterMode === "custom" ? testerGrp.p1 : d1;
+            const s2 = adminTesterMode === "custom" ? testerGrp.p2 : d2;
+            const pluralList = adminTesterMode === "custom"
+                ? testerGrp.pluralGroup
+                : (s1.name === s2.name ? [s1, { name: "Tibor" }] : [s1, s2]);
             const loc = getLocationContext();
             const totalM = (computedMatches || []).length;
 
@@ -28728,7 +28860,7 @@
             if (def.id === "comeback_win_up" || def.id === "comeback_loss_dn") baseVars["miesto"] = "2";
 
             const singleVars = { ...baseVars };
-            const pluralVars = { ...baseVars, ...buildPlayerCaseVars(pairForPlural) };
+            const pluralVars = { ...baseVars, ...buildPlayerCaseVars(pluralList) };
 
             if (def.id === "stat_motor") {
                 singleVars["hodnota"] = skCount(18, "odohratý zápas", "odohraté zápasy", "odohratých zápasov");
@@ -28746,13 +28878,14 @@
                 singleVars["hodnota"] = skCount(5, "vyrovnaný trojsetový zápas", "vyrovnané trojsetové zápasy", "vyrovnaných trojsetových zápasov");
                 pluralVars["hodnota"] = singleVars["hodnota"];
             }
-            return { isLive: false, singleVars, pluralVars };
+            return { isLive: false, pluralCount: pluralList.length, singleVars, pluralVars };
         }
 
         function renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx) {
             const hasSingle = Boolean(def.single);
             const hasPlural = Boolean(def.plural);
             const tagHtml = `<span class="news-tag">${escapeHtml(curTag)}:</span>`;
+            const plBadge = (dualCtx && dualCtx.pluralCount >= 3) ? `${dualCtx.pluralCount}×` : "2+";
             if (hasSingle && hasPlural) {
                 const sTxt = applySkNewsTemplate(curSingle, dualCtx.singleVars);
                 const pTxt = applySkNewsTemplate(curPlural, dualCtx.pluralVars);
@@ -28762,14 +28895,14 @@
                         <span class="an-prev-text">${tagHtml}${escapeHtml(sTxt)}</span>
                     </div>
                     <div class="an-prev-row">
-                        <span class="an-prev-pill is-plural">2+</span>
+                        <span class="an-prev-pill is-plural">${plBadge}</span>
                         <span class="an-prev-text">${tagHtml}${escapeHtml(pTxt)}</span>
                     </div>
                 `;
             }
             if (hasPlural && !hasSingle) {
                 const pTxt = applySkNewsTemplate(curPlural, dualCtx.pluralVars);
-                return `<div class="an-prev-row"><span class="an-prev-pill is-plural">2+</span><span class="an-prev-text">${tagHtml}${escapeHtml(pTxt)}</span></div>`;
+                return `<div class="an-prev-row"><span class="an-prev-pill is-plural">${plBadge}</span><span class="an-prev-text">${tagHtml}${escapeHtml(pTxt)}</span></div>`;
             }
             const sTxt = applySkNewsTemplate(curSingle, dualCtx.singleVars);
             return `${tagHtml}${escapeHtml(sTxt)}`;
@@ -28792,6 +28925,22 @@
             if (subTagEl) subTagEl.textContent = curTag;
         }
 
+        const ADMIN_PLURAL_GROUP_TOKENS = [
+            { tok: "{hráč1}",    title: "Prvý hráč v zhode (nominatív)",        desc: "Prvý hráč zo zhodnej skupiny v základnom tvare (napr. Vlado).", tip: "Príklad: {hráč1} s {ostatnými} → Vlado s Tiborom / Vlado so Stanom." },
+            { tok: "{hráča1}",   title: "Prvý hráč v zhode (genitív/akuzatív)", desc: "Prvý hráč v tvare koho/čoho (napr. Vlada).", tip: "Príklad: Okrem {hráča1} bodovali aj {ostatní}." },
+            { tok: "{hráčovi1}", title: "Prvý hráč v zhode (datív)",            desc: "Prvý hráč v tvare komu/čomu (napr. Vladovi).", tip: "Príklad: Titul patrí {hráčovi1} aj {ostatným}." },
+            { tok: "{hráčom1}",  title: "Prvý hráč v zhode (inštrumentál)",     desc: "Prvý hráč v tvare s kým/čím (napr. Vladom). Predložka s sa pred S/Z/Š/Ž sama zmení na so.", tip: "Príklad: Plece pri pleci s {hráčom1} sú aj {ostatní}." },
+            { tok: "{ostatní}",  title: "Zvyšok skupiny (nominatív)",           desc: "Ostatní hráči v zhode okrem prvého (napr. Tibor, pri 3 hráčoch Tibor a Belo).", tip: "Funguje automaticky pri 2, 3 aj viacerých hráčoch." },
+            { tok: "{ostatných}",title: "Zvyšok skupiny (genitív/akuzatív)",    desc: "Ostatní hráči v tvare koho/čoho (napr. Tibora / Tibora a Bela)." },
+            { tok: "{ostatným}", title: "Zvyšok skupiny (datív)",               desc: "Ostatní hráči v tvare komu/čomu (napr. Tiborovi / Tiborovi a Belovi)." },
+            { tok: "{ostatnými}",title: "Zvyšok skupiny (inštrumentál)",        desc: "Ostatní hráči v tvare s kým/čím (napr. Tiborom / Stanom / Tiborom a Belom).", tip: "Predložka s pred S/Z/Š/Ž sa automaticky zmení na so (s {ostatnými} → so Stanom)." }
+        ];
+
+        const ADMIN_PLURAL_PAIR_TOKENS = [
+            { tok: "{hráč1}",   title: "Prvý pár v zhode",   desc: "Prvá dvojica 4H zo zhodnej skupiny (napr. Vlado / Tibor)." },
+            { tok: "{ostatní}", title: "Zvyšné páry v zhode", desc: "Ostatné zhodné dvojice 4H (napr. Belo / Peťo)." }
+        ];
+
         function buildSystemTemplateCardHtml(sectionKey, def, dualCtx) {
             const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
             const ov = store[def.id] || null;
@@ -28803,6 +28952,7 @@
             const hasSingle = Boolean(def.single);
             const hasPlural = Boolean(def.plural);
             const isCollapsed = !adminExpandedTplKeys.has(`${sectionKey}:${def.id}`);
+            const pluralTaId = `an-ta-pl-${sectionKey}-${def.id}`;
 
             const previewInner = renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx);
 
@@ -28811,6 +28961,17 @@
                     <button type="button" class="an-var-chip" onclick="insertAdminTplToken('${v}')"
                         data-ctx-title="Vložiť premennú ${v}"
                         data-ctx-desc="Kliknutím vloží značku ${v} na pozíciu kurzora. Meno hráča sa vyskloňuje automaticky podľa slovenských pravidiel (napr. Vlado → Vladovi).">${v}</button>
+                `).join("")}</div>`
+                : "";
+
+            const showPluralGroupBar = Boolean(hasPlural && Array.isArray(def.vars) && def.vars.includes("{hráč}"));
+            const isPairItem = sectionKey === "badges" && def.cat === "4";
+            const pluralGroupTokens = isPairItem ? ADMIN_PLURAL_PAIR_TOKENS : ADMIN_PLURAL_GROUP_TOKENS;
+            const pluralGroupChipsHtml = showPluralGroupBar
+                ? `<div class="an-plural-var-bar">${pluralGroupTokens.map(gt => `
+                    <button type="button" class="an-var-chip is-group" onclick="insertAdminTplToken('${gt.tok}', '${pluralTaId}')"
+                        data-ctx-title="${escapeHtml(gt.title)}"
+                        data-ctx-desc="${escapeHtml(gt.desc)}"${gt.tip ? ` data-ctx-tip="${escapeHtml(gt.tip)}"` : ""}>${gt.tok}</button>
                 `).join("")}</div>`
                 : "";
 
@@ -28852,14 +29013,15 @@
                         ${hasPlural ? `
                             <div>
                                 <div class="an-sub-lbl">Text pre viacerých hráčov naraz (zhoda / množné číslo · 2+)</div>
-                                <textarea class="admin-news-textarea" style="min-height:48px;" maxlength="280" onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'plural', this.value)"
+                                ${pluralGroupChipsHtml}
+                                <textarea id="${pluralTaId}" class="admin-news-textarea" style="min-height:48px;" maxlength="280" onfocus="adminTplLastFocusedEl = this" oninput="updateSystemTemplateField('${sectionKey}', '${def.id}', 'plural', this.value)"
                                     data-ctx-title="Šablóna pre viacerých hráčov (množné číslo)"
-                                    data-ctx-desc="Použije sa automaticky pri zhode viacerých držiteľov (napr. „Vlado a Tibor rozdali...“), aby sedeli slovenské slovesá.">${escapeHtml(curPlural)}</textarea>
+                                    data-ctx-desc="Použije sa automaticky pri zhode viacerých držiteľov. Môžeš použiť {hráč} (Vlado a Tibor) alebo voľnú väzbu {hráč1} s {ostatnými} (Vlado s Tiborom / Vlado so Stanom).">${escapeHtml(curPlural)}</textarea>
                             </div>
                         ` : ""}
                         <div class="amn-row-preview" id="an-prev-${sectionKey}-${def.id}"
                             data-ctx-title="${(hasSingle && hasPlural) ? "Dvojitý živý náhľad (1× / 2+)" : "Živý náhľad výslednej správy"}"
-                            data-ctx-desc="${(hasSingle && hasPlural) ? "Zobrazuje naraz výsledok pre jedného hráča (1×) aj pre zhodu viacerých hráčov (2+) vrátane slovenského skloňovania." : "Presne takto bude správa vyzerať v NEWS po dosadení vyskloňovaných mien a čísel."}">
+                            data-ctx-desc="${(hasSingle && hasPlural) ? "Zobrazuje naraz výsledok pre jedného hráča (1×) aj pre zhodu viacerých hráčov (2+) vrátane slovenského skloňovania a vokalizácie s → so." : "Presne takto bude správa vyzerať v NEWS po dosadení vyskloňovaných mien a čísel."}">
                             ${previewInner}
                         </div>
                     </div>
