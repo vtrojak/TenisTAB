@@ -7826,7 +7826,7 @@
                 <div class="brand-ball">TT</div>
                 <div>
                     <div class="brand-title">Tenis<span>TAB</span></div>
-                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.85</span>
+                    <span class="brand-sub">Kombinovaný rebríček 2H + 4H · v1.86</span>
                 </div>
             </div>
             <button type="button" id="btn-settings-open" class="settings-gear-btn" onclick="openSettingsModal()" title="Nastavenia, Správa hráčov &amp; Dáta" aria-label="Nastavenia, Správa hráčov a Dáta">
@@ -7869,7 +7869,7 @@
 
             <!-- UVÍTACIA KARTA PRI PRÁZDNEJ DATABÁZE -->
             <div id="empty-welcome-card" class="welcome-card" style="display:none;">
-                <div class="welcome-badge">Čistý štart · TenisTAB v1.85</div>
+                <div class="welcome-badge">Čistý štart · TenisTAB v1.86</div>
                 <div class="welcome-title">Databáza je zatiaľ prázdna</div>
                 <div class="welcome-desc">
                     Nahraj pripravený súbor <strong>databaza.json</strong> (okamžite sa prepočítajú všetky dvojhry aj štvorhry podľa zvolenej lehoty), alebo pridaj prvých hráčov nižšie.
@@ -9563,7 +9563,7 @@
                             <select id="ab-filter-cat" onchange="renderAdminBadgesTab()"
                                 data-ctx-title="Filter kategórie odznakov"
                                 data-ctx-desc="Zobrazí všetky odznaky alebo iba vybranú skupinu (Série, Kanáre, Míľniky, Dvojice, Sieň slávy, Upravené/Uspaté).">
-                                <option value="all">Všetky odznaky + Sieň slávy (46)</option>
+                                <option value="all">Všetky odznaky + Sieň slávy (47)</option>
                                 <option value="1">1. Série a forma</option>
                                 <option value="2">2. Kanáre, tiebreaky a skóre</option>
                                 <option value="3">3. Bodové míľniky a aktivita</option>
@@ -10687,6 +10687,7 @@
                             if (!tx) return;
                             const item = { text: tx };
                             if (entry.sleeping === true) item.sleeping = true;
+                            if (entry.custom === true) item.custom = true;
                             cleanList.push(item);
                         }
                     });
@@ -22221,7 +22222,7 @@
             ctx.textAlign = "left";
             const loc = getLocationContext();
             const locSuffix = loc.hasCity ? `  ·  ${loc.name}` : "";
-            ctx.fillText(`TenisTAB · v1.85${locSuffix}`, innerX + 2, footY);
+            ctx.fillText(`TenisTAB · v1.86${locSuffix}`, innerX + 2, footY);
             ctx.textAlign = "right";
             ctx.fillText(`Report zo dňa ${formatDateSk(getTodayMidnight())}`, innerX + innerW - 2, footY);
         }
@@ -23252,7 +23253,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `700 13px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.72)";
-                ctx.fillText(`TenisTAB · v1.85${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.86${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Vygenerované: ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             } else {
@@ -23336,7 +23337,7 @@
                 ctx.textBaseline = "middle";
                 ctx.font = `800 15px ${fontSans}`;
                 ctx.fillStyle = "rgba(226, 238, 248, 0.78)";
-                ctx.fillText(`TenisTAB · v1.85${locSuffix}`, inX, footY);
+                ctx.fillText(`TenisTAB · v1.86${locSuffix}`, inX, footY);
                 ctx.textAlign = "right";
                 ctx.fillText(`Ročná kronika ${d.year} · Vygenerované ${formatDateSk(getTodayIso())}`, inX + inW, footY);
             }
@@ -25498,7 +25499,10 @@
                 { tag: "TRÓN BEZ BOJA", text: `Škandál v rebríčku! ${newName} zasadol na trón bez jediného úderu raketou – ${prevName} prišiel o prvé miesto, lebo mu vypršali staré body!` },
                 { tag: "ZRADNÝ KALENDÁR", text: `${prevName} padol z vrcholu priamo z gauča! Expirácia starých bodov mu zobrala korunu a novým lídrom TenisTAB sa potichu stáva ${newName}.` }
             ];
-            return expiryPool[seed % expiryPool.length];
+            const picked = expiryPool[seed % expiryPool.length];
+            const vars = { ...buildPlayerCaseVars([currentTop]), ...buildPlayerCaseVars([prevPlayer], "2") };
+            recordLiveOtherNews("leader_expiry_coup", vars, false);
+            return resolveSystemNewsItem("other", "leader_expiry_coup", picked.tag, picked.text, { isPlural: false, vars });
         }
 
         function findLatestLeaderCoup(snaps, maxAgeDays = 14) {
@@ -25552,37 +25556,49 @@
             const prevName = prevPlayer.name;
             const seed = (Number(last.match.index) || 0) + weatherQuipSeed;
 
+            const reignDurTxt = reignDays === 0
+                ? "len pár hodín"
+                : (reignDays < 7
+                    ? skCount(reignDays, "deň", "dni", "dní")
+                    : skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov"));
+            const vars = {
+                ...buildPlayerCaseVars([newPlayer]),
+                ...buildPlayerCaseVars([prevPlayer], "2"),
+                "trvanie": reignDurTxt,
+                "zápas": `#${last.match.index}`
+            };
+            recordLiveOtherNews("leader_coup_pts", vars, false);
+            let picked;
             if (reignDays === 0) {
                 const blitzPool = [
                     { tag: "BLESKOVÝ PREVRAT", text: `${newName} zosadil ${skName(prevName, "acc")} z prvého miesta ešte v ten istý deň – na tróne sa nestihol ani ohriať!` },
                     { tag: "KRÁĽ NA JEDNO POOBEDIE", text: `Vláda ${skName(prevName, "gen")} na čele tabuľky trvala len pár hodín! Korunu mu okamžite vyfúkol ${newName}.` },
                     { tag: "EXPRESNÁ VÝMENA NA TRÓNE", text: `Ani celý deň na vrchole! ${newName} bleskovo strieda ${skName(prevName, "acc")} na poste tabuľkovej jednotky.` }
                 ];
-                return blitzPool[seed % blitzPool.length];
-            }
-
-            if (reignDays < 7) {
+                picked = blitzPool[seed % blitzPool.length];
+            } else if (reignDays < 7) {
                 const daysText = skCount(reignDays, "deň", "dni", "dní");
                 const shortPool = [
                     { tag: "KRÁTKA VLÁDA", text: `${newName} zosadil z trónu ${skName(prevName, "acc")} už po necelom týždni (${daysText}) – korunu si dlho neužil!` },
                     { tag: "ANI TÝŽDEŇ NA TRÓNE", text: `Vláda ${skName(prevName, "gen")} na čele tabuľky netrvala ani celý týždeň (${daysText}) – novou jednotkou je ${newName}!` },
                     { tag: "RÝCHLA VÝMENA NA ČELE", text: `${prevName} vydržal na absolútnom vrchole len ${daysText}, od zápasu #${last.match.index} velí lige ${newName}!` }
                 ];
-                return shortPool[seed % shortPool.length];
+                picked = shortPool[seed % shortPool.length];
+            } else {
+                const reignWeeks = Math.floor(reignDays / 7);
+                const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
+                const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
+                const coupPool = [
+                    { tag: "PALÁCOVÝ PREVRAT", text: `${newName} zosadil z trónu ${skName(prevName, "acc")}! Jeho nepretržitá vláda na čele tabuľky trvala ${weeksText}.` },
+                    { tag: "KRÁĽ JE MŔTVY, NECH ŽIJE KRÁĽ", text: `${newName} ukončil ${reignWeeks}-týždňovú nadvládu ${skName(prevName, "gen")} a preberá post jednotky TenisTAB!` },
+                    { tag: "ZEMETRASENIE NA ČELE", text: `Po ${weeksLocText} na absolútnom vrchole padá ${prevName} – novým vládcom rebríčka sa stáva ${newName}!` },
+                    { tag: "MIMORIADNA SPRÁVA", text: `Éra ${skName(prevName, "gen")} sa po ${weeksLocText} skončila! Korunu na kurte preberá ${newName}.` },
+                    { tag: "TRÓN MÁ NOVÉHO MAJITEĽA", text: `Koniec jednej epochy! ${prevName} kraľoval tabuľke ${weeksText}, no od zápasu #${last.match.index} velí lige ${newName}.` },
+                    { tag: "ŠOK NA VRCHOLE", text: `${prevName} prišiel o post jednotky po ${weeksLocText} vládnutia – na trón zasadol ${newName}!` }
+                ];
+                picked = coupPool[seed % coupPool.length];
             }
-
-            const reignWeeks = Math.floor(reignDays / 7);
-            const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
-            const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
-            const coupPool = [
-                { tag: "PALÁCOVÝ PREVRAT", text: `${newName} zosadil z trónu ${skName(prevName, "acc")}! Jeho nepretržitá vláda na čele tabuľky trvala ${weeksText}.` },
-                { tag: "KRÁĽ JE MŔTVY, NECH ŽIJE KRÁĽ", text: `${newName} ukončil ${reignWeeks}-týždňovú nadvládu ${skName(prevName, "gen")} a preberá post jednotky TenisTAB!` },
-                { tag: "ZEMETRASENIE NA ČELE", text: `Po ${weeksLocText} na absolútnom vrchole padá ${prevName} – novým vládcom rebríčka sa stáva ${newName}!` },
-                { tag: "MIMORIADNA SPRÁVA", text: `Éra ${skName(prevName, "gen")} sa po ${weeksLocText} skončila! Korunu na kurte preberá ${newName}.` },
-                { tag: "TRÓN MÁ NOVÉHO MAJITEĽA", text: `Koniec jednej epochy! ${prevName} kraľoval tabuľke ${weeksText}, no od zápasu #${last.match.index} velí lige ${newName}.` },
-                { tag: "ŠOK NA VRCHOLE", text: `${prevName} prišiel o post jednotky po ${weeksLocText} vládnutia – na trón zasadol ${newName}!` }
-            ];
-            return coupPool[seed % coupPool.length];
+            return resolveSystemNewsItem("other", "leader_coup_pts", picked.tag, picked.text, { isPlural: false, vars });
         }
 
         function buildCurrentLeaderReignNewsItem(snaps) {
@@ -25607,10 +25623,9 @@
                 ? skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov")
                 : skCount(reignDays, "deň", "dni", "dní");
 
-            return {
-                tag: "VLÁDCA REBRÍČKA",
-                text: `Aktuálny líder ${currentTop.name} nepretržite kraľuje bodovej tabuľke TenisTAB už ${durationText}.`
-            };
+            const vars = { ...buildPlayerCaseVars([currentTop]), "trvanie": durationText };
+            recordLiveOtherNews("leader_reign_pts", vars, false);
+            return resolveSystemNewsItem("other", "leader_reign_pts", "VLÁDCA REBRÍČKA", `Aktuálny líder ${currentTop.name} nepretržite kraľuje bodovej tabuľke TenisTAB už ${durationText}.`, { isPlural: false, vars });
         }
 
         function buildEloLeaderChangeNewsItem(snaps, isDoubles) {
@@ -25633,37 +25648,50 @@
             const discLabel = isDoubles ? "deblového ELO rebríčka (4H)" : "ELO rebríčka dvojhry (2H)";
             const discShort = isDoubles ? "ELO 4H" : "ELO 2H";
 
+            const itemKey = isDoubles ? "leader_coup_elo4h" : "leader_coup_elo2h";
+            const reignDurTxt = reignDays === 0
+                ? "len pár hodín"
+                : (reignDays < 7
+                    ? skCount(reignDays, "deň", "dni", "dní")
+                    : skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov"));
+            const vars = {
+                ...buildPlayerCaseVars([newPlayer]),
+                ...buildPlayerCaseVars([prevPlayer], "2"),
+                "trvanie": reignDurTxt,
+                "zápas": `#${last.match.index}`
+            };
+            recordLiveOtherNews(itemKey, vars, false);
+            let picked;
             if (reignDays === 0) {
                 const blitzPool = [
                     { tag: `BLESKOVÝ PREVRAT ${discShort}`, text: `${newName} zosadil ${skName(prevName, "acc")} z čela ${discLabel} ešte v ten istý deň – na tróne sa nestihol ani ohriať!` },
                     { tag: `KRÁĽ NA JEDNO POOBEDIE (${discShort})`, text: `Vláda ${skName(prevName, "gen")} na čele ${discLabel} trvala len pár hodín! Korunu mu okamžite vyfúkol ${newName}.` },
                     { tag: `EXPRESNÁ VÝMENA (${discShort})`, text: `Ani celý deň na vrchole ${discShort}! ${newName} bleskovo strieda ${skName(prevName, "acc")} na poste jednotky ${discLabel}.` }
                 ];
-                return blitzPool[seed % blitzPool.length];
-            }
-
-            if (reignDays < 7) {
+                picked = blitzPool[seed % blitzPool.length];
+            } else if (reignDays < 7) {
                 const daysText = skCount(reignDays, "deň", "dni", "dní");
                 const shortPool = [
                     { tag: `KRÁTKA VLÁDA (${discShort})`, text: `${newName} zosadil z trónu ${discLabel} ${skName(prevName, "acc")} už po necelom týždni (${daysText})!` },
                     { tag: `ANI TÝŽDEŇ NA TRÓNE (${discShort})`, text: `Vláda ${skName(prevName, "gen")} na čele ${discLabel} netrvala ani celý týždeň (${daysText}) – novou jednotkou je ${newName}!` },
                     { tag: `RÝCHLA VÝMENA (${discShort})`, text: `${prevName} vydržal na absolútnom vrchole ${discShort} len ${daysText}, od zápasu #${last.match.index} velí rebríčku ${newName}!` }
                 ];
-                return shortPool[seed % shortPool.length];
+                picked = shortPool[seed % shortPool.length];
+            } else {
+                const reignWeeks = Math.floor(reignDays / 7);
+                const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
+                const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
+                const coupPool = [
+                    { tag: `PALÁCOVÝ PREVRAT (${discShort})`, text: `${newName} zosadil z trónu ${discLabel} ${skName(prevName, "acc")}! Jeho nepretržitá vláda trvala ${weeksText}.` },
+                    { tag: `NOVÝ KRÁĽ ${discShort}`, text: `${newName} ukončil ${reignWeeks}-týždňovú nadvládu ${skName(prevName, "gen")} a preberá post jednotky ${discLabel}!` },
+                    { tag: `ZEMETRASENIE V ${discShort}`, text: `Po ${weeksLocText} na absolútnom vrchole ${discLabel} padá ${prevName} – novým vládcom sa stáva ${newName}!` },
+                    { tag: `MIMORIADNA SPRÁVA (${discShort})`, text: `Éra ${skName(prevName, "gen")} na čele ${discLabel} sa po ${weeksLocText} skončila! Korunu preberá ${newName}.` },
+                    { tag: `TRÓN ${discShort} MÁ NOVÉHO MAJITEĽA`, text: `Koniec jednej epochy! ${prevName} kraľoval ${discLabel} ${weeksText}, no od zápasu #${last.match.index} velí ${newName}.` },
+                    { tag: `ŠOK NA VRCHOLE ${discShort}`, text: `${prevName} prišiel o post jednotky ${discLabel} po ${weeksLocText} vládnutia – na trón zasadol ${newName}!` }
+                ];
+                picked = coupPool[seed % coupPool.length];
             }
-
-            const reignWeeks = Math.floor(reignDays / 7);
-            const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
-            const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
-            const coupPool = [
-                { tag: `PALÁCOVÝ PREVRAT (${discShort})`, text: `${newName} zosadil z trónu ${discLabel} ${skName(prevName, "acc")}! Jeho nepretržitá vláda trvala ${weeksText}.` },
-                { tag: `NOVÝ KRÁĽ ${discShort}`, text: `${newName} ukončil ${reignWeeks}-týždňovú nadvládu ${skName(prevName, "gen")} a preberá post jednotky ${discLabel}!` },
-                { tag: `ZEMETRASENIE V ${discShort}`, text: `Po ${weeksLocText} na absolútnom vrchole ${discLabel} padá ${prevName} – novým vládcom sa stáva ${newName}!` },
-                { tag: `MIMORIADNA SPRÁVA (${discShort})`, text: `Éra ${skName(prevName, "gen")} na čele ${discLabel} sa po ${weeksLocText} skončila! Korunu preberá ${newName}.` },
-                { tag: `TRÓN ${discShort} MÁ NOVÉHO MAJITEĽA`, text: `Koniec jednej epochy! ${prevName} kraľoval ${discLabel} ${weeksText}, no od zápasu #${last.match.index} velí ${newName}.` },
-                { tag: `ŠOK NA VRCHOLE ${discShort}`, text: `${prevName} prišiel o post jednotky ${discLabel} po ${weeksLocText} vládnutia – na trón zasadol ${newName}!` }
-            ];
-            return coupPool[seed % coupPool.length];
+            return resolveSystemNewsItem("other", itemKey, picked.tag, picked.text, { isPlural: false, vars });
         }
 
         function buildEloCurrentLeaderReignNewsItem(snaps, isDoubles) {
@@ -25691,16 +25719,13 @@
                 ? skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov")
                 : skCount(reignDays, "deň", "dni", "dní");
 
+            const itemKey = isDoubles ? "leader_reign_elo4h" : "leader_reign_elo2h";
+            const vars = { ...buildPlayerCaseVars([leaderObj]), "trvanie": durationText };
+            recordLiveOtherNews(itemKey, vars, false);
             if (isDoubles) {
-                return {
-                    tag: "VLÁDCA ELO 4H",
-                    text: `Aktuálny deblový líder ${leaderObj.name} nepretržite kraľuje ELO rebríčku štvorhry (4H) už ${durationText}.`
-                };
+                return resolveSystemNewsItem("other", itemKey, "VLÁDCA ELO 4H", `Aktuálny deblový líder ${leaderObj.name} nepretržite kraľuje ELO rebríčku štvorhry (4H) už ${durationText}.`, { isPlural: false, vars });
             }
-            return {
-                tag: "VLÁDCA ELO 2H",
-                text: `Aktuálny singlový líder ${leaderObj.name} nepretržite kraľuje ELO rebríčku dvojhry (2H) už ${durationText}.`
-            };
+            return resolveSystemNewsItem("other", itemKey, "VLÁDCA ELO 2H", `Aktuálny singlový líder ${leaderObj.name} nepretržite kraľuje ELO rebríčku dvojhry (2H) už ${durationText}.`, { isPlural: false, vars });
         }
 
         function buildEloPairsLeaderChangeNewsItem(snaps) {
@@ -25720,31 +25745,43 @@
             const prevName = prevPair.name;
             const seed = (Number(last.match.index) || 0) + weatherQuipSeed + 11;
 
+            const reignDurTxt = reignDays === 0
+                ? "len pár hodín"
+                : (reignDays < 7
+                    ? skCount(reignDays, "deň", "dni", "dní")
+                    : skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov"));
+            const vars = {
+                "hráč": newName,
+                "hráč2": prevName,
+                "trvanie": reignDurTxt,
+                "zápas": `#${last.match.index}`
+            };
+            recordLiveOtherNews("leader_coup_elo4h_pairs", vars, false);
+            let picked;
             if (reignDays === 0) {
                 const blitzPool = [
                     { tag: "BLESKOVÝ PREVRAT (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z čela ELO 4H Páry ešte v ten istý deň – na tróne sa nestihli ani ohriať!` },
                     { tag: "EXPRESNÁ VÝMENA (4H PÁRY)", text: `Ani celý deň na vrchole tímového ELO 4H! Pár ${newName} bleskovo strieda dvojicu ${prevName} na poste deblovej jednotky.` }
                 ];
-                return blitzPool[seed % blitzPool.length];
-            }
-
-            if (reignDays < 7) {
+                picked = blitzPool[seed % blitzPool.length];
+            } else if (reignDays < 7) {
                 const daysText = skCount(reignDays, "deň", "dni", "dní");
                 const shortPool = [
                     { tag: "KRÁTKA VLÁDA (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z trónu ELO 4H Páry už po necelom týždni (${daysText})!` },
                     { tag: "RÝCHLA VÝMENA (4H PÁRY)", text: `Pár ${prevName} vydržal na čele tímového ELO 4H len ${daysText} – od zápasu #${last.match.index} velí dvojica ${newName}!` }
                 ];
-                return shortPool[seed % shortPool.length];
+                picked = shortPool[seed % shortPool.length];
+            } else {
+                const reignWeeks = Math.floor(reignDays / 7);
+                const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
+                const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
+                const coupPool = [
+                    { tag: "PALÁCOVÝ PREVRAT (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z trónu ELO 4H Páry! Ich nepretržitá vláda trvala ${weeksText}.` },
+                    { tag: "NOVÍ KRÁLI (4H PÁRY)", text: `Po ${weeksLocText} na vrchole tímového ELO 4H padá pár ${prevName} – korunu preberajú ${newName}!` }
+                ];
+                picked = coupPool[seed % coupPool.length];
             }
-
-            const reignWeeks = Math.floor(reignDays / 7);
-            const weeksText = skCount(reignWeeks, "týždeň", "týždne", "týždňov");
-            const weeksLocText = reignWeeks === 1 ? "1 týždni" : `${reignWeeks} týždňoch`;
-            const coupPool = [
-                { tag: "PALÁCOVÝ PREVRAT (4H PÁRY)", text: `Dvojica ${newName} zosadila pár ${prevName} z trónu ELO 4H Páry! Ich nepretržitá vláda trvala ${weeksText}.` },
-                { tag: "NOVÍ KRÁLI (4H PÁRY)", text: `Po ${weeksLocText} na vrchole tímového ELO 4H padá pár ${prevName} – korunu preberajú ${newName}!` }
-            ];
-            return coupPool[seed % coupPool.length];
+            return resolveSystemNewsItem("other", "leader_coup_elo4h_pairs", picked.tag, picked.text, { isPlural: false, vars });
         }
 
         function buildEloPairsCurrentLeaderReignNewsItem(snaps) {
@@ -25771,10 +25808,9 @@
                 ? skCount(Math.floor(reignDays / 7), "týždeň", "týždne", "týždňov")
                 : skCount(reignDays, "deň", "dni", "dní");
 
-            return {
-                tag: "VLÁDCOVIA ELO 4H PÁROV",
-                text: `Pár ${pairObj.name} nepretržite kraľuje tímovému ELO rebríčku štvorhry (4H Páry) už ${durationText}.`
-            };
+            const vars = { "hráč": pairObj.name, "trvanie": durationText };
+            recordLiveOtherNews("leader_reign_elo4h_pairs", vars, false);
+            return resolveSystemNewsItem("other", "leader_reign_elo4h_pairs", "VLÁDCOVIA ELO 4H PÁROV", `Pár ${pairObj.name} nepretržite kraľuje tímovému ELO rebríčku štvorhry (4H Páry) už ${durationText}.`, { isPlural: false, vars });
         }
 
         /* ==================== MOTOR ŠABLÓN NEWS SO SLOVENSKÝM SKLOŇOVANÍM (v1.83) ==================== */
@@ -25866,12 +25902,12 @@
             };
         }
 
-        // Automatická slovenská vokalizácia predložky s -> so pred sykavkami (s, z, š, ž) (v1.85)
+        // Automatická slovenská vokalizácia predložky s -> so pred sykavkami (s, z, š, ž) aj číslicami na s (7, 17, 70–79, 100–199, 700–799) (v1.86)
         function vocalizeSkPrepositions(text) {
             const str = String(text ?? "");
             if (!str) return str;
-            return str.replace(/(^|[\s(„"–—\-])([sS])(\s+[„"]?)([szšžSZŠŽ])/g, (m, pre, sChar, sp, nextChar) => {
-                return `${pre}${sChar}o${sp}${nextChar}`;
+            return str.replace(/(^|[\s(„"–—\-])([sS])(\s+[„"]?)(?:([szšžSZŠŽ])|(17|7\d{0,2}|1\d\d)(?!\d))/g, (m, pre, sChar, sp, letter, num) => {
+                return `${pre}${sChar}o${sp}${letter || num}`;
             });
         }
 
@@ -25890,13 +25926,26 @@
             return vocalizeSkPrepositions(replaced);
         }
 
+        let liveOtherNewsMap = {};
+        function recordLiveOtherNews(itemKey, vars, isPlural = false, pluralCount = 2) {
+            if (!itemKey) return;
+            if (!liveOtherNewsMap[itemKey]) {
+                liveOtherNewsMap[itemKey] = {
+                    isPlural: Boolean(isPlural),
+                    pluralCount: Number(pluralCount) || (isPlural ? 2 : 1),
+                    vars: vars ? { ...vars } : {}
+                };
+            }
+        }
+
         function resolveSystemNewsItem(sectionKey, itemKey, defaultTag, defaultText, ctx = {}) {
             const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
             const ov = store[itemKey];
             if (ov && ov.sleeping === true) return null;
 
             const isPlural = Boolean(ctx.isPlural);
-            const finalTag = (ov && ov.tag) ? ov.tag : defaultTag;
+            const rawTag = (ov && ov.tag) ? ov.tag : defaultTag;
+            const finalTag = applySkNewsTemplate(rawTag, ctx.vars || {}).trim();
 
             let chosenTpl = "";
             if (ov) {
@@ -25986,7 +26035,8 @@
             { id: "cage_collector", cat: "hall", title: "Klietka: Vedúci Zberateľ (1–4× 0:6)", tag: "ZBERATEĽ", single: "V ružovej Klietke Klubovne už čviriká {celkom} – poradie Zberateľov zatiaľ vedie {hráč} ({hodnota}).", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{celkom}"] },
             { id: "gs_almost", cat: "hall", title: "Grand Slam: Chýba 1 ročné obdobie", tag: "NA DOSTREL GRAND SLAMU", single: "{hráč} má už 3 zo 4 ročných období vo vrecku – na Sezónny Grand Slam {rok} mu chýba už len jediná výhra {obdobie}!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obdobie}"] },
             { id: "gs_current", cat: "hall", title: "Grand Slam: Skompletizovaný tento rok", tag: "SEZÓNNY GRAND SLAM", single: "Celoročná dominancia! {hráč} už skompletizoval Sezónny Grand Slam {rok} – dokázal vyhrať na jar, v lete, na jeseň aj v zime!", plural: "Celoročná dominancia! {hráč} už skompletizovali Sezónny Grand Slam {rok} – dokázali vyhrať na jar, v lete, na jeseň aj v zime!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}"] },
-            { id: "gs_hall", cat: "hall", title: "Grand Slam: Celkový líder Siene Grand Slamu", tag: "SIEŇ GRAND SLAMU", single: "Chrómovej vitríne Sezónneho Grand Slamu kraľuje {hráč} – na konte má už {hodnota} ({roky})!", plural: "V chrómovej vitríne Sezónneho Grand Slamu sa o čelo delia {hráč} – každý s bilanciou {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{roky}"] }
+            { id: "gs_hall", cat: "hall", title: "Grand Slam: Celkový líder Siene Grand Slamu", tag: "SIEŇ GRAND SLAMU", single: "Chrómovej vitríne Sezónneho Grand Slamu kraľuje {hráč} – na konte má už {hodnota} ({roky})!", plural: "V chrómovej vitríne Sezónneho Grand Slamu sa o čelo delia {hráč} – každý s bilanciou {hodnota}!", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{roky}"] },
+            { id: "gs_january_honor", cat: "hall", title: "Grand Slam: Januárové vyznamenanie (1.–31. 1.)", tag: "VYZNAMENANIE · GRAND SLAM {rok}", single: "Čestná salva v Sieni slávy! {hráč} je jediným držiteľom Sezónneho Grand Slamu {rok} – ako jediný dokázal v uplynulom roku víťaziť na jar, v lete, na jeseň aj v zime!{obhajoba}", plural: "Vyznamenanie Siene slávy: Sezónny Grand Slam {rok} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali {hráč}. Klobúk dole pred celoročnou výdržou!{obhajoba}", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{rok}", "{obhajoba}"] }
         ];
 
         // Katalóg predvolených šablón pre všetky OSTATNÉ systémové NEWS
@@ -26000,6 +26050,15 @@
             { id: "close_equal", group: "leader", title: "Rovnaké body u susedov v tabuľke", tag: "NA CHLP ROVNAKO", single: "{hráč} a {hráč2} majú v tabuľke zhodne {body} – rozhodujú až pomocné kritériá!", plural: "", vars: ["{hráč}", "{hráč2}", "{body}"] },
             { id: "close_gap", group: "leader", title: "Najtesnejší rozdiel susedov v tabuľke", tag: "NA CHLP ROVNAKO", single: "{hráč} a {hráč2} sú v tabuľke natlačení na rozdiel iba {rozdiel}.", plural: "", vars: ["{hráč}", "{hráč2}", "{rozdiel}"] },
             { id: "defending_pts", group: "leader", title: "Obhajoba bodov do 30 dní", tag: "OBHAJOBA BODOV", single: "{hráč} obhajuje v najbližších 30 dňoch {body}{kedy}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{body}", "{kedy}"] },
+            { id: "leader_expiry_coup", group: "leader", title: "Zmena lídra bodov expiráciou (Trón bez boja)", tag: "TRÓN BEZ BOJA", single: "Škandál v rebríčku! {hráč} zasadol na trón bez jediného úderu raketou – {hráč2} prišiel o prvé miesto, lebo mu vypršali staré body!", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}"] },
+            { id: "leader_coup_pts", group: "leader", title: "Zmena lídra bodovej tabuľky (Prevrat)", tag: "PALÁCOVÝ PREVRAT", single: "{hráč} zosadil z trónu {hráča2}! Jeho nepretržitá vláda na čele tabuľky trvala {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{trvanie}", "{zápas}"] },
+            { id: "leader_reign_pts", group: "leader", title: "Dĺžka kraľovania lídra bodov", tag: "VLÁDCA REBRÍČKA", single: "Aktuálny líder {hráč} nepretržite kraľuje bodovej tabuľke TenisTAB už {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{trvanie}"] },
+            { id: "leader_coup_elo2h", group: "leader", title: "Zmena lídra ELO 2H (Prevrat)", tag: "PALÁCOVÝ PREVRAT (ELO 2H)", single: "{hráč} zosadil z trónu ELO rebríčka dvojhry (2H) {hráča2}! Jeho nepretržitá vláda trvala {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{trvanie}", "{zápas}"] },
+            { id: "leader_reign_elo2h", group: "leader", title: "Dĺžka kraľovania lídra ELO 2H", tag: "VLÁDCA ELO 2H", single: "Aktuálny singlový líder {hráč} nepretržite kraľuje ELO rebríčku dvojhry (2H) už {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{trvanie}"] },
+            { id: "leader_coup_elo4h", group: "leader", title: "Zmena lídra ELO 4H (Prevrat)", tag: "PALÁCOVÝ PREVRAT (ELO 4H)", single: "{hráč} zosadil z trónu deblového ELO rebríčka (4H) {hráča2}! Jeho nepretržitá vláda trvala {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hráč2}", "{hráča2}", "{hráčovi2}", "{hráčom2}", "{trvanie}", "{zápas}"] },
+            { id: "leader_reign_elo4h", group: "leader", title: "Dĺžka kraľovania lídra ELO 4H", tag: "VLÁDCA ELO 4H", single: "Aktuálny deblový líder {hráč} nepretržite kraľuje ELO rebríčku štvorhry (4H) už {trvanie}.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{trvanie}"] },
+            { id: "leader_coup_elo4h_pairs", group: "leader", title: "Zmena lídra ELO 4H Páry (Prevrat)", tag: "PALÁCOVÝ PREVRAT (4H PÁRY)", single: "Dvojica {hráč} zosadila pár {hráč2} z trónu ELO 4H Páry! Ich nepretržitá vláda trvala {trvanie}.", plural: "", vars: ["{hráč}", "{hráč2}", "{trvanie}", "{zápas}"] },
+            { id: "leader_reign_elo4h_pairs", group: "leader", title: "Dĺžka kraľovania lídra ELO 4H Páry", tag: "VLÁDCOVIA ELO 4H PÁROV", single: "Pár {hráč} nepretržite kraľuje tímovému ELO rebríčku štvorhry (4H Páry) už {trvanie}.", plural: "", vars: ["{hráč}", "{trvanie}"] },
 
             // SÉRIE, KRÍZY & ELO MOMENTUM
             { id: "streak_fire_1", group: "streaks", title: "Horúca séria 3+ výhier (variant 1)", tag: "POZOR, HORÍ KURT!", single: "{hráč} je v tranze – ťahá už {hodnota} v rade! Súperi v šatni podozrievajú doping alebo nelegálne vypletenú raketu.", plural: "", vars: ["{hráč}", "{hráča}", "{hráčovi}", "{hráčom}", "{hodnota}", "{počet}"] },
@@ -26138,13 +26197,15 @@
             let defaultTag = catDef.tag;
             let defaultTpl = (isPlural && catDef.plural) ? catDef.plural : catDef.single;
 
-            // Zachovanie pôvodného striedania variantov, keď položka nie je ručne upravená
-            if (a.id === "surgeon" && useBezMilostiOverChirurg) {
+            // Zachovanie pôvodného striedania variantov iba vtedy, keď položka NIE JE ručne upravená v editore (v1.86)
+            const badgeUserOv = (state.newsTemplates && state.newsTemplates.badges && state.newsTemplates.badges[a.id]) || null;
+            const hasBadgeUserEdit = Boolean(badgeUserOv && (badgeUserOv.tag || badgeUserOv.single || badgeUserOv.plural));
+            if (!hasBadgeUserEdit && a.id === "surgeon" && useBezMilostiOverChirurg) {
                 defaultTag = "BEZ MILOSTI";
                 defaultTpl = isPlural
                     ? "{hráč} vybavili súperov bez straty setu už {hodnota}. Žiadne zdržiavanie, rýchla sprcha a ide sa na jedno čapované."
                     : "{hráč} vybavil súpera bez straty setu už {hodnota}. Žiadne zdržiavanie, rýchla sprcha a ide sa na jedno čapované.";
-            } else if (a.id === "chameleon") {
+            } else if (!hasBadgeUserEdit && a.id === "chameleon") {
                 const num = parseInt(a.valueText, 10) || 0;
                 if (num >= 4 && Math.random() < 0.5) {
                     defaultTag = "TENISOVÝ TINDER";
@@ -26159,9 +26220,26 @@
             return { defaultTag, defaultText, isPlural, vars };
         }
 
+        const LEADER_OTHER_KEYS = [
+            "leader_expiry_coup", "leader_coup_pts", "leader_reign_pts",
+            "leader_coup_elo2h", "leader_reign_elo2h",
+            "leader_coup_elo4h", "leader_reign_elo4h",
+            "leader_coup_elo4h_pairs", "leader_reign_elo4h_pairs"
+        ];
+
         function buildNewsTickerItems() {
+            const preservedLeaders = {};
+            LEADER_OTHER_KEYS.forEach(k => { if (liveOtherNewsMap[k]) preservedLeaders[k] = liveOtherNewsMap[k]; });
+            liveOtherNewsMap = preservedLeaders;
+
             const items = [];
             const add = (tag, text) => { if (text) items.push({ tag, text }); };
+            const isOtherSleeping = (k) => Boolean(state.newsTemplates && state.newsTemplates.other && state.newsTemplates.other[k] && state.newsTemplates.other[k].sleeping === true);
+            const pickAwakeOtherKey = (keys, seedIdx) => {
+                const awake = keys.filter(k => !isOtherSleeping(k));
+                if (awake.length === 0) return null;
+                return awake[Math.abs(Number(seedIdx) || 0) % awake.length];
+            };
             const addSys = (sectionKey, itemKey, defTag, defText, ctx = {}) => {
                 const res = resolveSystemNewsItem(sectionKey, itemKey, defTag, defText, ctx);
                 if (res && res.text) items.push(res);
@@ -26169,6 +26247,7 @@
             const addOtherTpl = (itemKey, vars, isPlural = false, overrideDefTag = null, overrideDefText = null) => {
                 const def = OTHER_NEWS_CATALOG.find(x => x.id === itemKey);
                 if (!def) return;
+                recordLiveOtherNews(itemKey, vars || {}, isPlural);
                 const dTag = overrideDefTag || def.tag;
                 const dTpl = overrideDefText || ((isPlural && def.plural) ? def.plural : (def.single || def.plural));
                 const dText = applySkNewsTemplate(dTpl, vars || {});
@@ -26192,7 +26271,7 @@
             const wmTxt = wm === 0 ? "All-time rebríčku" : `${wm}-mesačnom okne`;
 
             if (players.length === 0) {
-                add("INFO", "Vitajte v TenisTAB v1.85! Nahrajte databaza.json alebo pridajte prvých hráčov.");
+                add("INFO", "Vitajte v TenisTAB v1.86! Nahrajte databaza.json alebo pridajte prvých hráčov.");
                 return items;
             }
 
@@ -26209,7 +26288,9 @@
                     "dniTxt": skCount(p.daysSinceLastMatch, "deň", "dni", "dní"),
                     "dátum": formatDateSk(p.lastMatchDate)
                 };
-                addOtherTpl(halfKeys[idx % halfKeys.length], vars, false);
+                halfKeys.forEach(k => recordLiveOtherNews(k, vars, false));
+                const chosenKey = pickAwakeOtherKey(halfKeys, idx);
+                if (chosenKey) addOtherTpl(chosenKey, vars, false);
             });
             shuffleNewsArray(yearList).slice(0, 3).forEach((p, idx) => {
                 const vars = {
@@ -26218,7 +26299,9 @@
                     "dniTxt": skCount(p.daysSinceLastMatch, "deň", "dni", "dní"),
                     "dátum": formatDateSk(p.lastMatchDate)
                 };
-                addOtherTpl(yearKeys[idx % yearKeys.length], vars, false);
+                yearKeys.forEach(k => recordLiveOtherNews(k, vars, false));
+                const chosenKey = pickAwakeOtherKey(yearKeys, idx);
+                if (chosenKey) addOtherTpl(chosenKey, vars, false);
             });
 
             // 2. Čerstvý navrátilec (v posledných 30 dňoch nastúpil po pauze >= 90 dní)
@@ -26370,20 +26453,24 @@
             activeRanked.forEach((p, idx) => {
                 if (p.curWinStreak >= 3) {
                     const winsTxt = skCount(p.curWinStreak, "výhru", "výhry", "výhier");
-                    const key = ((p.curWinStreak + idx + weatherQuipSeed) % 2 === 0) ? "streak_fire_1" : "streak_fire_2";
-                    addOtherTpl(key, { ...buildPlayerCaseVars(p), "hodnota": winsTxt, "počet": String(p.curWinStreak) }, false);
+                    const fireVars = { ...buildPlayerCaseVars(p), "hodnota": winsTxt, "počet": String(p.curWinStreak) };
+                    recordLiveOtherNews("streak_fire_1", fireVars, false);
+                    recordLiveOtherNews("streak_fire_2", fireVars, false);
+                    const chosenKey = pickAwakeOtherKey(["streak_fire_1", "streak_fire_2"], p.curWinStreak + idx + weatherQuipSeed);
+                    if (chosenKey) addOtherTpl(chosenKey, fireVars, false);
                 } else if (p.curLossStreak >= 3) {
                     addOtherTpl("streak_crisis", { ...buildPlayerCaseVars(p), "hodnota": skCount(p.curLossStreak, "zápas", "zápasy", "zápasov") }, false);
                 }
             });
 
             (computedElo4HPairs || []).filter(pr => !pr.isInactive && pr.curWinStreak >= 3).forEach((pr, idx) => {
-                const pickFirst = ((pr.curWinStreak + idx + weatherQuipSeed) % 2 === 0);
-                if (pickFirst) {
-                    addOtherTpl("team_streak_1", { "hráč": pr.name, "hodnota": skCount(pr.curWinStreak, "výhru", "výhry", "výhier") }, false);
-                } else {
-                    addOtherTpl("team_streak_2", { "hráč": pr.name, "hodnota": skCount(pr.curWinStreak, "štvorhru", "štvorhry", "štvorhier") }, false);
-                }
+                const v1 = { "hráč": pr.name, "hodnota": skCount(pr.curWinStreak, "výhru", "výhry", "výhier") };
+                const v2 = { "hráč": pr.name, "hodnota": skCount(pr.curWinStreak, "štvorhru", "štvorhry", "štvorhier") };
+                recordLiveOtherNews("team_streak_1", v1, false);
+                recordLiveOtherNews("team_streak_2", v2, false);
+                const chosenKey = pickAwakeOtherKey(["team_streak_1", "team_streak_2"], pr.curWinStreak + idx + weatherQuipSeed);
+                if (chosenKey === "team_streak_1") addOtherTpl("team_streak_1", v1, false);
+                else if (chosenKey === "team_streak_2") addOtherTpl("team_streak_2", v2, false);
             });
 
             // 5b. ELO Momentum
@@ -26618,16 +26705,19 @@
                     const lastLeagueAge = getMatchAgeDays(pastMatches[pastMatches.length - 1].date);
                     if (lastLeagueAge >= 60) {
                         const hibKeys = ["league_hib_1", "league_hib_2", "league_hib_3"];
-                        const chosenKey = hibKeys[Math.floor(Math.random() * hibKeys.length)];
                         const hibVars = {
                             "dni": String(lastLeagueAge),
                             "dniTxt": skCount(lastLeagueAge, "deň", "dni", "dní"),
                             "miesto": getLocationContext().inPlace
                         };
-                        const altDef3 = (chosenKey === "league_hib_3" && wm <= 0)
-                            ? "Posledný zápas sa hral pred {dni} dňami – rebríček zamrzol a systém zvažuje, že začne udeľovať mínusové body za lenivosť!"
-                            : null;
-                        addOtherTpl(chosenKey, hibVars, false, null, altDef3);
+                        hibKeys.forEach(k => recordLiveOtherNews(k, hibVars, false));
+                        const chosenKey = pickAwakeOtherKey(hibKeys, Math.floor(Math.random() * 12));
+                        if (chosenKey) {
+                            const altDef3 = (chosenKey === "league_hib_3" && wm <= 0)
+                                ? "Posledný zápas sa hral pred {dni} dňami – rebríček zamrzol a systém zvažuje, že začne udeľovať mínusové body za lenivosť!"
+                                : null;
+                            addOtherTpl(chosenKey, hibVars, false, null, altDef3);
+                        }
                     }
                 }
 
@@ -28231,10 +28321,19 @@
             showToast(nextSleep ? "Poznámka k počasiu uspatá (v NEWS sa nezobrazí)." : "Poznámka k počasiu prebudená.");
         }
 
+        function isWeatherBucketIdenticalToDefault(bucketKey, arr) {
+            const defs = getDefaultWeatherQuipsForBucket(bucketKey);
+            if (!Array.isArray(arr) || arr.length !== defs.length) return false;
+            return arr.every((item, i) => item && !item.sleeping && !item.custom && String(item.text || "").trim() === String(defs[i] || "").trim());
+        }
+
         function updateAdminWeatherQuipText(bucketKey, idx, val) {
             const arr = ensureWeatherBucketArray(bucketKey);
             if (!arr[idx]) return;
             arr[idx].text = String(val || "").slice(0, 220);
+            if (isWeatherBucketIdenticalToDefault(bucketKey, arr)) {
+                delete state.newsTemplates.weatherQuips[bucketKey];
+            }
             saveState(true);
             markAdminUnexportedChange(`wq:${bucketKey}:${idx}`);
             renderNewsTicker(true);
@@ -28244,6 +28343,13 @@
                 const locQuip = localizeWeatherQuip(arr[idx].text, loc.isCadca);
                 prevEl.innerHTML = `<span class="news-tag">${escapeHtml(loc.homeWeatherTag)}:</span>☀️ 18,5 °C (jasno, vietor 8 km/h)${locQuip ? " – " + escapeHtml(locQuip) : ""}`;
             }
+            const cardEl = document.getElementById(`aw-quip-card-${idx}`);
+            const defs = getDefaultWeatherQuipsForBucket(bucketKey);
+            const isItemMod = Boolean(arr[idx].custom || idx >= defs.length || String(arr[idx].text || "").trim() !== String(defs[idx] || "").trim());
+            if (cardEl && !arr[idx].sleeping) cardEl.classList.toggle("is-modified", isItemMod);
+            const modBadge = document.getElementById(`aw-quip-mod-${idx}`);
+            if (modBadge) modBadge.style.display = isItemMod ? "inline-flex" : "none";
+            updateAdminWeatherStatsPill();
             updateAdminHeaderStatsPill();
         }
 
@@ -28252,7 +28358,7 @@
             const isWinter = (m === 11 || m === 12 || m === 1 || m === 2 || m === 3);
             const bKey = getWeatherBucketKey(m, isWinter ? true : adminWeatherSelectedBucket === "indoor");
             const arr = ensureWeatherBucketArray(bKey);
-            arr.push({ text: "" });
+            arr.push({ text: "", custom: true });
             saveState(true);
             markAdminUnexportedChange(`wq_add:${bKey}:${arr.length}`);
             renderAdminWeatherTab();
@@ -28263,6 +28369,22 @@
                 lastTa.scrollIntoView({ behavior: "smooth", block: "center" });
                 setTimeout(() => lastTa.focus(), 100);
             }
+        }
+
+        function deleteAdminWeatherQuip(bucketKey, idx) {
+            const arr = ensureWeatherBucketArray(bucketKey);
+            if (!arr[idx]) return;
+            const txt = String(arr[idx].text || "").trim();
+            if (txt && !confirm(`Zmazať pridanú poznámku k počasiu „${txt.slice(0, 60)}“?`)) return;
+            arr.splice(idx, 1);
+            if (arr.length === 0 || isWeatherBucketIdenticalToDefault(bucketKey, arr)) {
+                delete state.newsTemplates.weatherQuips[bucketKey];
+            }
+            saveState(true);
+            markAdminUnexportedChange(`wq_del:${bucketKey}:${idx}`);
+            renderNewsTicker(true);
+            renderAdminWeatherTab();
+            showToast("Vlastná poznámka k počasiu bola zmazaná.");
         }
 
         function resetAdminWeatherMonthToDefault() {
@@ -28276,6 +28398,16 @@
             renderNewsTicker(true);
             renderAdminWeatherTab();
             showToast(`Poznámky pre mesiac ${WEATHER_MONTH_NAMES_SK[m - 1]} boli obnovené na pôvodné.`);
+        }
+
+        function updateAdminWeatherStatsPill() {
+            const nt = state.newsTemplates || createEmptyNewsTemplates();
+            const statsPill = document.getElementById("aw-stats-pill");
+            if (statsPill) {
+                const modMonths = Object.keys(nt.weatherQuips || {}).length;
+                const modEv = Object.keys(nt.weatherEvents || {}).length;
+                statsPill.textContent = (modMonths + modEv === 0) ? "Živé dáta · originál" : `${modMonths} mes. · ${modEv} udal.`;
+            }
         }
 
         function toggleAdminWeatherEventSleep(evKey) {
@@ -28324,6 +28456,15 @@
                 const tx = applySkNewsTemplate(cur.text || def.text, sampleVars);
                 prevEl.innerHTML = `<span class="news-tag">${escapeHtml(tg)}:</span>${escapeHtml(tx)}`;
             }
+            const isMod = Boolean(cur.tag || cur.text);
+            const sleeping = Boolean(cur.sleeping);
+            const cardEl = document.getElementById(`aw-ev-card-${evKey}`);
+            if (cardEl && !sleeping) cardEl.classList.toggle("is-modified", isMod);
+            const modBadge = document.getElementById(`aw-ev-mod-${evKey}`);
+            if (modBadge) modBadge.style.display = isMod ? "inline-flex" : "none";
+            const resetBtn = document.getElementById(`aw-ev-reset-${evKey}`);
+            if (resetBtn) resetBtn.style.display = (isMod || sleeping) ? "inline-flex" : "none";
+            updateAdminWeatherStatsPill();
             updateAdminHeaderStatsPill();
         }
 
@@ -28369,10 +28510,11 @@
             if (outBtn) outBtn.classList.toggle("active", adminWeatherSelectedBucket !== "indoor");
             if (inBtn) inBtn.classList.toggle("active", adminWeatherSelectedBucket === "indoor");
 
+            const defQuips = getDefaultWeatherQuipsForBucket(bKey);
             const ovList = nt.weatherQuips[bKey];
             const rows = Array.isArray(ovList) && ovList.length > 0
                 ? ovList
-                : getDefaultWeatherQuipsForBucket(bKey).map(tx => ({ text: tx }));
+                : defQuips.map(tx => ({ text: tx }));
 
             const loc = getLocationContext();
             const qListEl = document.getElementById("admin-weather-quips-list");
@@ -28380,15 +28522,19 @@
                 const subLabel = isWinter ? "zimný/halový režim" : (adminWeatherSelectedBucket === "indoor" ? "Hala" : "Vonku");
                 qListEl.innerHTML = rows.map((item, idx) => {
                     const sleeping = item.sleeping === true;
+                    const isCustomExtra = Boolean(item.custom === true || idx >= defQuips.length || !String(item.text || "").trim());
+                    const isItemMod = Boolean(isCustomExtra || String(item.text || "").trim() !== String(defQuips[idx] || "").trim());
                     const locQuip = localizeWeatherQuip(item.text || "", loc.isCadca);
                     return `
-                        <div class="an-tpl-card ${sleeping ? "is-sleeping" : (ovList ? "is-modified" : "")}">
+                        <div id="aw-quip-card-${idx}" class="an-tpl-card ${sleeping ? "is-sleeping" : (isItemMod ? "is-modified" : "")}">
                             <div class="an-tpl-head">
                                 <span class="an-tpl-title">
                                     <span>${WEATHER_MONTH_NAMES_SK[m - 1]} (${subLabel}) · Poznámka #${idx + 1}</span>
                                     ${sleeping ? `<span class="an-sleep-badge">💤 Uspatá</span>` : ""}
+                                    <span id="aw-quip-mod-${idx}" class="an-mod-badge" style="display:${isItemMod ? "inline-flex" : "none"};">✏️ ${item.custom || idx >= defQuips.length ? "Vlastná" : "Upravená"}</span>
                                 </span>
                                 <div class="amn-row-btns">
+                                    ${isCustomExtra ? `<button type="button" class="icon-btn" style="background:linear-gradient(180deg,#7f1d1d,#450a0a); border-color:#f87171;" onclick="deleteAdminWeatherQuip('${bKey}', ${idx})" data-ctx-title="Zmazať vlastnú poznámku" data-ctx-desc="Natrvalo odstráni túto pridanú (alebo prázdnu) poznámku z tohto mesiaca.">🗑️</button>` : ""}
                                     <button type="button" class="an-sleep-btn ${sleeping ? "is-wake" : ""}" onclick="toggleAdminWeatherQuipSleep('${bKey}', ${idx})"
                                         data-ctx-title="${sleeping ? "Prebudiť poznámku k počasiu" : "Uspať poznámku k počasiu"}"
                                         data-ctx-desc="${sleeping ? "Vráti túto poznámku späť do rotácie pri počasí." : "Uspí túto poznámku (šedý podklad) – v NEWS sa nebude zobrazovať."}">
@@ -28428,15 +28574,15 @@
                             data-ctx-desc="Kliknutím vloží premennú ${v} na pozíciu kurzora. V NEWS sa nahradí skutočnou nameranou hodnotou.">${v}</button>
                     `).join("");
                     return `
-                        <div class="an-tpl-card ${sleeping ? "is-sleeping" : (isMod ? "is-modified" : "")}">
+                        <div id="aw-ev-card-${def.key}" class="an-tpl-card ${sleeping ? "is-sleeping" : (isMod ? "is-modified" : "")}">
                             <div class="an-tpl-head">
                                 <span class="an-tpl-title">
                                     <span>${escapeHtml(def.label)}</span>
                                     ${sleeping ? `<span class="an-sleep-badge">💤 Uspatá</span>` : ""}
-                                    ${isMod ? `<span class="an-mod-badge">✏️ Upravená</span>` : ""}
+                                    <span id="aw-ev-mod-${def.key}" class="an-mod-badge" style="display:${isMod ? "inline-flex" : "none"};">✏️ Upravená</span>
                                 </span>
                                 <div class="amn-row-btns">
-                                    ${(isMod || sleeping) ? `<button type="button" class="icon-btn" onclick="resetAdminWeatherEvent('${def.key}')" data-ctx-title="Obnoviť pôvodný text" data-ctx-desc="Vráti túto meteo udalosť na pôvodné znenie a prebudí ju.">↺</button>` : ""}
+                                    <button type="button" id="aw-ev-reset-${def.key}" class="icon-btn" style="display:${(isMod || sleeping) ? "inline-flex" : "none"};" onclick="resetAdminWeatherEvent('${def.key}')" data-ctx-title="Obnoviť pôvodný text" data-ctx-desc="Vráti túto meteo udalosť na pôvodné znenie a prebudí ju.">↺</button>
                                     <button type="button" class="an-sleep-btn ${sleeping ? "is-wake" : ""}" onclick="toggleAdminWeatherEventSleep('${def.key}')"
                                         data-ctx-title="${sleeping ? "Prebudiť meteo udalosť" : "Uspať meteo udalosť"}"
                                         data-ctx-desc="${sleeping ? "Znovu povolí zobrazovanie tejto meteo hlášky v NEWS." : "Uspí túto meteo hlášku (šedý podklad) – pri danom počasí sa v NEWS nezobrazí."}">
@@ -28608,6 +28754,36 @@
             showToast(willSleep ? "Správa uspatá (šedý podklad · skrytá v NEWS)." : "Správa prebudená späť do NEWS.");
         }
 
+        function syncSystemTemplateCardHeaderUI(sectionKey, itemKey) {
+            const store = (state.newsTemplates && state.newsTemplates[sectionKey]) || {};
+            const ov = store[itemKey] || null;
+            const sleeping = Boolean(ov && ov.sleeping);
+            const isMod = Boolean(ov && (ov.tag || ov.single || ov.plural));
+
+            const cardEl = document.getElementById(`an-card-${sectionKey}-${itemKey}`);
+            if (cardEl) {
+                cardEl.classList.toggle("is-sleeping", sleeping);
+                cardEl.classList.toggle("is-modified", !sleeping && isMod);
+            }
+            const modBadge = document.getElementById(`an-mod-badge-${sectionKey}-${itemKey}`);
+            if (modBadge) modBadge.style.display = isMod ? "inline-flex" : "none";
+            const resetBtn = document.getElementById(`an-reset-btn-${sectionKey}-${itemKey}`);
+            if (resetBtn) resetBtn.style.display = (isMod || sleeping) ? "inline-flex" : "none";
+
+            // Aktualizovať počítadlo upravených/uspatých v záhlaví záložky
+            const catalog = sectionKey === "badges" ? BADGE_NEWS_CATALOG : OTHER_NEWS_CATALOG;
+            const statsEl = document.getElementById(sectionKey === "badges" ? "ab-stats-pill" : "ao-stats-pill");
+            if (statsEl) {
+                let mCnt = 0, sCnt = 0;
+                catalog.forEach(d => {
+                    const o = store[d.id];
+                    if (o && (o.tag || o.single || o.plural)) mCnt++;
+                    if (o && o.sleeping) sCnt++;
+                });
+                statsEl.textContent = `${mCnt} uprav. · ${sCnt} uspatých`;
+            }
+        }
+
         function updateSystemTemplateField(sectionKey, itemKey, field, rawVal) {
             const catalog = sectionKey === "badges" ? BADGE_NEWS_CATALOG : OTHER_NEWS_CATALOG;
             const def = catalog.find(x => x.id === itemKey);
@@ -28629,6 +28805,7 @@
             markAdminUnexportedChange(`${sectionKey}:${itemKey}`);
             renderNewsTicker(true);
             updateSystemTemplateLivePreview(sectionKey, itemKey);
+            syncSystemTemplateCardHeaderUI(sectionKey, itemKey);
             updateAdminHeaderStatsPill();
         }
 
@@ -28642,7 +28819,49 @@
             showToast("Obnovený pôvodný text správy.");
         }
 
-        // Vybuduje kontext pre oba náhľady: singleVars (1×) aj pluralVars (2+ / 3×) s podporou Testera skloňovania (v1.85)
+        // Realistické náhradné ukážkové hodnoty pre každý neobsadený odznak (v1.86)
+        const BADGE_FALLBACK_PREVIEW_VALS = {
+            unstoppable: "6 výhier v rade",
+            hot_hand: "4 výhry v rade",
+            free_fall: "4 prehry v rade",
+            bulletproof: "8 zápasov bez prehry",
+            master_baker: "5 kanárov",
+            bagel_receiver: "4 kanáre",
+            surgeon: "9-krát",
+            nerves_of_steel: "6 tiebreakov",
+            sniper: "+4,2 gemu/záp.",
+            points_king: "18,5 bodu",
+            giant_killer: "+28,4 ELO",
+            terminator: "42 zápasov",
+            diplomat: "5 remíz",
+            chameleon: "s 5 rôznymi spoluhráčmi",
+            dynamic_duo: "9,5 bodu",
+            phoenix: "4 obraty",
+            marathoner: "7 bitiek",
+            unlucky: "4 tesné prehry",
+            singles_king: "14,0 bodu",
+            doubles_king: "8,5 bodu",
+            winter_wolf: "11,5 bodu",
+            beach_boy: "12,5 bodu",
+            roland_garros: "10,0 bodu",
+            betonar: "9,5 bodu",
+            janosik: "-26,8 ELO",
+            sponsor: "14 prehier",
+            comeback: "145 dní",
+            nostalgia: "6,5 bodu",
+            obhajca: "8,0 bodu",
+            steamroller: "+12 gemov",
+            rocky_balboa: "19,5 gemu/záp.",
+            sizyfos: "20,4 gemu/záp.",
+            scalp_collector: "6 rôznych súperov",
+            inseparable_pair: "12 spoločných štartov",
+            good_chemistry: "75,0 %",
+            unbeatable_duo: "5 výhier v rade",
+            dramatics: "4 trojsetové 4H",
+            pat_mat: "4 prehry"
+        };
+
+        // Vybuduje kontext pre oba náhľady: singleVars (1×) aj pluralVars (2+ / 3×) s podporou Testera skloňovania (v1.86)
         function getBadgeDualPreviewContext(def) {
             const wm = Number(state.config.windowMonths) || 0;
             const testerGrp = getAdminTesterPlayersGroup();
@@ -28711,9 +28930,10 @@
                     };
                 }
 
+                const fbVal = BADGE_FALLBACK_PREVIEW_VALS[def.id] || (isPairBadge ? "5 výhier v rade" : "5×");
                 const baseVars = liveCtx
                     ? { ...liveCtx.vars }
-                    : { "hodnota": isPairBadge ? "5 výhier v rade" : "5×", "rozsah": achScopeLabel, "rekordCap": achRecCap, "rekordLow": achRecLow, "skóre": ", 6:0 6:0" };
+                    : { "hodnota": fbVal, "rozsah": achScopeLabel, "rekordCap": achRecCap, "rekordLow": achRecLow, "skóre": ", 6:0 6:0" };
 
                 if (isPairBadge) {
                     const p3 = pickThirdFor(t1, t2);
@@ -28807,8 +29027,37 @@
                     pluralVars: { ...buildPlayerCaseVars(hPl), "hodnota": skCount(cnt, "Grand Slam", "Grand Slamy", "Grand Slamov"), "roky": yrs }
                 };
             }
+            if (def.id === "gs_january_honor") {
+                const todayDt = getTodayMidnight();
+                const prevYr = todayDt.getFullYear() - 1;
+                const winners = gs.byYear[prevYr] || [];
+                const isJanLive = todayDt.getMonth() === 0 && winners.length > 0;
+                const h1 = (adminTesterMode === "custom" || winners.length === 0) ? t1 : winners[0];
+                const hPl = (adminTesterMode === "custom" || winners.length === 0) ? customPluralList : (winners.length > 1 ? winners : [h1, pickSecondFor(h1)]);
+                return {
+                    isLive: isJanLive,
+                    pluralCount: hPl.length,
+                    singleVars: { ...buildPlayerCaseVars([h1]), "rok": String(prevYr), "obhajoba": "" },
+                    pluralVars: { ...buildPlayerCaseVars(hPl), "rok": String(prevYr), "obhajoba": "" }
+                };
+            }
             const base = buildPlayerCaseVars([t1]);
             return { isLive: false, pluralCount: customPluralList.length, singleVars: base, pluralVars: buildPlayerCaseVars(customPluralList) };
+        }
+
+        function refreshLiveOtherNewsSnapshot() {
+            LEADER_OTHER_KEYS.forEach(k => { delete liveOtherNewsMap[k]; });
+            buildNewsTickerItems();
+            const leaderSnaps = buildWindowPointsTimelineForLeader();
+            const expItem = buildExpiryLeaderChangeNewsItem(leaderSnaps);
+            const lcItem = expItem || buildLeaderChangeNewsItem(leaderSnaps);
+            const e2Lc = buildEloLeaderChangeNewsItem(elo2HLeaderSnaps, false);
+            const e4Lc = buildEloLeaderChangeNewsItem(elo4HLeaderSnaps, true);
+            const e4pLc = buildEloPairsLeaderChangeNewsItem(elo4HPairsLeaderSnaps);
+            if (!lcItem) buildCurrentLeaderReignNewsItem(leaderSnaps);
+            if (!e2Lc) buildEloCurrentLeaderReignNewsItem(elo2HLeaderSnaps, false);
+            if (!e4Lc) buildEloCurrentLeaderReignNewsItem(elo4HLeaderSnaps, true);
+            if (!e4pLc) buildEloPairsCurrentLeaderReignNewsItem(elo4HPairsLeaderSnaps);
         }
 
         function getOtherDualPreviewContext(def) {
@@ -28818,11 +29067,23 @@
             const [d1, d2] = getAdminSamplePlayersPair();
             const s1 = adminTesterMode === "custom" ? testerGrp.p1 : d1;
             const s2 = adminTesterMode === "custom" ? testerGrp.p2 : d2;
+            const pool = (computedPlayers && computedPlayers.length > 0) ? computedPlayers : (state.players || []);
+            const s3 = (adminTesterMode === "custom" && testerGrp.p3) || pool.find(p => p.id !== s1.id && p.id !== s2.id) || { name: "Belo" };
             const pluralList = adminTesterMode === "custom"
                 ? testerGrp.pluralGroup
                 : (s1.name === s2.name ? [s1, { name: "Tibor" }] : [s1, s2]);
             const loc = getLocationContext();
-            const totalM = (computedMatches || []).length;
+            const matches = computedMatches || [];
+            const totalM = matches.length;
+            const cnt2H = totalM > 0 ? matches.filter(m => m.type === "2H").length : 25;
+            const cnt4H = totalM > 0 ? matches.filter(m => m.type === "4H").length : 17;
+            let totalSetsReal = 0, totalGemsReal = 0;
+            matches.forEach(m => {
+                totalSetsReal += (Number(m.sets1) || 0) + (Number(m.sets2) || 0);
+                totalGemsReal += (m.gems1 || 0) + (m.gems2 || 0);
+            });
+            const sampleSets = totalSetsReal > 0 ? totalSetsReal : 96;
+            const sampleGems = totalGemsReal > 0 ? totalGemsReal : 850;
 
             const baseVars = {
                 ...buildPlayerCaseVars([s1]),
@@ -28832,7 +29093,7 @@
                 "rozpis": `2H: ${skNum(s1.pts2H || 7, 2)} b · 4H: ${skNum(s1.pts4H || 5.5, 2)} b`,
                 "rozdiel": skPts(1.5, "nom"),
                 "kedy": ` (najbližšie platí do ${formatDateSk(getTodayIso())} vrátane)`,
-                "hodnota": def.id.includes("elo_mom_up") ? "+24,5" : (def.id.includes("elo_mom_dn") ? "-18,4" : (def.id === "stat_win_machine" || def.id === "stat_gems_top" || def.id === "stat_save_energy" ? "64,2 %" : "4 výhry")),
+                "hodnota": "4 výhry",
                 "počet": "5",
                 "bilancia": "8:3",
                 "gemy": "142:98",
@@ -28840,7 +29101,7 @@
                 "body4h": `${skNum(s1.pts4H || 5.5, 2)} b`,
                 "sloveso": skPlural(totalM || 42, "je zapísaný", "sú zapísané", "je zapísaných"),
                 "zápasy": skCount(totalM || 42, "zápas", "zápasy", "zápasov"),
-                "sety": skCount(Math.max(12, totalM * 2), "set", "sety", "setov"),
+                "sety": skCount(sampleSets, "set", "sety", "setov"),
                 "remízy": skCount(5, "remíza", "remízy", "remíz"),
                 "miesto": loc.inPlace,
                 "dni": "195",
@@ -28849,18 +29110,67 @@
                 "skóre": "2:0",
                 "posun": "2 priečky",
                 "elo": " (+18,4 ELO 2H)",
-                "miestoTxt": " a drží 2. miesto v tabuľke"
+                "miestoTxt": " a drží 2. miesto v tabuľke",
+                "trvanie": "3 týždne",
+                "zápas": `#${Math.max(1, totalM || 42)}`
             };
-            if (def.id === "leader_tied") baseVars["body"] = skPts(s1.points || 12.5, "loc");
-            if (def.id === "leader_monopoly" || def.id === "close_equal" || def.id === "defending_pts") baseVars["body"] = skPts(s1.points || 12.5, "nom");
-            if (def.id === "leader_monopoly" || def.id === "close_gap" || def.id === "stat_class_gap") baseVars["rozdiel"] = skPts(3.5, "gen");
-            if (def.id === "team_streak_1" || def.id === "team_streak_2") baseVars["hráč"] = `${s1.name} / ${s2.name}`;
-            if (def.id === "chron_draws") baseVars["sloveso"] = "svieti už";
-            if (def.id === "chron_balls") baseVars["gemy"] = String(Math.max(120, totalM * 14));
-            if (def.id === "comeback_win_up" || def.id === "comeback_loss_dn") baseVars["miesto"] = "2";
 
-            const singleVars = { ...baseVars };
-            const pluralVars = { ...baseVars, ...buildPlayerCaseVars(pluralList) };
+            // Presné špecifické ukážkové hodnoty pre každú správu (v1.86)
+            if (def.id === "leader_tied") baseVars["body"] = skPts(s1.points || 12.5, "loc");
+            else if (def.id === "leader_monopoly" || def.id === "close_equal" || def.id === "defending_pts") baseVars["body"] = skPts(s1.points || 12.5, "nom");
+
+            if (def.id === "leader_monopoly" || def.id === "close_gap" || def.id === "stat_class_gap") baseVars["rozdiel"] = skPts(3.5, "gen");
+            if (def.id === "streak_crisis") baseVars["hodnota"] = skCount(4, "zápas", "zápasy", "zápasov");
+            else if (def.id === "team_streak_1") {
+                baseVars["hráč"] = `${s1.name} / ${s2.name}`;
+                baseVars["hodnota"] = skCount(4, "výhru", "výhry", "výhier");
+            } else if (def.id === "team_streak_2") {
+                baseVars["hráč"] = `${s1.name} / ${s2.name}`;
+                baseVars["hodnota"] = skCount(4, "štvorhru", "štvorhry", "štvorhier");
+            } else if (def.id.includes("elo_mom_up")) baseVars["hodnota"] = "+24,5";
+            else if (def.id.includes("elo_mom_dn")) baseVars["hodnota"] = "-18,4";
+            else if (def.id === "stat_win_machine" || def.id === "stat_gems_top") baseVars["hodnota"] = "64,2 %";
+            else if (def.id === "stat_save_energy") baseVars["hodnota"] = "36,8 %";
+
+            if (def.id === "chron_summary") {
+                baseVars["rozpis"] = `${cnt2H}× 2H, ${cnt4H}× 4H`;
+                baseVars["gemy"] = skCount(sampleGems, "odohratý gem", "odohraté gemy", "odohratých gemov");
+            } else if (def.id === "chron_draws") {
+                baseVars["sloveso"] = "svieti už";
+            } else if (def.id === "chron_balls") {
+                baseVars["gemy"] = String(sampleGems);
+            }
+
+            if (def.id === "comeback_win_up") {
+                baseVars["miesto"] = "2";
+                baseVars["skóre"] = "2:0";
+                baseVars["elo"] = " a pripísal si +18,4 ELO 2H";
+            } else if (def.id === "comeback_win") {
+                baseVars["skóre"] = "2:0";
+                baseVars["elo"] = " (+14,2 ELO 2H)";
+                baseVars["miestoTxt"] = " a drží 2. miesto v tabuľke";
+            } else if (def.id === "comeback_draw") {
+                baseVars["skóre"] = "1:1";
+                baseVars["elo"] = " (+1,2 ELO 2H)";
+                baseVars["miestoTxt"] = " a patrí mu 3. miesto";
+            } else if (def.id === "comeback_loss_dn") {
+                baseVars["miesto"] = "5";
+                baseVars["skóre"] = "0:2";
+                baseVars["elo"] = " (-14,2 ELO 2H)";
+            } else if (def.id === "comeback_loss") {
+                baseVars["skóre"] = "0:2";
+                baseVars["elo"] = " (-11,5 ELO 2H)";
+            }
+
+            if (def.id === "leader_coup_elo4h_pairs") {
+                baseVars["hráč"] = `${s1.name} / ${s2.name}`;
+                baseVars["hráč2"] = `${s2.name} / ${s3.name}`;
+            } else if (def.id === "leader_reign_elo4h_pairs") {
+                baseVars["hráč"] = `${s1.name} / ${s2.name}`;
+            }
+
+            let singleVars = { ...baseVars };
+            let pluralVars = { ...baseVars, ...buildPlayerCaseVars(pluralList) };
 
             if (def.id === "stat_motor") {
                 singleVars["hodnota"] = skCount(18, "odohratý zápas", "odohraté zápasy", "odohratých zápasov");
@@ -28878,13 +29188,45 @@
                 singleVars["hodnota"] = skCount(5, "vyrovnaný trojsetový zápas", "vyrovnané trojsetové zápasy", "vyrovnaných trojsetových zápasov");
                 pluralVars["hodnota"] = singleVars["hodnota"];
             }
-            return { isLive: false, pluralCount: pluralList.length, singleVars, pluralVars };
+
+            const liveEntry = liveOtherNewsMap[def.id] || null;
+            const isLive = Boolean(liveEntry);
+            let outPluralCount = pluralList.length;
+
+            // V režime Reálne dáta uprednostníme skutočné dáta z tabuľky, keď je správa živá
+            if (isLive && adminTesterMode !== "custom" && liveEntry.vars) {
+                const lv = liveEntry.vars;
+                if (liveEntry.isPlural) {
+                    pluralVars = { ...pluralVars, ...lv };
+                    outPluralCount = Math.max(2, liveEntry.pluralCount || 2);
+                    const firstOnly = lv["hráč1"] ? buildPlayerCaseVars([lv["hráč1"]]) : {};
+                    singleVars = { ...singleVars, ...lv, ...firstOnly };
+                } else {
+                    singleVars = { ...singleVars, ...lv };
+                    // Pri plural náhľade zachováme reálne čísla, no doplníme 2. hráča pre ukážku zhody 2+
+                    const liveFirst = lv["hráč"] || s1.name;
+                    const secondForLive = pool.find(p => p.name !== liveFirst) || s2;
+                    const pluralNames = [liveFirst, secondForLive.name === liveFirst ? "Tibor" : secondForLive.name];
+                    const keepPluralHodnota = ["stat_motor", "stat_doubles_mage", "stat_sponsor", "stat_all_or_nothing"].includes(def.id);
+                    pluralVars = {
+                        ...pluralVars,
+                        ...lv,
+                        ...buildPlayerCaseVars(pluralNames),
+                        ...(keepPluralHodnota ? { "hodnota": pluralVars["hodnota"] } : {})
+                    };
+                }
+            }
+
+            return { isLive, pluralCount: outPluralCount, singleVars, pluralVars };
         }
 
         function renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx) {
             const hasSingle = Boolean(def.single);
             const hasPlural = Boolean(def.plural);
-            const tagHtml = `<span class="news-tag">${escapeHtml(curTag)}:</span>`;
+            const tagSingle = applySkNewsTemplate(curTag, dualCtx.singleVars);
+            const tagPlural = applySkNewsTemplate(curTag, dualCtx.pluralVars);
+            const tagHtmlS = `<span class="news-tag">${escapeHtml(tagSingle)}:</span>`;
+            const tagHtmlP = `<span class="news-tag">${escapeHtml(tagPlural)}:</span>`;
             const plBadge = (dualCtx && dualCtx.pluralCount >= 3) ? `${dualCtx.pluralCount}×` : "2+";
             if (hasSingle && hasPlural) {
                 const sTxt = applySkNewsTemplate(curSingle, dualCtx.singleVars);
@@ -28892,20 +29234,20 @@
                 return `
                     <div class="an-prev-row">
                         <span class="an-prev-pill">1×</span>
-                        <span class="an-prev-text">${tagHtml}${escapeHtml(sTxt)}</span>
+                        <span class="an-prev-text">${tagHtmlS}${escapeHtml(sTxt)}</span>
                     </div>
                     <div class="an-prev-row">
                         <span class="an-prev-pill is-plural">${plBadge}</span>
-                        <span class="an-prev-text">${tagHtml}${escapeHtml(pTxt)}</span>
+                        <span class="an-prev-text">${tagHtmlP}${escapeHtml(pTxt)}</span>
                     </div>
                 `;
             }
             if (hasPlural && !hasSingle) {
                 const pTxt = applySkNewsTemplate(curPlural, dualCtx.pluralVars);
-                return `<div class="an-prev-row"><span class="an-prev-pill is-plural">${plBadge}</span><span class="an-prev-text">${tagHtml}${escapeHtml(pTxt)}</span></div>`;
+                return `<div class="an-prev-row"><span class="an-prev-pill is-plural">${plBadge}</span><span class="an-prev-text">${tagHtmlP}${escapeHtml(pTxt)}</span></div>`;
             }
             const sTxt = applySkNewsTemplate(curSingle, dualCtx.singleVars);
-            return `${tagHtml}${escapeHtml(sTxt)}`;
+            return `${tagHtmlS}${escapeHtml(sTxt)}`;
         }
 
         function updateSystemTemplateLivePreview(sectionKey, itemKey) {
@@ -28922,14 +29264,14 @@
             const curPlural = (ov && ov.plural) ? ov.plural : (def.plural || "");
             prevEl.innerHTML = renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx);
             const subTagEl = document.getElementById(`an-subtag-${sectionKey}-${itemKey}`);
-            if (subTagEl) subTagEl.textContent = curTag;
+            if (subTagEl) subTagEl.textContent = applySkNewsTemplate(curTag, dualCtx.singleVars);
         }
 
         const ADMIN_PLURAL_GROUP_TOKENS = [
             { tok: "{hráč1}",    title: "Prvý hráč v zhode (nominatív)",        desc: "Prvý hráč zo zhodnej skupiny v základnom tvare (napr. Vlado).", tip: "Príklad: {hráč1} s {ostatnými} → Vlado s Tiborom / Vlado so Stanom." },
             { tok: "{hráča1}",   title: "Prvý hráč v zhode (genitív/akuzatív)", desc: "Prvý hráč v tvare koho/čoho (napr. Vlada).", tip: "Príklad: Okrem {hráča1} bodovali aj {ostatní}." },
             { tok: "{hráčovi1}", title: "Prvý hráč v zhode (datív)",            desc: "Prvý hráč v tvare komu/čomu (napr. Vladovi).", tip: "Príklad: Titul patrí {hráčovi1} aj {ostatným}." },
-            { tok: "{hráčom1}",  title: "Prvý hráč v zhode (inštrumentál)",     desc: "Prvý hráč v tvare s kým/čím (napr. Vladom). Predložka s sa pred S/Z/Š/Ž sama zmení na so.", tip: "Príklad: Plece pri pleci s {hráčom1} sú aj {ostatní}." },
+            { tok: "{hráčom1}",  title: "Prvý hráč v zhode (inštrumentál)",     desc: "Prvý hráč v tvare s kým/čím (napr. Vladom). Predložka s sa pred S/Z/Š/Ž a 7 sama zmení na so.", tip: "Príklad: Plece pri pleci s {hráčom1} sú aj {ostatní}." },
             { tok: "{ostatní}",  title: "Zvyšok skupiny (nominatív)",           desc: "Ostatní hráči v zhode okrem prvého (napr. Tibor, pri 3 hráčoch Tibor a Belo).", tip: "Funguje automaticky pri 2, 3 aj viacerých hráčoch." },
             { tok: "{ostatných}",title: "Zvyšok skupiny (genitív/akuzatív)",    desc: "Ostatní hráči v tvare koho/čoho (napr. Tibora / Tibora a Bela)." },
             { tok: "{ostatným}", title: "Zvyšok skupiny (datív)",               desc: "Ostatní hráči v tvare komu/čomu (napr. Tiborovi / Tiborovi a Belovi)." },
@@ -28953,6 +29295,7 @@
             const hasPlural = Boolean(def.plural);
             const isCollapsed = !adminExpandedTplKeys.has(`${sectionKey}:${def.id}`);
             const pluralTaId = `an-ta-pl-${sectionKey}-${def.id}`;
+            const subTagText = applySkNewsTemplate(curTag, dualCtx.singleVars);
 
             const previewInner = renderDualPreviewInnerHtml(def, curTag, curSingle, curPlural, dualCtx);
 
@@ -28983,13 +29326,13 @@
                         <span class="an-tpl-title">
                             <span class="an-tpl-chevron" aria-hidden="true">▸</span>
                             <span>${escapeHtml(def.title)}</span>
-                            <span class="an-tpl-subtag" id="an-subtag-${sectionKey}-${def.id}">${escapeHtml(curTag)}</span>
+                            <span class="an-tpl-subtag" id="an-subtag-${sectionKey}-${def.id}">${escapeHtml(subTagText)}</span>
                             ${dualCtx.isLive ? `<span class="an-live-badge">● Živá</span>` : ""}
                             ${sleeping ? `<span class="an-sleep-badge">💤 Uspatá</span>` : ""}
-                            ${isMod ? `<span class="an-mod-badge">✏️ Upravená</span>` : ""}
+                            <span id="an-mod-badge-${sectionKey}-${def.id}" class="an-mod-badge" style="display:${isMod ? "inline-flex" : "none"};">✏️ Upravená</span>
                         </span>
                         <div class="amn-row-btns" onclick="event.stopPropagation()">
-                            ${(isMod || sleeping) ? `<button type="button" class="icon-btn" onclick="resetSystemTemplateItem('${sectionKey}', '${def.id}')" data-ctx-title="Obnoviť pôvodné znenie" data-ctx-desc="Vráti túto správu na originálny text aplikácie a prebudí ju.">↺</button>` : ""}
+                            <button type="button" id="an-reset-btn-${sectionKey}-${def.id}" class="icon-btn" style="display:${(isMod || sleeping) ? "inline-flex" : "none"};" onclick="resetSystemTemplateItem('${sectionKey}', '${def.id}')" data-ctx-title="Obnoviť pôvodné znenie" data-ctx-desc="Vráti túto správu na originálny text aplikácie a prebudí ju.">↺</button>
                             <button type="button" class="an-sleep-btn ${sleeping ? "is-wake" : ""}" onclick="toggleSystemTemplateSleep('${sectionKey}', '${def.id}')"
                                 data-ctx-title="${sleeping ? "Prebudiť správu do NEWS" : "Uspať správu (skryť z NEWS)"}"
                                 data-ctx-desc="${sleeping ? "Prebudí túto správu späť do rotácie bielej lišty NEWS." : "Správu nevymaže – iba ju uspí (šedý podklad) a skryje z lišty NEWS."}">
@@ -29063,6 +29406,7 @@
             const statsEl = document.getElementById("ao-stats-pill");
             if (!listEl) return;
 
+            refreshLiveOtherNewsSnapshot();
             syncAdminTesterControlsUI();
             const store = (state.newsTemplates && state.newsTemplates.other) || {};
 
@@ -29178,6 +29522,7 @@
             if (!contentChanged) return;
 
             newsLastSignature = fullSig;
+            LEADER_OTHER_KEYS.forEach(k => { delete liveOtherNewsMap[k]; });
             const leaderSnaps = buildWindowPointsTimelineForLeader();
             const expiryLeaderChangeItem = buildExpiryLeaderChangeNewsItem(leaderSnaps);
             const leaderChangeItem = expiryLeaderChangeItem || buildLeaderChangeNewsItem(leaderSnaps);
@@ -29201,16 +29546,16 @@
                         ? ` Mimoriadne uznanie: ${defenders[0].name} obhájil Grand Slam už ${defenders[0].consecutiveStreak}. rok v rade!`
                         : ` Obhajobu v sérii pritom potvrdili ${skJoinNames(defenders, "nom")}!`)
                     : "";
-                if (winners.length === 1) {
-                    return {
-                        tag: `VYZNAMENANIE · GRAND SLAM ${prevYr}`,
-                        text: `Čestná salva v Sieni slávy! ${winners[0].name} je jediným držiteľom Sezónneho Grand Slamu ${prevYr} – ako jediný dokázal v uplynulom roku víťaziť na jar, v lete, na jeseň aj v zime!${defSuffix}`
-                    };
-                }
-                return {
-                    tag: `VYZNAMENANIE · GRAND SLAM ${prevYr}`,
-                    text: `Vyznamenanie Siene slávy: Sezónny Grand Slam ${prevYr} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali ${skJoinNames(winners, "nom")}. Klobúk dole pred celoročnou výdržou!${defSuffix}`
+                const isPl = winners.length > 1;
+                const vars = {
+                    ...buildPlayerCaseVars(winners),
+                    "rok": String(prevYr),
+                    "obhajoba": defSuffix
                 };
+                const defText = isPl
+                    ? `Vyznamenanie Siene slávy: Sezónny Grand Slam ${prevYr} (víťazstvá vo všetkých 4 ročných obdobiach) v uplynulom roku vybojovali ${skJoinNames(winners, "nom")}. Klobúk dole pred celoročnou výdržou!${defSuffix}`
+                    : `Čestná salva v Sieni slávy! ${winners[0].name} je jediným držiteľom Sezónneho Grand Slamu ${prevYr} – ako jediný dokázal v uplynulom roku víťaziť na jar, v lete, na jeseň aj v zime!${defSuffix}`;
+                return resolveSystemNewsItem("badges", "gs_january_honor", `VYZNAMENANIE · GRAND SLAM ${prevYr}`, defText, { isPlural: isPl, vars });
             })();
             const customNewsBuckets = getActiveCustomNewsBuckets();
             const weatherItem = getWeatherNewsItem();
