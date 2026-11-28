@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 858,
+  "databaseRevision": 860,
   "config": {
     "windowMonths": 12,
     "K": 32,
@@ -1528,6 +1528,6 @@
       }
     }
   },
-  "updatedAt": 1795889579746,
-  "exportedAtIso": "2026-11-28T18:15:22.708Z"
+  "updatedAt": 1795890599469,
+  "exportedAtIso": "2026-11-28T18:30:29.052Z"
 }
