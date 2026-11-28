@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "databaseRevision": 207,
+  "databaseRevision": 393,
   "config": {
     "windowMonths": 12,
     "K": 32,
@@ -1378,6 +1378,71 @@
     }
   ],
   "customNews": [],
-  "updatedAt": 1795854173032,
-  "exportedAtIso": "2026-11-28T08:23:20.942Z"
+  "newsTemplates": {
+    "weatherQuips": {
+      "11": [
+        {
+          "text": "Vlekári už intenzívne zasnežujú."
+        },
+        {
+          "text": "Tenis vonku? V novembrovej hmle jedine v reflexnej veste.",
+          "sleeping": true
+        },
+        {
+          "text": "Dnes som stretol vonku chlapa v kraťasoch. Zabudol sa prezliesť, keď išiel domov z haly.",
+          "sleeping": true
+        },
+        {
+          "text": "Sychravý november praje halovému tenisu.",
+          "sleeping": true
+        }
+      ]
+    },
+    "weatherEvents": {
+      "frost": {
+        "text": "{miesto} mrzne ({teplota} °C). Dnes si nezabudni čiapku a rukavice!"
+      }
+    },
+    "badges": {},
+    "other": {
+      "club_doubles_alchemy": {
+        "sleeping": true
+      },
+      "tip_1": {
+        "sleeping": true
+      },
+      "tip_3": {
+        "sleeping": true
+      },
+      "tip_4": {
+        "sleeping": true
+      },
+      "tip_5": {
+        "sleeping": true
+      },
+      "tip_6": {
+        "sleeping": true
+      },
+      "tip_8": {
+        "sleeping": true
+      },
+      "tip_9": {
+        "sleeping": true
+      },
+      "tip_10": {
+        "sleeping": true
+      },
+      "tip_12": {
+        "sleeping": true
+      },
+      "inact_half_3": {
+        "single": "Pátracia akcia: {hráč} chýba na kurte už {dniTxt}. Bol videný, ako v parku kŕmi holuby."
+      },
+      "inact_year_1": {
+        "single": "{hráč} nehral už {dniTxt}. Zákulisné zdroje tvrdia, že vymenil raketu za šípky."
+      }
+    }
+  },
+  "updatedAt": 1795854628879,
+  "exportedAtIso": "2026-11-28T08:30:52.231Z"
 }
